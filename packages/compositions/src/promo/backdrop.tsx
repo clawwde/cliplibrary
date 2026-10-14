@@ -1,18 +1,26 @@
 import type { PromoLook } from '@cliplibrary/schemas';
 import { AbsoluteFill, useCurrentFrame } from 'remotion';
 
+const EASED_STOPS = [0, 0.04, 0.14, 0.3, 0.5, 0.7, 0.86, 0.96, 1];
+
+const easedGradient = (from: string, to: string): string =>
+  EASED_STOPS.map(
+    (amount, index) =>
+      `color-mix(in oklab, ${from}, ${to} ${(amount * 100).toFixed(1)}%) ${((index / (EASED_STOPS.length - 1)) * 100).toFixed(1)}%`,
+  ).join(', ');
+
 export const Backdrop = ({ look, focusX = 50 }: { look: PromoLook; focusX?: number }) => {
   const frame = useCurrentFrame();
+  const glow = `rgba(255, 255, 255, ${(look.spotlight * 0.35).toFixed(3)})`;
   return (
     <AbsoluteFill
       style={{
-        background: `radial-gradient(120% 120% at ${focusX}% 42%, ${look.background} 0%, ${look.background} 38%, ${look.backgroundEdge} 100%)`,
+        background: `radial-gradient(130% 130% at ${focusX}% 42%, ${easedGradient(look.background, look.backgroundEdge)})`,
       }}
     >
       <AbsoluteFill
         style={{
-          background: `radial-gradient(42% 52% at ${focusX}% 46%, rgba(255,255,255,${look.spotlight * 0.55}) 0%, rgba(255,255,255,0) 70%)`,
-          mixBlendMode: 'soft-light',
+          background: `radial-gradient(60% 70% at ${focusX}% 46%, ${easedGradient(glow, 'rgba(255, 255, 255, 0)')})`,
         }}
       />
       {look.grain > 0 ? (
