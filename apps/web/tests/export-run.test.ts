@@ -5,7 +5,7 @@ describe('buildRenderArgs', () => {
   it('runs the render-one file directly so clip flags reach the script', () => {
     const argv = buildRenderArgs({
       renderCwd: '/repo/apps/render',
-      clipId: 'orbit-cards',
+      clipId: 'phone-spin-in',
       outDir: '/repo/apps/web/public/exports/abc',
       optionsPath: '/tmp/options.json',
       propsPath: '/tmp/props.json',
@@ -14,7 +14,7 @@ describe('buildRenderArgs', () => {
       'run',
       'src/render-one.ts',
       '--clip',
-      'orbit-cards',
+      'phone-spin-in',
       '--out',
       '/repo/apps/web/public/exports/abc',
       '--options',

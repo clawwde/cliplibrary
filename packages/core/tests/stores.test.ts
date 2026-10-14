@@ -31,7 +31,7 @@ afterAll(async () => {
 
 const exportRecord = (overrides: Partial<ExportRecord> = {}): ExportRecord => ({
   exportId: crypto.randomUUID(),
-  clipId: 'orbit-cards',
+  clipId: 'phone-spin-in',
   mp4: 'exports/a.mp4',
   poster: 'exports/a.png',
   createdAt: new Date().toISOString(),
@@ -110,77 +110,77 @@ describe('history store', () => {
 
   it('returns empty history when none exists', async () => {
     const root = await makeRoot();
-    expect(await readHistory(root, 'split-flap')).toEqual([]);
+    expect(await readHistory(root, 'brand-reveal')).toEqual([]);
   });
 
   it('prepends snapshots so the newest is first', async () => {
     const root = await makeRoot();
-    await appendSnapshot(root, 'split-flap', snapshot({ versionId: 'v1' }));
-    const history = await appendSnapshot(root, 'split-flap', snapshot({ versionId: 'v2' }));
+    await appendSnapshot(root, 'brand-reveal', snapshot({ versionId: 'v1' }));
+    const history = await appendSnapshot(root, 'brand-reveal', snapshot({ versionId: 'v2' }));
     expect(history.map((entry) => entry.versionId)).toEqual(['v2', 'v1']);
   });
 
   it('finds a snapshot by id and returns null for a miss', async () => {
     const root = await makeRoot();
-    await appendSnapshot(root, 'split-flap', snapshot({ versionId: 'target', label: 'hit' }));
-    const found = await findSnapshot(root, 'split-flap', 'target');
+    await appendSnapshot(root, 'brand-reveal', snapshot({ versionId: 'target', label: 'hit' }));
+    const found = await findSnapshot(root, 'brand-reveal', 'target');
     expect(found?.label).toBe('hit');
-    expect(await findSnapshot(root, 'split-flap', 'nope')).toBeNull();
+    expect(await findSnapshot(root, 'brand-reveal', 'nope')).toBeNull();
   });
 
   it('keeps history per clip id separate', async () => {
     const root = await makeRoot();
-    await appendSnapshot(root, 'split-flap', snapshot({ versionId: 'flap' }));
-    await appendSnapshot(root, 'orbit-cards', snapshot({ versionId: 'orbit' }));
-    expect((await readHistory(root, 'split-flap')).map((e) => e.versionId)).toEqual(['flap']);
-    expect((await readHistory(root, 'orbit-cards')).map((e) => e.versionId)).toEqual(['orbit']);
+    await appendSnapshot(root, 'brand-reveal', snapshot({ versionId: 'flap' }));
+    await appendSnapshot(root, 'phone-spin-in', snapshot({ versionId: 'orbit' }));
+    expect((await readHistory(root, 'brand-reveal')).map((e) => e.versionId)).toEqual(['flap']);
+    expect((await readHistory(root, 'phone-spin-in')).map((e) => e.versionId)).toEqual(['orbit']);
   });
 });
 
 describe('props store history and revert', () => {
   it('appends a snapshot per write with unique version ids', async () => {
     const root = await makeRoot();
-    const first = await writeProps(root, 'split-flap', CLIP_DEFAULTS['split-flap'], 'first');
-    const second = await writeProps(root, 'split-flap', CLIP_DEFAULTS['split-flap'], 'second');
+    const first = await writeProps(root, 'brand-reveal', CLIP_DEFAULTS['brand-reveal'], 'first');
+    const second = await writeProps(root, 'brand-reveal', CLIP_DEFAULTS['brand-reveal'], 'second');
     expect(first.currentVersionId).not.toBe(second.currentVersionId);
-    const history = await readHistory(root, 'split-flap');
+    const history = await readHistory(root, 'brand-reveal');
     expect(history.map((entry) => entry.label)).toEqual(['second', 'first']);
   });
 
   it('reverts to an earlier version and records the revert as a new snapshot', async () => {
     const root = await makeRoot();
-    const original = CLIP_DEFAULTS['split-flap'];
-    const firstWrite = await writeProps(root, 'split-flap', original, 'original');
+    const original = CLIP_DEFAULTS['brand-reveal'];
+    const firstWrite = await writeProps(root, 'brand-reveal', original, 'original');
     const edited = { ...original, header: 'ARRIVALS' };
-    await writeProps(root, 'split-flap', edited, 'edited');
+    await writeProps(root, 'brand-reveal', edited, 'edited');
 
-    const reverted = await revertToVersion(root, 'split-flap', firstWrite.currentVersionId);
+    const reverted = await revertToVersion(root, 'brand-reveal', firstWrite.currentVersionId);
     expect(reverted?.values).toEqual(original);
 
-    const current = await readProps(root, 'split-flap');
+    const current = await readProps(root, 'brand-reveal');
     expect(current.values).toEqual(original);
-    const history = await readHistory(root, 'split-flap');
+    const history = await readHistory(root, 'brand-reveal');
     expect(history).toHaveLength(3);
     expect(history[0]?.label).toBe(`revert of ${firstWrite.currentVersionId}`);
   });
 
   it('returns null when reverting to an unknown version', async () => {
     const root = await makeRoot();
-    await writeProps(root, 'split-flap', CLIP_DEFAULTS['split-flap'], 'only');
-    expect(await revertToVersion(root, 'split-flap', 'missing')).toBeNull();
+    await writeProps(root, 'brand-reveal', CLIP_DEFAULTS['brand-reveal'], 'only');
+    expect(await revertToVersion(root, 'brand-reveal', 'missing')).toBeNull();
   });
 
   it('seeds defaults with a stable sentinel version id and epoch timestamp', async () => {
     const root = await makeRoot();
-    const seeded = await readProps(root, 'product-demo');
+    const seeded = await readProps(root, 'phone-fan');
     expect(seeded.currentVersionId).toBe('defaults');
     expect(seeded.updatedAt).toBe(new Date(0).toISOString());
-    expect(seeded.values).toEqual(CLIP_DEFAULTS['product-demo']);
+    expect(seeded.values).toEqual(CLIP_DEFAULTS['phone-fan']);
   });
 
   it('rejects props that violate the schema', async () => {
     const root = await makeRoot();
-    const bad = { ...CLIP_DEFAULTS['orbit-cards'], background: 'not-a-color' };
-    await expect(writeProps(root, 'orbit-cards', bad)).rejects.toThrow();
+    const bad = { ...CLIP_DEFAULTS['brand-reveal'], markColor: 'not-a-color' };
+    await expect(writeProps(root, 'brand-reveal', bad)).rejects.toThrow();
   });
 });

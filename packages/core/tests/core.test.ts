@@ -79,26 +79,31 @@ describe('props store', () => {
 
   it('round-trips props and records a version', async () => {
     const root = await makeRoot();
-    const written = await writeProps(root, 'orbit-cards', CLIP_DEFAULTS['orbit-cards'], 'first');
-    expect(written.values).toEqual(CLIP_DEFAULTS['orbit-cards']);
-    const read = await readProps(root, 'orbit-cards');
+    const written = await writeProps(
+      root,
+      'phone-spin-in',
+      CLIP_DEFAULTS['phone-spin-in'],
+      'first',
+    );
+    expect(written.values).toEqual(CLIP_DEFAULTS['phone-spin-in']);
+    const read = await readProps(root, 'phone-spin-in');
     expect(read.currentVersionId).toBe(written.currentVersionId);
-    const history = await readHistory(root, 'orbit-cards');
+    const history = await readHistory(root, 'phone-spin-in');
     expect(history).toHaveLength(1);
     expect(history[0]?.label).toBe('first');
   });
 
   it('seeds defaults when no file exists', async () => {
     const root = await makeRoot();
-    const read = await readProps(root, 'split-flap');
+    const read = await readProps(root, 'brand-reveal');
     expect(read.currentVersionId).toBe('defaults');
-    expect(read.values).toEqual(CLIP_DEFAULTS['split-flap']);
+    expect(read.values).toEqual(CLIP_DEFAULTS['brand-reveal']);
   });
 
   it('rejects invalid props', async () => {
     const root = await makeRoot();
-    const bad = { ...CLIP_DEFAULTS['orbit-cards'], background: 'nope' };
-    await expect(writeProps(root, 'orbit-cards', bad)).rejects.toThrow();
+    const bad = { ...CLIP_DEFAULTS['brand-reveal'], markColor: 'nope' };
+    await expect(writeProps(root, 'brand-reveal', bad)).rejects.toThrow();
   });
 });
 

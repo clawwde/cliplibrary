@@ -3,9 +3,7 @@ import type { ClipId, ClipPropsMap } from '../clip-props';
 import type { ClipMeta, ClipModule } from '../registry';
 import { backgroundsClips } from './backgrounds';
 import { brandClips } from './brand';
-import { dataClips } from './data';
 import { devicesClips } from './devices';
-import { mediaClips } from './media';
 import { overlaysClips } from './overlays';
 import { sequencesClips } from './sequences';
 import { transitionsClips } from './transitions';
@@ -13,8 +11,6 @@ import { typographyClips } from './typography';
 
 export const CLIP_MODULES: ClipModule[] = [
   ...typographyClips,
-  ...dataClips,
-  ...mediaClips,
   ...devicesClips,
   ...overlaysClips,
   ...brandClips,

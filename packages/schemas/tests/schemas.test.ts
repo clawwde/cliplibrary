@@ -2,7 +2,7 @@ import { describe, expect, it } from 'bun:test';
 import { z } from 'zod';
 import {
   APP_PROMO_SEQUENCE,
-  barChartGrowSchema,
+  brandRevealSchema,
   CLIP_CATEGORY_IDS,
   CLIP_DEFAULTS,
   CLIP_IDS,
@@ -13,21 +13,18 @@ import {
   CLIP_THEMES,
   type ClipId,
   categoryLabel,
-  donutProgressSchema,
   EASING_IDS,
+  floatingCardsSchema,
   getClipDefaults,
   getClipMeta,
   getClipSchema,
   HEX_COLOR,
-  imageShowcaseSchema,
+  headlineRevealSchema,
   isClipId,
-  lineDrawSchema,
-  mosaicRevealSchema,
-  notificationStackSchema,
-  orbitCardsSchema,
+  phoneFanSchema,
+  phoneSpinInSchema,
   readControlMeta,
-  SPLIT_FLAP_COLUMNS,
-  splitFlapSchema,
+  sceneTransitionSchema,
   zColor,
   zImage,
   zMultiline,
@@ -98,45 +95,38 @@ describe('clip defaults round-trip', () => {
 });
 
 describe('clip schema constraints', () => {
-  it('rejects a malformed color on orbit-cards', () => {
-    const bad = { ...CLIP_DEFAULTS['orbit-cards'], background: 'not-a-color' };
-    expect(orbitCardsSchema.safeParse(bad).success).toBe(false);
+  it('rejects a malformed color on brand-reveal', () => {
+    const bad = { ...CLIP_DEFAULTS['brand-reveal'], markColor: 'not-a-color' };
+    expect(brandRevealSchema.safeParse(bad).success).toBe(false);
   });
 
-  it('enforces the orbit-cards fixed length of eight cards', () => {
-    const base = CLIP_DEFAULTS['orbit-cards'];
-    expect(orbitCardsSchema.safeParse({ ...base, cards: base.cards.slice(0, 7) }).success).toBe(
+  it('enforces the phone-fan fixed length of three phones', () => {
+    const base = CLIP_DEFAULTS['phone-fan'];
+    expect(phoneFanSchema.safeParse({ ...base, phones: base.phones.slice(0, 2) }).success).toBe(
       false,
     );
     expect(
-      orbitCardsSchema.safeParse({ ...base, cards: [...base.cards, base.cards[0]] }).success,
+      phoneFanSchema.safeParse({ ...base, phones: [...base.phones, base.phones[0]] }).success,
     ).toBe(false);
   });
 
-  it('enforces the notification-stack note count bounds', () => {
-    const base = CLIP_DEFAULTS['notification-stack'];
-    expect(notificationStackSchema.safeParse({ ...base, notes: [] }).success).toBe(false);
-    const sevenNotes = Array.from({ length: 7 }, () => base.notes[0]);
-    expect(notificationStackSchema.safeParse({ ...base, notes: sevenNotes }).success).toBe(false);
-    expect(notificationStackSchema.safeParse({ ...base, notes: [base.notes[0]] }).success).toBe(
-      true,
-    );
+  it('enforces the floating-cards card count bounds', () => {
+    const base = CLIP_DEFAULTS['floating-cards'];
+    expect(floatingCardsSchema.safeParse({ ...base, cards: [] }).success).toBe(false);
+    const five = Array.from({ length: 5 }, () => base.cards[0]);
+    expect(floatingCardsSchema.safeParse({ ...base, cards: five }).success).toBe(false);
+    expect(floatingCardsSchema.safeParse({ ...base, cards: [base.cards[0]] }).success).toBe(true);
   });
 
-  it('caps split-flap row text at the column width', () => {
-    const base = CLIP_DEFAULTS['split-flap'];
-    const tooLong = 'X'.repeat(SPLIT_FLAP_COLUMNS + 1);
-    const withLongRow = { ...base, rows: [{ text: tooLong, color: '#ffffff' }] };
-    expect(splitFlapSchema.safeParse(withLongRow).success).toBe(false);
-    const exact = 'Y'.repeat(SPLIT_FLAP_COLUMNS);
-    expect(
-      splitFlapSchema.safeParse({ ...base, rows: [{ text: exact, color: '#ffffff' }] }).success,
-    ).toBe(true);
+  it('keeps headline-reveal text sizes inside the slider range', () => {
+    const base = CLIP_DEFAULTS['headline-reveal'];
+    expect(headlineRevealSchema.safeParse({ ...base, size: 20 }).success).toBe(false);
+    expect(headlineRevealSchema.safeParse({ ...base, size: 120 }).success).toBe(true);
   });
 
   it('strips unknown properties from a parsed clip object', () => {
-    const base = CLIP_DEFAULTS['product-demo'];
-    const result = CLIP_SCHEMAS['product-demo'].safeParse({ ...base, surprise: true });
+    const base = CLIP_DEFAULTS['phone-spin-in'];
+    const result = CLIP_SCHEMAS['phone-spin-in'].safeParse({ ...base, surprise: true });
     expect(result.success).toBe(true);
     if (result.success) {
       expect(result.data).not.toHaveProperty('surprise');
@@ -198,73 +188,25 @@ describe('pluggable module architecture', () => {
     }
   });
 
-  it('places the new clips in their intended categories', () => {
+  it('places the clips in their intended categories', () => {
     const categoryOf = (id: ClipId) => getClipMeta(id).category;
-    expect(categoryOf('typewriter')).toBe('typography');
-    expect(categoryOf('count-up')).toBe('data');
-    expect(categoryOf('image-showcase')).toBe('media');
+    expect(categoryOf('headline-reveal')).toBe('typography');
     expect(categoryOf('phone-spin-in')).toBe('devices');
+    expect(categoryOf('floating-cards')).toBe('overlays');
+    expect(categoryOf('brand-reveal')).toBe('brand');
+    expect(categoryOf('studio-backdrop')).toBe('backgrounds');
+    expect(categoryOf('scene-transition')).toBe('transitions');
     expect(categoryOf('app-promo')).toBe('sequences');
-  });
-});
-
-describe('expanded clip library', () => {
-  it('ships at least fifteen clips', () => {
-    expect(CLIP_IDS.length).toBeGreaterThanOrEqual(15);
-  });
-
-  it('files the latest batch of clips in the right categories', () => {
-    const categoryOf = (id: ClipId) => getClipMeta(id).category;
-    expect(categoryOf('word-reveal')).toBe('typography');
-    expect(categoryOf('kinetic-type')).toBe('typography');
-    expect(categoryOf('gradient-sweep-text')).toBe('typography');
-    expect(categoryOf('bar-chart-grow')).toBe('data');
-    expect(categoryOf('line-draw')).toBe('data');
-    expect(categoryOf('donut-progress')).toBe('data');
-    expect(categoryOf('ken-burns')).toBe('media');
-    expect(categoryOf('image-grid-reveal')).toBe('media');
-    expect(categoryOf('mosaic-reveal')).toBe('transitions');
-    expect(categoryOf('notification-stack')).toBe('overlays');
-    expect(categoryOf('product-demo')).toBe('sequences');
-  });
-
-  it('enforces the bar-chart-grow bar count bounds', () => {
-    const base = CLIP_DEFAULTS['bar-chart-grow'];
-    const one = base.bars.slice(0, 1);
-    expect(barChartGrowSchema.safeParse({ ...base, bars: one }).success).toBe(false);
-    const nine = Array.from({ length: 9 }, () => base.bars[0]);
-    expect(barChartGrowSchema.safeParse({ ...base, bars: nine }).success).toBe(false);
-  });
-
-  it('enforces the line-draw point count bounds', () => {
-    const base = CLIP_DEFAULTS['line-draw'];
-    expect(lineDrawSchema.safeParse({ ...base, points: [10] }).success).toBe(false);
-    const thirteen = Array.from({ length: 13 }, () => 50);
-    expect(lineDrawSchema.safeParse({ ...base, points: thirteen }).success).toBe(false);
-  });
-
-  it('clamps the donut-progress percentage to a zero to one hundred range', () => {
-    const base = CLIP_DEFAULTS['donut-progress'];
-    expect(donutProgressSchema.safeParse({ ...base, percent: 120 }).success).toBe(false);
-    expect(donutProgressSchema.safeParse({ ...base, percent: 64 }).success).toBe(true);
-  });
-
-  it('accepts every easing id on the complex clips', () => {
-    for (const id of EASING_IDS) {
-      expect(
-        mosaicRevealSchema.safeParse({ ...CLIP_DEFAULTS['mosaic-reveal'], easing: id }).success,
-      ).toBe(true);
-    }
   });
 });
 
 describe('easing enum control', () => {
   it('accepts every easing id and rejects unknown curves', () => {
-    const base = CLIP_DEFAULTS['mosaic-reveal'];
+    const base = CLIP_DEFAULTS['scene-transition'];
     for (const id of EASING_IDS) {
-      expect(mosaicRevealSchema.safeParse({ ...base, easing: id }).success).toBe(true);
+      expect(sceneTransitionSchema.safeParse({ ...base, easing: id }).success).toBe(true);
     }
-    expect(mosaicRevealSchema.safeParse({ ...base, easing: 'bounce' }).success).toBe(false);
+    expect(sceneTransitionSchema.safeParse({ ...base, easing: 'bounce' }).success).toBe(false);
   });
 });
 
@@ -280,14 +222,16 @@ describe('image media control', () => {
     expect(zImage().safeParse(42).success).toBe(false);
   });
 
-  it('round-trips the image showcase defaults and populated images', () => {
-    const base = CLIP_DEFAULTS['image-showcase'];
-    expect(imageShowcaseSchema.safeParse(base).success).toBe(true);
-    const populated = { ...base, image1: 'https://example.com/one.jpg' };
-    const result = imageShowcaseSchema.safeParse(populated);
+  it('round-trips a custom phone screen image', () => {
+    const base = CLIP_DEFAULTS['phone-spin-in'];
+    const populated = {
+      ...base,
+      phone: { ...base.phone, customScreen: 'https://example.com/screen.png' },
+    };
+    const result = phoneSpinInSchema.safeParse(populated);
     expect(result.success).toBe(true);
     if (result.success) {
-      expect(result.data.image1).toBe('https://example.com/one.jpg');
+      expect(result.data.phone.customScreen).toBe('https://example.com/screen.png');
     }
   });
 });
@@ -389,6 +333,6 @@ describe('clip taxonomy', () => {
 
   it('labels categories for display', () => {
     expect(categoryLabel('devices')).toBe('3D Devices');
-    expect(categoryLabel('data')).toBe('Data & Charts');
+    expect(categoryLabel('overlays')).toBe('UI Overlays');
   });
 });

@@ -1,7 +1,5 @@
 export const CLIP_CATEGORIES = [
   { id: 'typography', label: 'Typography' },
-  { id: 'data', label: 'Data & Charts' },
-  { id: 'media', label: 'Media' },
   { id: 'devices', label: '3D Devices' },
   { id: 'overlays', label: 'UI Overlays' },
   { id: 'brand', label: 'Brand & CTA' },
@@ -22,11 +20,6 @@ export const CLIP_TAGS = [
   'cards',
   'headline',
   'text',
-  'numbers',
-  'chart',
-  'dashboard',
-  'image',
-  'gallery',
   'logo',
   'cta',
   'list',
@@ -34,11 +27,9 @@ export const CLIP_TAGS = [
   'scroll',
   'notification',
   'gradient',
-  'kinetic',
   'reveal',
   'wipe',
   'minimal',
-  'retro',
 ] as const;
 
 export type ClipTag = (typeof CLIP_TAGS)[number];

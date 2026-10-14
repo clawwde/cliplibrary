@@ -14,17 +14,17 @@ const descriptorsByClip = Object.fromEntries(
 );
 
 const buildFile = (): ProjectFile => ({
-  clipId: 'orbit-cards',
+  clipId: 'phone-spin-in',
   currentVersionId: 'seed',
-  project: seedProjectForClip('orbit-cards'),
+  project: seedProjectForClip('phone-spin-in'),
   updatedAt: new Date(0).toISOString(),
 });
 
 const renderEditor = () =>
   render(
     <ClipTimelineEditor
-      clipId="orbit-cards"
-      title="Orbit Cards"
+      clipId="phone-spin-in"
+      title="Phone Spin In"
       descriptorsByClip={descriptorsByClip}
       initialProject={buildFile()}
       initialHistory={[]}
@@ -47,7 +47,7 @@ describe('ClipTimelineEditor', () => {
     renderEditor();
     expect(screen.getAllByRole('button', { name: 'Clip element' })).toHaveLength(1);
     fireEvent.change(screen.getByLabelText('Add animation'), {
-      target: { value: 'mosaic-reveal' },
+      target: { value: 'scene-transition' },
     });
     expect(screen.getAllByRole('button', { name: 'Clip element' })).toHaveLength(2);
   });
@@ -69,7 +69,7 @@ describe('ClipTimelineEditor', () => {
     expect(save).not.toBeDisabled();
     fireEvent.click(save);
     expect(fetchMock).toHaveBeenCalledWith(
-      '/api/clips/orbit-cards/project',
+      '/api/clips/phone-spin-in/project',
       expect.objectContaining({ method: 'PATCH' }),
     );
   });

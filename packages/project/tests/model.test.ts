@@ -47,7 +47,7 @@ describe('project schema', () => {
   });
 
   it('validates a composition element referencing a clip', () => {
-    const element = createCompositionElement('typewriter', { words: ['hi'] }, { from: 0 });
+    const element = createCompositionElement('brand-reveal', { words: ['hi'] }, { from: 0 });
     const parsed = elementSchema.safeParse(element);
     expect(parsed.success).toBe(true);
     expect(parsed.success && parsed.data.type).toBe('composition');
@@ -55,7 +55,7 @@ describe('project schema', () => {
   });
 
   it('rejects a composition element without a clip id', () => {
-    const element = { ...createCompositionElement('typewriter', {}), clipId: '' };
+    const element = { ...createCompositionElement('brand-reveal', {}), clipId: '' };
     expect(elementSchema.safeParse(element).success).toBe(false);
   });
 
