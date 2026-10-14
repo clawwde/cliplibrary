@@ -56,11 +56,15 @@ const MediaPreview = ({ kind, value }: { kind: MediaKind; value: string }) =>
 const MediaField = ({
   kind,
   value,
-  onChange,
+  commit,
+  live,
+  seal,
 }: {
   kind: MediaKind;
   value: string;
-  onChange: (next: string) => void;
+  commit: (next: string) => void;
+  live: (next: string) => void;
+  seal: () => void;
 }) => {
   const inputRef = useRef<HTMLInputElement>(null);
   const [dragging, setDragging] = useState(false);
@@ -72,7 +76,7 @@ const MediaField = ({
     }
     setBusy(true);
     uploadMedia(file)
-      .then(onChange)
+      .then(commit)
       .catch(() => undefined)
       .finally(() => setBusy(false));
   };
@@ -113,7 +117,8 @@ const MediaField = ({
           type="text"
           value={value}
           placeholder={`${kind} URL`}
-          onChange={(event) => onChange(event.target.value)}
+          onChange={(event) => live(event.target.value)}
+          onBlur={seal}
           className="font-mono text-xs"
         />
         {value ? (
@@ -123,7 +128,7 @@ const MediaField = ({
             size="icon-sm"
             aria-label={`Clear ${kind}`}
             className="shrink-0 text-muted-foreground hover:text-destructive"
-            onClick={() => onChange('')}
+            onClick={() => commit('')}
           >
             <X className="size-4" />
           </Button>
@@ -143,36 +148,49 @@ const MediaField = ({
 const TextField = ({
   descriptor,
   value,
-  onChange,
+  live,
+  seal,
 }: {
   descriptor: Extract<LeafDescriptor, { kind: 'text' }>;
   value: string;
-  onChange: (next: string) => void;
+  live: (next: string) => void;
+  seal: () => void;
 }) =>
   descriptor.multiline ? (
-    <Textarea value={value} rows={3} onChange={(event) => onChange(event.target.value)} />
+    <Textarea value={value} rows={3} onChange={(event) => live(event.target.value)} onBlur={seal} />
   ) : (
     <Input
       type="text"
       value={value}
       maxLength={descriptor.maxLength ?? undefined}
-      onChange={(event) => onChange(event.target.value)}
+      onChange={(event) => live(event.target.value)}
+      onBlur={seal}
     />
   );
 
-const ColorField = ({ value, onChange }: { value: string; onChange: (next: string) => void }) => (
+const ColorField = ({
+  value,
+  live,
+  seal,
+}: {
+  value: string;
+  live: (next: string) => void;
+  seal: () => void;
+}) => (
   <div className="flex items-center gap-2">
     <input
       type="color"
       value={value.slice(0, 7)}
-      onChange={(event) => onChange(event.target.value)}
+      onChange={(event) => live(event.target.value)}
+      onBlur={seal}
       aria-label="Color"
       className="size-9 cursor-pointer overflow-hidden rounded-md bg-transparent p-0"
     />
     <Input
       type="text"
       value={value}
-      onChange={(event) => onChange(event.target.value)}
+      onChange={(event) => live(event.target.value)}
+      onBlur={seal}
       className="font-mono"
     />
   </div>
@@ -181,11 +199,13 @@ const ColorField = ({ value, onChange }: { value: string; onChange: (next: strin
 const NumberField = ({
   descriptor,
   value,
-  onChange,
+  live,
+  seal,
 }: {
   descriptor: Extract<LeafDescriptor, { kind: 'number' }>;
   value: number;
-  onChange: (next: number) => void;
+  live: (next: number) => void;
+  seal: () => void;
 }) => (
   <div className="flex items-center gap-3">
     <Slider
@@ -193,7 +213,8 @@ const NumberField = ({
       max={descriptor.max ?? 100}
       step={descriptor.step}
       value={[value]}
-      onValueChange={(next) => onChange(next[0] ?? value)}
+      onValueChange={(next) => live(next[0] ?? value)}
+      onValueCommit={seal}
       className="flex-1"
     />
     <Input
@@ -202,7 +223,8 @@ const NumberField = ({
       max={descriptor.max ?? undefined}
       step={descriptor.step}
       value={value}
-      onChange={(event) => onChange(Number(event.target.value))}
+      onChange={(event) => live(Number(event.target.value))}
+      onBlur={seal}
       className="w-20 text-right"
     />
   </div>
@@ -211,13 +233,13 @@ const NumberField = ({
 const EnumField = ({
   descriptor,
   value,
-  onChange,
+  commit,
 }: {
   descriptor: Extract<LeafDescriptor, { kind: 'enum' }>;
   value: string;
-  onChange: (next: string) => void;
+  commit: (next: string) => void;
 }) => (
-  <Select value={value} onValueChange={onChange}>
+  <Select value={value} onValueChange={commit}>
     <SelectTrigger className="w-full">
       <SelectValue />
     </SelectTrigger>
@@ -234,27 +256,61 @@ const EnumField = ({
 export const FieldControl = ({
   descriptor,
   value,
-  onChange,
+  onCommit,
+  onLive,
+  onSeal,
 }: {
   descriptor: LeafDescriptor;
   value: unknown;
-  onChange: (next: unknown) => void;
+  onCommit: (next: unknown) => void;
+  onLive: (next: unknown) => void;
+  onSeal: () => void;
 }) => {
   switch (descriptor.kind) {
     case 'text':
-      return <TextField descriptor={descriptor} value={String(value ?? '')} onChange={onChange} />;
+      return (
+        <TextField
+          descriptor={descriptor}
+          value={String(value ?? '')}
+          live={onLive}
+          seal={onSeal}
+        />
+      );
     case 'color':
-      return <ColorField value={String(value ?? '#000000')} onChange={onChange} />;
+      return <ColorField value={String(value ?? '#000000')} live={onLive} seal={onSeal} />;
     case 'number':
-      return <NumberField descriptor={descriptor} value={Number(value ?? 0)} onChange={onChange} />;
+      return (
+        <NumberField
+          descriptor={descriptor}
+          value={Number(value ?? 0)}
+          live={onLive}
+          seal={onSeal}
+        />
+      );
     case 'boolean':
-      return <Switch checked={Boolean(value)} onCheckedChange={onChange} />;
+      return <Switch checked={Boolean(value)} onCheckedChange={onCommit} />;
     case 'enum':
-      return <EnumField descriptor={descriptor} value={String(value ?? '')} onChange={onChange} />;
+      return <EnumField descriptor={descriptor} value={String(value ?? '')} commit={onCommit} />;
     case 'image':
-      return <MediaField kind="image" value={String(value ?? '')} onChange={onChange} />;
+      return (
+        <MediaField
+          kind="image"
+          value={String(value ?? '')}
+          commit={onCommit}
+          live={onLive}
+          seal={onSeal}
+        />
+      );
     case 'video':
-      return <MediaField kind="video" value={String(value ?? '')} onChange={onChange} />;
+      return (
+        <MediaField
+          kind="video"
+          value={String(value ?? '')}
+          commit={onCommit}
+          live={onLive}
+          seal={onSeal}
+        />
+      );
     default:
       return null;
   }

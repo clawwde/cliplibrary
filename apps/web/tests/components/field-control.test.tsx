@@ -10,9 +10,19 @@ type LeafDescriptor = Extract<
 >;
 
 const renderControl = (descriptor: LeafDescriptor, value: unknown) => {
-  const onChange = mock();
-  render(<FieldControl descriptor={descriptor} value={value} onChange={onChange} />);
-  return onChange;
+  const onCommit = mock();
+  const onLive = mock();
+  const onSeal = mock();
+  render(
+    <FieldControl
+      descriptor={descriptor}
+      value={value}
+      onCommit={onCommit}
+      onLive={onLive}
+      onSeal={onSeal}
+    />,
+  );
+  return { onCommit, onLive, onSeal };
 };
 
 describe('FieldControl text', () => {
@@ -31,10 +41,13 @@ describe('FieldControl text', () => {
     expect(input.getAttribute('maxlength')).toBe('12');
   });
 
-  it('emits the new string on change', () => {
-    const onChange = renderControl(descriptor, 'Hello');
-    fireEvent.change(screen.getByDisplayValue('Hello'), { target: { value: 'World' } });
-    expect(onChange).toHaveBeenCalledWith('World');
+  it('emits the new string live on change and seals on blur', () => {
+    const { onLive, onSeal } = renderControl(descriptor, 'Hello');
+    const input = screen.getByDisplayValue('Hello');
+    fireEvent.change(input, { target: { value: 'World' } });
+    expect(onLive).toHaveBeenCalledWith('World');
+    fireEvent.blur(input);
+    expect(onSeal).toHaveBeenCalled();
   });
 
   it('renders a textarea when multiline', () => {
@@ -60,10 +73,10 @@ describe('FieldControl color', () => {
     expect(screen.getByDisplayValue('#aabbccdd')).toBeInTheDocument();
   });
 
-  it('emits edits from the text field', () => {
-    const onChange = renderControl(descriptor, '#000000');
+  it('emits edits live from the text field', () => {
+    const { onLive } = renderControl(descriptor, '#000000');
     fireEvent.change(screen.getByRole('textbox'), { target: { value: '#ffffff' } });
-    expect(onChange).toHaveBeenCalledWith('#ffffff');
+    expect(onLive).toHaveBeenCalledWith('#ffffff');
   });
 
   it('defaults a missing value to black', () => {
@@ -91,10 +104,10 @@ describe('FieldControl number slider', () => {
     expect((screen.getByRole('spinbutton') as HTMLInputElement).value).toBe('4');
   });
 
-  it('emits a number when the numeric field changes', () => {
-    const onChange = renderControl(descriptor, 4);
+  it('emits a number live when the numeric field changes', () => {
+    const { onLive } = renderControl(descriptor, 4);
     fireEvent.change(screen.getByRole('spinbutton'), { target: { value: '2' } });
-    expect(onChange).toHaveBeenCalledWith(2);
+    expect(onLive).toHaveBeenCalledWith(2);
   });
 });
 
@@ -107,10 +120,10 @@ describe('FieldControl boolean toggle', () => {
   });
 
   it('toggles the current value on click', async () => {
-    const onChange = renderControl(descriptor, false);
+    const { onCommit } = renderControl(descriptor, false);
     const user = userEvent.setup();
     await user.click(screen.getByRole('switch'));
-    expect(onChange).toHaveBeenCalledWith(true);
+    expect(onCommit).toHaveBeenCalledWith(true);
   });
 });
 
@@ -142,19 +155,19 @@ describe('FieldControl image', () => {
     expect((screen.getByRole('textbox') as HTMLInputElement).value).toBe('');
   });
 
-  it('emits the pasted url through the text field', () => {
-    const onChange = renderControl(descriptor, '');
+  it('emits the pasted url live through the text field', () => {
+    const { onLive } = renderControl(descriptor, '');
     fireEvent.change(screen.getByRole('textbox'), {
       target: { value: 'https://example.com/a.png' },
     });
-    expect(onChange).toHaveBeenCalledWith('https://example.com/a.png');
+    expect(onLive).toHaveBeenCalledWith('https://example.com/a.png');
   });
 
   it('shows a preview and a clear button once a value is set', () => {
-    const onChange = renderControl(descriptor, 'https://example.com/a.png');
+    const { onCommit } = renderControl(descriptor, 'https://example.com/a.png');
     expect(screen.getByRole('img', { name: 'Selected image' })).toBeInTheDocument();
     fireEvent.click(screen.getByRole('button', { name: 'Clear image' }));
-    expect(onChange).toHaveBeenCalledWith('');
+    expect(onCommit).toHaveBeenCalledWith('');
   });
 });
 
@@ -176,16 +189,22 @@ describe('FieldControl media upload', () => {
 
   it('uploads a picked file and sets the field to the returned url', async () => {
     const fetchMock = mockUpload('/uploads/picked.png');
-    const onChange = mock();
+    const onCommit = mock();
     const { container } = render(
-      <FieldControl descriptor={descriptor} value="" onChange={onChange} />,
+      <FieldControl
+        descriptor={descriptor}
+        value=""
+        onCommit={onCommit}
+        onLive={mock()}
+        onSeal={mock()}
+      />,
     );
     const input = Array.from(container.querySelectorAll('input')).find(
       (element) => element.type === 'file',
     ) as HTMLInputElement;
     const file = new File(['x'], 'a.png', { type: 'image/png' });
     fireEvent.change(input, { target: { files: [file] } });
-    await waitFor(() => expect(onChange).toHaveBeenCalledWith('/uploads/picked.png'));
+    await waitFor(() => expect(onCommit).toHaveBeenCalledWith('/uploads/picked.png'));
     expect(fetchMock).toHaveBeenCalledWith(
       '/api/upload',
       expect.objectContaining({ method: 'POST' }),
@@ -194,13 +213,21 @@ describe('FieldControl media upload', () => {
 
   it('uploads a dropped file', async () => {
     mockUpload('/uploads/dropped.png');
-    const onChange = mock();
-    render(<FieldControl descriptor={descriptor} value="" onChange={onChange} />);
+    const onCommit = mock();
+    render(
+      <FieldControl
+        descriptor={descriptor}
+        value=""
+        onCommit={onCommit}
+        onLive={mock()}
+        onSeal={mock()}
+      />,
+    );
     const file = new File(['x'], 'b.png', { type: 'image/png' });
     fireEvent.drop(screen.getByRole('button', { name: /drop image/i }), {
       dataTransfer: { files: [file] },
     });
-    await waitFor(() => expect(onChange).toHaveBeenCalledWith('/uploads/dropped.png'));
+    await waitFor(() => expect(onCommit).toHaveBeenCalledWith('/uploads/dropped.png'));
   });
 });
 
@@ -212,17 +239,23 @@ describe('FieldControl video', () => {
     expect(screen.getByText('Drop video or click to upload')).toBeInTheDocument();
   });
 
-  it('emits the pasted url through the text field', () => {
-    const onChange = renderControl(descriptor, '');
+  it('emits the pasted url live through the text field', () => {
+    const { onLive } = renderControl(descriptor, '');
     fireEvent.change(screen.getByRole('textbox'), {
       target: { value: 'https://example.com/a.mp4' },
     });
-    expect(onChange).toHaveBeenCalledWith('https://example.com/a.mp4');
+    expect(onLive).toHaveBeenCalledWith('https://example.com/a.mp4');
   });
 
   it('renders a video preview once a value is set', () => {
     const { container } = render(
-      <FieldControl descriptor={descriptor} value="https://example.com/a.mp4" onChange={mock()} />,
+      <FieldControl
+        descriptor={descriptor}
+        value="https://example.com/a.mp4"
+        onCommit={mock()}
+        onLive={mock()}
+        onSeal={mock()}
+      />,
     );
     expect(container.querySelector('video')).toBeInTheDocument();
   });

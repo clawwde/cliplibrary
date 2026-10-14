@@ -33,6 +33,8 @@ export const ClipEditor = ({
   const {
     value: values,
     set: setValues,
+    setLive: setValuesLive,
+    seal: sealValues,
     reset,
     undo,
     redo,
@@ -207,7 +209,13 @@ export const ClipEditor = ({
           </div>
         </div>
         <div className="p-4">
-          <PropertiesPanel descriptors={descriptors} values={values} onChange={setValues} />
+          <PropertiesPanel
+            descriptors={descriptors}
+            values={values}
+            onChange={setValues}
+            onLive={setValuesLive}
+            onSeal={sealValues}
+          />
         </div>
         <CommitBar />
       </aside>
