@@ -29,9 +29,6 @@ const RootLayout = ({ children }: { children: ReactNode }) => (
             clip library
           </Link>
           <nav className="flex items-center gap-3 text-sm text-muted-foreground">
-            <Link href="/editor" className="transition-colors hover:text-foreground">
-              Editor
-            </Link>
             <ThemeToggle />
           </nav>
         </header>

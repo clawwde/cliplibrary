@@ -41,6 +41,10 @@ export const ContentSection = ({ element, onChange }: ContentSectionProps) => {
     );
   }
 
+  if (element.type === 'composition') {
+    return null;
+  }
+
   if (element.type === 'shape') {
     return (
       <div className="flex flex-col gap-3">
