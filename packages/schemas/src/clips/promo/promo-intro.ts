@@ -24,7 +24,7 @@ export const promoIntroDefaults: PromoIntroProps = {
   showMark: true,
   markColor: '#2f5bff',
   wordmarkSize: 200,
-  pushIn: 0.05,
+  pushIn: 0.08,
   look: lightLook(),
   motion: defaultMotion({ exit: 'blur', exitFrames: 18 }),
 };

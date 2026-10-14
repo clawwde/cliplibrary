@@ -9,7 +9,7 @@ interface RevealWindow {
 }
 
 const revealState = (frame: number, { start, end }: RevealWindow, delay: number) => {
-  const enter = tween(frame, [start + delay, start + delay + 26], [0, 1], settle);
+  const enter = tween(frame, [start + delay, start + delay + 32], [0, 1], settle);
   const exit =
     end === undefined
       ? 0

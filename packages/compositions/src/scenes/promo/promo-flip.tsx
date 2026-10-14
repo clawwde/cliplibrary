@@ -73,18 +73,18 @@ export const PromoFlip = ({
   const { durationInFrames } = useVideoConfig();
   const frame = raw * motion.speed;
   const turn = Math.round(durationInFrames * turnAt);
-  const rise = tween(frame, [0, 50], [0, 1], settle);
+  const rise = tween(frame, [0, 66], [0, 1], settle);
   const rotateY =
-    tween(frame, [0, 50], [Math.PI + 2.4, Math.PI - 0.3], settle) +
+    tween(frame, [0, 66], [Math.PI + 1.1, Math.PI - 0.3], settle) +
     track(frame, [
-      [50, 0],
-      [turn - 18, 0.6],
-      [turn + 30, Math.PI + 0.05],
+      [66, 0],
+      [turn - 24, 0.6],
+      [turn + 40, Math.PI + 0.05],
       [durationInFrames, Math.PI + 0.52],
     ]);
   const y = (1 - rise) * -7.5 + Math.sin(frame / 30) * motion.float;
   const rotateX = 0.05 + (1 - rise) * 0.6;
-  const scale = phoneScale * (0.85 + rise * 0.15) * tween(frame, [50, durationInFrames], [1, 1.05]);
+  const scale = phoneScale * (0.85 + rise * 0.15) * tween(frame, [66, durationInFrames], [1, 1.05]);
   return (
     <TransitionFrame motion={motion}>
       <Backdrop look={look} />
