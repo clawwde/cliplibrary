@@ -54,16 +54,11 @@ export const POST = async (request: Request): Promise<Response> => {
   await writeFile(optionsPath, JSON.stringify(options), 'utf8');
   await writeFile(propsPath, JSON.stringify(body.values), 'utf8');
 
+  const renderCwd = join(root, 'apps', 'render');
   const child = spawn(
     'bun',
-    buildRenderArgs({
-      renderCwd: join(root, 'apps', 'render'),
-      clipId: body.clipId,
-      outDir,
-      optionsPath,
-      propsPath,
-    }),
-    { cwd: root },
+    buildRenderArgs({ renderCwd, clipId: body.clipId, outDir, optionsPath, propsPath }),
+    { cwd: renderCwd },
   );
 
   let buffer = '';

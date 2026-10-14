@@ -8,6 +8,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { buildCommitBody, DEFAULT_COMMIT_COMMAND } from '@/lib/commit-request';
+import { usePersistedState } from '@/lib/use-persisted-state';
 import { cn } from '@/lib/utils';
 
 type Phase = 'idle' | 'running' | 'done';
@@ -37,7 +38,10 @@ const CommitOutput = ({ result }: { result: CommitResult }) => {
 
 export const CommitBar = () => {
   const [open, setOpen] = useState(false);
-  const [command, setCommand] = useState(DEFAULT_COMMIT_COMMAND);
+  const [command, setCommand] = usePersistedState(
+    'cliplibrary-commit-command',
+    DEFAULT_COMMIT_COMMAND,
+  );
   const [message, setMessage] = useState('');
   const [phase, setPhase] = useState<Phase>('idle');
   const [result, setResult] = useState<CommitResult | null>(null);

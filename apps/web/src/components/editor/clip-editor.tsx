@@ -3,7 +3,7 @@
 import type { ControlDescriptor, PropsFile, VersionSnapshot } from '@cliplibrary/core';
 import type { ClipId, ClipMeta } from '@cliplibrary/schemas';
 import { Check, Download, Redo2, Save, Undo2 } from 'lucide-react';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { useUndoable, useUndoRedoKeys } from '@/lib/use-undoable';
 import { CommitBar } from './commit-bar';
@@ -99,6 +99,37 @@ export const ClipEditor = ({
   };
 
   const saving = saveState === 'saving';
+
+  const shortcuts = useRef<{ save: () => void; openExport: () => void }>({
+    save: () => undefined,
+    openExport: () => undefined,
+  });
+  shortcuts.current = {
+    save: () => {
+      if (dirty && !saving) {
+        save();
+      }
+    },
+    openExport: () => setExportOpen(true),
+  };
+  useEffect(() => {
+    const onKey = (event: KeyboardEvent) => {
+      if (!(event.metaKey || event.ctrlKey)) {
+        return;
+      }
+      const key = event.key.toLowerCase();
+      if (key === 's') {
+        event.preventDefault();
+        shortcuts.current.save();
+      } else if (key === 'e') {
+        event.preventDefault();
+        shortcuts.current.openExport();
+      }
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, []);
+
   const status = saving
     ? 'Saving…'
     : saveState === 'error'

@@ -2,7 +2,7 @@ import { describe, expect, it } from 'bun:test';
 import { buildRenderArgs } from '../src/lib/export-run';
 
 describe('buildRenderArgs', () => {
-  it('builds the render-one argv for a bun --cwd spawn', () => {
+  it('runs the render-one file directly so clip flags reach the script', () => {
     const argv = buildRenderArgs({
       renderCwd: '/repo/apps/render',
       clipId: 'orbit-cards',
@@ -11,10 +11,8 @@ describe('buildRenderArgs', () => {
       propsPath: '/tmp/props.json',
     });
     expect(argv).toEqual([
-      '--cwd',
-      '/repo/apps/render',
       'run',
-      'render-one',
+      'src/render-one.ts',
       '--clip',
       'orbit-cards',
       '--out',

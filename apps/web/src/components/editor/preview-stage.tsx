@@ -4,8 +4,9 @@ import { CLIP_COMPONENTS } from '@cliplibrary/compositions';
 import type { ClipId, ClipMeta } from '@cliplibrary/schemas';
 import { Maximize, Monitor, Smartphone, Square } from 'lucide-react';
 import dynamic from 'next/dynamic';
-import { type FC, useState } from 'react';
+import type { FC } from 'react';
 import { Skeleton } from '@/components/ui/skeleton';
+import { usePersistedState } from '@/lib/use-persisted-state';
 import { cn } from '@/lib/utils';
 
 const Player = dynamic(() => import('@remotion/player').then((mod) => mod.Player), {
@@ -31,7 +32,7 @@ export const PreviewStage = ({
   meta: ClipMeta;
   values: Record<string, unknown>;
 }) => {
-  const [device, setDevice] = useState<DeviceKey>('desktop');
+  const [device, setDevice] = usePersistedState<DeviceKey>('cliplibrary-device', 'desktop');
   const Component = CLIP_COMPONENTS[clipId] as FC<Record<string, unknown>>;
   const active = DEVICES.find((entry) => entry.key === device) ?? DEVICES[2];
 

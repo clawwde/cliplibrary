@@ -16,10 +16,8 @@ export interface RenderArgs {
 }
 
 export const buildRenderArgs = (args: RenderArgs): string[] => [
-  '--cwd',
-  args.renderCwd,
   'run',
-  'render-one',
+  'src/render-one.ts',
   '--clip',
   args.clipId,
   '--out',
