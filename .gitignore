@@ -22,3 +22,5 @@ apps/web/public/exports/*
 
 settings.local.json
 *.tsbuildinfo
+
+.claude

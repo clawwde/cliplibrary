@@ -54,11 +54,10 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
       const next = theme === 'system' ? systemTheme() : theme;
       setResolved(next);
       const root = document.documentElement;
-      if (theme === 'system') {
-        root.removeAttribute('data-theme');
-      } else {
-        root.setAttribute('data-theme', theme);
-      }
+      root.classList.add('theme-switching');
+      root.classList.toggle('dark', next === 'dark');
+      root.getBoundingClientRect();
+      window.setTimeout(() => root.classList.remove('theme-switching'), 0);
     };
     apply();
     const media = window.matchMedia('(prefers-color-scheme: dark)');
