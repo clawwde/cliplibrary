@@ -9,45 +9,32 @@ const MODES = [
 ];
 
 const SettingsPage = () => (
-  <div style={{ display: 'flex', flexDirection: 'column', gap: 24, maxWidth: 640 }}>
-    <div>
-      <h1 style={{ margin: 0, fontSize: 22 }}>Settings</h1>
-      <p style={{ color: 'var(--muted)', fontSize: 14 }}>
-        Choose how in-app AI editing authenticates. Inference is not wired up yet.
-      </p>
+  <div className="w-full px-4 py-8 sm:px-6 lg:px-10">
+    <div className="mx-auto flex max-w-2xl flex-col gap-6">
+      <div>
+        <h1 className="font-semibold text-xl tracking-tight">Settings</h1>
+        <p className="mt-1 text-muted-foreground text-sm">
+          Choose how in-app AI editing authenticates. Inference is not wired up yet.
+        </p>
+      </div>
+      <section className="flex flex-col gap-3">
+        <h2 className="text-[11px] text-muted-foreground uppercase tracking-wider">
+          Claude authentication
+        </h2>
+        {MODES.map((mode) => (
+          <label
+            key={mode.key}
+            className="flex cursor-not-allowed items-start gap-3 rounded-xl bg-card p-4 opacity-80"
+          >
+            <input type="radio" name="auth-mode" value={mode.key} disabled className="mt-1" />
+            <span className="flex flex-col gap-1">
+              <span className="font-semibold text-sm">{mode.label}</span>
+              <span className="text-muted-foreground text-xs">{mode.detail}</span>
+            </span>
+          </label>
+        ))}
+      </section>
     </div>
-    <section style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-      <h2
-        style={{
-          fontSize: 14,
-          textTransform: 'uppercase',
-          letterSpacing: 0.6,
-          color: 'var(--muted)',
-        }}
-      >
-        Claude authentication
-      </h2>
-      {MODES.map((mode) => (
-        <label
-          key={mode.key}
-          style={{
-            display: 'flex',
-            gap: 12,
-            alignItems: 'flex-start',
-            padding: 16,
-            border: '1px solid var(--border)',
-            borderRadius: 'var(--radius-lg)',
-            background: 'var(--panel)',
-          }}
-        >
-          <input type="radio" name="auth-mode" value={mode.key} disabled style={{ marginTop: 3 }} />
-          <span style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
-            <span style={{ fontWeight: 600, fontSize: 14 }}>{mode.label}</span>
-            <span style={{ color: 'var(--muted)', fontSize: 13 }}>{mode.detail}</span>
-          </span>
-        </label>
-      ))}
-    </section>
   </div>
 );
 

@@ -1,7 +1,16 @@
 'use client';
 
 import type { ControlDescriptor } from '@cliplibrary/core';
+import { Plus, Trash2 } from 'lucide-react';
 import type { ReactNode } from 'react';
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from '@/components/ui/accordion';
+import { Button } from '@/components/ui/button';
+import { Label } from '@/components/ui/label';
 import { getAtPath, setAtPath } from '@/lib/value-path';
 import { FieldControl } from './field-control';
 
@@ -47,134 +56,102 @@ const buildDefaultItem = (fields: ControlDescriptor[]): Values => {
   return item;
 };
 
-const Field = ({ label, children }: { label: string; children: ReactNode }) => (
-  <div style={{ display: 'flex', flexDirection: 'column', gap: 6, marginBottom: 14 }}>
-    <span
-      style={{
-        fontSize: 11,
-        color: 'var(--muted)',
-        textTransform: 'uppercase',
-        letterSpacing: 0.6,
-      }}
-    >
-      {label}
-    </span>
+const itemSummary = (fields: ControlDescriptor[], item: unknown): string => {
+  const first = fields.find((field) => field.kind === 'text' || field.kind === 'enum');
+  if (first === undefined) {
+    return '';
+  }
+  const raw = getAtPath(item, first.path);
+  return typeof raw === 'string' ? raw : '';
+};
+
+const FieldShell = ({ label, children }: { label: string; children: ReactNode }) => (
+  <div className="mb-3.5 flex flex-col gap-1.5">
+    <Label className="text-[11px] text-muted-foreground uppercase tracking-wide">{label}</Label>
     {children}
   </div>
 );
 
-const LeafRow = ({
-  descriptor,
-  values,
-  onChange,
-}: {
-  descriptor: LeafDescriptor;
-  values: Values;
-  onChange: (next: Values) => void;
-}) => (
-  <Field label={descriptor.label}>
+const LeafRow = ({ descriptor, values, onChange }: { descriptor: LeafDescriptor } & RowProps) => (
+  <FieldShell label={descriptor.label}>
     <FieldControl
       descriptor={descriptor}
       value={getAtPath(values, descriptor.path)}
       onChange={(next) => onChange(setAtPath(values, descriptor.path, next) as Values)}
     />
-  </Field>
+  </FieldShell>
 );
 
 const ArrayRow = ({
   descriptor,
   values,
   onChange,
-}: {
-  descriptor: Extract<ControlDescriptor, { kind: 'array' }>;
-  values: Values;
-  onChange: (next: Values) => void;
-}) => {
+}: { descriptor: Extract<ControlDescriptor, { kind: 'array' }> } & RowProps) => {
   const items = (getAtPath(values, descriptor.path) as unknown[] | undefined) ?? [];
   const canAdd = descriptor.max === null || items.length < descriptor.max;
   const canRemove = descriptor.min === null || items.length > descriptor.min;
   const replace = (next: unknown[]) => onChange(setAtPath(values, descriptor.path, next) as Values);
+  const leafFields = descriptor.item.filter(isLeaf);
 
   return (
-    <div style={{ marginBottom: 18 }}>
-      <div
-        style={{
-          fontSize: 11,
-          color: 'var(--muted)',
-          textTransform: 'uppercase',
-          letterSpacing: 0.6,
-          marginBottom: 10,
-        }}
-      >
+    <div className="mb-4">
+      <div className="mb-2 text-[11px] text-muted-foreground uppercase tracking-wide">
         {descriptor.label}
       </div>
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-        {items.map((_, index) => (
-          <div
+      <Accordion type="multiple" className="flex flex-col gap-1.5">
+        {items.map((item, index) => (
+          <AccordionItem
             key={index}
-            style={{
-              border: '1px solid var(--border)',
-              borderRadius: 10,
-              padding: 12,
-              background: 'var(--panel)',
-            }}
+            value={`${index}`}
+            className="overflow-hidden rounded-lg bg-muted/60"
           >
-            <div
-              style={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                marginBottom: 8,
-              }}
-            >
-              <span style={{ fontSize: 12, color: 'var(--muted)' }}>Item {index + 1}</span>
+            <AccordionTrigger className="px-3 py-2.5 text-sm hover:no-underline">
+              <span className="flex min-w-0 items-center gap-2">
+                <span className="text-muted-foreground">{index + 1}</span>
+                <span className="truncate">{itemSummary(leafFields, item) || 'Item'}</span>
+              </span>
+            </AccordionTrigger>
+            <AccordionContent className="px-3 pb-3">
               {canRemove ? (
-                <button
-                  type="button"
-                  onClick={() => replace(items.filter((_item, position) => position !== index))}
-                  style={{
-                    border: 'none',
-                    background: 'none',
-                    color: 'var(--danger)',
-                    fontSize: 12,
-                  }}
-                >
-                  Remove
-                </button>
+                <div className="mb-2 flex justify-end">
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    className="h-7 text-muted-foreground hover:text-destructive"
+                    onClick={() => replace(items.filter((_item, position) => position !== index))}
+                  >
+                    <Trash2 className="size-3.5" />
+                    Remove
+                  </Button>
+                </div>
               ) : null}
-            </div>
-            {descriptor.item.filter(isLeaf).map((field) => {
-              const path = [...descriptor.path, String(index), ...field.path];
-              return (
-                <Field key={field.path.join('.')} label={field.label}>
-                  <FieldControl
-                    descriptor={field}
-                    value={getAtPath(values, path)}
-                    onChange={(next) => onChange(setAtPath(values, path, next) as Values)}
-                  />
-                </Field>
-              );
-            })}
-          </div>
+              {leafFields.map((field) => {
+                const path = [...descriptor.path, String(index), ...field.path];
+                return (
+                  <FieldShell key={field.path.join('.')} label={field.label}>
+                    <FieldControl
+                      descriptor={field}
+                      value={getAtPath(values, path)}
+                      onChange={(next) => onChange(setAtPath(values, path, next) as Values)}
+                    />
+                  </FieldShell>
+                );
+              })}
+            </AccordionContent>
+          </AccordionItem>
         ))}
-      </div>
+      </Accordion>
       {canAdd ? (
-        <button
+        <Button
           type="button"
+          variant="ghost"
+          className="mt-2 w-full bg-muted/60 text-muted-foreground hover:text-foreground"
           onClick={() => replace([...items, buildDefaultItem(descriptor.item)])}
-          style={{
-            marginTop: 10,
-            width: '100%',
-            padding: '8px 0',
-            borderRadius: 8,
-            border: '1px dashed var(--border-strong)',
-            background: 'none',
-            color: 'var(--muted)',
-            fontSize: 13,
-          }}
         >
-          Add item
-        </button>
+          <Plus className="size-4" />
+          Add {descriptor.label.toLowerCase().replace(/s$/, '')}
+        </Button>
       ) : null}
     </div>
   );
@@ -186,7 +163,7 @@ const ControlRow = ({ descriptor, values, onChange }: RowProps) => {
   }
   if (descriptor.kind === 'object') {
     return (
-      <div style={{ display: 'flex', flexDirection: 'column' }}>
+      <div className="flex flex-col">
         {descriptor.fields.map((field) => (
           <ControlRow
             key={field.path.join('.')}
@@ -210,7 +187,7 @@ export const PropertiesPanel = ({
   values: Values;
   onChange: (next: Values) => void;
 }) => (
-  <div style={{ display: 'flex', flexDirection: 'column' }}>
+  <div className="flex flex-col">
     {descriptors.map((descriptor) => (
       <ControlRow
         key={descriptor.path.join('.')}

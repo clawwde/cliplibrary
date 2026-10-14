@@ -1,78 +1,39 @@
 'use client';
 
+import { Sparkles } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Textarea } from '@/components/ui/textarea';
+
 const EXAMPLES = [
-  'Create animated text that says "Hello World" with a spring animation',
   'Make the headline larger and add a glow',
-  'Change the background to dark blue',
+  'Change the background to deep blue',
   'Slow the animation down and stagger the cards',
+  'Use a bouncier easing on the entrance',
 ];
 
 export const ChatPanel = () => (
-  <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
-    <div style={{ flex: 1, overflowY: 'auto', padding: 16 }}>
-      <div
-        style={{
-          background: 'var(--panel-raised)',
-          border: '1px solid var(--border)',
-          borderRadius: 12,
-          padding: 14,
-          fontSize: 13,
-          lineHeight: 1.55,
-          color: 'var(--muted)',
-        }}
-      >
-        <p style={{ marginTop: 0 }}>
-          Hi! I can help you create and modify animated scenes. Describe what you want, like:
+  <div className="flex h-full flex-col">
+    <div className="flex-1 overflow-y-auto p-4">
+      <div className="rounded-xl bg-muted/60 p-3.5 text-muted-foreground text-xs leading-relaxed">
+        <p className="mt-0 flex items-center gap-1.5 font-medium text-foreground">
+          <Sparkles className="size-3.5" />
+          Edit with AI
         </p>
-        <ul
-          style={{ margin: 0, paddingLeft: 18, display: 'flex', flexDirection: 'column', gap: 6 }}
-        >
+        <p>Describe a change to this scene, like:</p>
+        <ul className="mt-1 flex list-disc flex-col gap-1 pl-4">
           {EXAMPLES.map((example) => (
             <li key={example}>{example}</li>
           ))}
         </ul>
       </div>
     </div>
-    <div style={{ borderTop: '1px solid var(--border)', padding: 12 }}>
-      <textarea
-        disabled
-        placeholder="Describe changes to this scene..."
-        rows={2}
-        style={{
-          width: '100%',
-          padding: 10,
-          borderRadius: 8,
-          border: '1px solid var(--border)',
-          background: 'var(--panel)',
-          color: 'var(--text)',
-          fontFamily: 'inherit',
-          fontSize: 13,
-          resize: 'none',
-        }}
-      />
-      <div
-        style={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          marginTop: 8,
-        }}
-      >
-        <span style={{ fontSize: 11, color: 'var(--muted)' }}>AI editing coming soon</span>
-        <button
-          type="button"
-          disabled
-          style={{
-            padding: '6px 14px',
-            borderRadius: 8,
-            border: 'none',
-            background: 'var(--border)',
-            color: 'var(--muted)',
-            fontSize: 13,
-          }}
-        >
+    <div className="p-3">
+      <Textarea disabled placeholder="Describe changes to this scene..." rows={2} />
+      <div className="mt-2 flex items-center justify-between">
+        <span className="text-[11px] text-muted-foreground">AI editing coming soon</span>
+        <Button type="button" size="sm" disabled>
           Update
-        </button>
+        </Button>
       </div>
     </div>
   </div>

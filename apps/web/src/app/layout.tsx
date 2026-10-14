@@ -13,7 +13,7 @@ export const metadata: Metadata = {
   description: 'A library of Remotion animation clips with a deep, schema-driven editor.',
 };
 
-const themeBootstrap = `(function(){try{var t=localStorage.getItem('cliplibrary-theme');if(t==='dark'||t==='light'){document.documentElement.dataset.theme=t;}}catch(e){}})();`;
+const themeBootstrap = `(function(){try{var t=localStorage.getItem('cliplibrary-theme');var d=t==='dark'||((t===null||t==='system')&&window.matchMedia('(prefers-color-scheme: dark)').matches);if(d){document.documentElement.classList.add('dark');}}catch(e){}})();`;
 
 const RootLayout = ({ children }: { children: ReactNode }) => (
   <html lang="en" className={inter.variable} suppressHydrationWarning>
@@ -21,46 +21,21 @@ const RootLayout = ({ children }: { children: ReactNode }) => (
       {/* biome-ignore lint/security/noDangerouslySetInnerHtml: static, inline theme bootstrap to avoid a flash of the wrong theme */}
       <script dangerouslySetInnerHTML={{ __html: themeBootstrap }} />
     </head>
-    <body>
+    <body className="flex min-h-screen flex-col bg-background text-foreground antialiased">
       <ThemeProvider>
-        <header
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            gap: 16,
-            padding: '16px 24px',
-            borderBottom: '1px solid var(--border)',
-            position: 'sticky',
-            top: 0,
-            background: 'color-mix(in srgb, var(--bg) 88%, transparent)',
-            backdropFilter: 'blur(8px)',
-            zIndex: 10,
-          }}
-        >
-          <Link
-            href="/"
-            style={{ display: 'flex', alignItems: 'center', gap: 10, fontWeight: 600 }}
-          >
-            <span
-              style={{
-                width: 22,
-                height: 22,
-                borderRadius: 7,
-                background: 'var(--accent)',
-                display: 'inline-block',
-              }}
-            />
+        <header className="sticky top-0 z-30 flex h-14 items-center justify-between gap-4 bg-background/70 px-5 backdrop-blur-md">
+          <Link href="/" className="flex items-center gap-2 font-semibold tracking-tight">
+            <span className="size-4 rounded-[5px] bg-foreground" />
             clip library
           </Link>
-          <nav style={{ display: 'flex', alignItems: 'center', gap: 16, color: 'var(--muted)' }}>
-            <Link href="/settings">Settings</Link>
+          <nav className="flex items-center gap-2 text-sm text-muted-foreground">
+            <Link href="/settings" className="px-2 py-1 transition-colors hover:text-foreground">
+              Settings
+            </Link>
             <ThemeToggle />
           </nav>
         </header>
-        <main style={{ maxWidth: 1200, margin: '0 auto', padding: '32px 24px 80px' }}>
-          {children}
-        </main>
+        <main className="flex min-h-0 flex-1 flex-col">{children}</main>
       </ThemeProvider>
     </body>
   </html>

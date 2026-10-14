@@ -4,6 +4,7 @@
   "files": {
     "includes": [
       "**",
+      "!**/.claude",
       "!**/node_modules",
       "!**/.next",
       "!**/.turbo",
@@ -160,6 +161,19 @@
         "rules": {
           "suspicious": { "noArrayIndexKey": "off" },
           "a11y": { "useMediaCaption": "off" }
+        }
+      }
+    },
+    {
+      "includes": ["apps/web/src/components/ui/**"],
+      "linter": {
+        "rules": {
+          "style": {
+            "noNestedTernary": "off",
+            "useNamingConvention": "off",
+            "noParameterAssign": "off"
+          },
+          "complexity": { "noExcessiveCognitiveComplexity": "off" }
         }
       }
     },

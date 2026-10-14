@@ -1,0 +1,21 @@
+{
+  "name": "@cliplibrary/render",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "render": "bun run src/render-all.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@cliplibrary/compositions": "workspace:*",
+    "@cliplibrary/core": "workspace:*",
+    "@cliplibrary/schemas": "workspace:*",
+    "@remotion/bundler": "4.0.534",
+    "@remotion/renderer": "4.0.534"
+  },
+  "devDependencies": {
+    "@cliplibrary/tsconfig": "workspace:*",
+    "typescript": "5.9.3"
+  }
+}
