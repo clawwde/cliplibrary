@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'bun:test';
 import { z } from 'zod';
 import {
+  APP_PROMO_SEQUENCE,
   barChartGrowSchema,
   CLIP_CATEGORY_IDS,
   CLIP_DEFAULTS,
@@ -202,7 +203,7 @@ describe('pluggable module architecture', () => {
     expect(categoryOf('typewriter')).toBe('typography');
     expect(categoryOf('count-up')).toBe('data');
     expect(categoryOf('image-showcase')).toBe('media');
-    expect(categoryOf('promo-hero')).toBe('devices');
+    expect(categoryOf('phone-spin-in')).toBe('devices');
     expect(categoryOf('app-promo')).toBe('sequences');
   });
 });
@@ -307,15 +308,21 @@ describe('video media control', () => {
 describe('promo clips', () => {
   const PROMO_IDS: ClipId[] = [
     'app-promo',
-    'promo-intro',
-    'promo-hero',
-    'promo-flip',
-    'promo-trio',
-    'promo-features',
-    'promo-scroll',
-    'promo-wall',
-    'promo-duo',
-    'promo-outro',
+    'phone-spin-in',
+    'phone-turnaround',
+    'phone-fan',
+    'phone-swap',
+    'phone-scroll',
+    'phone-wall',
+    'phone-pair',
+    'floating-cards',
+    'headline-reveal',
+    'feature-callouts',
+    'detail-list',
+    'brand-reveal',
+    'cta-end-card',
+    'studio-backdrop',
+    'scene-transition',
   ];
 
   it('validates every promo default against its schema', () => {
@@ -325,8 +332,8 @@ describe('promo clips', () => {
   });
 
   it('rejects an unknown phone screen and finish', () => {
-    const defaults = getClipDefaults('promo-hero');
-    const schema = getClipSchema('promo-hero');
+    const defaults = getClipDefaults('phone-spin-in');
+    const schema = getClipSchema('phone-spin-in');
     expect(
       schema.safeParse({ ...defaults, phone: { ...defaults.phone, screen: 'nope' } }).success,
     ).toBe(false);
@@ -335,10 +342,29 @@ describe('promo clips', () => {
     ).toBe(false);
   });
 
-  it('caps the flip detail list at four entries', () => {
-    const defaults = getClipDefaults('promo-flip');
-    const details = ['a', 'b', 'c', 'd', 'e'];
-    expect(getClipSchema('promo-flip').safeParse({ ...defaults, details }).success).toBe(false);
+  it('caps the detail list at six entries', () => {
+    const defaults = getClipDefaults('detail-list');
+    const items = ['a', 'b', 'c', 'd', 'e', 'f', 'g'];
+    expect(getClipSchema('detail-list').safeParse({ ...defaults, items }).success).toBe(false);
+  });
+
+  it('builds every app promo layer from props its clip schema accepts', () => {
+    for (const entry of APP_PROMO_SEQUENCE.entries) {
+      const result = getClipSchema(entry.clipId).safeParse(entry.props);
+      expect(result.success).toBe(true);
+    }
+  });
+
+  it('keeps phone swap and its feature callouts on the same beats', () => {
+    const swap = APP_PROMO_SEQUENCE.entries.find((entry) => entry.clipId === 'phone-swap');
+    const callouts = APP_PROMO_SEQUENCE.entries.find(
+      (entry) => entry.clipId === 'feature-callouts',
+    );
+    expect(swap).toBeDefined();
+    expect(callouts).toBeDefined();
+    const end = (item: { from: number; durationInFrames: number } | undefined) =>
+      (item?.from ?? 0) + (item?.durationInFrames ?? 0);
+    expect(end(swap)).toBe(end(callouts));
   });
 });
 

@@ -9,31 +9,41 @@ import {
 import type { FC } from 'react';
 import { AbsoluteFill, Composition, Sequence } from 'remotion';
 import type { SceneModule } from '../../scene-module';
-import { PromoIntro } from '../brand/promo-intro';
-import { PromoOutro } from '../brand/promo-outro';
-import { PromoDuo } from '../devices/promo-duo';
-import { PromoFeatures } from '../devices/promo-features';
-import { PromoFlip } from '../devices/promo-flip';
-import { PromoHero } from '../devices/promo-hero';
-import { PromoScroll } from '../devices/promo-scroll';
-import { PromoTrio } from '../devices/promo-trio';
-import { PromoWall } from '../devices/promo-wall';
+import { StudioBackdrop } from '../backgrounds/studio-backdrop';
+import { BrandReveal } from '../brand/brand-reveal';
+import { CtaEndCard } from '../brand/cta-end-card';
+import { PhoneFan } from '../devices/phone-fan';
+import { PhonePair } from '../devices/phone-pair';
+import { PhoneScroll } from '../devices/phone-scroll';
+import { PhoneSpinIn } from '../devices/phone-spin-in';
+import { PhoneSwap } from '../devices/phone-swap';
+import { PhoneTurnaround } from '../devices/phone-turnaround';
+import { PhoneWall } from '../devices/phone-wall';
+import { FloatingCards } from '../overlays/floating-cards';
+import { DetailList } from '../typography/detail-list';
+import { FeatureCallouts } from '../typography/feature-callouts';
+import { HeadlineReveal } from '../typography/headline-reveal';
 
 type AnyScene = FC<Record<string, unknown>>;
 
 const SCENE_COMPONENTS: Partial<Record<ClipId, AnyScene>> = {
-  'promo-intro': PromoIntro as unknown as AnyScene,
-  'promo-hero': PromoHero as unknown as AnyScene,
-  'promo-flip': PromoFlip as unknown as AnyScene,
-  'promo-trio': PromoTrio as unknown as AnyScene,
-  'promo-features': PromoFeatures as unknown as AnyScene,
-  'promo-scroll': PromoScroll as unknown as AnyScene,
-  'promo-wall': PromoWall as unknown as AnyScene,
-  'promo-duo': PromoDuo as unknown as AnyScene,
-  'promo-outro': PromoOutro as unknown as AnyScene,
+  'studio-backdrop': StudioBackdrop as unknown as AnyScene,
+  'brand-reveal': BrandReveal as unknown as AnyScene,
+  'cta-end-card': CtaEndCard as unknown as AnyScene,
+  'phone-fan': PhoneFan as unknown as AnyScene,
+  'phone-pair': PhonePair as unknown as AnyScene,
+  'phone-scroll': PhoneScroll as unknown as AnyScene,
+  'phone-spin-in': PhoneSpinIn as unknown as AnyScene,
+  'phone-swap': PhoneSwap as unknown as AnyScene,
+  'phone-turnaround': PhoneTurnaround as unknown as AnyScene,
+  'phone-wall': PhoneWall as unknown as AnyScene,
+  'floating-cards': FloatingCards as unknown as AnyScene,
+  'detail-list': DetailList as unknown as AnyScene,
+  'feature-callouts': FeatureCallouts as unknown as AnyScene,
+  'headline-reveal': HeadlineReveal as unknown as AnyScene,
 };
 
-const BRANDED: ReadonlySet<ClipId> = new Set(['promo-intro', 'promo-outro']);
+const BRANDED: ReadonlySet<ClipId> = new Set(['brand-reveal', 'cta-end-card']);
 
 const isRecord = (value: unknown): value is Record<string, unknown> =>
   typeof value === 'object' && value !== null && !Array.isArray(value);
@@ -67,25 +77,29 @@ const brandScene = (
     : branded;
 };
 
+const PAINT_ORDER = [...APP_PROMO_SEQUENCE.tracks].reverse();
+
 export const AppPromo = (brand: AppPromoProps) => (
   <AbsoluteFill style={{ background: '#0a0a0a' }}>
-    {[1, 0].flatMap((lane) =>
-      APP_PROMO_SEQUENCE.filter((entry) => entry.lane === lane).map((entry) => {
-        const Scene = SCENE_COMPONENTS[entry.clipId];
-        if (Scene === undefined) {
-          return null;
-        }
-        return (
-          <Sequence
-            key={`${entry.clipId}:${entry.from}`}
-            from={entry.from}
-            durationInFrames={entry.durationInFrames}
-            name={entry.clipId}
-          >
-            <Scene {...brandScene(entry.clipId, entry.props, brand)} />
-          </Sequence>
-        );
-      }),
+    {PAINT_ORDER.flatMap((track) =>
+      APP_PROMO_SEQUENCE.entries
+        .filter((entry) => entry.track === track)
+        .map((entry) => {
+          const Scene = SCENE_COMPONENTS[entry.clipId];
+          if (Scene === undefined) {
+            return null;
+          }
+          return (
+            <Sequence
+              key={`${entry.clipId}:${entry.track}:${entry.from}`}
+              from={entry.from}
+              durationInFrames={entry.durationInFrames}
+              name={`${entry.track} / ${entry.clipId}`}
+            >
+              <Scene {...brandScene(entry.clipId, entry.props, brand)} />
+            </Sequence>
+          );
+        }),
     )}
   </AbsoluteFill>
 );

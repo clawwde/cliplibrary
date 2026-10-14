@@ -1,4 +1,5 @@
 import type { SceneModule } from '../scene-module';
+import { backgroundsScenes } from './backgrounds';
 import { brandScenes } from './brand';
 import { dataScenes } from './data';
 import { devicesScenes } from './devices';
@@ -15,6 +16,7 @@ export const CLIP_SCENES: SceneModule[] = [
   ...devicesScenes,
   ...overlaysScenes,
   ...brandScenes,
+  ...backgroundsScenes,
   ...transitionsScenes,
   ...sequencesScenes,
 ];

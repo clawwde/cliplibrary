@@ -1,28 +1,37 @@
 import type { ClipModule } from '../../registry';
-import { promoDuoDefaults, promoDuoMeta, promoDuoSchema } from './promo-duo';
-import { promoFeaturesDefaults, promoFeaturesMeta, promoFeaturesSchema } from './promo-features';
-import { promoFlipDefaults, promoFlipMeta, promoFlipSchema } from './promo-flip';
-import { promoHeroDefaults, promoHeroMeta, promoHeroSchema } from './promo-hero';
-import { promoScrollDefaults, promoScrollMeta, promoScrollSchema } from './promo-scroll';
-import { promoTrioDefaults, promoTrioMeta, promoTrioSchema } from './promo-trio';
-import { promoWallDefaults, promoWallMeta, promoWallSchema } from './promo-wall';
+import { phoneFanDefaults, phoneFanMeta, phoneFanSchema } from './phone-fan';
+import { phonePairDefaults, phonePairMeta, phonePairSchema } from './phone-pair';
+import { phoneScrollDefaults, phoneScrollMeta, phoneScrollSchema } from './phone-scroll';
+import { phoneSpinInDefaults, phoneSpinInMeta, phoneSpinInSchema } from './phone-spin-in';
+import { phoneSwapDefaults, phoneSwapMeta, phoneSwapSchema } from './phone-swap';
+import {
+  phoneTurnaroundDefaults,
+  phoneTurnaroundMeta,
+  phoneTurnaroundSchema,
+} from './phone-turnaround';
+import { phoneWallDefaults, phoneWallMeta, phoneWallSchema } from './phone-wall';
 
 export const devicesClips: ClipModule[] = [
-  { id: 'promo-hero', schema: promoHeroSchema, defaults: promoHeroDefaults, meta: promoHeroMeta },
-  { id: 'promo-flip', schema: promoFlipSchema, defaults: promoFlipDefaults, meta: promoFlipMeta },
-  { id: 'promo-trio', schema: promoTrioSchema, defaults: promoTrioDefaults, meta: promoTrioMeta },
+  { id: 'phone-fan', schema: phoneFanSchema, defaults: phoneFanDefaults, meta: phoneFanMeta },
+  { id: 'phone-pair', schema: phonePairSchema, defaults: phonePairDefaults, meta: phonePairMeta },
   {
-    id: 'promo-features',
-    schema: promoFeaturesSchema,
-    defaults: promoFeaturesDefaults,
-    meta: promoFeaturesMeta,
+    id: 'phone-scroll',
+    schema: phoneScrollSchema,
+    defaults: phoneScrollDefaults,
+    meta: phoneScrollMeta,
   },
   {
-    id: 'promo-scroll',
-    schema: promoScrollSchema,
-    defaults: promoScrollDefaults,
-    meta: promoScrollMeta,
+    id: 'phone-spin-in',
+    schema: phoneSpinInSchema,
+    defaults: phoneSpinInDefaults,
+    meta: phoneSpinInMeta,
   },
-  { id: 'promo-wall', schema: promoWallSchema, defaults: promoWallDefaults, meta: promoWallMeta },
-  { id: 'promo-duo', schema: promoDuoSchema, defaults: promoDuoDefaults, meta: promoDuoMeta },
+  { id: 'phone-swap', schema: phoneSwapSchema, defaults: phoneSwapDefaults, meta: phoneSwapMeta },
+  {
+    id: 'phone-turnaround',
+    schema: phoneTurnaroundSchema,
+    defaults: phoneTurnaroundDefaults,
+    meta: phoneTurnaroundMeta,
+  },
+  { id: 'phone-wall', schema: phoneWallSchema, defaults: phoneWallDefaults, meta: phoneWallMeta },
 ];

@@ -1,18 +1,18 @@
 import type { ClipModule } from '../../registry';
-import { promoIntroDefaults, promoIntroMeta, promoIntroSchema } from './promo-intro';
-import { promoOutroDefaults, promoOutroMeta, promoOutroSchema } from './promo-outro';
+import { brandRevealDefaults, brandRevealMeta, brandRevealSchema } from './brand-reveal';
+import { ctaEndCardDefaults, ctaEndCardMeta, ctaEndCardSchema } from './cta-end-card';
 
 export const brandClips: ClipModule[] = [
   {
-    id: 'promo-intro',
-    schema: promoIntroSchema,
-    defaults: promoIntroDefaults,
-    meta: promoIntroMeta,
+    id: 'brand-reveal',
+    schema: brandRevealSchema,
+    defaults: brandRevealDefaults,
+    meta: brandRevealMeta,
   },
   {
-    id: 'promo-outro',
-    schema: promoOutroSchema,
-    defaults: promoOutroDefaults,
-    meta: promoOutroMeta,
+    id: 'cta-end-card',
+    schema: ctaEndCardSchema,
+    defaults: ctaEndCardDefaults,
+    meta: ctaEndCardMeta,
   },
 ];
