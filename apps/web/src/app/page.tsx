@@ -19,6 +19,7 @@ const HomePage = async () => {
             key={clip.meta.id}
             meta={clip.meta}
             values={clip.props.values as Record<string, unknown>}
+            hasVideo={clip.hasVideo}
           />
         ))}
       </div>
