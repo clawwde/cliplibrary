@@ -2,8 +2,10 @@ import { describe, expect, it } from 'bun:test';
 import {
   buildTicks,
   clampPxPerFrame,
+  fitPxPerFrame,
   formatSeconds,
   frameToPx,
+  LABEL_WIDTH,
   MAX_PX_PER_FRAME,
   MIN_PX_PER_FRAME,
   pxToFrame,
@@ -20,6 +22,16 @@ describe('timeline geometry', () => {
     expect(clampPxPerFrame(0)).toBe(MIN_PX_PER_FRAME);
     expect(clampPxPerFrame(1000)).toBe(MAX_PX_PER_FRAME);
     expect(clampPxPerFrame(6)).toBe(6);
+  });
+
+  it('fits a long project into the viewport', () => {
+    const fitted = fitPxPerFrame(1500, 1600);
+    expect(frameToPx(1500, fitted) + LABEL_WIDTH).toBeLessThanOrEqual(1600);
+    expect(fitted).toBeGreaterThan(MIN_PX_PER_FRAME);
+  });
+
+  it('never fits below the minimum zoom', () => {
+    expect(fitPxPerFrame(1_000_000, 1600)).toBe(MIN_PX_PER_FRAME);
   });
 
   it('builds ticks spanning the duration', () => {

@@ -8,12 +8,10 @@ import {
   useRef,
   useState,
 } from 'react';
-import { frameToPx, pxToFrame } from '@/lib/timeline-geometry';
+import { frameToPx, LABEL_WIDTH, pxToFrame } from '@/lib/timeline-geometry';
 import type { BlockDragMode } from './element-block';
 import { TimelineRuler } from './timeline-ruler';
 import { TrackRow } from './track-row';
-
-const LABEL_WIDTH = 128;
 
 interface DragState {
   elementId: string;

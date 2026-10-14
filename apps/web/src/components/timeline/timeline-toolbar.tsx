@@ -1,9 +1,19 @@
 'use client';
 
 import type { ElementType } from '@cliplibrary/project';
-import { Download, Layers, Pause, Play, Redo2, Undo2, ZoomIn, ZoomOut } from 'lucide-react';
+import {
+  Download,
+  Layers,
+  Maximize2,
+  Pause,
+  Play,
+  Redo2,
+  Undo2,
+  ZoomIn,
+  ZoomOut,
+} from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { MAX_PX_PER_FRAME, MIN_PX_PER_FRAME } from '@/lib/timeline-geometry';
+import { MAX_PX_PER_FRAME, MIN_PX_PER_FRAME, ZOOM_STEP } from '@/lib/timeline-geometry';
 import type { ExportState } from '@/lib/use-project-export';
 
 interface AnimationOption {
@@ -23,6 +33,7 @@ interface TimelineToolbarProps {
   onAddAnimation: (clipId: string) => void;
   onAddTrack: () => void;
   onZoom: (pxPerFrame: number) => void;
+  onFit: () => void;
   onTogglePlay: () => void;
   onUndo: () => void;
   onRedo: () => void;
@@ -50,6 +61,7 @@ export const TimelineToolbar = ({
   onAddAnimation,
   onAddTrack,
   onZoom,
+  onFit,
   onTogglePlay,
   onUndo,
   onRedo,
@@ -105,7 +117,7 @@ export const TimelineToolbar = ({
       variant="ghost"
       size="icon"
       aria-label="Zoom out"
-      onClick={() => onZoom(pxPerFrame - 1)}
+      onClick={() => onZoom(pxPerFrame / ZOOM_STEP)}
       disabled={pxPerFrame <= MIN_PX_PER_FRAME}
     >
       <ZoomOut className="size-4" />
@@ -115,10 +127,13 @@ export const TimelineToolbar = ({
       variant="ghost"
       size="icon"
       aria-label="Zoom in"
-      onClick={() => onZoom(pxPerFrame + 1)}
+      onClick={() => onZoom(pxPerFrame * ZOOM_STEP)}
       disabled={pxPerFrame >= MAX_PX_PER_FRAME}
     >
       <ZoomIn className="size-4" />
+    </Button>
+    <Button type="button" variant="ghost" size="icon" aria-label="Fit timeline" onClick={onFit}>
+      <Maximize2 className="size-4" />
     </Button>
     <div className="ml-auto flex items-center gap-1">
       <Button
