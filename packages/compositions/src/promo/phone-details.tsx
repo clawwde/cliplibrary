@@ -1,5 +1,13 @@
 import { RoundedBox } from '@react-three/drei';
-import { capsuleGeometry, PHONE, plateauGeometry } from './phone-geometry';
+import {
+  capsuleGeometry,
+  GLASS_SURFACE,
+  LENS_DOME_OFFSET,
+  lensDomeGeometry,
+  lensHousingGeometry,
+  PHONE,
+  plateauGeometry,
+} from './phone-geometry';
 import type { PhoneMaterials } from './phone-materials';
 
 const LENSES: [number, number][] = [
@@ -9,38 +17,51 @@ const LENSES: [number, number][] = [
 ];
 
 const Lens = ({ x, y, materials }: { x: number; y: number; materials: PhoneMaterials }) => (
-  <group position={[x, y, 0.02]} rotation={[Math.PI / 2, 0, 0]}>
-    <mesh position={[0, 0.018, 0]} material={materials.ring} castShadow>
-      <cylinderGeometry args={[0.118, 0.122, 0.036, 64]} />
+  <group position={[x, y, PHONE.plateauDepth]} rotation={[Math.PI / 2, 0, 0]}>
+    <mesh geometry={lensHousingGeometry()} material={materials.ring} castShadow />
+    <mesh position={[0, 0.02, 0]} material={materials.blackGloss}>
+      <cylinderGeometry args={[0.076, 0.076, 0.018, 64]} />
     </mesh>
-    <mesh position={[0, 0.0365, 0]} material={materials.blackGloss}>
-      <cylinderGeometry args={[0.1, 0.1, 0.002, 64]} />
+    <mesh
+      position={[0, LENS_DOME_OFFSET, 0]}
+      geometry={lensDomeGeometry()}
+      material={materials.lensGlass}
+    />
+    <mesh position={[0, 0.0405, 0]} rotation={[-Math.PI / 2, 0, 0]} material={materials.lensCore}>
+      <ringGeometry args={[0.03, 0.046, 64]} />
     </mesh>
-    <mesh position={[0, 0.038, 0]} material={materials.lensGlass}>
-      <cylinderGeometry args={[0.074, 0.074, 0.002, 64]} />
-    </mesh>
-    <mesh position={[0, 0.0395, 0]} material={materials.blackGloss}>
-      <cylinderGeometry args={[0.028, 0.028, 0.001, 32]} />
+    <mesh position={[0, 0.0408, 0]} rotation={[-Math.PI / 2, 0, 0]} material={materials.blackGloss}>
+      <circleGeometry args={[0.018, 48]} />
     </mesh>
   </group>
 );
 
 export const CameraPlateau = ({ materials }: { materials: PhoneMaterials }) => (
   <group
-    position={[PHONE.width / 2 - 0.39, PHONE.height / 2 - 0.39, -PHONE.depth / 2]}
+    position={[PHONE.width / 2 - 0.4, PHONE.height / 2 - 0.4, -GLASS_SURFACE]}
     rotation={[0, Math.PI, 0]}
   >
-    <mesh position={[0, 0, 0.012]} geometry={plateauGeometry()} material={materials.plateau} />
+    <mesh
+      position={[0, 0, PHONE.plateauDepth / 2]}
+      geometry={plateauGeometry()}
+      material={materials.plateau}
+      castShadow
+    />
     {LENSES.map(([x, y]) => (
       <Lens key={`${x}:${y}`} x={x} y={y} materials={materials} />
     ))}
-    <mesh position={[0.142, 0.205, 0.0335]} material={materials.flash}>
-      <circleGeometry args={[0.036, 40]} />
+    <group position={[0.142, 0.205, PHONE.plateauDepth + 0.0005]}>
+      <mesh material={materials.ring}>
+        <ringGeometry args={[0.034, 0.042, 48]} />
+      </mesh>
+      <mesh material={materials.flash}>
+        <circleGeometry args={[0.034, 48]} />
+      </mesh>
+    </group>
+    <mesh position={[0.142, -0.205, PHONE.plateauDepth + 0.0005]} material={materials.blackGloss}>
+      <circleGeometry args={[0.032, 48]} />
     </mesh>
-    <mesh position={[0.142, -0.205, 0.0335]} material={materials.blackGloss}>
-      <circleGeometry args={[0.03, 40]} />
-    </mesh>
-    <mesh position={[0.02, 0.0, 0.0335]} material={materials.hole}>
+    <mesh position={[0.02, 0, PHONE.plateauDepth + 0.0005]} material={materials.hole}>
       <circleGeometry args={[0.008, 16]} />
     </mesh>
   </group>
@@ -58,10 +79,10 @@ export const SideButtons = ({ materials }: { materials: PhoneMaterials }) => (
     {SIDE_BUTTONS.map((button) => (
       <RoundedBox
         key={`${button.side}:${button.y}`}
-        args={[0.024, button.length, 0.052]}
-        radius={0.01}
-        smoothness={4}
-        position={[button.side * (PHONE.width / 2 + 0.004), button.y, 0]}
+        args={[0.026, button.length, 0.056]}
+        radius={0.011}
+        smoothness={5}
+        position={[button.side * (PHONE.width / 2 + 0.005), button.y, 0]}
         material={materials.frame}
         castShadow
       />
@@ -81,7 +102,7 @@ export const AntennaBands = ({ materials }: { materials: PhoneMaterials }) => (
           rotation={[0, (side * Math.PI) / 2, 0]}
           material={materials.antenna}
         >
-          <planeGeometry args={[PHONE.depth - PHONE.edge * 2, 0.022]} />
+          <planeGeometry args={[PHONE.depth - PHONE.edge * 2, 0.02]} />
         </mesh>
       )),
     )}

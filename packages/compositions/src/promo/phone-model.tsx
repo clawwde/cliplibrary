@@ -4,9 +4,10 @@ import * as THREE from 'three';
 import { AntennaBands, BottomPorts, CameraPlateau, SideButtons } from './phone-details';
 import {
   bodyGeometry,
-  frontGlassGeometry,
+  GLASS_SURFACE,
+  glassFaceGeometry,
+  glassSlabGeometry,
   PHONE,
-  roundedPlane,
   screenGeometry,
 } from './phone-geometry';
 import { phoneMaterials } from './phone-materials';
@@ -39,7 +40,7 @@ const ScreenSurface = ({
   const map = useScreenMap(phone, scroll);
   const tint = useMemo(() => new THREE.Color(brightness, brightness, brightness), [brightness]);
   return (
-    <mesh position={[0, 0, PHONE.depth / 2 + 0.0012]} geometry={screenGeometry()}>
+    <mesh position={[0, 0, GLASS_SURFACE + 0.0004]} geometry={screenGeometry()}>
       <meshBasicMaterial map={map} color={tint} toneMapped={false} />
     </mesh>
   );
@@ -59,26 +60,26 @@ export const PhoneModel = ({
   brightness = 1,
 }: PhoneModelProps) => {
   const materials = phoneMaterials(phone.finish, reflections);
-  const backGlass = roundedPlane(PHONE.width - 0.03, PHONE.height - 0.03, PHONE.radius - 0.015);
+  const glassCenter = PHONE.depth / 2 + PHONE.glassLift;
   return (
     <group>
       <mesh geometry={bodyGeometry()} material={materials.frame} castShadow receiveShadow />
       <mesh
-        position={[0, 0, PHONE.depth / 2 + 0.0006]}
-        geometry={frontGlassGeometry()}
+        position={[0, 0, glassCenter]}
+        geometry={glassSlabGeometry()}
         material={materials.frontGlass}
       />
       <ScreenSurface phone={phone} scroll={scroll} brightness={brightness} />
       <mesh
-        position={[0, 0, PHONE.depth / 2 + 0.002]}
-        geometry={frontGlassGeometry()}
+        position={[0, 0, GLASS_SURFACE + 0.0008]}
+        geometry={glassFaceGeometry()}
         material={materials.glare}
       />
       <mesh
-        position={[0, 0, -PHONE.depth / 2 - 0.0006]}
-        rotation={[0, Math.PI, 0]}
-        geometry={backGlass}
+        position={[0, 0, -glassCenter]}
+        geometry={glassSlabGeometry()}
         material={materials.back}
+        castShadow
       />
       <CameraPlateau materials={materials} />
       <SideButtons materials={materials} />
