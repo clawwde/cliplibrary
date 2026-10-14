@@ -1,10 +1,11 @@
 'use client';
 
 import type { ElementType } from '@cliplibrary/project';
-import { Download, Layers, Pause, Play, Redo2, Undo2, ZoomIn, ZoomOut } from 'lucide-react';
+import { Layers, Pause, Play, Redo2, Undo2, ZoomIn, ZoomOut } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { MAX_PX_PER_FRAME, MIN_PX_PER_FRAME } from '@/lib/timeline-geometry';
-import type { ExportState } from '@/lib/use-project-export';
+import type { ExportSettings, ExportState } from '@/lib/use-project-export';
+import { ExportControls } from './export-controls';
 
 interface AnimationOption {
   id: string;
@@ -17,6 +18,7 @@ interface TimelineToolbarProps {
   canUndo: boolean;
   canRedo: boolean;
   exportState: ExportState;
+  exportProgress: number;
   downloadUrl: string | null;
   animations: readonly AnimationOption[];
   onAddElement: (type: ElementType) => void;
@@ -26,17 +28,10 @@ interface TimelineToolbarProps {
   onTogglePlay: () => void;
   onUndo: () => void;
   onRedo: () => void;
-  onExport: () => void;
+  onExport: (settings: ExportSettings) => void;
 }
 
 const ADD_TYPES: ElementType[] = ['text', 'image', 'video', 'shape'];
-
-const EXPORT_LABEL: Record<ExportState, string> = {
-  idle: 'Export',
-  rendering: 'Rendering',
-  done: 'Export',
-  error: 'Retry export',
-};
 
 export const TimelineToolbar = ({
   pxPerFrame,
@@ -44,6 +39,7 @@ export const TimelineToolbar = ({
   canUndo,
   canRedo,
   exportState,
+  exportProgress,
   downloadUrl,
   animations,
   onAddElement,
@@ -141,15 +137,12 @@ export const TimelineToolbar = ({
       >
         <Redo2 className="size-4" />
       </Button>
-      {downloadUrl !== null && exportState === 'done' ? (
-        <Button type="button" variant="outline" size="sm" asChild>
-          <a href={downloadUrl}>Download</a>
-        </Button>
-      ) : null}
-      <Button type="button" size="sm" onClick={onExport} disabled={exportState === 'rendering'}>
-        <Download className="size-4" />
-        {EXPORT_LABEL[exportState]}
-      </Button>
+      <ExportControls
+        state={exportState}
+        progress={exportProgress}
+        downloadUrl={downloadUrl}
+        onExport={onExport}
+      />
     </div>
   </div>
 );

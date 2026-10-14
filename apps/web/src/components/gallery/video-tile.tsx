@@ -32,30 +32,32 @@ export const VideoTile = ({
     >
       <div className="relative aspect-video overflow-hidden bg-black">
         {hasVideo && !loaded ? <Skeleton className="absolute inset-0 rounded-none" /> : null}
-        {hasVideo ? (
-          <video
-            src={`/exports/${meta.id}.mp4`}
-            poster={`/exports/${meta.id}.jpg`}
-            muted
-            loop
-            autoPlay
-            playsInline
-            preload="metadata"
-            onLoadedData={() => setLoaded(true)}
-            className="size-full object-cover"
-          />
-        ) : (
-          <Thumbnail
-            component={Composition}
-            inputProps={project as unknown as Record<string, unknown>}
-            durationInFrames={project.durationInFrames}
-            fps={project.fps}
-            compositionWidth={project.width}
-            compositionHeight={project.height}
-            frameToDisplay={Math.floor(project.durationInFrames / 2)}
-            style={{ width: '100%', height: '100%' }}
-          />
-        )}
+        <div className="size-full transition-transform duration-300 ease-out group-hover:scale-105">
+          {hasVideo ? (
+            <video
+              src={`/exports/${meta.id}.mp4`}
+              poster={`/exports/${meta.id}.jpg`}
+              muted
+              loop
+              autoPlay
+              playsInline
+              preload="metadata"
+              onLoadedData={() => setLoaded(true)}
+              className="size-full object-cover"
+            />
+          ) : (
+            <Thumbnail
+              component={Composition}
+              inputProps={project as unknown as Record<string, unknown>}
+              durationInFrames={project.durationInFrames}
+              fps={project.fps}
+              compositionWidth={project.width}
+              compositionHeight={project.height}
+              frameToDisplay={Math.floor(project.durationInFrames / 2)}
+              style={{ width: '100%', height: '100%' }}
+            />
+          )}
+        </div>
       </div>
       <div className="flex flex-col gap-1 px-3.5 py-3">
         <span className="font-semibold text-sm tracking-tight">{meta.title}</span>
