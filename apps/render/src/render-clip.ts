@@ -1,22 +1,9 @@
 import { mkdir } from 'node:fs/promises';
 import { join } from 'node:path';
 import { type ClipId, getClipMeta } from '@cliplibrary/schemas';
-import { bundle } from '@remotion/bundler';
-import { ensureBrowser, renderMedia, renderStill, selectComposition } from '@remotion/renderer';
-import { compositionsEntry } from './paths';
+import { renderMedia, renderStill, selectComposition } from '@remotion/renderer';
 import { buildRenderMediaOptions, outputExtension, type RenderOptions } from './render-options';
-
-let serveUrlPromise: Promise<string> | null = null;
-
-const getServeUrl = (): Promise<string> => {
-  if (serveUrlPromise === null) {
-    serveUrlPromise = (async (): Promise<string> => {
-      await ensureBrowser();
-      return bundle({ entryPoint: compositionsEntry });
-    })();
-  }
-  return serveUrlPromise;
-};
+import { getServeUrl } from './serve-url';
 
 export interface RenderClipArgs {
   clipId: ClipId;

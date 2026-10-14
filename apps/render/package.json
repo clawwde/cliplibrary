@@ -6,6 +6,7 @@
   "scripts": {
     "render": "bun run src/render-all.ts",
     "render-one": "bun run src/render-one.ts",
+    "render-project": "bun run src/render-project-one.ts",
     "test": "bun test tests",
     "test:coverage": "bun test tests --coverage",
     "typecheck": "tsc --noEmit"
@@ -13,6 +14,7 @@
   "dependencies": {
     "@cliplibrary/compositions": "workspace:*",
     "@cliplibrary/core": "workspace:*",
+    "@cliplibrary/project": "workspace:*",
     "@cliplibrary/schemas": "workspace:*",
     "@remotion/bundler": "4.0.534",
     "@remotion/renderer": "4.0.534"
