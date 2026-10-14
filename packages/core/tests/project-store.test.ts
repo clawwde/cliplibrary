@@ -33,6 +33,42 @@ describe('project seed', () => {
   });
 });
 
+describe('sequence seed', () => {
+  it('lays the app promo scenes out on two alternating lanes', () => {
+    const project = seedProjectForClip('app-promo');
+    expect(project.tracks.map((track) => track.name)).toEqual(['Scenes A', 'Scenes B']);
+    const elements = project.tracks.flatMap((track) => track.elements);
+    expect(elements).toHaveLength(9);
+    expect(elements.every((element) => element.type === 'composition')).toBe(true);
+    const ends = elements.map((element) => element.from + element.durationInFrames);
+    expect(Math.max(...ends)).toBe(project.durationInFrames);
+  });
+
+  it('overlaps neighbouring scenes so transitions have room', () => {
+    const ordered = seedProjectForClip('app-promo')
+      .tracks.flatMap((track) => track.elements)
+      .sort((left, right) => left.from - right.from);
+    for (let index = 1; index < ordered.length; index++) {
+      const previous = ordered[index - 1];
+      const current = ordered[index];
+      if (previous !== undefined && current !== undefined) {
+        expect(current.from).toBeLessThanOrEqual(previous.from + previous.durationInFrames);
+        expect(current.from).toBeGreaterThan(previous.from);
+      }
+    }
+  });
+
+  it('gives every seeded scene its own copy of the defaults', () => {
+    const first = seedProjectForClip('app-promo').tracks[0]?.elements[0];
+    const second = seedProjectForClip('app-promo').tracks[0]?.elements[0];
+    expect(first?.type === 'composition' && second?.type === 'composition').toBe(true);
+    if (first?.type === 'composition' && second?.type === 'composition') {
+      expect(first.props).toEqual(second.props);
+      expect(first.props).not.toBe(second.props);
+    }
+  });
+});
+
 describe('project store', () => {
   it('seeds from the clip registry when no file exists', async () => {
     const root = await makeRoot();
