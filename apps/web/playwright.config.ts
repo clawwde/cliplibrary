@@ -1,7 +1,8 @@
 import { defineConfig, devices } from '@playwright/test';
 
 const PORT = 3100;
-const external = process.env['E2E_BASE_URL'];
+const { E2E_BASE_URL, CI } = process.env;
+const external = E2E_BASE_URL;
 const baseURL = external ?? `http://localhost:${PORT}`;
 
 export default defineConfig({
@@ -23,7 +24,7 @@ export default defineConfig({
           command: `bunx next start --port ${PORT}`,
           url: baseURL,
           timeout: 180_000,
-          reuseExistingServer: !process.env['CI'],
+          reuseExistingServer: !CI,
         },
       }),
 });
