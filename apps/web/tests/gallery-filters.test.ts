@@ -1,0 +1,92 @@
+import { describe, expect, it } from 'bun:test';
+import { CLIP_REGISTRY, type ClipMeta } from '@cliplibrary/schemas';
+import {
+  DEFAULT_FILTERS,
+  facetCounts,
+  filterClips,
+  formatDuration,
+  groupByCategory,
+  hasActiveFilters,
+  matchesQuery,
+  parseFilters,
+  serializeFilters,
+} from '../src/lib/gallery-filters';
+
+const items = CLIP_REGISTRY.map((meta) => ({ meta }));
+const ids = (list: { meta: ClipMeta }[]) => list.map((item) => item.meta.id);
+
+describe('gallery filters', () => {
+  it('round-trips filters through the URL and drops defaults', () => {
+    const filters = {
+      query: 'phone',
+      category: 'devices' as const,
+      tags: ['3d' as const, 'grid' as const],
+      theme: 'light' as const,
+      sort: 'longest' as const,
+    };
+    const query = serializeFilters(filters);
+    expect(parseFilters(new URLSearchParams(query.slice(1)))).toEqual(filters);
+    expect(serializeFilters(DEFAULT_FILTERS)).toBe('');
+  });
+
+  it('ignores unknown values in the URL', () => {
+    const parsed = parseFilters(
+      new URLSearchParams({ category: 'nope', tags: '3d,bogus', theme: 'sepia', sort: 'x' }),
+    );
+    expect(parsed.category).toBe('all');
+    expect(parsed.tags).toEqual(['3d']);
+    expect(parsed.theme).toBe('all');
+    expect(parsed.sort).toBe('category');
+  });
+
+  it('matches every search token across title, description, category and tags', () => {
+    const wall = CLIP_REGISTRY.find((meta) => meta.id === 'phone-wall');
+    expect(wall).toBeDefined();
+    if (wall !== undefined) {
+      expect(matchesQuery(wall, 'PHONE grid')).toBe(true);
+      expect(matchesQuery(wall, '3d devices')).toBe(true);
+      expect(matchesQuery(wall, 'phone chart')).toBe(false);
+    }
+  });
+
+  it('filters by category, every selected tag and theme together', () => {
+    const result = filterClips(items, {
+      ...DEFAULT_FILTERS,
+      category: 'devices',
+      tags: ['3d', 'phone'],
+      theme: 'dark',
+    });
+    expect(ids(result)).toEqual(['phone-pair']);
+  });
+
+  it('sorts by duration and by name', () => {
+    const shortest = filterClips(items, { ...DEFAULT_FILTERS, sort: 'shortest' });
+    const seconds = shortest.map((item) => item.meta.durationInFrames / item.meta.fps);
+    expect(seconds).toEqual([...seconds].sort((left, right) => left - right));
+    const byName = filterClips(items, { ...DEFAULT_FILTERS, sort: 'name-desc' }).map(
+      (item) => item.meta.title,
+    );
+    expect(byName).toEqual([...byName].sort((left, right) => right.localeCompare(left)));
+  });
+
+  it('counts each facet against the other active filters', () => {
+    const filters = { ...DEFAULT_FILTERS, category: 'devices' as const };
+    const categories = facetCounts(items, filters, 'category', (meta) => [meta.category]);
+    expect(categories.get('typography')).toBeGreaterThan(0);
+    const themes = facetCounts(items, filters, 'theme', (meta) => [meta.theme]);
+    expect(themes.get('dark')).toBe(1);
+  });
+
+  it('groups visible clips under their categories in taxonomy order', () => {
+    const groups = groupByCategory(filterClips(items, DEFAULT_FILTERS));
+    expect(groups[0]?.category).toBe('typography');
+    expect(groups.reduce((total, group) => total + group.items.length, 0)).toBe(items.length);
+  });
+
+  it('reports active filters and formats durations', () => {
+    expect(hasActiveFilters(DEFAULT_FILTERS)).toBe(false);
+    expect(hasActiveFilters({ ...DEFAULT_FILTERS, query: ' x ' })).toBe(true);
+    const meta = CLIP_REGISTRY.find((entry) => entry.id === 'scene-transition');
+    expect(meta === undefined ? '' : formatDuration(meta)).toBe('1.3s');
+  });
+});
