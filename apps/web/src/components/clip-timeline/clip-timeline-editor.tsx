@@ -164,7 +164,7 @@ export const ClipTimelineEditor = ({
         editor.save();
       }
     },
-    exportProject: () => exporter.run(project),
+    exportProject: () => exporter.run(project, { codec: 'h264', crf: 18, scale: 1 }),
   };
 
   useEffect(() => {
@@ -236,6 +236,7 @@ export const ClipTimelineEditor = ({
           canUndo={editor.canUndo}
           canRedo={editor.canRedo}
           exportState={exporter.state}
+          exportProgress={exporter.progress}
           downloadUrl={exporter.downloadUrl}
           animations={ANIMATION_OPTIONS}
           onAddElement={handleAddElement}
@@ -247,7 +248,7 @@ export const ClipTimelineEditor = ({
           onTogglePlay={() => playerRef.current?.toggle()}
           onUndo={undo}
           onRedo={redo}
-          onExport={() => exporter.run(project)}
+          onExport={(settings) => exporter.run(project, settings)}
         />
         <div className="min-h-0 flex-1">
           <Timeline

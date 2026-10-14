@@ -25,8 +25,9 @@ Each item traces to a request. Status is `done`, `wip`, or `todo`.
 - [x] R5 Generic editor environment: every clip opens in a timeline where you can add text, image,
   video and shape elements with their own inputs, reorder layers, and drop in any built-in
   animation as another layer. The real animations seed the environment as templates.
-- [x] R6 Export surface shows its controls: the editor renders its property panel, the toolbar
-  Export button, and the preview player controls, and the export route renders a downloadable mp4.
+- [x] R6 Export has real controls: the Export button opens a dialog with format (H.264 / H.265 /
+  VP9 / ProRes / GIF), resolution scale, and a quality slider, shows render progress, and offers the
+  finished file for download. The chosen settings drive the render.
 
 ## Model
 
