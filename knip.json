@@ -13,8 +13,8 @@
       "ignoreDependencies": ["tw-animate-css", "tailwindcss"]
     },
     "apps/render": {
-      "entry": ["src/render-all.ts"],
-      "project": ["src/**/*.ts"],
+      "entry": ["tests/**/*.test.ts"],
+      "project": ["src/**/*.ts", "tests/**/*.ts"],
       "ignoreDependencies": ["@cliplibrary/compositions"]
     },
     "packages/schemas": {

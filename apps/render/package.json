@@ -5,6 +5,9 @@
   "type": "module",
   "scripts": {
     "render": "bun run src/render-all.ts",
+    "render-one": "bun run src/render-one.ts",
+    "test": "bun test tests",
+    "test:coverage": "bun test tests --coverage",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
