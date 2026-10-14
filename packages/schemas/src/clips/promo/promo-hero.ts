@@ -45,7 +45,7 @@ export const promoHeroDefaults: PromoHeroProps = {
   textSide: 'left',
   phone: phone('home', 'natural'),
   phoneScale: 1.32,
-  spinTurns: 1,
+  spinTurns: 0.25,
   tilt: 0.32,
   card: { show: true, kind: 'income', size: 2.1 },
   look: lightLook(),

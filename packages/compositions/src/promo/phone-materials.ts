@@ -82,6 +82,9 @@ const build = (finish: PhoneFinish, reflections: number): PhoneMaterials => {
       transparent: true,
       blending: THREE.AdditiveBlending,
       depthWrite: false,
+      polygonOffset: true,
+      polygonOffsetFactor: -6,
+      polygonOffsetUnits: -10,
       envMapIntensity: 0.08 * reflections,
     }),
     lensGlass: new THREE.MeshPhysicalMaterial({

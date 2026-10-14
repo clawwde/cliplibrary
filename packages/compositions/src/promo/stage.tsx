@@ -3,7 +3,7 @@ import { Environment, Lightformer } from '@react-three/drei';
 import { useThree } from '@react-three/fiber';
 import { ThreeCanvas } from '@remotion/three';
 import type { ReactNode } from 'react';
-import { useVideoConfig } from 'remotion';
+import { getRemotionEnvironment, useCurrentFrame, useVideoConfig } from 'remotion';
 import type * as THREE from 'three';
 import { DoubleSide } from 'three';
 import { cardUrl } from './screen-assets';
@@ -15,8 +15,8 @@ const CameraRig = ({ position, target, fov }: { position: Vec3; target: Vec3; fo
   const camera = useThree((state) => state.camera) as THREE.PerspectiveCamera;
   camera.position.set(...position);
   camera.fov = fov;
-  camera.near = 0.1;
-  camera.far = 200;
+  camera.near = 1;
+  camera.far = 120;
   camera.updateProjectionMatrix();
   camera.lookAt(...target);
   return null;
@@ -91,21 +91,27 @@ export const Stage = ({
   children,
 }: StageProps) => {
   const { width, height } = useVideoConfig();
+  const frame = useCurrentFrame();
+  const driftX = Math.sin(frame / 110) * 0.6 * stage.cameraDrift;
+  const driftY = Math.cos(frame / 140) * 0.3 * stage.cameraDrift;
   const position: Vec3 = [
-    cameraOffset[0],
-    cameraOffset[1],
+    cameraOffset[0] + driftX,
+    cameraOffset[1] + driftY,
     stage.cameraDistance * distanceScale + cameraOffset[2],
   ];
+  const aim: Vec3 = [target[0] + driftX * 0.4, target[1] + driftY * 0.4, target[2]];
+  const pixelRatio = getRemotionEnvironment().isRendering ? 2 : 1;
   return (
     <ThreeCanvas
       width={width}
       height={height}
       shadows="variance"
+      dpr={pixelRatio}
       gl={{ antialias: true, alpha: true, preserveDrawingBuffer: true }}
       camera={{ fov: stage.fieldOfView, position }}
       style={{ position: 'absolute', inset: 0 }}
     >
-      <CameraRig position={position} target={target} fov={stage.fieldOfView} />
+      <CameraRig position={position} target={aim} fov={stage.fieldOfView} />
       <ambientLight intensity={dark ? 0.25 : 0.55} />
       <directionalLight
         position={[-2.5, 4, 12]}

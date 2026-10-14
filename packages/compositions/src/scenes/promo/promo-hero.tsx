@@ -32,7 +32,7 @@ export const PromoHero = ({
   const { durationInFrames } = useVideoConfig();
   const frame = raw * motion.speed;
   const side = textSide === 'left' ? 1 : -1;
-  const arrive = tween(frame, [0, 64], [0, 1], settle);
+  const arrive = tween(frame, [0, 84], [0, 1], settle);
   const x = side * (2.55 + (1 - arrive) * 4.5);
   const y = (1 - arrive) * -5.5 + Math.sin(frame / 32) * motion.float;
   const rotateY =
@@ -40,7 +40,7 @@ export const PromoHero = ({
   const rotateX = 0.04 + (1 - arrive) * 0.45;
   const rotateZ = (1 - arrive) * -0.25 * side;
   const dolly = tween(raw, [0, durationInFrames], [1.04, 0.97], (t) => t);
-  const cardIn = tween(frame, [70, 100], [0, 1], settle);
+  const cardIn = tween(frame, [72, 112], [0, 1], settle);
   return (
     <TransitionFrame motion={motion}>
       <Backdrop look={look} focusX={50 + side * 18} />

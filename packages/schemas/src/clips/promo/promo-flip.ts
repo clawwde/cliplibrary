@@ -42,7 +42,7 @@ export const promoFlipDefaults: PromoFlipProps = {
   turnAt: 0.52,
   look: lightLook(),
   stage: defaultStage({ cameraDistance: 13 }),
-  motion: defaultMotion({ enter: 'iris', enterFrames: 18, exit: 'none', exitFrames: 0 }),
+  motion: defaultMotion({ enter: 'iris', enterFrames: 20, exit: 'fade', exitFrames: 20 }),
 };
 
 export const promoFlipMeta: ClipMeta = {
