@@ -1,8 +1,7 @@
 'use client';
 
 import type { ProjectFile, VersionSnapshot } from '@cliplibrary/core';
-import type { Project } from '@cliplibrary/project';
-import type { ClipId } from '@cliplibrary/schemas';
+import type { LibraryClipId, Project } from '@cliplibrary/project';
 import { useCallback, useState } from 'react';
 import { useUndoable } from '@/lib/use-undoable';
 
@@ -36,7 +35,7 @@ const statusLabel = (saving: boolean, saveState: SaveState, dirty: boolean): str
 };
 
 export const useClipProject = (
-  clipId: ClipId,
+  clipId: LibraryClipId,
   initial: ProjectFile,
   initialHistory: VersionSnapshot[],
 ): ClipProjectEditor => {

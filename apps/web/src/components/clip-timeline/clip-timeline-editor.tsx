@@ -4,6 +4,7 @@ import type { ControlDescriptor, ProjectFile, VersionSnapshot } from '@cliplibra
 import {
   addElement,
   addTrack,
+  createCompositionElement,
   createImageElement,
   createShapeElement,
   createTextElement,
@@ -12,13 +13,17 @@ import {
   type Element,
   type ElementType,
   findElement,
+  type LibraryClipId,
   moveElement,
+  moveElementToTrack,
+  moveTrack,
   removeElement,
   removeTrack,
   replaceElement,
   resizeElement,
+  trimElementStart,
 } from '@cliplibrary/project';
-import type { ClipId } from '@cliplibrary/schemas';
+import { CLIP_DEFAULTS, CLIP_REGISTRY, type ClipId, getClipMeta } from '@cliplibrary/schemas';
 import type { PlayerRef } from '@remotion/player';
 import dynamic from 'next/dynamic';
 import { useCallback, useEffect, useRef, useState } from 'react';
@@ -79,10 +84,12 @@ const runModifierShortcut = (event: KeyboardEvent, shortcuts: Shortcuts): boolea
   return true;
 };
 
+const ANIMATION_OPTIONS = CLIP_REGISTRY.map((meta) => ({ id: meta.id, title: meta.title }));
+
 interface ClipTimelineEditorProps {
-  clipId: ClipId;
+  clipId: LibraryClipId;
   title: string;
-  descriptors: ControlDescriptor[];
+  descriptorsByClip: Record<string, ControlDescriptor[]>;
   initialProject: ProjectFile;
   initialHistory: VersionSnapshot[];
 }
@@ -90,7 +97,7 @@ interface ClipTimelineEditorProps {
 export const ClipTimelineEditor = ({
   clipId,
   title,
-  descriptors,
+  descriptorsByClip,
   initialProject,
   initialHistory,
 }: ClipTimelineEditorProps) => {
@@ -122,6 +129,20 @@ export const ClipTimelineEditor = ({
       return;
     }
     const element = makeElement(type, currentFrame);
+    setProject(addElement(project, activeTrack, element));
+    setSelectedId(element.id);
+  };
+
+  const handleAddAnimation = (animationId: string): void => {
+    if (activeTrack === null) {
+      return;
+    }
+    const sceneId = animationId as ClipId;
+    const element = createCompositionElement(
+      sceneId,
+      CLIP_DEFAULTS[sceneId] as Record<string, unknown>,
+      { from: currentFrame, durationInFrames: getClipMeta(sceneId).durationInFrames },
+    );
     setProject(addElement(project, activeTrack, element));
     setSelectedId(element.id);
   };
@@ -192,8 +213,7 @@ export const ClipTimelineEditor = ({
           />
           <ClipPropertySidebar
             element={selectedElement}
-            clipTitle={title}
-            descriptors={descriptors}
+            descriptorsByClip={descriptorsByClip}
             onChange={(next) => setProject(replaceElement(project, next))}
             onDelete={handleDelete}
           />
@@ -208,7 +228,9 @@ export const ClipTimelineEditor = ({
           canRedo={editor.canRedo}
           exportState={exporter.state}
           downloadUrl={exporter.downloadUrl}
+          animations={ANIMATION_OPTIONS}
           onAddElement={handleAddElement}
+          onAddAnimation={handleAddAnimation}
           onAddTrack={() =>
             setProject(addTrack(project, createTrack(`Track ${project.tracks.length + 1}`)))
           }
@@ -230,6 +252,11 @@ export const ClipTimelineEditor = ({
             onSelectElement={setSelectedId}
             onMoveElement={(id, from) => setProject(moveElement(project, id, from))}
             onResizeElement={(id, duration) => setProject(resizeElement(project, id, duration))}
+            onTrimElementStart={(id, from) => setProject(trimElementStart(project, id, from))}
+            onMoveElementToTrack={(id, trackId) =>
+              setProject(moveElementToTrack(project, id, trackId))
+            }
+            onMoveTrack={(id, direction) => setProject(moveTrack(project, id, direction))}
             onRemoveTrack={(id) => setProject(removeTrack(project, id))}
           />
         </div>

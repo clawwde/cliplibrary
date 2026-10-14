@@ -25,7 +25,11 @@ const projectWithBlock = (): Project => {
   );
 };
 
+const twoTrackProject = (): Project => addTrack(projectWithBlock(), createTrack('Track 2'));
+
 const noop = () => undefined;
+
+const handleSelector = (edge: 'trim' | 'resize'): string => `[data-handle="${edge}"]`;
 
 const renderTimeline = (project: Project, overrides: Record<string, unknown> = {}) => {
   const handlers = {
@@ -34,6 +38,9 @@ const renderTimeline = (project: Project, overrides: Record<string, unknown> = {
     onSelectElement: mock(),
     onMoveElement: mock(),
     onResizeElement: mock(),
+    onTrimElementStart: mock(),
+    onMoveElementToTrack: mock(),
+    onMoveTrack: mock(),
     onRemoveTrack: mock(),
   };
   render(
@@ -70,16 +77,50 @@ describe('Timeline', () => {
     expect(handlers.onMoveElement).toHaveBeenCalledWith('blk', 30);
   });
 
-  it('resizes an element when the handle is dragged', () => {
+  it('resizes an element when the right handle is dragged', () => {
     const handlers = renderTimeline(projectWithBlock());
     const block = screen.getByRole('button', { name: 'Text element' });
-    const handle = block.querySelector('[aria-hidden]');
+    const handle = block.querySelector(handleSelector('resize'));
     expect(handle).not.toBeNull();
     if (handle !== null) {
       fireEvent.pointerDown(handle, { clientX: 200 });
     }
     fireEvent.pointerMove(block, { clientX: 200 + 10 * PX });
     expect(handlers.onResizeElement).toHaveBeenCalledWith('blk', 50);
+  });
+
+  it('trims the left edge when the left handle is dragged', () => {
+    const handlers = renderTimeline(projectWithBlock());
+    const block = screen.getByRole('button', { name: 'Text element' });
+    const handle = block.querySelector(handleSelector('trim'));
+    expect(handle).not.toBeNull();
+    if (handle !== null) {
+      fireEvent.pointerDown(handle, { clientX: 200 });
+    }
+    fireEvent.pointerMove(block, { clientX: 200 + 5 * PX });
+    expect(handlers.onTrimElementStart).toHaveBeenCalledWith('blk', 25);
+  });
+
+  it('moves an element to another track when dropped on it', () => {
+    const project = twoTrackProject();
+    const secondLaneId = project.tracks[1]?.id ?? '';
+    const handlers = renderTimeline(project);
+    const block = screen.getByRole('button', { name: 'Text element' });
+    const secondLane = document.querySelector(`[data-track-id="${secondLaneId}"]`);
+    expect(secondLane).not.toBeNull();
+    fireEvent.pointerDown(block, { clientX: 100 });
+    if (secondLane !== null) {
+      fireEvent.pointerMove(secondLane, { clientX: 100 });
+      fireEvent.pointerUp(secondLane);
+    }
+    expect(handlers.onMoveElementToTrack).toHaveBeenCalledWith('blk', secondLaneId);
+  });
+
+  it('restacks a track with the up control', () => {
+    const project = twoTrackProject();
+    const handlers = renderTimeline(project);
+    fireEvent.click(screen.getByRole('button', { name: 'Move Track 2 up' }));
+    expect(handlers.onMoveTrack).toHaveBeenCalledWith(project.tracks[1]?.id, 'up');
   });
 
   it('seeks when the ruler is clicked', () => {
@@ -103,7 +144,7 @@ describe('Timeline', () => {
   });
 
   it('removes a track when more than one exists', () => {
-    const project = addTrack(projectWithBlock(), createTrack('Track 2'));
+    const project = twoTrackProject();
     const handlers = renderTimeline(project);
     fireEvent.click(screen.getByRole('button', { name: 'Remove Track 2' }));
     expect(handlers.onRemoveTrack).toHaveBeenCalledWith(project.tracks[1]?.id);
@@ -126,6 +167,9 @@ const SelectionHarness = ({ project }: { project: Project }) => {
         onSelectElement={setSelectedId}
         onMoveElement={noop}
         onResizeElement={noop}
+        onTrimElementStart={noop}
+        onMoveElementToTrack={noop}
+        onMoveTrack={noop}
         onRemoveTrack={noop}
       />
       <PropertyPanel element={element} onChange={noop} onDelete={noop} />

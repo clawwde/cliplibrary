@@ -5,41 +5,52 @@ mock.module('@/components/clip-timeline/clip-preview', () => ({
 }));
 
 import { describeSchema, type ProjectFile, seedProjectForClip } from '@cliplibrary/core';
-import { CLIP_SCHEMAS } from '@cliplibrary/schemas';
+import { CLIP_IDS, CLIP_SCHEMAS } from '@cliplibrary/schemas';
 import { fireEvent, render, screen } from '@testing-library/react';
 import { ClipTimelineEditor } from '../../src/components/clip-timeline/clip-timeline-editor';
 
+const descriptorsByClip = Object.fromEntries(
+  CLIP_IDS.map((id) => [id, describeSchema(CLIP_SCHEMAS[id])]),
+);
+
 const buildFile = (): ProjectFile => ({
-  clipId: 'typewriter',
+  clipId: 'revenue-stat',
   currentVersionId: 'seed',
-  project: seedProjectForClip('typewriter'),
+  project: seedProjectForClip('revenue-stat'),
   updatedAt: new Date(0).toISOString(),
 });
 
 const renderEditor = () =>
   render(
     <ClipTimelineEditor
-      clipId="typewriter"
-      title="Typewriter"
-      descriptors={describeSchema(CLIP_SCHEMAS.typewriter)}
+      clipId="revenue-stat"
+      title="Revenue Stat"
+      descriptorsByClip={descriptorsByClip}
       initialProject={buildFile()}
       initialHistory={[]}
     />,
   );
 
 describe('ClipTimelineEditor', () => {
-  it('renders the seeded composition element on the timeline', () => {
+  it('renders many element blocks across tracks for a seeded clip', () => {
     renderEditor();
-    expect(screen.getByRole('button', { name: 'Clip element' })).toBeInTheDocument();
+    const blocks = screen.getAllByRole('button', { name: /element$/ });
+    expect(blocks.length).toBeGreaterThan(1);
   });
 
-  it('shows the schema controls when the composition element is selected', () => {
+  it('shows element property controls for the auto-selected element', () => {
     renderEditor();
-    expect(screen.getByText(/select an element/i)).toBeInTheDocument();
-    fireEvent.pointerDown(screen.getByRole('button', { name: 'Clip element' }), { clientX: 10 });
-    expect(screen.getByText('charsPerSecond')).toBeInTheDocument();
-    expect(screen.getByText('body')).toBeInTheDocument();
     expect(screen.getByText('Transform')).toBeInTheDocument();
+    expect(screen.getByLabelText('From (frame)')).toBeInTheDocument();
+  });
+
+  it('inserts a built-in animation as a composition block', () => {
+    renderEditor();
+    expect(screen.queryByRole('button', { name: 'Clip element' })).toBeNull();
+    fireEvent.change(screen.getByLabelText('Add animation'), {
+      target: { value: 'orbit-cards' },
+    });
+    expect(screen.getByRole('button', { name: 'Clip element' })).toBeInTheDocument();
   });
 
   it('persists an edited project through the save button', () => {
@@ -54,13 +65,12 @@ describe('ClipTimelineEditor', () => {
     globalThis.fetch = fetchMock as unknown as typeof fetch;
 
     renderEditor();
-    fireEvent.pointerDown(screen.getByRole('button', { name: 'Clip element' }), { clientX: 10 });
     fireEvent.change(screen.getByLabelText('From (frame)'), { target: { value: '5' } });
     const save = screen.getByRole('button', { name: 'Save' });
     expect(save).not.toBeDisabled();
     fireEvent.click(save);
     expect(fetchMock).toHaveBeenCalledWith(
-      '/api/clips/typewriter/project',
+      '/api/clips/revenue-stat/project',
       expect.objectContaining({ method: 'PATCH' }),
     );
   });

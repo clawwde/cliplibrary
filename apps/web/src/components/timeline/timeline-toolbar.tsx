@@ -6,6 +6,11 @@ import { Button } from '@/components/ui/button';
 import { MAX_PX_PER_FRAME, MIN_PX_PER_FRAME } from '@/lib/timeline-geometry';
 import type { ExportState } from '@/lib/use-project-export';
 
+interface AnimationOption {
+  id: string;
+  title: string;
+}
+
 interface TimelineToolbarProps {
   pxPerFrame: number;
   playing: boolean;
@@ -13,7 +18,9 @@ interface TimelineToolbarProps {
   canRedo: boolean;
   exportState: ExportState;
   downloadUrl: string | null;
+  animations: readonly AnimationOption[];
   onAddElement: (type: ElementType) => void;
+  onAddAnimation: (clipId: string) => void;
   onAddTrack: () => void;
   onZoom: (pxPerFrame: number) => void;
   onTogglePlay: () => void;
@@ -38,7 +45,9 @@ export const TimelineToolbar = ({
   canRedo,
   exportState,
   downloadUrl,
+  animations,
   onAddElement,
+  onAddAnimation,
   onAddTrack,
   onZoom,
   onTogglePlay,
@@ -73,6 +82,23 @@ export const TimelineToolbar = ({
       <Layers className="size-4" />
       Track
     </Button>
+    <select
+      aria-label="Add animation"
+      value=""
+      onChange={(event) => {
+        if (event.target.value !== '') {
+          onAddAnimation(event.target.value);
+        }
+      }}
+      className="h-8 rounded-md bg-muted px-2 text-sm"
+    >
+      <option value="">Animation</option>
+      {animations.map((animation) => (
+        <option key={animation.id} value={animation.id}>
+          {animation.title}
+        </option>
+      ))}
+    </select>
     <span className="mx-1 h-5 w-px bg-border" />
     <Button
       type="button"
