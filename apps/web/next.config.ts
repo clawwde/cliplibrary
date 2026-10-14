@@ -11,6 +11,7 @@ const config: NextConfig = {
     'remotion',
     '@remotion/player',
     '@remotion/google-fonts',
+    '@remotion/three',
   ],
 };
 
