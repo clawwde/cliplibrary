@@ -11,6 +11,7 @@ export interface RenderProjectArgs {
   project: Project;
   outDir: string;
   options: RenderOptions;
+  name?: string;
   onProgress?: (progress: number) => void;
 }
 
@@ -23,6 +24,7 @@ export const renderProject = async ({
   project,
   outDir,
   options,
+  name = PROJECT_COMPOSITION_ID,
   onProgress,
 }: RenderProjectArgs): Promise<RenderProjectResult> => {
   const serveUrl = await getServeUrl();
@@ -34,8 +36,8 @@ export const renderProject = async ({
   });
 
   await mkdir(outDir, { recursive: true });
-  const video = join(outDir, `${PROJECT_COMPOSITION_ID}.${outputExtension(options.codec)}`);
-  const poster = join(outDir, `${PROJECT_COMPOSITION_ID}.jpg`);
+  const video = join(outDir, `${name}.${outputExtension(options.codec)}`);
+  const poster = join(outDir, `${name}.jpg`);
   const media = buildRenderMediaOptions(options);
 
   await renderMedia({
