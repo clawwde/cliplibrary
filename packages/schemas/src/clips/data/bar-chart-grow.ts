@@ -45,6 +45,8 @@ export const barChartGrowMeta: ClipMeta = {
   description:
     'Bars rise from the baseline to their values in a staggered cascade with counting labels, where the grow speed, stagger and curve are all adjustable.',
   category: 'data',
+  tags: ['chart', 'numbers'],
+  theme: 'dark',
   source: 'packages/compositions/src/scenes/data/bar-chart-grow.tsx',
   durationInFrames: 180,
   posterFrame: 160,

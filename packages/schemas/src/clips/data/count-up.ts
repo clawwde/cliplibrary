@@ -35,6 +35,8 @@ export const countUpMeta: ClipMeta = {
   description:
     'A big headline statistic counts up from zero to its target over an adjustable duration and easing curve, with prefix and suffix affixes.',
   category: 'data',
+  tags: ['numbers', 'minimal'],
+  theme: 'dark',
   source: 'packages/compositions/src/scenes/data/count-up.tsx',
   durationInFrames: 120,
   posterFrame: 110,

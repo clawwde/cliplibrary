@@ -28,6 +28,8 @@ export const imageShowcaseMeta: ClipMeta = {
   description:
     'Up to four images fly in and settle into a gallery grid; empty slots render a neutral placeholder so the clip reads cleanly before any media is supplied.',
   category: 'media',
+  tags: ['image', 'gallery', 'grid'],
+  theme: 'dark',
   source: 'packages/compositions/src/scenes/media/image-showcase.tsx',
   durationInFrames: 150,
   posterFrame: 130,

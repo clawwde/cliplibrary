@@ -35,6 +35,8 @@ export const donutProgressMeta: ClipMeta = {
   description:
     'A ring sweeps around to its target percentage while the number counts up in the center, with the target, ring thickness, speed and curve all adjustable.',
   category: 'data',
+  tags: ['chart', 'numbers'],
+  theme: 'dark',
   source: 'packages/compositions/src/scenes/data/donut-progress.tsx',
   durationInFrames: 150,
   posterFrame: 135,

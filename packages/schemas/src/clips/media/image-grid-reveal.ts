@@ -37,6 +37,8 @@ export const imageGridRevealMeta: ClipMeta = {
   description:
     'Four tiles flip and scale into a two by two grid in a staggered wave, with the stagger, entrance speed and curve adjustable; empty tiles render a neutral placeholder.',
   category: 'media',
+  tags: ['image', 'grid', 'reveal'],
+  theme: 'dark',
   source: 'packages/compositions/src/scenes/media/image-grid-reveal.tsx',
   durationInFrames: 150,
   posterFrame: 130,

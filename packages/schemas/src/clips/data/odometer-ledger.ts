@@ -34,6 +34,8 @@ export const odometerLedgerMeta: ClipMeta = {
   description:
     'Revenue digits spin on odometer reels, a line chart draws itself with a tracking dot, stat pills slide in and a ticker tape scrolls.',
   category: 'data',
+  tags: ['numbers', 'chart', 'retro'],
+  theme: 'light',
   source: 'packages/compositions/src/scenes/data/odometer-ledger.tsx',
   durationInFrames: 180,
   posterFrame: 150,

@@ -2,12 +2,16 @@ import { describe, expect, it } from 'bun:test';
 import { z } from 'zod';
 import {
   barChartGrowSchema,
+  CLIP_CATEGORY_IDS,
   CLIP_DEFAULTS,
   CLIP_IDS,
   CLIP_MODULES,
   CLIP_REGISTRY,
   CLIP_SCHEMAS,
+  CLIP_TAGS,
+  CLIP_THEMES,
   type ClipId,
+  categoryLabel,
   donutProgressSchema,
   EASING_IDS,
   getClipDefaults,
@@ -30,7 +34,7 @@ import {
   zVideo,
 } from '../src/index';
 
-const CATEGORIES = ['text', 'data', 'media', 'complex', 'promo'];
+const CATEGORIES: readonly string[] = CLIP_CATEGORY_IDS;
 
 describe('clip registry completeness', () => {
   it('has a schema, defaults and registry entry for every clip id', () => {
@@ -195,10 +199,11 @@ describe('pluggable module architecture', () => {
 
   it('places the new clips in their intended categories', () => {
     const categoryOf = (id: ClipId) => getClipMeta(id).category;
-    expect(categoryOf('typewriter')).toBe('text');
+    expect(categoryOf('typewriter')).toBe('typography');
     expect(categoryOf('count-up')).toBe('data');
     expect(categoryOf('image-showcase')).toBe('media');
-    expect(categoryOf('promo-hero')).toBe('promo');
+    expect(categoryOf('promo-hero')).toBe('devices');
+    expect(categoryOf('app-promo')).toBe('sequences');
   });
 });
 
@@ -209,15 +214,17 @@ describe('expanded clip library', () => {
 
   it('files the latest batch of clips in the right categories', () => {
     const categoryOf = (id: ClipId) => getClipMeta(id).category;
-    expect(categoryOf('word-reveal')).toBe('text');
-    expect(categoryOf('kinetic-type')).toBe('text');
-    expect(categoryOf('gradient-sweep-text')).toBe('text');
+    expect(categoryOf('word-reveal')).toBe('typography');
+    expect(categoryOf('kinetic-type')).toBe('typography');
+    expect(categoryOf('gradient-sweep-text')).toBe('typography');
     expect(categoryOf('bar-chart-grow')).toBe('data');
     expect(categoryOf('line-draw')).toBe('data');
     expect(categoryOf('donut-progress')).toBe('data');
     expect(categoryOf('ken-burns')).toBe('media');
     expect(categoryOf('image-grid-reveal')).toBe('media');
-    expect(categoryOf('mosaic-reveal')).toBe('complex');
+    expect(categoryOf('mosaic-reveal')).toBe('transitions');
+    expect(categoryOf('notification-stack')).toBe('overlays');
+    expect(categoryOf('product-demo')).toBe('sequences');
   });
 
   it('enforces the bar-chart-grow bar count bounds', () => {
@@ -332,5 +339,30 @@ describe('promo clips', () => {
     const defaults = getClipDefaults('promo-flip');
     const details = ['a', 'b', 'c', 'd', 'e'];
     expect(getClipSchema('promo-flip').safeParse({ ...defaults, details }).success).toBe(false);
+  });
+});
+
+describe('clip taxonomy', () => {
+  it('tags every clip from the shared vocabulary without duplicates', () => {
+    const vocabulary: readonly string[] = CLIP_TAGS;
+    for (const meta of CLIP_REGISTRY) {
+      expect(meta.tags.length).toBeGreaterThan(0);
+      expect(new Set(meta.tags).size).toBe(meta.tags.length);
+      for (const tag of meta.tags) {
+        expect(vocabulary).toContain(tag);
+      }
+    }
+  });
+
+  it('gives every clip a known theme', () => {
+    const themes: readonly string[] = CLIP_THEMES;
+    for (const meta of CLIP_REGISTRY) {
+      expect(themes).toContain(meta.theme);
+    }
+  });
+
+  it('labels categories for display', () => {
+    expect(categoryLabel('devices')).toBe('3D Devices');
+    expect(categoryLabel('data')).toBe('Data & Charts');
   });
 });
