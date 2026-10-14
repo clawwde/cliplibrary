@@ -46,7 +46,9 @@ describe('library clip registry', () => {
       for (const element of listElements(project)) {
         expect(element.from).toBeGreaterThanOrEqual(0);
         expect(element.durationInFrames).toBeGreaterThanOrEqual(1);
-        expect(element.from + element.durationInFrames).toBeLessThanOrEqual(project.durationInFrames);
+        expect(element.from + element.durationInFrames).toBeLessThanOrEqual(
+          project.durationInFrames,
+        );
       }
     }
   });

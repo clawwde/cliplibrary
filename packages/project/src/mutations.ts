@@ -108,9 +108,7 @@ export const moveElementToTrack = (
     return project;
   }
   const moved: Element =
-    from === undefined
-      ? found.element
-      : { ...found.element, from: Math.max(0, Math.round(from)) };
+    from === undefined ? found.element : { ...found.element, from: Math.max(0, Math.round(from)) };
   return {
     ...project,
     tracks: project.tracks.map((track) => {
@@ -131,11 +129,7 @@ export const moveElementToTrack = (
   };
 };
 
-export const moveTrack = (
-  project: Project,
-  trackId: string,
-  direction: 'up' | 'down',
-): Project => {
+export const moveTrack = (project: Project, trackId: string, direction: 'up' | 'down'): Project => {
   const index = project.tracks.findIndex((track) => track.id === trackId);
   if (index === -1) {
     return project;

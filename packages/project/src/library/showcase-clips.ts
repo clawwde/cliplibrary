@@ -1,7 +1,7 @@
 import { anim, ellipse, image, layer, rect, scene, text } from './build';
 import type { LibraryClip } from './types';
 
-export const logoRevealClip: LibraryClip = {
+const logoRevealClip: LibraryClip = {
   meta: {
     id: 'logo-reveal',
     title: 'Logo Reveal',
@@ -60,7 +60,7 @@ export const logoRevealClip: LibraryClip = {
     }),
 };
 
-export const imageGalleryClip: LibraryClip = {
+const imageGalleryClip: LibraryClip = {
   meta: {
     id: 'image-gallery',
     title: 'Image Gallery',
@@ -103,7 +103,7 @@ export const imageGalleryClip: LibraryClip = {
   },
 };
 
-export const splitFeatureClip: LibraryClip = {
+const splitFeatureClip: LibraryClip = {
   meta: {
     id: 'split-feature',
     title: 'Split Feature',

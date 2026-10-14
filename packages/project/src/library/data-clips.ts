@@ -1,7 +1,7 @@
 import { anim, layer, MONO, rect, scene, text } from './build';
 import type { LibraryClip } from './types';
 
-export const revenueStatClip: LibraryClip = {
+const revenueStatClip: LibraryClip = {
   meta: {
     id: 'revenue-stat',
     title: 'Revenue Stat',
@@ -73,7 +73,7 @@ export const revenueStatClip: LibraryClip = {
     }),
 };
 
-export const statCalloutClip: LibraryClip = {
+const statCalloutClip: LibraryClip = {
   meta: {
     id: 'stat-callout',
     title: 'Stat Callout',

@@ -1,7 +1,7 @@
-import { anim, ellipse, layer, rect, scene, SERIF, text } from './build';
+import { anim, ellipse, layer, rect, SERIF, scene, text } from './build';
 import type { LibraryClip } from './types';
 
-export const titleCardClip: LibraryClip = {
+const titleCardClip: LibraryClip = {
   meta: {
     id: 'title-card',
     title: 'Title Card',
@@ -71,7 +71,7 @@ export const titleCardClip: LibraryClip = {
     }),
 };
 
-export const lowerThirdClip: LibraryClip = {
+const lowerThirdClip: LibraryClip = {
   meta: {
     id: 'lower-third',
     title: 'Lower Third',
@@ -131,7 +131,7 @@ export const lowerThirdClip: LibraryClip = {
     }),
 };
 
-export const quoteCardClip: LibraryClip = {
+const quoteCardClip: LibraryClip = {
   meta: {
     id: 'quote-card',
     title: 'Quote Card',
@@ -190,7 +190,7 @@ export const quoteCardClip: LibraryClip = {
     }),
 };
 
-export const kineticHeadlineClip: LibraryClip = {
+const kineticHeadlineClip: LibraryClip = {
   meta: {
     id: 'kinetic-headline',
     title: 'Kinetic Headline',
@@ -219,7 +219,7 @@ export const kineticHeadlineClip: LibraryClip = {
   },
 };
 
-export const bulletListClip: LibraryClip = {
+const bulletListClip: LibraryClip = {
   meta: {
     id: 'bullet-list',
     title: 'Bullet List',

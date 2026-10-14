@@ -1,8 +1,13 @@
 import 'server-only';
 import { existsSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
-import { type ExportRecord, type PropsFile, readExports, readProps } from '@cliplibrary/core';
-import { CLIP_REGISTRY, type ClipId, type ClipMeta } from '@cliplibrary/schemas';
+import { type ExportRecord, readExports, readProject } from '@cliplibrary/core';
+import {
+  LIBRARY_CLIP_META,
+  type LibraryClipId,
+  type LibraryClipMeta,
+  type Project,
+} from '@cliplibrary/project';
 import { repoRoot } from './repo-root';
 
 const hasRenderedVideo = (root: string, exportId: string): boolean => {
@@ -15,21 +20,21 @@ const hasRenderedVideo = (root: string, exportId: string): boolean => {
   }
 };
 
-const hasClipVideo = (root: string, id: ClipId): boolean =>
+const hasClipVideo = (root: string, id: LibraryClipId): boolean =>
   existsSync(join(root, 'apps', 'web', 'public', 'exports', `${id}.mp4`));
 
 export interface ClipListItem {
-  meta: ClipMeta;
-  props: PropsFile;
+  meta: LibraryClipMeta;
+  project: Project;
   hasVideo: boolean;
 }
 
 export const listClips = (): Promise<ClipListItem[]> => {
   const root = repoRoot();
   return Promise.all(
-    CLIP_REGISTRY.map(async (meta) => ({
+    LIBRARY_CLIP_META.map(async (meta) => ({
       meta,
-      props: await readProps(root, meta.id),
+      project: (await readProject(root, meta.id)).project,
       hasVideo: hasClipVideo(root, meta.id),
     })),
   );

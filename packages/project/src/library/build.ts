@@ -5,7 +5,7 @@ import { createImageElement, createShapeElement, createTextElement } from '../fa
 import type { Project } from '../project';
 import type { Track } from '../track';
 
-export const SANS = 'Inter, system-ui, sans-serif';
+const SANS = 'Inter, system-ui, sans-serif';
 export const SERIF = 'Georgia, "Times New Roman", serif';
 export const MONO = 'ui-monospace, "SF Mono", Menlo, monospace';
 
