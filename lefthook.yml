@@ -8,6 +8,10 @@ pre-commit:
     comments:
       glob: "*.{ts,tsx}"
       run: bun run scripts/strip-comments.ts --check {staged_files}
+    em-dashes:
+      run: bun run check:em-dashes
+    repository:
+      run: bun run check:repository
 
 pre-push:
   parallel: true
