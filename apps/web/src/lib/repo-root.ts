@@ -1,7 +1,7 @@
 import { existsSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 
-export const findRepoRoot = (start: string = process.cwd()): string => {
+const findRepoRoot = (start: string = process.cwd()): string => {
   let dir = start;
   for (let depth = 0; depth < 8; depth += 1) {
     if (existsSync(join(dir, 'turbo.json'))) {
