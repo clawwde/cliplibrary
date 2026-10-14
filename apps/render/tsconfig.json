@@ -1,0 +1,6 @@
+{
+  "extends": "@cliplibrary/tsconfig/node-library.json",
+  "compilerOptions": { "rootDir": "src" },
+  "include": ["src/**/*.ts"],
+  "exclude": ["node_modules"]
+}

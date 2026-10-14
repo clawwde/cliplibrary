@@ -8,7 +8,14 @@
     "apps/web": {
       "playwright": false,
       "entry": ["playwright.config.ts", "e2e/**/*.spec.ts"],
-      "project": ["src/**/*.{ts,tsx}", "tests/**/*.{ts,tsx}", "e2e/**/*.ts"]
+      "project": ["src/**/*.{ts,tsx}", "tests/**/*.{ts,tsx}", "e2e/**/*.ts"],
+      "ignore": ["src/components/ui/**"],
+      "ignoreDependencies": ["tw-animate-css", "tailwindcss"]
+    },
+    "apps/render": {
+      "entry": ["src/render-all.ts"],
+      "project": ["src/**/*.ts"],
+      "ignoreDependencies": ["@cliplibrary/compositions"]
     },
     "packages/schemas": {
       "entry": ["tests/**/*.test.ts"],
