@@ -60,13 +60,7 @@ export const roundedPlane = (width: number, height: number, radius: number) =>
     normalizeUv(new THREE.ShapeGeometry(roundedShape(width, height, radius), 32), width, height),
   );
 
-const roundedSlab = (
-  width: number,
-  height: number,
-  radius: number,
-  depth: number,
-  bevel: number,
-) =>
+const roundedSlab = (width: number, height: number, radius: number, depth: number, bevel: number) =>
   memo(`slab:${width}:${height}:${radius}:${depth}:${bevel}`, () => {
     const geometry = new THREE.ExtrudeGeometry(
       roundedShape(width - bevel * 2, height - bevel * 2, Math.max(0.001, radius - bevel)),
