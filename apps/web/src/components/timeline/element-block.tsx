@@ -80,7 +80,7 @@ export const ElementBlock = ({
     <button
       ref={ref}
       type="button"
-      aria-label={`${blockLabel(element)} element`}
+      aria-label={`${LABELS[element.type]} element`}
       aria-pressed={selected}
       onPointerDown={begin('move')}
       onPointerMove={handleMove}

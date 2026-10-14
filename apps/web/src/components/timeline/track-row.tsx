@@ -58,10 +58,7 @@ export const TrackRow = ({
         <X className="size-3.5" />
       </button>
     </div>
-    <button
-      type="button"
-      aria-label={`${track.name} lane`}
-      onPointerDown={() => onActivate(track.id)}
+    <div
       className={cn('relative block', active ? 'bg-muted/40' : 'bg-transparent')}
       style={{ width, height: TRACK_HEIGHT }}
     >
@@ -76,6 +73,6 @@ export const TrackRow = ({
           onResize={onResizeElement}
         />
       ))}
-    </button>
+    </div>
   </div>
 );

@@ -51,6 +51,7 @@ export const MediaField = ({ label, accept, value, onChange }: MediaFieldProps) 
         </button>
         <Input
           type="text"
+          aria-label={label}
           value={value}
           placeholder="source url"
           onChange={(event) => onChange(event.target.value)}

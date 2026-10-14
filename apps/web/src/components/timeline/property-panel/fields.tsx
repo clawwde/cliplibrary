@@ -33,6 +33,7 @@ export const NumberField = ({
   <PanelRow label={label}>
     <Input
       type="number"
+      aria-label={label}
       step={step ?? 1}
       value={value}
       onChange={(event) => onChange(Number(event.target.value))}
@@ -76,7 +77,12 @@ export const TextField = ({
   onChange: (next: string) => void;
 }) => (
   <PanelRow label={label}>
-    <Input type="text" value={value} onChange={(event) => onChange(event.target.value)} />
+    <Input
+      type="text"
+      aria-label={label}
+      value={value}
+      onChange={(event) => onChange(event.target.value)}
+    />
   </PanelRow>
 );
 
@@ -90,7 +96,12 @@ export const TextareaField = ({
   onChange: (next: string) => void;
 }) => (
   <PanelRow label={label}>
-    <Textarea rows={3} value={value} onChange={(event) => onChange(event.target.value)} />
+    <Textarea
+      rows={3}
+      aria-label={label}
+      value={value}
+      onChange={(event) => onChange(event.target.value)}
+    />
   </PanelRow>
 );
 
@@ -114,6 +125,7 @@ export const ColorField = ({
       />
       <Input
         type="text"
+        aria-label={label}
         value={value}
         onChange={(event) => onChange(event.target.value)}
         className="font-mono"
