@@ -72,3 +72,13 @@ export const resolveRenderOptions = (
   ...DEFAULT_RENDER_OPTIONS,
   ...(partial ?? {}),
 });
+
+type GlRenderer = 'angle' | 'swangle';
+
+export const glRendererFor = (platform: NodeJS.Platform): GlRenderer =>
+  platform === 'darwin' || platform === 'win32' ? 'angle' : 'swangle';
+
+export const BROWSER_RENDER_OPTIONS = {
+  chromiumOptions: { gl: glRendererFor(process.platform) },
+  timeoutInMilliseconds: 120_000,
+};

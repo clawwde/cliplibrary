@@ -2,7 +2,12 @@ import { mkdir } from 'node:fs/promises';
 import { join } from 'node:path';
 import type { Project } from '@cliplibrary/project';
 import { renderMedia, renderStill, selectComposition } from '@remotion/renderer';
-import { buildRenderMediaOptions, outputExtension, type RenderOptions } from './render-options';
+import {
+  BROWSER_RENDER_OPTIONS,
+  buildRenderMediaOptions,
+  outputExtension,
+  type RenderOptions,
+} from './render-options';
 import { getServeUrl } from './serve-url';
 
 const PROJECT_COMPOSITION_ID = 'project';
@@ -30,6 +35,7 @@ export const renderProject = async ({
   const serveUrl = await getServeUrl();
   const inputProps = project as unknown as Record<string, unknown>;
   const composition = await selectComposition({
+    ...BROWSER_RENDER_OPTIONS,
     serveUrl,
     id: PROJECT_COMPOSITION_ID,
     inputProps,
@@ -41,6 +47,7 @@ export const renderProject = async ({
   const media = buildRenderMediaOptions(options);
 
   await renderMedia({
+    ...BROWSER_RENDER_OPTIONS,
     serveUrl,
     composition,
     inputProps,
@@ -50,6 +57,7 @@ export const renderProject = async ({
   });
 
   await renderStill({
+    ...BROWSER_RENDER_OPTIONS,
     serveUrl,
     composition,
     inputProps,

@@ -1,7 +1,9 @@
 import { describe, expect, it } from 'bun:test';
 import {
+  BROWSER_RENDER_OPTIONS,
   buildRenderMediaOptions,
   DEFAULT_RENDER_OPTIONS,
+  glRendererFor,
   outputExtension,
   type RenderOptions,
   resolveRenderOptions,
@@ -70,5 +72,18 @@ describe('resolveRenderOptions', () => {
     expect(merged.codec).toBe('vp9');
     expect(merged.crf).toBe(30);
     expect(merged.scale).toBe(DEFAULT_RENDER_OPTIONS.scale);
+  });
+});
+
+describe('browser render options', () => {
+  it('uses the GPU renderer on macOS and Windows and software rendering elsewhere', () => {
+    expect(glRendererFor('darwin')).toBe('angle');
+    expect(glRendererFor('win32')).toBe('angle');
+    expect(glRendererFor('linux')).toBe('swangle');
+  });
+
+  it('gives each frame enough time for the 3D clips to render', () => {
+    expect(BROWSER_RENDER_OPTIONS.timeoutInMilliseconds).toBeGreaterThanOrEqual(120_000);
+    expect(BROWSER_RENDER_OPTIONS.chromiumOptions.gl).toBe(glRendererFor(process.platform));
   });
 });

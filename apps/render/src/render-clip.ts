@@ -2,7 +2,12 @@ import { mkdir } from 'node:fs/promises';
 import { join } from 'node:path';
 import { type ClipId, getClipMeta } from '@cliplibrary/schemas';
 import { renderMedia, renderStill, selectComposition } from '@remotion/renderer';
-import { buildRenderMediaOptions, outputExtension, type RenderOptions } from './render-options';
+import {
+  BROWSER_RENDER_OPTIONS,
+  buildRenderMediaOptions,
+  outputExtension,
+  type RenderOptions,
+} from './render-options';
 import { getServeUrl } from './serve-url';
 
 export interface RenderClipArgs {
@@ -26,7 +31,12 @@ export const renderClip = async ({
   onProgress,
 }: RenderClipArgs): Promise<RenderClipResult> => {
   const serveUrl = await getServeUrl();
-  const composition = await selectComposition({ serveUrl, id: clipId, inputProps });
+  const composition = await selectComposition({
+    ...BROWSER_RENDER_OPTIONS,
+    serveUrl,
+    id: clipId,
+    inputProps,
+  });
   const resolved = { ...composition, fps: options.fps ?? composition.fps };
 
   await mkdir(outDir, { recursive: true });
@@ -35,6 +45,7 @@ export const renderClip = async ({
   const media = buildRenderMediaOptions(options);
 
   await renderMedia({
+    ...BROWSER_RENDER_OPTIONS,
     serveUrl,
     composition: resolved,
     inputProps,
@@ -44,6 +55,7 @@ export const renderClip = async ({
   });
 
   await renderStill({
+    ...BROWSER_RENDER_OPTIONS,
     serveUrl,
     composition: resolved,
     inputProps,
