@@ -76,6 +76,85 @@ export const resizeElement = (
   return replaceElement(project, { ...found.element, durationInFrames: clamped });
 };
 
+export const trimElementStart = (
+  project: Project,
+  elementId: string,
+  nextFrom: number,
+): Project => {
+  const found = findElement(project, elementId);
+  if (found === null) {
+    return project;
+  }
+  const rightEdge = found.element.from + found.element.durationInFrames;
+  const clampedFrom = Math.min(Math.max(0, Math.round(nextFrom)), rightEdge - 1);
+  return replaceElement(project, {
+    ...found.element,
+    from: clampedFrom,
+    durationInFrames: rightEdge - clampedFrom,
+  });
+};
+
+export const moveElementToTrack = (
+  project: Project,
+  elementId: string,
+  trackId: string,
+  from?: number,
+): Project => {
+  const found = findElement(project, elementId);
+  if (found === null || !project.tracks.some((track) => track.id === trackId)) {
+    return project;
+  }
+  if (found.trackId === trackId && from === undefined) {
+    return project;
+  }
+  const moved: Element =
+    from === undefined
+      ? found.element
+      : { ...found.element, from: Math.max(0, Math.round(from)) };
+  return {
+    ...project,
+    tracks: project.tracks.map((track) => {
+      if (track.id === found.trackId && track.id === trackId) {
+        return {
+          ...track,
+          elements: track.elements.map((element) => (element.id === elementId ? moved : element)),
+        };
+      }
+      if (track.id === found.trackId) {
+        return { ...track, elements: track.elements.filter((element) => element.id !== elementId) };
+      }
+      if (track.id === trackId) {
+        return { ...track, elements: [...track.elements, moved] };
+      }
+      return track;
+    }),
+  };
+};
+
+export const moveTrack = (
+  project: Project,
+  trackId: string,
+  direction: 'up' | 'down',
+): Project => {
+  const index = project.tracks.findIndex((track) => track.id === trackId);
+  if (index === -1) {
+    return project;
+  }
+  const target = direction === 'up' ? index - 1 : index + 1;
+  if (target < 0 || target >= project.tracks.length) {
+    return project;
+  }
+  const next = [...project.tracks];
+  const current = next[index];
+  const swap = next[target];
+  if (current === undefined || swap === undefined) {
+    return project;
+  }
+  next[index] = swap;
+  next[target] = current;
+  return { ...project, tracks: next };
+};
+
 export const addTrack = (project: Project, track: Track): Project => ({
   ...project,
   tracks: [...project.tracks, track],

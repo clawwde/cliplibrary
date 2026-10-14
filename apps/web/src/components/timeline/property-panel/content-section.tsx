@@ -60,6 +60,32 @@ export const ContentSection = ({ element, onChange }: ContentSectionProps) => {
           value={element.color}
           onChange={(color) => onChange({ ...element, color })}
         />
+        <div className="grid grid-cols-2 gap-3">
+          <SliderField
+            label="Width"
+            value={element.width}
+            min={8}
+            max={2400}
+            step={1}
+            onChange={(width) => onChange({ ...element, width })}
+          />
+          <SliderField
+            label="Height"
+            value={element.height}
+            min={8}
+            max={2400}
+            step={1}
+            onChange={(height) => onChange({ ...element, height })}
+          />
+        </div>
+        <SliderField
+          label="Corner radius"
+          value={element.radius}
+          min={0}
+          max={600}
+          step={1}
+          onChange={(radius) => onChange({ ...element, radius })}
+        />
       </div>
     );
   }

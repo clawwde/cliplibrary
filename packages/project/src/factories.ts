@@ -53,6 +53,9 @@ export const createShapeElement = (
   id: createId('shape'),
   kind,
   color: '#6366f1',
+  width: 480,
+  height: 480,
+  radius: 32,
   ...sharedDefaults(),
   ...overrides,
 });
