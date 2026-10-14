@@ -13,6 +13,8 @@ export type ControlDescriptor =
     }
   | { kind: 'boolean'; path: string[]; label: string }
   | { kind: 'enum'; path: string[]; label: string; options: string[] }
+  | { kind: 'image'; path: string[]; label: string }
+  | { kind: 'video'; path: string[]; label: string }
   | {
       kind: 'array';
       path: string[];

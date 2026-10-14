@@ -24,6 +24,7 @@ import {
   zImage,
   zMultiline,
   zSlider,
+  zVideo,
 } from '../src/index';
 
 const CATEGORIES = ['simple', 'text', 'data', 'media', 'complex'];
@@ -230,5 +231,18 @@ describe('image media control', () => {
     if (result.success) {
       expect(result.data.image1).toBe('https://example.com/one.jpg');
     }
+  });
+});
+
+describe('video media control', () => {
+  it('tags a video field with video control metadata', () => {
+    expect(readControlMeta(zVideo())).toEqual({ control: 'video' });
+  });
+
+  it('accepts empty, url and data-uri strings but rejects non-strings', () => {
+    expect(zVideo().safeParse('').success).toBe(true);
+    expect(zVideo().safeParse('https://example.com/a.mp4').success).toBe(true);
+    expect(zVideo().safeParse('data:video/mp4;base64,AAAA').success).toBe(true);
+    expect(zVideo().safeParse(42).success).toBe(false);
   });
 });

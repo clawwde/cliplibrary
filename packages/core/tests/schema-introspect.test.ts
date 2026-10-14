@@ -6,6 +6,7 @@ import {
   zImage,
   zMultiline,
   zSlider,
+  zVideo,
 } from '@cliplibrary/schemas';
 import { z } from 'zod';
 import { type ControlDescriptor, describeSchema } from '../src/index';
@@ -65,15 +66,14 @@ describe('describeSchema control kinds', () => {
     });
   });
 
-  it('surfaces an image-tagged field as an editable text control', () => {
+  it('surfaces an image-tagged field as an image control', () => {
     const [control] = describeSchema(z.object({ image1: zImage() }));
-    expect(control).toEqual({
-      kind: 'text',
-      path: ['image1'],
-      label: 'image1',
-      multiline: false,
-      maxLength: null,
-    });
+    expect(control).toEqual({ kind: 'image', path: ['image1'], label: 'image1' });
+  });
+
+  it('surfaces a video-tagged field as a video control', () => {
+    const [control] = describeSchema(z.object({ clip: zVideo() }));
+    expect(control).toEqual({ kind: 'video', path: ['clip'], label: 'clip' });
   });
 
   it('leaves number bounds null when unconstrained', () => {
