@@ -1,0 +1,37 @@
+{
+  "name": "@cliplibrary/web",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "next dev --port 3000",
+    "build": "next build",
+    "start": "next start --port 3000",
+    "typecheck": "tsc --noEmit",
+    "test": "bun test tests --timeout 20000",
+    "test:e2e": "playwright test"
+  },
+  "dependencies": {
+    "@cliplibrary/compositions": "workspace:*",
+    "@cliplibrary/core": "workspace:*",
+    "@cliplibrary/schemas": "workspace:*",
+    "@remotion/player": "4.0.534",
+    "next": "16.4.0",
+    "react": "19.3.0",
+    "react-dom": "19.3.0"
+  },
+  "devDependencies": {
+    "@cliplibrary/tsconfig": "workspace:*",
+    "@happy-dom/global-registrator": "20.11.1",
+    "@playwright/test": "^1.63.0",
+    "@testing-library/dom": "^10.4.2",
+    "@testing-library/jest-dom": "^7.0.1",
+    "@testing-library/react": "^16.3.3",
+    "@testing-library/user-event": "^14.6.7",
+    "@types/bun": "1.4.2",
+    "@types/node": "26.6.5",
+    "@types/react": "19.3.0",
+    "@types/react-dom": "19.3.0",
+    "typescript": "5.9.3"
+  }
+}
