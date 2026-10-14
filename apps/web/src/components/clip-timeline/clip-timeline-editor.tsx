@@ -164,7 +164,14 @@ export const ClipTimelineEditor = ({
         editor.save();
       }
     },
-    exportProject: () => exporter.run(project, { codec: 'h264', crf: 18, scale: 1 }),
+    exportProject: () =>
+      exporter.run(project, {
+        codec: 'h264',
+        crf: 18,
+        scale: 1,
+        fps: null,
+        proResProfile: null,
+      }),
   };
 
   useEffect(() => {

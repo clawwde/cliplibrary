@@ -10,6 +10,8 @@ export interface ExportSettings {
   codec: RenderCodec;
   crf: number;
   scale: number;
+  fps: number | null;
+  proResProfile: string | null;
 }
 
 interface StatusResponse {

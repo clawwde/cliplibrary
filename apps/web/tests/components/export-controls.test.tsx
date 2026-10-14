@@ -3,11 +3,12 @@ import { fireEvent, render, screen } from '@testing-library/react';
 import { ExportControls } from '../../src/components/timeline/export-controls';
 
 describe('ExportControls', () => {
-  it('opens a dialog exposing format, resolution and quality controls', () => {
+  it('opens a dialog exposing format, resolution, frame rate and quality controls', () => {
     render(<ExportControls state="idle" progress={0} downloadUrl={null} onExport={mock()} />);
     fireEvent.click(screen.getByRole('button', { name: 'Export' }));
     expect(screen.getByLabelText('Format')).toBeInTheDocument();
     expect(screen.getByLabelText('Resolution')).toBeInTheDocument();
+    expect(screen.getByLabelText('Frame rate')).toBeInTheDocument();
     expect(screen.getByText('Quality')).toBeInTheDocument();
   });
 
@@ -16,7 +17,13 @@ describe('ExportControls', () => {
     render(<ExportControls state="idle" progress={0} downloadUrl={null} onExport={onExport} />);
     fireEvent.click(screen.getByRole('button', { name: 'Export' }));
     fireEvent.click(screen.getByRole('button', { name: 'Render' }));
-    expect(onExport).toHaveBeenCalledWith({ codec: 'h264', crf: 18, scale: 1 });
+    expect(onExport).toHaveBeenCalledWith({
+      codec: 'h264',
+      crf: 18,
+      scale: 1,
+      fps: null,
+      proResProfile: null,
+    });
   });
 
   it('offers a download when a render is complete', () => {

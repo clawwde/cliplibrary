@@ -22,7 +22,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Slider } from '@/components/ui/slider';
-import { MAX_CRF, MIN_CRF } from '@/lib/render-options';
+import { MAX_CRF, MIN_CRF, PRORES_PROFILES } from '@/lib/render-options';
 import type { ExportSettings, ExportState } from '@/lib/use-project-export';
 
 const FORMATS: { value: ExportSettings['codec']; label: string }[] = [
@@ -34,12 +34,28 @@ const FORMATS: { value: ExportSettings['codec']; label: string }[] = [
 ];
 
 const SCALES: { value: string; label: string }[] = [
+  { value: '0.25', label: '0.25x' },
   { value: '0.5', label: '0.5x' },
+  { value: '0.75', label: '0.75x' },
   { value: '1', label: '1x' },
+  { value: '1.5', label: '1.5x' },
   { value: '2', label: '2x' },
 ];
 
-const DEFAULT_SETTINGS: ExportSettings = { codec: 'h264', crf: 18, scale: 1 };
+const FRAME_RATES: { value: string; label: string }[] = [
+  { value: 'source', label: 'Source' },
+  { value: '24', label: '24 fps' },
+  { value: '30', label: '30 fps' },
+  { value: '60', label: '60 fps' },
+];
+
+const DEFAULT_SETTINGS: ExportSettings = {
+  codec: 'h264',
+  crf: 18,
+  scale: 1,
+  fps: null,
+  proResProfile: null,
+};
 
 const STATUS_LABEL: Record<ExportState, string> = {
   idle: 'Ready to render.',
@@ -47,6 +63,9 @@ const STATUS_LABEL: Record<ExportState, string> = {
   done: 'Render complete.',
   error: 'Render failed. Try again.',
 };
+
+const qualityWord = (crf: number): string =>
+  crf <= 18 ? 'high' : crf <= 28 ? 'balanced' : 'small file';
 
 interface ExportControlsProps {
   state: ExportState;
@@ -61,6 +80,7 @@ export const ExportControls = ({ state, progress, downloadUrl, onExport }: Expor
   const rendering = state === 'rendering';
   const percent = Math.round(progress * 100);
   const supportsQuality = settings.codec !== 'gif' && settings.codec !== 'prores';
+  const isProRes = settings.codec === 'prores';
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -97,34 +117,82 @@ export const ExportControls = ({ state, progress, downloadUrl, onExport }: Expor
             </Select>
           </div>
 
-          <div className="flex flex-col gap-2">
-            <Label htmlFor="export-scale">Resolution</Label>
-            <Select
-              value={String(settings.scale)}
-              onValueChange={(value) =>
-                setSettings((current) => ({ ...current, scale: Number(value) }))
-              }
-            >
-              <SelectTrigger id="export-scale" aria-label="Resolution">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                {SCALES.map((scale) => (
-                  <SelectItem key={scale.value} value={scale.value}>
-                    {scale.label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+          <div className="grid grid-cols-2 gap-4">
+            <div className="flex flex-col gap-2">
+              <Label htmlFor="export-scale">Resolution</Label>
+              <Select
+                value={String(settings.scale)}
+                onValueChange={(value) =>
+                  setSettings((current) => ({ ...current, scale: Number(value) }))
+                }
+              >
+                <SelectTrigger id="export-scale" aria-label="Resolution">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {SCALES.map((scale) => (
+                    <SelectItem key={scale.value} value={scale.value}>
+                      {scale.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="flex flex-col gap-2">
+              <Label htmlFor="export-fps">Frame rate</Label>
+              <Select
+                value={settings.fps === null ? 'source' : String(settings.fps)}
+                onValueChange={(value) =>
+                  setSettings((current) => ({
+                    ...current,
+                    fps: value === 'source' ? null : Number(value),
+                  }))
+                }
+              >
+                <SelectTrigger id="export-fps" aria-label="Frame rate">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {FRAME_RATES.map((rate) => (
+                    <SelectItem key={rate.value} value={rate.value}>
+                      {rate.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
           </div>
+
+          {isProRes ? (
+            <div className="flex flex-col gap-2">
+              <Label htmlFor="export-prores">ProRes profile</Label>
+              <Select
+                value={settings.proResProfile ?? 'hq'}
+                onValueChange={(value) =>
+                  setSettings((current) => ({ ...current, proResProfile: value }))
+                }
+              >
+                <SelectTrigger id="export-prores" aria-label="ProRes profile">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {PRORES_PROFILES.map((profile) => (
+                    <SelectItem key={profile} value={profile}>
+                      {profile}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          ) : null}
 
           {supportsQuality ? (
             <div className="flex flex-col gap-2">
               <div className="flex items-center justify-between">
                 <Label>Quality</Label>
                 <span className="text-muted-foreground text-xs">
-                  crf {settings.crf} (
-                  {settings.crf <= 18 ? 'high' : settings.crf <= 28 ? 'balanced' : 'small file'})
+                  crf {settings.crf} ({qualityWord(settings.crf)})
                 </span>
               </div>
               <Slider

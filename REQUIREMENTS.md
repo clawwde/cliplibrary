@@ -26,7 +26,8 @@ Each item traces to a request. Status is `done`, `wip`, or `todo`.
   video and shape elements with their own inputs, reorder layers, and drop in any built-in
   animation as another layer. The real animations seed the environment as templates.
 - [x] R6 Export has real controls: the Export button opens a dialog with format (H.264 / H.265 /
-  VP9 / ProRes / GIF), resolution scale, and a quality slider, shows render progress, and offers the
+  VP9 / ProRes / GIF), resolution scale (0.25x to 2x), frame rate (source / 24 / 30 / 60), a quality
+  slider, and a ProRes profile picker when ProRes is chosen. It shows render progress and offers the
   finished file for download. The chosen settings drive the render.
 
 ## Model
