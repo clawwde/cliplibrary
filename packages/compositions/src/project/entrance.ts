@@ -10,10 +10,7 @@ export interface EntranceStyle {
 
 const IDENTITY: EntranceStyle = { opacity: 1, translateY: 0, scale: 1 };
 
-export const entranceStyle = (
-  animation: Animation | undefined,
-  frame: number,
-): EntranceStyle => {
+export const entranceStyle = (animation: Animation | undefined, frame: number): EntranceStyle => {
   if (animation === undefined || animation.kind === 'none' || animation.durationInFrames <= 0) {
     return IDENTITY;
   }

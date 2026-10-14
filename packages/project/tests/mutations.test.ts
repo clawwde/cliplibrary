@@ -58,7 +58,9 @@ describe('element reducers', () => {
     expect(findElement(resizeElement(project, 'el-1', 120), 'el-1')?.element.durationInFrames).toBe(
       120,
     );
-    expect(findElement(resizeElement(project, 'el-1', 0), 'el-1')?.element.durationInFrames).toBe(1);
+    expect(findElement(resizeElement(project, 'el-1', 0), 'el-1')?.element.durationInFrames).toBe(
+      1,
+    );
   });
 
   it('leaves the project untouched when the id is unknown', () => {

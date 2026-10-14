@@ -1,11 +1,5 @@
 import { defaultAnimation } from './animation';
-import type {
-  ImageElement,
-  ShapeElement,
-  ShapeKind,
-  TextElement,
-  VideoElement,
-} from './element';
+import type { ImageElement, ShapeElement, ShapeKind, TextElement, VideoElement } from './element';
 import { createId } from './ids';
 import type { Track } from './track';
 import { identityTransform } from './transform';

@@ -1,8 +1,4 @@
-import {
-  createShapeElement,
-  createTextElement,
-  createTrack,
-} from './factories';
+import { createShapeElement, createTextElement, createTrack } from './factories';
 import type { Project } from './project';
 
 export const createEmptyProject = (): Project => ({
@@ -16,6 +12,7 @@ export const createEmptyProject = (): Project => ({
 
 export const createSeedProject = (): Project => {
   const backdrop = createTrack('Backdrop');
+  backdrop.id = 'seed-track-backdrop';
   backdrop.elements.push(
     createShapeElement('rect', {
       id: 'seed-shape-backdrop',
@@ -36,6 +33,7 @@ export const createSeedProject = (): Project => {
   );
 
   const copy = createTrack('Copy');
+  copy.id = 'seed-track-copy';
   copy.elements.push(
     createTextElement({
       id: 'seed-text-title',

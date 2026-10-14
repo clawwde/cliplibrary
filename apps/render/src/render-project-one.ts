@@ -1,7 +1,7 @@
 import { readFile } from 'node:fs/promises';
 import { parseProject } from '@cliplibrary/project';
-import { renderProject } from './render-project';
 import { type RenderOptions, resolveRenderOptions } from './render-options';
+import { renderProject } from './render-project';
 
 const readFlag = (name: string): string | null => {
   const index = process.argv.indexOf(`--${name}`);
