@@ -155,6 +155,15 @@
       "linter": { "rules": { "suspicious": { "noArrayIndexKey": "off" } } }
     },
     {
+      "includes": ["apps/web/**"],
+      "linter": {
+        "rules": {
+          "suspicious": { "noArrayIndexKey": "off" },
+          "a11y": { "useMediaCaption": "off" }
+        }
+      }
+    },
+    {
       "includes": ["**/*.test.ts", "**/*.test.tsx", "**/tests/**", "**/e2e/**", "**/*.spec.ts"],
       "linter": {
         "rules": {

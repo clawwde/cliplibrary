@@ -1,3 +1,4 @@
+import { statSync } from 'node:fs';
 import { Glob } from 'bun';
 import ts from 'typescript';
 
@@ -10,6 +11,7 @@ type CommentRange = {
 
 const ALLOWED = [
   /^\/\/\s*biome-ignore\b/,
+  /^\/\*\s*biome-ignore\b/,
   /^\/\/\s*@ts-(expect-error|ignore|nocheck|check)\b/,
   /^\/\/\s*eslint-(disable|enable)\b/,
   /^\/\/\/\s*<reference\b/,
@@ -35,26 +37,40 @@ const lineOf = (lineStarts: readonly number[], position: number): number => {
 };
 
 const collectComments = (source: string): CommentRange[] => {
-  const scanner = ts.createScanner(ts.ScriptTarget.Latest, false, ts.LanguageVariant.JSX, source);
+  const sourceFile = ts.createSourceFile(
+    'file.tsx',
+    source,
+    ts.ScriptTarget.Latest,
+    true,
+    ts.ScriptKind.TSX,
+  );
   const lineStarts = ts.computeLineStarts(source);
-  const found: CommentRange[] = [];
-  let token = scanner.scan();
-  while (token !== ts.SyntaxKind.EndOfFileToken) {
-    if (
-      token === ts.SyntaxKind.SingleLineCommentTrivia ||
-      token === ts.SyntaxKind.MultiLineCommentTrivia
-    ) {
-      const start = scanner.getTokenStart();
-      found.push({
-        start,
-        end: scanner.getTokenEnd(),
-        text: scanner.getTokenText(),
-        line: lineOf(lineStarts, start),
-      });
+  const found = new Map<number, CommentRange>();
+
+  const addRanges = (ranges: ts.CommentRange[] | undefined): void => {
+    if (ranges === undefined) {
+      return;
     }
-    token = scanner.scan();
-  }
-  return found;
+    for (const range of ranges) {
+      if (!found.has(range.pos)) {
+        found.set(range.pos, {
+          start: range.pos,
+          end: range.end,
+          text: source.slice(range.pos, range.end),
+          line: lineOf(lineStarts, range.pos),
+        });
+      }
+    }
+  };
+
+  const visit = (node: ts.Node): void => {
+    addRanges(ts.getLeadingCommentRanges(source, node.getFullStart()));
+    addRanges(ts.getTrailingCommentRanges(source, node.getEnd()));
+    node.forEachChild(visit);
+  };
+  visit(sourceFile);
+
+  return [...found.values()].sort((left, right) => left.start - right.start);
 };
 
 const stripFrom = (source: string, disallowed: CommentRange[]): string => {
@@ -72,19 +88,31 @@ const stripFrom = (source: string, disallowed: CommentRange[]): string => {
     .join('\n');
 };
 
-const resolveFiles = async (args: string[]): Promise<string[]> => {
-  const explicit = args.filter((arg) => !arg.startsWith('--'));
-  if (explicit.length > 0) {
-    return explicit;
-  }
-  const glob = new Glob('{apps,packages,scripts}/**/*.{ts,tsx}');
+const scanGlob = async (pattern: string): Promise<string[]> => {
+  const glob = new Glob(pattern);
   const files: string[] = [];
   for await (const file of glob.scan({ dot: false })) {
-    if (!(file.includes('node_modules') || file.endsWith('.gen.ts'))) {
+    if (!(file.includes('node_modules') || file.endsWith('.gen.ts') || file.endsWith('.d.ts'))) {
       files.push(file);
     }
   }
   return files;
+};
+
+const resolveFiles = async (args: string[]): Promise<string[]> => {
+  const explicit = args.filter((arg) => !arg.startsWith('--'));
+  if (explicit.length === 0) {
+    return scanGlob('{apps,packages,scripts}/**/*.{ts,tsx}');
+  }
+  const resolved: string[] = [];
+  for (const entry of explicit) {
+    if (statSync(entry).isDirectory()) {
+      resolved.push(...(await scanGlob(`${entry}/**/*.{ts,tsx}`)));
+    } else {
+      resolved.push(entry);
+    }
+  }
+  return resolved;
 };
 
 const main = async (): Promise<void> => {
