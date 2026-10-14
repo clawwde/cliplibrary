@@ -1,5 +1,6 @@
 import { z } from 'zod';
-import { zColor, zMultiline } from '../control';
+import { zColor, zMultiline } from '../../control';
+import type { ClipMeta } from '../../registry';
 
 export const odometerLedgerSchema = z.object({
   label: z.string(),
@@ -25,4 +26,18 @@ export const odometerLedgerDefaults: OdometerLedgerProps = {
     { label: 'AVG ORDER', value: '$106' },
   ],
   ticker: '▲ ARR +24.8%   ▼ CHURN -1.2%   ▲ ORDERS 1,204   ▲ AVG $106   ◆ ',
+};
+
+export const odometerLedgerMeta: ClipMeta = {
+  id: 'odometer-ledger',
+  title: 'Odometer Ledger',
+  description:
+    'Revenue digits spin on odometer reels, a line chart draws itself with a tracking dot, stat pills slide in and a ticker tape scrolls.',
+  category: 'data',
+  source: 'packages/compositions/src/scenes/data/odometer-ledger.tsx',
+  durationInFrames: 180,
+  posterFrame: 150,
+  fps: 30,
+  width: 1920,
+  height: 1080,
 };

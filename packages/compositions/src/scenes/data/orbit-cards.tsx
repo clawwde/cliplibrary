@@ -1,9 +1,23 @@
-import type { OrbitCardsProps } from '@cliplibrary/schemas';
+import {
+  type OrbitCardsProps,
+  orbitCardsDefaults,
+  orbitCardsMeta,
+  orbitCardsSchema,
+} from '@cliplibrary/schemas';
 import { loadFont } from '@remotion/google-fonts/SpaceGrotesk';
-import { AbsoluteFill, Easing, interpolate, random, Sequence, useCurrentFrame } from 'remotion';
-import { GridBackdrop } from '../kit/grid-backdrop';
-import { lerp, ramp } from '../kit/motion';
-import { RiseChars } from '../kit/rise-chars';
+import {
+  AbsoluteFill,
+  Composition,
+  Easing,
+  interpolate,
+  random,
+  Sequence,
+  useCurrentFrame,
+} from 'remotion';
+import { GridBackdrop } from '../../kit/grid-backdrop';
+import { lerp, ramp } from '../../kit/motion';
+import { RiseChars } from '../../kit/rise-chars';
+import type { SceneModule } from '../../scene-module';
 
 const { fontFamily } = loadFont('normal', {
   weights: ['500', '700'],
@@ -128,4 +142,22 @@ export const OrbitCards = ({ headline, background, cards }: OrbitCardsProps) => 
       </Sequence>
     </AbsoluteFill>
   );
+};
+
+export const orbitCardsScene: SceneModule = {
+  id: 'orbit-cards',
+  component: OrbitCards,
+  render: (key) => (
+    <Composition
+      key={key}
+      id="orbit-cards"
+      component={OrbitCards}
+      schema={orbitCardsSchema}
+      defaultProps={orbitCardsDefaults}
+      durationInFrames={orbitCardsMeta.durationInFrames}
+      fps={orbitCardsMeta.fps}
+      width={orbitCardsMeta.width}
+      height={orbitCardsMeta.height}
+    />
+  ),
 };

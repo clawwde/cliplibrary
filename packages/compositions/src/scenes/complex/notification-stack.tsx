@@ -1,7 +1,13 @@
-import type { NotificationStackProps } from '@cliplibrary/schemas';
+import {
+  type NotificationStackProps,
+  notificationStackDefaults,
+  notificationStackMeta,
+  notificationStackSchema,
+} from '@cliplibrary/schemas';
 import { loadFont } from '@remotion/google-fonts/DMSans';
-import { AbsoluteFill, spring, useCurrentFrame, useVideoConfig } from 'remotion';
-import { clamp01, lerp, ramp } from '../kit/motion';
+import { AbsoluteFill, Composition, spring, useCurrentFrame, useVideoConfig } from 'remotion';
+import { clamp01, lerp, ramp } from '../../kit/motion';
+import type { SceneModule } from '../../scene-module';
 
 const { fontFamily } = loadFont('normal', {
   weights: ['500', '700', '800'],
@@ -129,4 +135,22 @@ export const NotificationStack = ({
       </AbsoluteFill>
     </AbsoluteFill>
   );
+};
+
+export const notificationStackScene: SceneModule = {
+  id: 'notification-stack',
+  component: NotificationStack,
+  render: (key) => (
+    <Composition
+      key={key}
+      id="notification-stack"
+      component={NotificationStack}
+      schema={notificationStackSchema}
+      defaultProps={notificationStackDefaults}
+      durationInFrames={notificationStackMeta.durationInFrames}
+      fps={notificationStackMeta.fps}
+      width={notificationStackMeta.width}
+      height={notificationStackMeta.height}
+    />
+  ),
 };

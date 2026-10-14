@@ -1,7 +1,20 @@
-import type { OdometerLedgerProps } from '@cliplibrary/schemas';
+import {
+  type OdometerLedgerProps,
+  odometerLedgerDefaults,
+  odometerLedgerMeta,
+  odometerLedgerSchema,
+} from '@cliplibrary/schemas';
 import { loadFont } from '@remotion/google-fonts/JetBrainsMono';
-import { AbsoluteFill, Easing, spring, useCurrentFrame, useVideoConfig } from 'remotion';
-import { lerp, ramp } from '../kit/motion';
+import {
+  AbsoluteFill,
+  Composition,
+  Easing,
+  spring,
+  useCurrentFrame,
+  useVideoConfig,
+} from 'remotion';
+import { lerp, ramp } from '../../kit/motion';
+import type { SceneModule } from '../../scene-module';
 
 const { fontFamily } = loadFont('normal', {
   weights: ['500', '800'],
@@ -221,4 +234,22 @@ export const OdometerLedger = ({
       </div>
     </AbsoluteFill>
   );
+};
+
+export const odometerLedgerScene: SceneModule = {
+  id: 'odometer-ledger',
+  component: OdometerLedger,
+  render: (key) => (
+    <Composition
+      key={key}
+      id="odometer-ledger"
+      component={OdometerLedger}
+      schema={odometerLedgerSchema}
+      defaultProps={odometerLedgerDefaults}
+      durationInFrames={odometerLedgerMeta.durationInFrames}
+      fps={odometerLedgerMeta.fps}
+      width={odometerLedgerMeta.width}
+      height={odometerLedgerMeta.height}
+    />
+  ),
 };

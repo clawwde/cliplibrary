@@ -1,12 +1,17 @@
-import type { SplitFlapProps } from '@cliplibrary/schemas';
-import { SPLIT_FLAP_COLUMNS } from '@cliplibrary/schemas';
+import {
+  SPLIT_FLAP_COLUMNS,
+  type SplitFlapProps,
+  splitFlapDefaults,
+  splitFlapMeta,
+  splitFlapSchema,
+} from '@cliplibrary/schemas';
 import { loadFont } from '@remotion/google-fonts/BarlowCondensed';
-import { AbsoluteFill, useCurrentFrame } from 'remotion';
-import { ramp } from '../kit/motion';
+import { AbsoluteFill, Composition, useCurrentFrame } from 'remotion';
+import { ramp } from '../../kit/motion';
+import type { SceneModule } from '../../scene-module';
 
 const { fontFamily } = loadFont('normal', { weights: ['700'], subsets: ['latin'] });
 
-// biome-ignore lint/security/noSecrets: display alphabet for the split-flap, not a credential
 const SET = ' ABCDEFGHIJKLMNOPQRSTUVWXYZ';
 const STEP_FRAMES = 2;
 const CELL_WIDTH = 124;
@@ -164,4 +169,22 @@ export const SplitFlap = ({ header, headerColor, rows }: SplitFlapProps) => {
       ))}
     </AbsoluteFill>
   );
+};
+
+export const splitFlapScene: SceneModule = {
+  id: 'split-flap',
+  component: SplitFlap,
+  render: (key) => (
+    <Composition
+      key={key}
+      id="split-flap"
+      component={SplitFlap}
+      schema={splitFlapSchema}
+      defaultProps={splitFlapDefaults}
+      durationInFrames={splitFlapMeta.durationInFrames}
+      fps={splitFlapMeta.fps}
+      width={splitFlapMeta.width}
+      height={splitFlapMeta.height}
+    />
+  ),
 };
