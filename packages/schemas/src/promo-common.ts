@@ -43,6 +43,38 @@ export type PromoTransition = (typeof PROMO_TRANSITIONS)[number];
 
 export const TEXT_SIDES = ['left', 'right'] as const;
 
+export const HORIZONTAL_ALIGNMENTS = ['left', 'center', 'right'] as const;
+
+export const VERTICAL_ALIGNMENTS = ['top', 'center', 'bottom'] as const;
+
+export const placementSchema = z.object({
+  horizontal: z.enum(HORIZONTAL_ALIGNMENTS),
+  vertical: z.enum(VERTICAL_ALIGNMENTS),
+  insetX: zSlider({ min: 0, max: 700 }),
+  insetY: zSlider({ min: 0, max: 400 }),
+  width: zSlider({ min: 300, max: 1700 }),
+});
+
+export type PromoPlacement = z.infer<typeof placementSchema>;
+
+export const placement = (
+  horizontal: PromoPlacement['horizontal'],
+  vertical: PromoPlacement['vertical'],
+  overrides: Partial<PromoPlacement> = {},
+): PromoPlacement => ({ horizontal, vertical, insetX: 160, insetY: 90, width: 760, ...overrides });
+
+export const positionSchema = z.object({
+  x: zSlider({ min: -7, max: 7, step: 0.05 }),
+  y: zSlider({ min: -4, max: 4, step: 0.05 }),
+  z: zSlider({ min: -4, max: 3, step: 0.05 }),
+});
+
+export type PromoPosition = z.infer<typeof positionSchema>;
+
+export const position = (x = 0, y = 0, depth = 0): PromoPosition => ({ x, y, z: depth });
+
+export const BACKDROP_TONES = ['light', 'dark'] as const;
+
 export const phoneSchema = z.object({
   screen: z.enum(PROMO_SCREEN_IDS),
   customScreen: zImage(),
@@ -52,6 +84,7 @@ export const phoneSchema = z.object({
 export type PromoPhone = z.infer<typeof phoneSchema>;
 
 export const lookSchema = z.object({
+  showBackdrop: z.boolean(),
   background: zColor(),
   backgroundEdge: zColor(),
   ink: zColor(),
@@ -86,7 +119,8 @@ export const motionSchema = z.object({
 
 export type PromoMotion = z.infer<typeof motionSchema>;
 
-export const lightLook = (accent = '#2f5bff'): PromoLook => ({
+export const lightLook = (accent = '#2f5bff', showBackdrop = true): PromoLook => ({
+  showBackdrop,
   background: '#f4f4f2',
   backgroundEdge: '#e6e6e2',
   ink: '#0b0b0c',
@@ -96,7 +130,8 @@ export const lightLook = (accent = '#2f5bff'): PromoLook => ({
   spotlight: 0.55,
 });
 
-export const darkLook = (accent = '#7d9bff'): PromoLook => ({
+export const darkLook = (accent = '#7d9bff', showBackdrop = true): PromoLook => ({
+  showBackdrop,
   background: '#16161a',
   backgroundEdge: '#050506',
   ink: '#f5f5f4',
