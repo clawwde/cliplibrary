@@ -1,5 +1,11 @@
 import type { ClipModule } from '../../registry';
+import {
+  imageGridRevealDefaults,
+  imageGridRevealMeta,
+  imageGridRevealSchema,
+} from './image-grid-reveal';
 import { imageShowcaseDefaults, imageShowcaseMeta, imageShowcaseSchema } from './image-showcase';
+import { kenBurnsDefaults, kenBurnsMeta, kenBurnsSchema } from './ken-burns';
 
 export const mediaClips: ClipModule[] = [
   {
@@ -7,5 +13,12 @@ export const mediaClips: ClipModule[] = [
     schema: imageShowcaseSchema,
     defaults: imageShowcaseDefaults,
     meta: imageShowcaseMeta,
+  },
+  { id: 'ken-burns', schema: kenBurnsSchema, defaults: kenBurnsDefaults, meta: kenBurnsMeta },
+  {
+    id: 'image-grid-reveal',
+    schema: imageGridRevealSchema,
+    defaults: imageGridRevealDefaults,
+    meta: imageGridRevealMeta,
   },
 ];
