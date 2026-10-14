@@ -7,10 +7,10 @@ import { odometerLedgerScene } from './odometer-ledger';
 import { orbitCardsScene } from './orbit-cards';
 
 export const dataScenes: SceneModule[] = [
-  orbitCardsScene,
-  odometerLedgerScene,
-  countUpScene,
   barChartGrowScene,
-  lineDrawScene,
+  countUpScene,
   donutProgressScene,
+  lineDrawScene,
+  odometerLedgerScene,
+  orbitCardsScene,
 ];

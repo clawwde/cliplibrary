@@ -1,5 +1,5 @@
 import type { SceneModule } from '../../scene-module';
-import { promoIntroScene } from './promo-intro';
-import { promoOutroScene } from './promo-outro';
+import { brandRevealScene } from './brand-reveal';
+import { ctaEndCardScene } from './cta-end-card';
 
-export const brandScenes: SceneModule[] = [promoIntroScene, promoOutroScene];
+export const brandScenes: SceneModule[] = [brandRevealScene, ctaEndCardScene];

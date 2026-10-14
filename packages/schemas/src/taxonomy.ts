@@ -5,6 +5,7 @@ export const CLIP_CATEGORIES = [
   { id: 'devices', label: '3D Devices' },
   { id: 'overlays', label: 'UI Overlays' },
   { id: 'brand', label: 'Brand & CTA' },
+  { id: 'backgrounds', label: 'Backgrounds' },
   { id: 'transitions', label: 'Transitions' },
   { id: 'sequences', label: 'Sequences' },
 ] as const;

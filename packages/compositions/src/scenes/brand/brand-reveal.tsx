@@ -1,19 +1,18 @@
 import {
-  type PromoIntroProps,
-  promoIntroDefaults,
-  promoIntroMeta,
-  promoIntroSchema,
+  type BrandRevealProps,
+  brandRevealDefaults,
+  brandRevealMeta,
+  brandRevealSchema,
 } from '@cliplibrary/schemas';
 import { AbsoluteFill, Composition, useCurrentFrame, useVideoConfig } from 'remotion';
-import { Backdrop } from '../../promo/backdrop';
 import { BrandMark } from '../../promo/brand-mark';
 import { bodyFont, displayFont } from '../../promo/fonts';
+import { PromoLayer } from '../../promo/promo-layer';
 import { settle, tween } from '../../promo/timing';
-import { TransitionFrame } from '../../promo/transition-frame';
 import { FadeIn } from '../../promo/typography';
 import type { SceneModule } from '../../scene-module';
 
-export const PromoIntro = ({
+export const BrandReveal = ({
   eyebrow,
   brandName,
   tagline,
@@ -23,15 +22,14 @@ export const PromoIntro = ({
   pushIn,
   look,
   motion,
-}: PromoIntroProps) => {
+}: BrandRevealProps) => {
   const raw = useCurrentFrame();
   const { durationInFrames } = useVideoConfig();
   const frame = raw * motion.speed;
   const scale = 1 + tween(raw, [0, durationInFrames], [0, pushIn], (t) => t);
   const letters = brandName.split('');
   return (
-    <TransitionFrame motion={motion}>
-      <Backdrop look={look} />
+    <PromoLayer look={look} motion={motion}>
       <AbsoluteFill
         style={{ alignItems: 'center', justifyContent: 'center', transform: `scale(${scale})` }}
       >
@@ -96,24 +94,24 @@ export const PromoIntro = ({
           </div>
         </FadeIn>
       </AbsoluteFill>
-    </TransitionFrame>
+    </PromoLayer>
   );
 };
 
-export const promoIntroScene: SceneModule = {
-  id: 'promo-intro',
-  component: PromoIntro,
+export const brandRevealScene: SceneModule = {
+  id: 'brand-reveal',
+  component: BrandReveal,
   render: (key) => (
     <Composition
       key={key}
-      id={promoIntroMeta.id}
-      component={PromoIntro}
-      schema={promoIntroSchema}
-      defaultProps={promoIntroDefaults}
-      durationInFrames={promoIntroMeta.durationInFrames}
-      fps={promoIntroMeta.fps}
-      width={promoIntroMeta.width}
-      height={promoIntroMeta.height}
+      id="brand-reveal"
+      component={BrandReveal}
+      schema={brandRevealSchema}
+      defaultProps={brandRevealDefaults}
+      durationInFrames={brandRevealMeta.durationInFrames}
+      fps={brandRevealMeta.fps}
+      width={brandRevealMeta.width}
+      height={brandRevealMeta.height}
     />
   ),
 };

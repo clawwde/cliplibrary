@@ -9,17 +9,25 @@ const easedGradient = (from: string, to: string): string =>
       `color-mix(in oklab, ${from}, ${to} ${(amount * 100).toFixed(1)}%) ${((index / (EASED_STOPS.length - 1)) * 100).toFixed(1)}%`,
   ).join(', ');
 
-export const Backdrop = ({ look, focusX = 50 }: { look: PromoLook; focusX?: number }) => {
+export const Backdrop = ({
+  look,
+  focusX = 50,
+  focusY = 44,
+}: {
+  look: PromoLook;
+  focusX?: number;
+  focusY?: number;
+}) => {
   const glow = `rgba(255, 255, 255, ${(look.spotlight * 0.35).toFixed(3)})`;
   return (
     <AbsoluteFill
       style={{
-        background: `radial-gradient(130% 130% at ${focusX}% 42%, ${easedGradient(look.background, look.backgroundEdge)})`,
+        background: `radial-gradient(130% 130% at ${focusX}% ${focusY - 2}%, ${easedGradient(look.background, look.backgroundEdge)})`,
       }}
     >
       <AbsoluteFill
         style={{
-          background: `radial-gradient(60% 70% at ${focusX}% 46%, ${easedGradient(glow, 'rgba(255, 255, 255, 0)')})`,
+          background: `radial-gradient(60% 70% at ${focusX}% ${focusY + 2}%, ${easedGradient(glow, 'rgba(255, 255, 255, 0)')})`,
         }}
       />
       {look.grain > 0 ? (

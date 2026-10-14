@@ -1,18 +1,18 @@
 import type { SceneModule } from '../../scene-module';
-import { promoDuoScene } from './promo-duo';
-import { promoFeaturesScene } from './promo-features';
-import { promoFlipScene } from './promo-flip';
-import { promoHeroScene } from './promo-hero';
-import { promoScrollScene } from './promo-scroll';
-import { promoTrioScene } from './promo-trio';
-import { promoWallScene } from './promo-wall';
+import { phoneFanScene } from './phone-fan';
+import { phonePairScene } from './phone-pair';
+import { phoneScrollScene } from './phone-scroll';
+import { phoneSpinInScene } from './phone-spin-in';
+import { phoneSwapScene } from './phone-swap';
+import { phoneTurnaroundScene } from './phone-turnaround';
+import { phoneWallScene } from './phone-wall';
 
 export const devicesScenes: SceneModule[] = [
-  promoHeroScene,
-  promoFlipScene,
-  promoTrioScene,
-  promoFeaturesScene,
-  promoScrollScene,
-  promoWallScene,
-  promoDuoScene,
+  phoneFanScene,
+  phonePairScene,
+  phoneScrollScene,
+  phoneSpinInScene,
+  phoneSwapScene,
+  phoneTurnaroundScene,
+  phoneWallScene,
 ];

@@ -8,26 +8,27 @@ import {
   APP_PROMO_SEQUENCE,
   CLIP_DEFAULTS,
   type ClipId,
+  type ClipSequence,
   getClipMeta,
-  SEQUENCE_LANES,
-  type SequenceEntry,
 } from '@cliplibrary/schemas';
 
-const SEQUENCES: Partial<Record<ClipId, readonly SequenceEntry[]>> = {
+const SEQUENCES: Partial<Record<ClipId, ClipSequence>> = {
   'app-promo': APP_PROMO_SEQUENCE,
 };
 
-const sequenceTracks = (id: ClipId, entries: readonly SequenceEntry[]): Track[] =>
-  SEQUENCE_LANES.map((name, lane) => {
+const slug = (name: string): string => name.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+
+const sequenceTracks = (id: ClipId, sequence: ClipSequence): Track[] =>
+  sequence.tracks.map((name) => {
     const track = createTrack(name);
-    track.id = `${id}-lane-${lane}`;
+    track.id = `${id}-track-${slug(name)}`;
     track.elements.push(
-      ...entries
+      ...sequence.entries
         .map((entry, index) => ({ entry, index }))
-        .filter(({ entry }) => entry.lane === lane)
+        .filter(({ entry }) => entry.track === name)
         .map(({ entry, index }) =>
           createCompositionElement(entry.clipId, structuredClone(entry.props), {
-            id: `${id}-scene-${index}-${entry.clipId}`,
+            id: `${id}-layer-${index}-${entry.clipId}`,
             from: entry.from,
             durationInFrames: entry.durationInFrames,
           }),

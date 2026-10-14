@@ -1,6 +1,7 @@
 import type { z } from 'zod';
 import type { ClipId, ClipPropsMap } from '../clip-props';
 import type { ClipMeta, ClipModule } from '../registry';
+import { backgroundsClips } from './backgrounds';
 import { brandClips } from './brand';
 import { dataClips } from './data';
 import { devicesClips } from './devices';
@@ -17,6 +18,7 @@ export const CLIP_MODULES: ClipModule[] = [
   ...devicesClips,
   ...overlaysClips,
   ...brandClips,
+  ...backgroundsClips,
   ...transitionsClips,
   ...sequencesClips,
 ];

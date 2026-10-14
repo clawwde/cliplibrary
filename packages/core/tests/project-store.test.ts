@@ -34,27 +34,31 @@ describe('project seed', () => {
 });
 
 describe('sequence seed', () => {
-  it('lays the app promo scenes out on two alternating lanes', () => {
+  it('lays the app promo out as layered tracks of atomic clips', () => {
     const project = seedProjectForClip('app-promo');
-    expect(project.tracks.map((track) => track.name)).toEqual(['Scenes A', 'Scenes B']);
+    expect(project.tracks.map((track) => track.name)).toEqual([
+      'Captions',
+      'Text',
+      'Overlays',
+      'Devices',
+      'Backdrop',
+    ]);
     const elements = project.tracks.flatMap((track) => track.elements);
-    expect(elements).toHaveLength(9);
+    expect(elements.length).toBeGreaterThan(15);
     expect(elements.every((element) => element.type === 'composition')).toBe(true);
     const ends = elements.map((element) => element.from + element.durationInFrames);
     expect(Math.max(...ends)).toBe(project.durationInFrames);
   });
 
-  it('overlaps neighbouring scenes so transitions have room', () => {
-    const ordered = seedProjectForClip('app-promo')
-      .tracks.flatMap((track) => track.elements)
-      .sort((left, right) => left.from - right.from);
-    for (let index = 1; index < ordered.length; index++) {
-      const previous = ordered[index - 1];
-      const current = ordered[index];
-      if (previous !== undefined && current !== undefined) {
-        expect(current.from).toBeLessThanOrEqual(previous.from + previous.durationInFrames);
-        expect(current.from).toBeGreaterThan(previous.from);
-      }
+  it('keeps a backdrop under every frame of the film', () => {
+    const project = seedProjectForClip('app-promo');
+    const backdrop = project.tracks.find((track) => track.name === 'Backdrop');
+    const covered = (frame: number) =>
+      backdrop?.elements.some(
+        (element) => frame >= element.from && frame < element.from + element.durationInFrames,
+      ) ?? false;
+    for (let frame = 0; frame < project.durationInFrames; frame += 10) {
+      expect(covered(frame)).toBe(true);
     }
   });
 

@@ -12,29 +12,29 @@ import { orbitCardsDefaults, orbitCardsMeta, orbitCardsSchema } from './orbit-ca
 
 export const dataClips: ClipModule[] = [
   {
-    id: 'orbit-cards',
-    schema: orbitCardsSchema,
-    defaults: orbitCardsDefaults,
-    meta: orbitCardsMeta,
+    id: 'bar-chart-grow',
+    schema: barChartGrowSchema,
+    defaults: barChartGrowDefaults,
+    meta: barChartGrowMeta,
   },
+  { id: 'count-up', schema: countUpSchema, defaults: countUpDefaults, meta: countUpMeta },
+  {
+    id: 'donut-progress',
+    schema: donutProgressSchema,
+    defaults: donutProgressDefaults,
+    meta: donutProgressMeta,
+  },
+  { id: 'line-draw', schema: lineDrawSchema, defaults: lineDrawDefaults, meta: lineDrawMeta },
   {
     id: 'odometer-ledger',
     schema: odometerLedgerSchema,
     defaults: odometerLedgerDefaults,
     meta: odometerLedgerMeta,
   },
-  { id: 'count-up', schema: countUpSchema, defaults: countUpDefaults, meta: countUpMeta },
   {
-    id: 'bar-chart-grow',
-    schema: barChartGrowSchema,
-    defaults: barChartGrowDefaults,
-    meta: barChartGrowMeta,
-  },
-  { id: 'line-draw', schema: lineDrawSchema, defaults: lineDrawDefaults, meta: lineDrawMeta },
-  {
-    id: 'donut-progress',
-    schema: donutProgressSchema,
-    defaults: donutProgressDefaults,
-    meta: donutProgressMeta,
+    id: 'orbit-cards',
+    schema: orbitCardsSchema,
+    defaults: orbitCardsDefaults,
+    meta: orbitCardsMeta,
   },
 ];

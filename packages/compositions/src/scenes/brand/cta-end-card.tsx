@@ -1,17 +1,13 @@
 import {
-  type PromoOutroProps,
-  promoOutroDefaults,
-  promoOutroMeta,
-  promoOutroSchema,
+  type CtaEndCardProps,
+  ctaEndCardDefaults,
+  ctaEndCardMeta,
+  ctaEndCardSchema,
 } from '@cliplibrary/schemas';
 import { AbsoluteFill, Composition, useCurrentFrame } from 'remotion';
-import { Backdrop } from '../../promo/backdrop';
 import { BrandMark } from '../../promo/brand-mark';
 import { bodyFont, displayFont } from '../../promo/fonts';
-import { PhoneModel } from '../../promo/phone-model';
-import { Stage } from '../../promo/stage';
-import { settle, tween } from '../../promo/timing';
-import { TransitionFrame } from '../../promo/transition-frame';
+import { PromoLayer } from '../../promo/promo-layer';
 import { BodyCopy, FadeIn, Headline } from '../../promo/typography';
 import type { SceneModule } from '../../scene-module';
 
@@ -52,7 +48,7 @@ const StoreButton = ({
   </div>
 );
 
-export const PromoOutro = ({
+export const CtaEndCard = ({
   brandName,
   showMark,
   markColor,
@@ -64,40 +60,12 @@ export const PromoOutro = ({
   secondaryCaption,
   secondaryLabel,
   url,
-  showPhones,
-  phones,
-  phoneScale,
   look,
-  stage,
   motion,
-}: PromoOutroProps) => {
-  const raw = useCurrentFrame();
-  const frame = raw * motion.speed;
-  const arrive = tween(frame, [4, 66], [0, 1], settle);
+}: CtaEndCardProps) => {
+  const frame = useCurrentFrame() * motion.speed;
   return (
-    <TransitionFrame motion={motion}>
-      <Backdrop look={look} />
-      {showPhones ? (
-        <Stage stage={stage}>
-          {phones.map((entry, index) => {
-            const side = index === 0 ? -1 : 1;
-            return (
-              <group
-                key={`${index}:${entry.screen}`}
-                position={[
-                  side * (5.3 + (1 - arrive) * 3.5),
-                  (index === 0 ? -0.35 : 0.25) + Math.sin(frame / 26 + index) * motion.float,
-                  -0.3,
-                ]}
-                rotation={[0.06, -side * (0.6 + (1 - arrive) * 0.7), side * -0.08]}
-                scale={phoneScale}
-              >
-                <PhoneModel phone={entry} reflections={stage.reflections} />
-              </group>
-            );
-          })}
-        </Stage>
-      ) : null}
+    <PromoLayer look={look} motion={motion}>
       <AbsoluteFill style={{ alignItems: 'center', justifyContent: 'center', gap: 34 }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 18 }}>
           {showMark ? <BrandMark color={markColor} frame={frame} size={64} start={10} /> : null}
@@ -158,24 +126,24 @@ export const PromoOutro = ({
           </div>
         </FadeIn>
       </AbsoluteFill>
-    </TransitionFrame>
+    </PromoLayer>
   );
 };
 
-export const promoOutroScene: SceneModule = {
-  id: 'promo-outro',
-  component: PromoOutro,
+export const ctaEndCardScene: SceneModule = {
+  id: 'cta-end-card',
+  component: CtaEndCard,
   render: (key) => (
     <Composition
       key={key}
-      id="promo-outro"
-      component={PromoOutro}
-      schema={promoOutroSchema}
-      defaultProps={promoOutroDefaults}
-      durationInFrames={promoOutroMeta.durationInFrames}
-      fps={promoOutroMeta.fps}
-      width={promoOutroMeta.width}
-      height={promoOutroMeta.height}
+      id="cta-end-card"
+      component={CtaEndCard}
+      schema={ctaEndCardSchema}
+      defaultProps={ctaEndCardDefaults}
+      durationInFrames={ctaEndCardMeta.durationInFrames}
+      fps={ctaEndCardMeta.fps}
+      width={ctaEndCardMeta.width}
+      height={ctaEndCardMeta.height}
     />
   ),
 };
