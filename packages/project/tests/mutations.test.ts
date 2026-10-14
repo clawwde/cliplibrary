@@ -2,6 +2,7 @@ import { describe, expect, it } from 'bun:test';
 import {
   addElement,
   addTrack,
+  createCompositionElement,
   createEmptyProject,
   createShapeElement,
   createTextElement,
@@ -79,6 +80,16 @@ describe('element reducers', () => {
   it('removes an element', () => {
     const { project } = seededProject();
     expect(listElements(removeElement(project, 'el-1'))).toHaveLength(0);
+  });
+
+  it('replaces the props of a composition element', () => {
+    const base = createEmptyProject();
+    const trackId = base.tracks[0]?.id ?? '';
+    const element = createCompositionElement('typewriter', { words: ['a'] }, { id: 'clip-1' });
+    const project = addElement(base, trackId, element);
+    const next = replaceElement(project, { ...element, props: { words: ['b'] } });
+    const found = findElement(next, 'clip-1');
+    expect(found?.element.type === 'composition' && found.element.props).toEqual({ words: ['b'] });
   });
 
   it('reports the content end frame', () => {

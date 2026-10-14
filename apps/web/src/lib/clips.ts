@@ -2,7 +2,7 @@ import 'server-only';
 import { existsSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { type ExportRecord, type PropsFile, readExports, readProps } from '@cliplibrary/core';
-import { CLIP_REGISTRY, type ClipId, type ClipMeta, getClipMeta } from '@cliplibrary/schemas';
+import { CLIP_REGISTRY, type ClipId, type ClipMeta } from '@cliplibrary/schemas';
 import { repoRoot } from './repo-root';
 
 const hasRenderedVideo = (root: string, exportId: string): boolean => {
@@ -33,15 +33,6 @@ export const listClips = (): Promise<ClipListItem[]> => {
       hasVideo: hasClipVideo(root, meta.id),
     })),
   );
-};
-
-export const getClip = async (id: ClipId): Promise<ClipListItem> => {
-  const root = repoRoot();
-  return {
-    meta: getClipMeta(id),
-    props: await readProps(root, id),
-    hasVideo: hasClipVideo(root, id),
-  };
 };
 
 export const listExports = async (): Promise<ExportRecord[]> => {

@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'bun:test';
 import {
   ANIMATION_KINDS,
+  createCompositionElement,
   createEmptyProject,
   createImageElement,
   createSeedProject,
@@ -42,6 +43,19 @@ describe('project schema', () => {
 
   it('rejects an element starting before frame zero', () => {
     const element = { ...createShapeElement(), from: -5 };
+    expect(elementSchema.safeParse(element).success).toBe(false);
+  });
+
+  it('validates a composition element referencing a clip', () => {
+    const element = createCompositionElement('typewriter', { words: ['hi'] }, { from: 0 });
+    const parsed = elementSchema.safeParse(element);
+    expect(parsed.success).toBe(true);
+    expect(parsed.success && parsed.data.type).toBe('composition');
+    expect(element.props).toEqual({ words: ['hi'] });
+  });
+
+  it('rejects a composition element without a clip id', () => {
+    const element = { ...createCompositionElement('typewriter', {}), clipId: '' };
     expect(elementSchema.safeParse(element).success).toBe(false);
   });
 

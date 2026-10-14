@@ -1,5 +1,6 @@
 import type { Element } from '@cliplibrary/project';
 import { AbsoluteFill, useCurrentFrame } from 'remotion';
+import { CompositionElementView } from './elements/composition-element';
 import { ImageElementView } from './elements/image-element';
 import { ShapeElementView } from './elements/shape-element';
 import { TextElementView } from './elements/text-element';
@@ -28,6 +29,16 @@ export const ElementView = ({ element }: { element: Element }) => {
   const opacity = transform.opacity * entrance.opacity;
   const translateY = transform.y + entrance.translateY;
   const scale = transform.scale * entrance.scale;
+  const transformCss = `translate(${transform.x}px, ${translateY}px) scale(${scale}) rotate(${transform.rotation}deg)`;
+
+  if (element.type === 'composition') {
+    return (
+      <AbsoluteFill style={{ opacity, transform: transformCss, transformOrigin: 'center center' }}>
+        <CompositionElementView element={element} />
+      </AbsoluteFill>
+    );
+  }
+
   return (
     <AbsoluteFill style={{ justifyContent: 'center', alignItems: 'center' }}>
       <div
@@ -36,7 +47,7 @@ export const ElementView = ({ element }: { element: Element }) => {
           alignItems: 'center',
           justifyContent: 'center',
           opacity,
-          transform: `translate(${transform.x}px, ${translateY}px) scale(${scale}) rotate(${transform.rotation}deg)`,
+          transform: transformCss,
         }}
       >
         {renderInner(element)}

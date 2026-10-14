@@ -88,6 +88,7 @@
       "name": "@cliplibrary/core",
       "version": "0.0.0",
       "dependencies": {
+        "@cliplibrary/project": "workspace:*",
         "@cliplibrary/schemas": "workspace:*",
         "zod": "4.5.4",
       },

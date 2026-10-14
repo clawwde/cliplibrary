@@ -42,16 +42,25 @@ export const shapeElementSchema = z.object({
   color: z.string(),
 });
 
+export const compositionElementSchema = z.object({
+  ...baseElementShape,
+  type: z.literal('composition'),
+  clipId: z.string().min(1),
+  props: z.record(z.string(), z.unknown()),
+});
+
 export const elementSchema = z.discriminatedUnion('type', [
   textElementSchema,
   imageElementSchema,
   videoElementSchema,
   shapeElementSchema,
+  compositionElementSchema,
 ]);
 
 export type TextElement = z.infer<typeof textElementSchema>;
 export type ImageElement = z.infer<typeof imageElementSchema>;
 export type VideoElement = z.infer<typeof videoElementSchema>;
 export type ShapeElement = z.infer<typeof shapeElementSchema>;
+export type CompositionElement = z.infer<typeof compositionElementSchema>;
 export type Element = z.infer<typeof elementSchema>;
 export type ElementType = Element['type'];

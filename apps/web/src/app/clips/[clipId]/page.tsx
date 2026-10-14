@@ -1,27 +1,31 @@
-import { describeSchema, readHistory } from '@cliplibrary/core';
-import { CLIP_SCHEMAS, isClipId } from '@cliplibrary/schemas';
+import { describeSchema, readProject, readProjectHistory } from '@cliplibrary/core';
+import { CLIP_SCHEMAS, getClipMeta, isClipId } from '@cliplibrary/schemas';
 import { notFound } from 'next/navigation';
-import { ClipEditor } from '@/components/editor/clip-editor';
-import { getClip } from '@/lib/clips';
+import { ClipTimelineEditor } from '@/components/clip-timeline/clip-timeline-editor';
 import { repoRoot } from '@/lib/repo-root';
+
+export const dynamic = 'force-dynamic';
 
 const ClipEditorPage = async ({ params }: { params: Promise<{ clipId: string }> }) => {
   const { clipId } = await params;
   if (!isClipId(clipId)) {
     notFound();
   }
-  const clip = await getClip(clipId);
+  const root = repoRoot();
+  const meta = getClipMeta(clipId);
   const descriptors = describeSchema(CLIP_SCHEMAS[clipId]);
-  const history = await readHistory(repoRoot(), clipId);
+  const [initialProject, initialHistory] = await Promise.all([
+    readProject(root, clipId),
+    readProjectHistory(root, clipId),
+  ]);
 
   return (
-    <ClipEditor
+    <ClipTimelineEditor
       clipId={clipId}
-      meta={clip.meta}
+      title={meta.title}
       descriptors={descriptors}
-      initialValues={clip.props.values as Record<string, unknown>}
-      initialHistory={history}
-      initialVersionId={clip.props.currentVersionId}
+      initialProject={initialProject}
+      initialHistory={initialHistory}
     />
   );
 };

@@ -1,5 +1,12 @@
 import { defaultAnimation } from './animation';
-import type { ImageElement, ShapeElement, ShapeKind, TextElement, VideoElement } from './element';
+import type {
+  CompositionElement,
+  ImageElement,
+  ShapeElement,
+  ShapeKind,
+  TextElement,
+  VideoElement,
+} from './element';
 import { createId } from './ids';
 import type { Track } from './track';
 import { identityTransform } from './transform';
@@ -47,6 +54,20 @@ export const createShapeElement = (
   kind,
   color: '#6366f1',
   ...sharedDefaults(),
+  ...overrides,
+});
+
+export const createCompositionElement = (
+  clipId: string,
+  props: Record<string, unknown>,
+  overrides: Partial<CompositionElement> = {},
+): CompositionElement => ({
+  type: 'composition',
+  id: createId('composition'),
+  clipId,
+  props,
+  ...sharedDefaults(),
+  animation: { kind: 'none', easing: 'linear', durationInFrames: 0 },
   ...overrides,
 });
 

@@ -18,11 +18,15 @@ const LABELS: Record<Element['type'], string> = {
   image: 'Image',
   video: 'Video',
   shape: 'Shape',
+  composition: 'Clip',
 };
 
 const blockLabel = (element: Element): string => {
   if (element.type === 'text') {
     return element.content.slice(0, 24) || 'Text';
+  }
+  if (element.type === 'composition') {
+    return element.clipId;
   }
   return LABELS[element.type];
 };
