@@ -56,31 +56,33 @@ export const VideoTile = ({
         {!near || (hasVideo && !loaded) ? (
           <Skeleton className="absolute inset-0 rounded-none" />
         ) : null}
-        {near && hasVideo ? (
-          <video
-            src={`/exports/${meta.id}.mp4`}
-            poster={`/exports/${meta.id}.jpg`}
-            muted
-            loop
-            autoPlay
-            playsInline
-            preload="metadata"
-            onLoadedData={() => setLoaded(true)}
-            className="size-full object-cover"
-          />
-        ) : null}
-        {near && !hasVideo ? (
-          <Thumbnail
-            component={Composition}
-            inputProps={project as unknown as Record<string, unknown>}
-            durationInFrames={project.durationInFrames}
-            fps={project.fps}
-            compositionWidth={project.width}
-            compositionHeight={project.height}
-            frameToDisplay={Math.min(meta.posterFrame, project.durationInFrames - 1)}
-            style={{ width: '100%', height: '100%' }}
-          />
-        ) : null}
+        <div className="size-full transition-transform duration-300 ease-out group-hover:scale-105">
+          {near && hasVideo ? (
+            <video
+              src={`/exports/${meta.id}.mp4`}
+              poster={`/exports/${meta.id}.jpg`}
+              muted
+              loop
+              autoPlay
+              playsInline
+              preload="metadata"
+              onLoadedData={() => setLoaded(true)}
+              className="size-full object-cover"
+            />
+          ) : null}
+          {near && !hasVideo ? (
+            <Thumbnail
+              component={Composition}
+              inputProps={project as unknown as Record<string, unknown>}
+              durationInFrames={project.durationInFrames}
+              fps={project.fps}
+              compositionWidth={project.width}
+              compositionHeight={project.height}
+              frameToDisplay={Math.min(meta.posterFrame, project.durationInFrames - 1)}
+              style={{ width: '100%', height: '100%' }}
+            />
+          ) : null}
+        </div>
         <span className="absolute top-2 right-2 rounded-md bg-black/55 px-1.5 py-0.5 font-medium text-[11px] text-white tabular-nums backdrop-blur">
           {formatDuration(meta)}
         </span>

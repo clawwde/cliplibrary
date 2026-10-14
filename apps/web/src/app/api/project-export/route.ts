@@ -6,7 +6,7 @@ import { type Project, safeParseProject } from '@cliplibrary/project';
 import { NextResponse } from 'next/server';
 import { buildProjectRenderArgs } from '@/lib/project-export-run';
 import { type ProjectJob, setProjectJob, updateProjectJob } from '@/lib/project-jobs';
-import { DEFAULT_RENDER_OPTIONS } from '@/lib/render-options';
+import { type RenderOptions, sanitizeRenderOptions } from '@/lib/render-options';
 import { repoRoot } from '@/lib/repo-root';
 
 export const runtime = 'nodejs';
@@ -20,7 +20,11 @@ const parseProgress = (line: string): number | null => {
   }
 };
 
-const startRender = async (exportId: string, project: Project): Promise<void> => {
+const startRender = async (
+  exportId: string,
+  project: Project,
+  options: RenderOptions,
+): Promise<void> => {
   const root = repoRoot();
   const outDir = join(root, 'apps', 'web', 'public', 'exports', exportId);
   const tmp = join(tmpdir(), `cliplibrary-project-${exportId}`);
@@ -28,7 +32,7 @@ const startRender = async (exportId: string, project: Project): Promise<void> =>
   const projectPath = join(tmp, 'project.json');
   const optionsPath = join(tmp, 'options.json');
   await writeFile(projectPath, JSON.stringify(project), 'utf8');
-  await writeFile(optionsPath, JSON.stringify(DEFAULT_RENDER_OPTIONS), 'utf8');
+  await writeFile(optionsPath, JSON.stringify(options), 'utf8');
 
   const renderCwd = join(root, 'apps', 'render');
   const child = spawn('bun', buildProjectRenderArgs({ projectPath, outDir, optionsPath }), {
@@ -72,15 +76,16 @@ const startRender = async (exportId: string, project: Project): Promise<void> =>
 };
 
 export const POST = async (request: Request): Promise<Response> => {
-  const body = (await request.json()) as { project?: unknown };
+  const body = (await request.json()) as { project?: unknown; options?: unknown };
   const project = safeParseProject(body.project);
   if (project === null) {
     return NextResponse.json({ error: 'Invalid project' }, { status: 400 });
   }
+  const options = sanitizeRenderOptions(body.options);
 
   const exportId = crypto.randomUUID();
   setProjectJob({ exportId, status: 'rendering', progress: 0, error: null });
-  await startRender(exportId, project);
+  await startRender(exportId, project, options);
 
   return NextResponse.json({ exportId });
 };
