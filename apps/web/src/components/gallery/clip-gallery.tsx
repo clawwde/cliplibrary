@@ -10,7 +10,6 @@ import {
   facetCounts,
   filterClips,
   type GalleryFilters,
-  groupByCategory,
 } from '@/lib/gallery-filters';
 import { FilterBar } from './filter-bar';
 
@@ -81,21 +80,6 @@ export const ClipGallery = ({
             Reset filters
           </Button>
         </div>
-      ) : filters.sort === 'category' ? (
-        groupByCategory(visible).map((group) => (
-          <section key={group.category} aria-labelledby={`category-${group.category}`}>
-            <h2
-              id={`category-${group.category}`}
-              className="mb-3 flex items-baseline gap-2 font-semibold text-base tracking-tight"
-            >
-              {group.label}
-              <span className="font-normal text-muted-foreground text-sm">
-                {group.items.length}
-              </span>
-            </h2>
-            <Grid items={group.items} Tile={Tile} />
-          </section>
-        ))
       ) : (
         <Grid items={visible} Tile={Tile} />
       )}

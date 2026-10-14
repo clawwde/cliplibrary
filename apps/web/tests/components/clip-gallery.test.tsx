@@ -30,10 +30,9 @@ const Harness = ({ initial = DEFAULT_FILTERS }: { initial?: GalleryFilters }) =>
 };
 
 describe('ClipGallery', () => {
-  it('groups every clip under a category heading by default', () => {
+  it('shows every clip in one flat grid without category headings', () => {
     render(<Harness />);
-    expect(screen.getByRole('heading', { name: /3D Devices/ })).toBeInTheDocument();
-    expect(screen.getByRole('heading', { name: /Typography/ })).toBeInTheDocument();
+    expect(screen.queryByRole('heading')).not.toBeInTheDocument();
     expect(screen.getAllByRole('article')).toHaveLength(items.length);
   });
 
@@ -47,7 +46,7 @@ describe('ClipGallery', () => {
   });
 
   it('shows removable chips for active filters and an empty state', () => {
-    render(<Harness initial={{ ...DEFAULT_FILTERS, category: 'media', tags: ['phone'] }} />);
+    render(<Harness initial={{ ...DEFAULT_FILTERS, category: 'transitions', tags: ['phone'] }} />);
     expect(screen.getByText('No clips match these filters.')).toBeInTheDocument();
     fireEvent.click(screen.getByRole('button', { name: 'Remove filter #phone' }));
     expect(screen.getAllByRole('article').length).toBeGreaterThan(0);
@@ -55,9 +54,8 @@ describe('ClipGallery', () => {
     expect(screen.getAllByRole('article')).toHaveLength(items.length);
   });
 
-  it('switches to a flat list when sorted by name', () => {
+  it('orders the grid by name when sorted by name', () => {
     render(<Harness initial={{ ...DEFAULT_FILTERS, sort: 'name-asc' }} />);
-    expect(screen.queryByRole('heading', { name: /3D Devices/ })).not.toBeInTheDocument();
     const titles = screen.getAllByRole('article').map((node) => node.textContent ?? '');
     expect(titles).toEqual([...titles].sort((left, right) => left.localeCompare(right)));
   });

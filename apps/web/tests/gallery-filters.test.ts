@@ -5,7 +5,6 @@ import {
   facetCounts,
   filterClips,
   formatDuration,
-  groupByCategory,
   hasActiveFilters,
   matchesQuery,
   parseFilters,
@@ -75,12 +74,6 @@ describe('gallery filters', () => {
     expect(categories.get('typography')).toBeGreaterThan(0);
     const themes = facetCounts(items, filters, 'theme', (meta) => [meta.theme]);
     expect(themes.get('dark')).toBe(1);
-  });
-
-  it('groups visible clips under their categories in taxonomy order', () => {
-    const groups = groupByCategory(filterClips(items, DEFAULT_FILTERS));
-    expect(groups[0]?.category).toBe('typography');
-    expect(groups.reduce((total, group) => total + group.items.length, 0)).toBe(items.length);
   });
 
   it('reports active filters and formats durations', () => {

@@ -1,5 +1,4 @@
 import {
-  CLIP_CATEGORIES,
   CLIP_CATEGORY_IDS,
   CLIP_TAGS,
   CLIP_THEMES,
@@ -142,21 +141,6 @@ export const facetCounts = <Key extends string>(
   }
   return counts;
 };
-
-export interface CategoryGroup<Item> {
-  category: ClipCategory;
-  label: string;
-  items: Item[];
-}
-
-export const groupByCategory = <Item extends { meta: ClipMeta }>(
-  items: readonly Item[],
-): CategoryGroup<Item>[] =>
-  CLIP_CATEGORIES.map((category) => ({
-    category: category.id,
-    label: category.label,
-    items: items.filter((item) => item.meta.category === category.id),
-  })).filter((group) => group.items.length > 0);
 
 export const formatDuration = (meta: ClipMeta): string => {
   const seconds = meta.durationInFrames / meta.fps;
