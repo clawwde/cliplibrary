@@ -1,5 +1,12 @@
 import { describe, expect, it } from 'bun:test';
-import { CLIP_SCHEMAS, zColor, zMultiline, zSlider } from '@cliplibrary/schemas';
+import {
+  CLIP_SCHEMAS,
+  EASING_IDS,
+  zColor,
+  zImage,
+  zMultiline,
+  zSlider,
+} from '@cliplibrary/schemas';
 import { z } from 'zod';
 import { type ControlDescriptor, describeSchema } from '../src/index';
 
@@ -46,6 +53,27 @@ describe('describeSchema control kinds', () => {
   it('carries the slider step from control metadata', () => {
     const [control] = describeSchema(z.object({ speed: zSlider({ min: 0, max: 5, step: 0.25 }) }));
     expect(control).toMatchObject({ kind: 'number', min: 0, max: 5, step: 0.25 });
+  });
+
+  it('emits an enum control for an easing enum field', () => {
+    const [control] = describeSchema(z.object({ easing: z.enum(EASING_IDS) }));
+    expect(control).toEqual({
+      kind: 'enum',
+      path: ['easing'],
+      label: 'easing',
+      options: [...EASING_IDS],
+    });
+  });
+
+  it('surfaces an image-tagged field as an editable text control', () => {
+    const [control] = describeSchema(z.object({ image1: zImage() }));
+    expect(control).toEqual({
+      kind: 'text',
+      path: ['image1'],
+      label: 'image1',
+      multiline: false,
+      maxLength: null,
+    });
   });
 
   it('leaves number bounds null when unconstrained', () => {

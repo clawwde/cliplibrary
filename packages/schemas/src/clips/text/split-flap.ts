@@ -1,5 +1,6 @@
 import { z } from 'zod';
-import { zColor } from '../control';
+import { zColor } from '../../control';
+import type { ClipMeta } from '../../registry';
 
 export const SPLIT_FLAP_COLUMNS = 12;
 
@@ -22,4 +23,18 @@ export const splitFlapDefaults: SplitFlapProps = {
     { text: 'MOVES PEOPLE', color: '#f4f1ea' },
     { text: 'BOARDING NOW', color: '#ffb300' },
   ],
+};
+
+export const splitFlapMeta: ClipMeta = {
+  id: 'split-flap',
+  title: 'Split Flap',
+  description:
+    'An airport-style split-flap board where every cell flips through letters, staggered by row and column, until the message settles.',
+  category: 'text',
+  source: 'packages/compositions/src/scenes/text/split-flap.tsx',
+  durationInFrames: 150,
+  posterFrame: 140,
+  fps: 30,
+  width: 1920,
+  height: 1080,
 };

@@ -1,15 +1,19 @@
 import { describe, expect, it } from 'bun:test';
 import { z } from 'zod';
 import {
+  blurFadeInSchema,
   CLIP_DEFAULTS,
   CLIP_IDS,
+  CLIP_MODULES,
   CLIP_REGISTRY,
   CLIP_SCHEMAS,
   type ClipId,
+  EASING_IDS,
   getClipDefaults,
   getClipMeta,
   getClipSchema,
   HEX_COLOR,
+  imageShowcaseSchema,
   isClipId,
   notificationStackSchema,
   orbitCardsSchema,
@@ -17,9 +21,12 @@ import {
   SPLIT_FLAP_COLUMNS,
   splitFlapSchema,
   zColor,
+  zImage,
   zMultiline,
   zSlider,
 } from '../src/index';
+
+const CATEGORIES = ['simple', 'text', 'data', 'media', 'complex'];
 
 describe('clip registry completeness', () => {
   it('has a schema, defaults and registry entry for every clip id', () => {
@@ -40,7 +47,8 @@ describe('clip registry completeness', () => {
     for (const meta of CLIP_REGISTRY) {
       expect(meta.title.length).toBeGreaterThan(0);
       expect(meta.description.length).toBeGreaterThan(0);
-      expect(meta.source).toBe(`packages/compositions/src/scenes/${meta.id}.tsx`);
+      expect(CATEGORIES).toContain(meta.category);
+      expect(meta.source).toBe(`packages/compositions/src/scenes/${meta.category}/${meta.id}.tsx`);
       expect(meta.fps).toBeGreaterThan(0);
       expect(meta.width).toBeGreaterThan(0);
       expect(meta.height).toBeGreaterThan(0);
@@ -161,5 +169,66 @@ describe('control metadata', () => {
     expect(slider.safeParse(2).success).toBe(true);
     expect(slider.safeParse(0).success).toBe(false);
     expect(slider.safeParse(4).success).toBe(false);
+  });
+});
+
+describe('pluggable module architecture', () => {
+  it('registers every module in a seeded category', () => {
+    for (const module of CLIP_MODULES) {
+      expect(CATEGORIES).toContain(module.meta.category);
+      expect(module.id).toBe(module.meta.id);
+      expect(CLIP_SCHEMAS[module.id]).toBe(module.schema);
+      expect(CLIP_DEFAULTS[module.id]).toBe(module.defaults);
+    }
+  });
+
+  it('exposes at least one clip in each seeded category', () => {
+    const present = new Set(CLIP_REGISTRY.map((meta) => meta.category));
+    for (const category of CATEGORIES) {
+      expect(present.has(category)).toBe(true);
+    }
+  });
+
+  it('places the new clips in their intended categories', () => {
+    const categoryOf = (id: ClipId) => getClipMeta(id).category;
+    expect(categoryOf('blur-fade-in')).toBe('simple');
+    expect(categoryOf('rise-slide')).toBe('simple');
+    expect(categoryOf('typewriter')).toBe('text');
+    expect(categoryOf('count-up')).toBe('data');
+    expect(categoryOf('image-showcase')).toBe('media');
+  });
+});
+
+describe('easing enum control', () => {
+  it('accepts every easing id and rejects unknown curves', () => {
+    const base = CLIP_DEFAULTS['blur-fade-in'];
+    for (const id of EASING_IDS) {
+      expect(blurFadeInSchema.safeParse({ ...base, easing: id }).success).toBe(true);
+    }
+    expect(blurFadeInSchema.safeParse({ ...base, easing: 'bounce' }).success).toBe(false);
+  });
+});
+
+describe('image media control', () => {
+  it('tags an image field with image control metadata', () => {
+    expect(readControlMeta(zImage())).toEqual({ control: 'image' });
+  });
+
+  it('accepts empty, url and data-uri strings but rejects non-strings', () => {
+    expect(zImage().safeParse('').success).toBe(true);
+    expect(zImage().safeParse('https://example.com/a.png').success).toBe(true);
+    expect(zImage().safeParse('data:image/png;base64,AAAA').success).toBe(true);
+    expect(zImage().safeParse(42).success).toBe(false);
+  });
+
+  it('round-trips the image showcase defaults and populated images', () => {
+    const base = CLIP_DEFAULTS['image-showcase'];
+    expect(imageShowcaseSchema.safeParse(base).success).toBe(true);
+    const populated = { ...base, image1: 'https://example.com/one.jpg' };
+    const result = imageShowcaseSchema.safeParse(populated);
+    expect(result.success).toBe(true);
+    if (result.success) {
+      expect(result.data.image1).toBe('https://example.com/one.jpg');
+    }
   });
 });

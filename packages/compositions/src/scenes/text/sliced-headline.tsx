@@ -1,8 +1,14 @@
-import type { SlicedHeadlineProps } from '@cliplibrary/schemas';
+import {
+  type SlicedHeadlineProps,
+  slicedHeadlineDefaults,
+  slicedHeadlineMeta,
+  slicedHeadlineSchema,
+} from '@cliplibrary/schemas';
 import { loadFont as loadNormal } from '@remotion/google-fonts/InstrumentSerif';
 import type { ReactNode } from 'react';
-import { AbsoluteFill, Easing, random, useCurrentFrame } from 'remotion';
-import { ramp } from '../kit/motion';
+import { AbsoluteFill, Composition, Easing, random, useCurrentFrame } from 'remotion';
+import { ramp } from '../../kit/motion';
+import type { SceneModule } from '../../scene-module';
 
 const { fontFamily } = loadNormal('normal', { subsets: ['latin'] });
 loadNormal('italic', { subsets: ['latin'] });
@@ -185,4 +191,22 @@ export const SlicedHeadline = ({
       <Band direction={-1} text={band} color={text} />
     </AbsoluteFill>
   );
+};
+
+export const slicedHeadlineScene: SceneModule = {
+  id: 'sliced-headline',
+  component: SlicedHeadline,
+  render: (key) => (
+    <Composition
+      key={key}
+      id="sliced-headline"
+      component={SlicedHeadline}
+      schema={slicedHeadlineSchema}
+      defaultProps={slicedHeadlineDefaults}
+      durationInFrames={slicedHeadlineMeta.durationInFrames}
+      fps={slicedHeadlineMeta.fps}
+      width={slicedHeadlineMeta.width}
+      height={slicedHeadlineMeta.height}
+    />
+  ),
 };

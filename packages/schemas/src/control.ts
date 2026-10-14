@@ -3,7 +3,8 @@ import { z } from 'zod';
 export type ControlMeta =
   | { control: 'color' }
   | { control: 'slider'; step: number }
-  | { control: 'textarea' };
+  | { control: 'textarea' }
+  | { control: 'image' };
 
 export const HEX_COLOR = /^#([0-9a-fA-F]{6}|[0-9a-fA-F]{8})$/;
 
@@ -22,13 +23,19 @@ export const zSlider = (options: { min: number; max: number; step?: number }) =>
 
 export const zMultiline = () => z.string().meta({ control: 'textarea' } satisfies ControlMeta);
 
+export const zImage = () => z.string().meta({ control: 'image' } satisfies ControlMeta);
+
 export const readControlMeta = (schema: z.core.$ZodType): ControlMeta | undefined => {
   const meta = z.globalRegistry.get(schema);
   if (meta === undefined) {
     return undefined;
   }
   const candidate = meta as Partial<ControlMeta>;
-  if (candidate.control === 'color' || candidate.control === 'textarea') {
+  if (
+    candidate.control === 'color' ||
+    candidate.control === 'textarea' ||
+    candidate.control === 'image'
+  ) {
     return { control: candidate.control };
   }
   if (candidate.control === 'slider') {

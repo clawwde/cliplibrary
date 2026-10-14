@@ -1,5 +1,6 @@
 import { z } from 'zod';
-import { zColor } from '../control';
+import { zColor } from '../../control';
+import type { ClipMeta } from '../../registry';
 
 export const productDemoSchema = z.object({
   name: z.string(),
@@ -21,4 +22,18 @@ export const productDemoDefaults: ProductDemoProps = {
   url: 'pulse.example.com',
   accent: '#4f46e5',
   dark: '#1e1b4b',
+};
+
+export const productDemoMeta: ClipMeta = {
+  id: 'product-demo',
+  title: 'Product Demo',
+  description:
+    'A mock analytics dashboard: counting stat cards, growing bars, a cursor click and a toast, then a call to action.',
+  category: 'data',
+  source: 'packages/compositions/src/scenes/data/product-demo.tsx',
+  durationInFrames: 360,
+  posterFrame: 200,
+  fps: 30,
+  width: 1920,
+  height: 1080,
 };

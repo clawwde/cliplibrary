@@ -38,3 +38,38 @@ A Turborepo for a library of Remotion animation clips with a deep, schema-driven
   `/// <reference`, `/*! license */`). Enforced by `scripts/strip-comments.ts --check`.
 - Heavily typed. Zod schemas are the single source of truth for clip props; derive types with
   `z.infer`, never hand-duplicate them.
+
+## Clip modules
+
+Clips are pluggable, category-organized modules so that parallel authors rarely touch the same
+file. Seeded categories: `simple`, `text`, `data`, `media`, `complex`.
+
+- Schema side: `packages/schemas/src/clips/<category>/<id>.ts` exports `<name>Schema`,
+  `<name>Defaults`, `<Name>Props` and `<name>Meta: ClipMeta` (metadata, including `category`, is
+  co-located with the schema). Each category's `index.ts` exports a `ClipModule[]`, and
+  `clips/index.ts` concatenates them into `CLIP_MODULES`, then derives `CLIP_REGISTRY`,
+  `CLIP_SCHEMAS`, `CLIP_DEFAULTS`, `CLIP_IDS` and the `getClip*`/`isClipId` accessors.
+- Composition side: `packages/compositions/src/scenes/<category>/<id>.tsx` exports the scene
+  component and a `<name>Scene: SceneModule` (`{ id, component, render }`). Each category's
+  `index.ts` exports a `SceneModule[]`, and `scenes/index.ts` concatenates them into `CLIP_SCENES`,
+  from which `CLIP_COMPONENTS` and `RemotionRoot` are built.
+
+To add a clip:
+
+1. Add the schema file under the chosen category (`<name>Schema`/`<name>Defaults`/`<Name>Props`/
+   `<name>Meta`).
+2. Add its id and `Props` type to `ClipPropsMap` in `packages/schemas/src/clip-props.ts` (this is
+   the typed map of the built-in clips and the source of the `ClipId` union).
+3. Register the module in that category's `clips/<category>/index.ts` (one line).
+4. Add the scene file under `scenes/<category>/` (component + `<name>Scene`).
+5. Register the scene in `scenes/<category>/index.ts` (one line).
+
+## Controls
+
+Field controls are tagged on the zod schema and read back by
+`packages/core/src/schema-introspect.ts`:
+
+- `zColor()`, `zMultiline()`, `zSlider({ min, max, step })`, `zImage()` (a URL or data-URI string;
+  empty is allowed and renders a placeholder), and `z.enum(EASING_IDS)` for an easing curve picker.
+- `EASING_IDS`/`EasingId` live in `@cliplibrary/schemas` and are the single source consumed by the
+  compositions motion kit (`kit/easing.ts`).

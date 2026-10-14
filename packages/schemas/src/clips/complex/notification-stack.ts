@@ -1,5 +1,6 @@
 import { z } from 'zod';
-import { zColor } from '../control';
+import { zColor } from '../../control';
+import type { ClipMeta } from '../../registry';
 
 export const notificationStackSchema = z.object({
   finale: z.string(),
@@ -62,4 +63,18 @@ export const notificationStackDefaults: NotificationStackProps = {
       time: '12m',
     },
   ],
+};
+
+export const notificationStackMeta: ClipMeta = {
+  id: 'notification-stack',
+  title: 'Notification Stack',
+  description:
+    'Glass notifications spring in and stack with depth, fan out into a list, then swipe away to reveal an inbox zero title.',
+  category: 'complex',
+  source: 'packages/compositions/src/scenes/complex/notification-stack.tsx',
+  durationInFrames: 200,
+  posterFrame: 190,
+  fps: 30,
+  width: 1920,
+  height: 1080,
 };

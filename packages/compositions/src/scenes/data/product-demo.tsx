@@ -1,7 +1,13 @@
-import type { ProductDemoProps } from '@cliplibrary/schemas';
+import {
+  type ProductDemoProps,
+  productDemoDefaults,
+  productDemoMeta,
+  productDemoSchema,
+} from '@cliplibrary/schemas';
 import { loadFont } from '@remotion/google-fonts/Inter';
 import {
   AbsoluteFill,
+  Composition,
   Easing,
   interpolate,
   Sequence,
@@ -9,6 +15,7 @@ import {
   useCurrentFrame,
   useVideoConfig,
 } from 'remotion';
+import type { SceneModule } from '../../scene-module';
 
 const { fontFamily } = loadFont('normal', { weights: ['600', '800'], subsets: ['latin'] });
 
@@ -256,3 +263,21 @@ export const ProductDemo = ({
     </Sequence>
   </AbsoluteFill>
 );
+
+export const productDemoScene: SceneModule = {
+  id: 'product-demo',
+  component: ProductDemo,
+  render: (key) => (
+    <Composition
+      key={key}
+      id="product-demo"
+      component={ProductDemo}
+      schema={productDemoSchema}
+      defaultProps={productDemoDefaults}
+      durationInFrames={productDemoMeta.durationInFrames}
+      fps={productDemoMeta.fps}
+      width={productDemoMeta.width}
+      height={productDemoMeta.height}
+    />
+  ),
+};

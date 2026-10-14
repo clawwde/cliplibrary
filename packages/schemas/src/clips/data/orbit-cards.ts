@@ -1,5 +1,6 @@
 import { z } from 'zod';
-import { zColor } from '../control';
+import { zColor } from '../../control';
+import type { ClipMeta } from '../../registry';
 
 export const orbitCardsSchema = z.object({
   headline: z.string(),
@@ -22,4 +23,18 @@ export const orbitCardsDefaults: OrbitCardsProps = {
     { title: 'NPS', value: '+64', color: '#f472b6' },
     { title: 'Deploys', value: '312', color: '#fb923c' },
   ],
+};
+
+export const orbitCardsMeta: ClipMeta = {
+  id: 'orbit-cards',
+  title: 'Orbit Cards',
+  description:
+    'Eight metric cards orbit in 3D perspective, decelerate, then collapse into a dashboard grid while a headline rises in letter by letter.',
+  category: 'data',
+  source: 'packages/compositions/src/scenes/data/orbit-cards.tsx',
+  durationInFrames: 210,
+  posterFrame: 195,
+  fps: 30,
+  width: 1920,
+  height: 1080,
 };
