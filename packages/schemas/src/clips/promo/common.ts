@@ -70,6 +70,7 @@ export const stageSchema = z.object({
   reflections: zSlider({ min: 0, max: 3, step: 0.05 }),
   shadow: zSlider({ min: 0, max: 0.6, step: 0.01 }),
   shadowSoftness: zSlider({ min: 1, max: 40, step: 1 }),
+  cameraDrift: zSlider({ min: 0, max: 1, step: 0.01 }),
 });
 
 export type PromoStage = z.infer<typeof stageSchema>;
@@ -112,6 +113,7 @@ export const defaultStage = (overrides: Partial<PromoStage> = {}): PromoStage =>
   reflections: 1.1,
   shadow: 0.16,
   shadowSoftness: 18,
+  cameraDrift: 0.35,
   ...overrides,
 });
 

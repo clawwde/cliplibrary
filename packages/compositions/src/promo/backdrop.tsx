@@ -1,5 +1,5 @@
 import type { PromoLook } from '@cliplibrary/schemas';
-import { AbsoluteFill, useCurrentFrame } from 'remotion';
+import { AbsoluteFill } from 'remotion';
 
 const EASED_STOPS = [0, 0.04, 0.14, 0.3, 0.5, 0.7, 0.86, 0.96, 1];
 
@@ -10,7 +10,6 @@ const easedGradient = (from: string, to: string): string =>
   ).join(', ');
 
 export const Backdrop = ({ look, focusX = 50 }: { look: PromoLook; focusX?: number }) => {
-  const frame = useCurrentFrame();
   const glow = `rgba(255, 255, 255, ${(look.spotlight * 0.35).toFixed(3)})`;
   return (
     <AbsoluteFill
@@ -35,7 +34,7 @@ export const Backdrop = ({ look, focusX = 50 }: { look: PromoLook; focusX?: numb
               type="fractalNoise"
               baseFrequency="0.9"
               numOctaves={2}
-              seed={frame % 12}
+              seed={7}
               stitchTiles="stitch"
             />
             <feColorMatrix type="saturate" values="0" />
