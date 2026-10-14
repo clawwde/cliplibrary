@@ -1,11 +1,14 @@
 import type { z } from 'zod';
 import type { ClipId } from './clip-props';
+import type { ClipCategory, ClipTag, ClipTheme } from './taxonomy';
 
 export type ClipMeta = {
   id: ClipId;
   title: string;
   description: string;
-  category: string;
+  category: ClipCategory;
+  tags: readonly ClipTag[];
+  theme: ClipTheme;
   source: string;
   durationInFrames: number;
   posterFrame: number;

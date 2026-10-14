@@ -38,6 +38,8 @@ export const lineDrawMeta: ClipMeta = {
   description:
     'A smooth line chart draws itself across the frame and fills in beneath as it goes, with the data points, thickness, draw speed and curve all editable.',
   category: 'data',
+  tags: ['chart'],
+  theme: 'dark',
   source: 'packages/compositions/src/scenes/data/line-draw.tsx',
   durationInFrames: 180,
   posterFrame: 160,

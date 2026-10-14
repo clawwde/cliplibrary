@@ -39,6 +39,8 @@ export const kenBurnsMeta: ClipMeta = {
   description:
     'A photo drifts and slowly zooms behind a title that fades up over a gradient scrim, with the zoom amount, pan direction, title speed and curve all adjustable; an empty image renders a neutral placeholder.',
   category: 'media',
+  tags: ['image', 'headline'],
+  theme: 'dark',
   source: 'packages/compositions/src/scenes/media/ken-burns.tsx',
   durationInFrames: 180,
   posterFrame: 150,

@@ -1,14 +1,20 @@
 import type { SceneModule } from '../scene-module';
-import { complexScenes } from './complex';
+import { brandScenes } from './brand';
 import { dataScenes } from './data';
+import { devicesScenes } from './devices';
 import { mediaScenes } from './media';
-import { promoScenes } from './promo';
-import { textScenes } from './text';
+import { overlaysScenes } from './overlays';
+import { sequencesScenes } from './sequences';
+import { transitionsScenes } from './transitions';
+import { typographyScenes } from './typography';
 
 export const CLIP_SCENES: SceneModule[] = [
-  ...textScenes,
+  ...typographyScenes,
   ...dataScenes,
   ...mediaScenes,
-  ...complexScenes,
-  ...promoScenes,
+  ...devicesScenes,
+  ...overlaysScenes,
+  ...brandScenes,
+  ...transitionsScenes,
+  ...sequencesScenes,
 ];

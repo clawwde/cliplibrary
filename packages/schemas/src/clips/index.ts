@@ -1,18 +1,24 @@
 import type { z } from 'zod';
 import type { ClipId, ClipPropsMap } from '../clip-props';
 import type { ClipMeta, ClipModule } from '../registry';
-import { complexClips } from './complex';
+import { brandClips } from './brand';
 import { dataClips } from './data';
+import { devicesClips } from './devices';
 import { mediaClips } from './media';
-import { promoClips } from './promo';
-import { textClips } from './text';
+import { overlaysClips } from './overlays';
+import { sequencesClips } from './sequences';
+import { transitionsClips } from './transitions';
+import { typographyClips } from './typography';
 
 export const CLIP_MODULES: ClipModule[] = [
-  ...textClips,
+  ...typographyClips,
   ...dataClips,
   ...mediaClips,
-  ...complexClips,
-  ...promoClips,
+  ...devicesClips,
+  ...overlaysClips,
+  ...brandClips,
+  ...transitionsClips,
+  ...sequencesClips,
 ];
 
 export const CLIP_IDS: readonly ClipId[] = CLIP_MODULES.map((module) => module.id);

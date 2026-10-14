@@ -31,6 +31,8 @@ export const orbitCardsMeta: ClipMeta = {
   description:
     'Eight metric cards orbit in 3D perspective, decelerate, then collapse into a dashboard grid while a headline rises in letter by letter.',
   category: 'data',
+  tags: ['3d', 'cards', 'numbers', 'dashboard'],
+  theme: 'dark',
   source: 'packages/compositions/src/scenes/data/orbit-cards.tsx',
   durationInFrames: 210,
   posterFrame: 195,
