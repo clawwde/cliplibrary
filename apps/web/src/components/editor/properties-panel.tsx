@@ -25,8 +25,6 @@ interface RowProps {
   descriptor: ControlDescriptor;
   values: Values;
   onChange: (next: Values) => void;
-  onLive: (next: Values) => void;
-  onSeal: () => void;
 }
 
 const isLeaf = (descriptor: ControlDescriptor): descriptor is LeafDescriptor =>
@@ -74,20 +72,12 @@ const FieldShell = ({ label, children }: { label: string; children: ReactNode })
   </div>
 );
 
-const LeafRow = ({
-  descriptor,
-  values,
-  onChange,
-  onLive,
-  onSeal,
-}: { descriptor: LeafDescriptor } & RowProps) => (
+const LeafRow = ({ descriptor, values, onChange }: { descriptor: LeafDescriptor } & RowProps) => (
   <FieldShell label={descriptor.label}>
     <FieldControl
       descriptor={descriptor}
       value={getAtPath(values, descriptor.path)}
-      onCommit={(next) => onChange(setAtPath(values, descriptor.path, next) as Values)}
-      onLive={(next) => onLive(setAtPath(values, descriptor.path, next) as Values)}
-      onSeal={onSeal}
+      onChange={(next) => onChange(setAtPath(values, descriptor.path, next) as Values)}
     />
   </FieldShell>
 );
@@ -96,8 +86,6 @@ const ArrayRow = ({
   descriptor,
   values,
   onChange,
-  onLive,
-  onSeal,
 }: { descriptor: Extract<ControlDescriptor, { kind: 'array' }> } & RowProps) => {
   const items = (getAtPath(values, descriptor.path) as unknown[] | undefined) ?? [];
   const canAdd = descriptor.max === null || items.length < descriptor.max;
@@ -145,9 +133,7 @@ const ArrayRow = ({
                     <FieldControl
                       descriptor={field}
                       value={getAtPath(values, path)}
-                      onCommit={(next) => onChange(setAtPath(values, path, next) as Values)}
-                      onLive={(next) => onLive(setAtPath(values, path, next) as Values)}
-                      onSeal={onSeal}
+                      onChange={(next) => onChange(setAtPath(values, path, next) as Values)}
                     />
                   </FieldShell>
                 );
@@ -171,17 +157,9 @@ const ArrayRow = ({
   );
 };
 
-const ControlRow = ({ descriptor, values, onChange, onLive, onSeal }: RowProps) => {
+const ControlRow = ({ descriptor, values, onChange }: RowProps) => {
   if (descriptor.kind === 'array') {
-    return (
-      <ArrayRow
-        descriptor={descriptor}
-        values={values}
-        onChange={onChange}
-        onLive={onLive}
-        onSeal={onSeal}
-      />
-    );
+    return <ArrayRow descriptor={descriptor} values={values} onChange={onChange} />;
   }
   if (descriptor.kind === 'object') {
     return (
@@ -192,36 +170,22 @@ const ControlRow = ({ descriptor, values, onChange, onLive, onSeal }: RowProps) 
             descriptor={field}
             values={values}
             onChange={onChange}
-            onLive={onLive}
-            onSeal={onSeal}
           />
         ))}
       </div>
     );
   }
-  return (
-    <LeafRow
-      descriptor={descriptor}
-      values={values}
-      onChange={onChange}
-      onLive={onLive}
-      onSeal={onSeal}
-    />
-  );
+  return <LeafRow descriptor={descriptor} values={values} onChange={onChange} />;
 };
 
 export const PropertiesPanel = ({
   descriptors,
   values,
   onChange,
-  onLive,
-  onSeal,
 }: {
   descriptors: ControlDescriptor[];
   values: Values;
   onChange: (next: Values) => void;
-  onLive: (next: Values) => void;
-  onSeal: () => void;
 }) => (
   <div className="flex flex-col">
     {descriptors.map((descriptor) => (
@@ -230,8 +194,6 @@ export const PropertiesPanel = ({
         descriptor={descriptor}
         values={values}
         onChange={onChange}
-        onLive={onLive}
-        onSeal={onSeal}
       />
     ))}
   </div>

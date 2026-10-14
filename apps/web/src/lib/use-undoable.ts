@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 interface History<T> {
   past: T[];
@@ -11,8 +11,6 @@ interface History<T> {
 export interface Undoable<T> {
   value: T;
   set: (next: T) => void;
-  setLive: (next: T) => void;
-  seal: () => void;
   undo: () => void;
   redo: () => void;
   reset: (value: T) => void;
@@ -22,10 +20,8 @@ export interface Undoable<T> {
 
 export const useUndoable = <T>(initial: T): Undoable<T> => {
   const [history, setHistory] = useState<History<T>>({ past: [], present: initial, future: [] });
-  const live = useRef(false);
 
   const set = useCallback((next: T) => {
-    live.current = false;
     setHistory((current) =>
       Object.is(current.present, next)
         ? current
@@ -33,25 +29,7 @@ export const useUndoable = <T>(initial: T): Undoable<T> => {
     );
   }, []);
 
-  const setLive = useCallback((next: T) => {
-    const first = !live.current;
-    live.current = true;
-    setHistory((current) => {
-      if (Object.is(current.present, next)) {
-        return current;
-      }
-      return first
-        ? { past: [...current.past, current.present], present: next, future: [] }
-        : { past: current.past, present: next, future: current.future };
-    });
-  }, []);
-
-  const seal = useCallback(() => {
-    live.current = false;
-  }, []);
-
   const undo = useCallback(() => {
-    live.current = false;
     setHistory((current) => {
       const previous = current.past.at(-1);
       if (previous === undefined) {
@@ -66,7 +44,6 @@ export const useUndoable = <T>(initial: T): Undoable<T> => {
   }, []);
 
   const redo = useCallback(() => {
-    live.current = false;
     setHistory((current) => {
       const next = current.future.at(0);
       if (next === undefined) {
@@ -81,15 +58,12 @@ export const useUndoable = <T>(initial: T): Undoable<T> => {
   }, []);
 
   const reset = useCallback((value: T) => {
-    live.current = false;
     setHistory({ past: [], present: value, future: [] });
   }, []);
 
   return {
     value: history.present,
     set,
-    setLive,
-    seal,
     undo,
     redo,
     reset,

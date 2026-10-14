@@ -1,18 +1,18 @@
-import { readProps } from '@cliplibrary/core';
+import { readProject } from '@cliplibrary/core';
 import { CLIP_REGISTRY } from '@cliplibrary/schemas';
 import { publicExportsDir, repoRoot } from './paths';
-import { renderClip } from './render-clip';
 import { DEFAULT_RENDER_OPTIONS } from './render-options';
+import { renderProject } from './render-project';
 
 const main = async (): Promise<void> => {
   for (const meta of CLIP_REGISTRY) {
-    const props = await readProps(repoRoot, meta.id);
     console.info(`Rendering ${meta.id}...`);
-    await renderClip({
-      clipId: meta.id,
-      inputProps: props.values as Record<string, unknown>,
+    const { project } = await readProject(repoRoot, meta.id);
+    await renderProject({
+      project,
       outDir: publicExportsDir,
       options: DEFAULT_RENDER_OPTIONS,
+      name: meta.id,
     });
     console.info(`  done ${meta.id}`);
   }

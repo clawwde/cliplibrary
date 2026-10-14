@@ -14,6 +14,7 @@
     "test:coverage": "bun test --coverage"
   },
   "dependencies": {
+    "@cliplibrary/project": "workspace:*",
     "@cliplibrary/schemas": "workspace:*",
     "zod": "4.5.4"
   },

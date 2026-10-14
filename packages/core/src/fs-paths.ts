@@ -22,3 +22,9 @@ export const propsPath = (root: string, id: ClipId): string =>
 
 export const historyPath = (root: string, id: ClipId): string =>
   join(root, 'clips', `${id}.history.json`);
+
+export const projectPath = (root: string, id: string): string =>
+  join(root, 'clips', `${id}.project.json`);
+
+export const projectHistoryPath = (root: string, id: string): string =>
+  join(root, 'clips', `${id}.project.history.json`);
