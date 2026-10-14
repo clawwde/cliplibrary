@@ -30,7 +30,7 @@ import {
   zVideo,
 } from '../src/index';
 
-const CATEGORIES = ['text', 'data', 'media', 'complex'];
+const CATEGORIES = ['text', 'data', 'media', 'complex', 'promo'];
 
 describe('clip registry completeness', () => {
   it('has a schema, defaults and registry entry for every clip id', () => {
@@ -198,6 +198,7 @@ describe('pluggable module architecture', () => {
     expect(categoryOf('typewriter')).toBe('text');
     expect(categoryOf('count-up')).toBe('data');
     expect(categoryOf('image-showcase')).toBe('media');
+    expect(categoryOf('promo-hero')).toBe('promo');
   });
 });
 
@@ -293,5 +294,32 @@ describe('video media control', () => {
     expect(zVideo().safeParse('https://example.com/a.mp4').success).toBe(true);
     expect(zVideo().safeParse('data:video/mp4;base64,AAAA').success).toBe(true);
     expect(zVideo().safeParse(42).success).toBe(false);
+  });
+});
+
+describe('promo clips', () => {
+  const PROMO_IDS: ClipId[] = ['promo-intro', 'promo-hero', 'promo-flip'];
+
+  it('validates every promo default against its schema', () => {
+    for (const id of PROMO_IDS) {
+      expect(getClipSchema(id).safeParse(getClipDefaults(id)).success).toBe(true);
+    }
+  });
+
+  it('rejects an unknown phone screen and finish', () => {
+    const defaults = getClipDefaults('promo-hero');
+    const schema = getClipSchema('promo-hero');
+    expect(
+      schema.safeParse({ ...defaults, phone: { ...defaults.phone, screen: 'nope' } }).success,
+    ).toBe(false);
+    expect(
+      schema.safeParse({ ...defaults, phone: { ...defaults.phone, finish: 'gold' } }).success,
+    ).toBe(false);
+  });
+
+  it('caps the flip detail list at four entries', () => {
+    const defaults = getClipDefaults('promo-flip');
+    const details = ['a', 'b', 'c', 'd', 'e'];
+    expect(getClipSchema('promo-flip').safeParse({ ...defaults, details }).success).toBe(false);
   });
 });

@@ -4,6 +4,7 @@ import type { ClipMeta, ClipModule } from '../registry';
 import { complexClips } from './complex';
 import { dataClips } from './data';
 import { mediaClips } from './media';
+import { promoClips } from './promo';
 import { textClips } from './text';
 
 export const CLIP_MODULES: ClipModule[] = [
@@ -11,6 +12,7 @@ export const CLIP_MODULES: ClipModule[] = [
   ...dataClips,
   ...mediaClips,
   ...complexClips,
+  ...promoClips,
 ];
 
 export const CLIP_IDS: readonly ClipId[] = CLIP_MODULES.map((module) => module.id);
