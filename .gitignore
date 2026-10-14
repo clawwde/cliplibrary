@@ -20,6 +20,9 @@ test-results
 apps/web/public/exports/*
 !apps/web/public/exports/.gitkeep
 
+apps/web/public/uploads/*
+!apps/web/public/uploads/.gitkeep
+
 /exports/
 
 settings.local.json

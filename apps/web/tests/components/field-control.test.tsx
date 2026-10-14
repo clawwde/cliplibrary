@@ -1,12 +1,12 @@
-import { describe, expect, it, mock } from 'bun:test';
+import { afterEach, describe, expect, it, mock } from 'bun:test';
 import type { ControlDescriptor } from '@cliplibrary/core';
-import { fireEvent, render, screen } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { FieldControl } from '../../src/components/editor/field-control';
 
 type LeafDescriptor = Extract<
   ControlDescriptor,
-  { kind: 'text' | 'color' | 'number' | 'boolean' | 'enum' }
+  { kind: 'text' | 'color' | 'number' | 'boolean' | 'enum' | 'image' | 'video' }
 >;
 
 const renderControl = (descriptor: LeafDescriptor, value: unknown) => {
@@ -130,5 +130,100 @@ describe('FieldControl enum select', () => {
   it('coerces a nullish selection to an empty string', () => {
     renderControl(descriptor, undefined);
     expect(screen.getByRole('combobox')).toBeInTheDocument();
+  });
+});
+
+describe('FieldControl image', () => {
+  const descriptor: LeafDescriptor = { kind: 'image', path: ['image1'], label: 'Image' };
+
+  it('renders an empty drop-zone with a url input when there is no value', () => {
+    renderControl(descriptor, '');
+    expect(screen.getByText('Drop image or click to upload')).toBeInTheDocument();
+    expect((screen.getByRole('textbox') as HTMLInputElement).value).toBe('');
+  });
+
+  it('emits the pasted url through the text field', () => {
+    const onChange = renderControl(descriptor, '');
+    fireEvent.change(screen.getByRole('textbox'), {
+      target: { value: 'https://example.com/a.png' },
+    });
+    expect(onChange).toHaveBeenCalledWith('https://example.com/a.png');
+  });
+
+  it('shows a preview and a clear button once a value is set', () => {
+    const onChange = renderControl(descriptor, 'https://example.com/a.png');
+    expect(screen.getByRole('img', { name: 'Selected image' })).toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: 'Clear image' }));
+    expect(onChange).toHaveBeenCalledWith('');
+  });
+});
+
+describe('FieldControl media upload', () => {
+  const descriptor: LeafDescriptor = { kind: 'image', path: ['image1'], label: 'Image' };
+  const originalFetch = globalThis.fetch;
+
+  afterEach(() => {
+    globalThis.fetch = originalFetch;
+  });
+
+  const mockUpload = (url: string) => {
+    const fetchMock = mock(() =>
+      Promise.resolve({ ok: true, json: () => Promise.resolve({ url }) } as Response),
+    );
+    globalThis.fetch = fetchMock as unknown as typeof fetch;
+    return fetchMock;
+  };
+
+  it('uploads a picked file and sets the field to the returned url', async () => {
+    const fetchMock = mockUpload('/uploads/picked.png');
+    const onChange = mock();
+    const { container } = render(
+      <FieldControl descriptor={descriptor} value="" onChange={onChange} />,
+    );
+    const input = Array.from(container.querySelectorAll('input')).find(
+      (element) => element.type === 'file',
+    ) as HTMLInputElement;
+    const file = new File(['x'], 'a.png', { type: 'image/png' });
+    fireEvent.change(input, { target: { files: [file] } });
+    await waitFor(() => expect(onChange).toHaveBeenCalledWith('/uploads/picked.png'));
+    expect(fetchMock).toHaveBeenCalledWith(
+      '/api/upload',
+      expect.objectContaining({ method: 'POST' }),
+    );
+  });
+
+  it('uploads a dropped file', async () => {
+    mockUpload('/uploads/dropped.png');
+    const onChange = mock();
+    render(<FieldControl descriptor={descriptor} value="" onChange={onChange} />);
+    const file = new File(['x'], 'b.png', { type: 'image/png' });
+    fireEvent.drop(screen.getByRole('button', { name: /drop image/i }), {
+      dataTransfer: { files: [file] },
+    });
+    await waitFor(() => expect(onChange).toHaveBeenCalledWith('/uploads/dropped.png'));
+  });
+});
+
+describe('FieldControl video', () => {
+  const descriptor: LeafDescriptor = { kind: 'video', path: ['clip'], label: 'Clip' };
+
+  it('renders an empty drop-zone prompting for a video', () => {
+    renderControl(descriptor, '');
+    expect(screen.getByText('Drop video or click to upload')).toBeInTheDocument();
+  });
+
+  it('emits the pasted url through the text field', () => {
+    const onChange = renderControl(descriptor, '');
+    fireEvent.change(screen.getByRole('textbox'), {
+      target: { value: 'https://example.com/a.mp4' },
+    });
+    expect(onChange).toHaveBeenCalledWith('https://example.com/a.mp4');
+  });
+
+  it('renders a video preview once a value is set', () => {
+    const { container } = render(
+      <FieldControl descriptor={descriptor} value="https://example.com/a.mp4" onChange={mock()} />,
+    );
+    expect(container.querySelector('video')).toBeInTheDocument();
   });
 });
