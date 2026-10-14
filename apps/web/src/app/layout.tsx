@@ -29,9 +29,6 @@ const RootLayout = ({ children }: { children: ReactNode }) => (
             clip library
           </Link>
           <nav className="flex items-center gap-2 text-sm text-muted-foreground">
-            <Link href="/settings" className="px-2 py-1 transition-colors hover:text-foreground">
-              Settings
-            </Link>
             <ThemeToggle />
           </nav>
         </header>

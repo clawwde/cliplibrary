@@ -2,7 +2,6 @@ import { describe, expect, it } from 'bun:test';
 import { z } from 'zod';
 import {
   barChartGrowSchema,
-  blurFadeInSchema,
   CLIP_DEFAULTS,
   CLIP_IDS,
   CLIP_MODULES,
@@ -11,7 +10,6 @@ import {
   type ClipId,
   donutProgressSchema,
   EASING_IDS,
-  fadeInSchema,
   getClipDefaults,
   getClipMeta,
   getClipSchema,
@@ -32,7 +30,7 @@ import {
   zVideo,
 } from '../src/index';
 
-const CATEGORIES = ['simple', 'text', 'data', 'media', 'complex'];
+const CATEGORIES = ['text', 'data', 'media', 'complex'];
 
 describe('clip registry completeness', () => {
   it('has a schema, defaults and registry entry for every clip id', () => {
@@ -197,8 +195,6 @@ describe('pluggable module architecture', () => {
 
   it('places the new clips in their intended categories', () => {
     const categoryOf = (id: ClipId) => getClipMeta(id).category;
-    expect(categoryOf('blur-fade-in')).toBe('simple');
-    expect(categoryOf('rise-slide')).toBe('simple');
     expect(categoryOf('typewriter')).toBe('text');
     expect(categoryOf('count-up')).toBe('data');
     expect(categoryOf('image-showcase')).toBe('media');
@@ -206,18 +202,12 @@ describe('pluggable module architecture', () => {
 });
 
 describe('expanded clip library', () => {
-  it('ships at least twenty five clips', () => {
-    expect(CLIP_IDS.length).toBeGreaterThanOrEqual(25);
+  it('ships at least fifteen clips', () => {
+    expect(CLIP_IDS.length).toBeGreaterThanOrEqual(15);
   });
 
   it('files the latest batch of clips in the right categories', () => {
     const categoryOf = (id: ClipId) => getClipMeta(id).category;
-    expect(categoryOf('fade-in')).toBe('simple');
-    expect(categoryOf('slide-in')).toBe('simple');
-    expect(categoryOf('scale-pop')).toBe('simple');
-    expect(categoryOf('wipe-reveal')).toBe('simple');
-    expect(categoryOf('bounce-in')).toBe('simple');
-    expect(categoryOf('flip-card')).toBe('simple');
     expect(categoryOf('word-reveal')).toBe('text');
     expect(categoryOf('kinetic-type')).toBe('text');
     expect(categoryOf('gradient-sweep-text')).toBe('text');
@@ -250,11 +240,8 @@ describe('expanded clip library', () => {
     expect(donutProgressSchema.safeParse({ ...base, percent: 64 }).success).toBe(true);
   });
 
-  it('accepts every easing id on the newest simple and complex clips', () => {
+  it('accepts every easing id on the complex clips', () => {
     for (const id of EASING_IDS) {
-      expect(fadeInSchema.safeParse({ ...CLIP_DEFAULTS['fade-in'], easing: id }).success).toBe(
-        true,
-      );
       expect(
         mosaicRevealSchema.safeParse({ ...CLIP_DEFAULTS['mosaic-reveal'], easing: id }).success,
       ).toBe(true);
@@ -264,11 +251,11 @@ describe('expanded clip library', () => {
 
 describe('easing enum control', () => {
   it('accepts every easing id and rejects unknown curves', () => {
-    const base = CLIP_DEFAULTS['blur-fade-in'];
+    const base = CLIP_DEFAULTS['mosaic-reveal'];
     for (const id of EASING_IDS) {
-      expect(blurFadeInSchema.safeParse({ ...base, easing: id }).success).toBe(true);
+      expect(mosaicRevealSchema.safeParse({ ...base, easing: id }).success).toBe(true);
     }
-    expect(blurFadeInSchema.safeParse({ ...base, easing: 'bounce' }).success).toBe(false);
+    expect(mosaicRevealSchema.safeParse({ ...base, easing: 'bounce' }).success).toBe(false);
   });
 });
 

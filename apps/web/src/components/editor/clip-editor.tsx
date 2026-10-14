@@ -6,7 +6,6 @@ import { Check, Download, Redo2, Save, Undo2 } from 'lucide-react';
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { useUndoable, useUndoRedoKeys } from '@/lib/use-undoable';
-import { ChatPanel } from '../chat/chat-panel';
 import { CommitBar } from './commit-bar';
 import { ExportDialog } from './export-dialog';
 import { PreviewStage } from './preview-stage';
@@ -109,11 +108,7 @@ export const ClipEditor = ({
         : 'Saved';
 
   return (
-    <div className="grid min-h-0 flex-1 grid-cols-1 md:grid-cols-[1fr_340px] lg:grid-cols-[280px_1fr_380px]">
-      <aside className="hidden min-h-0 overflow-y-auto bg-sidebar lg:block">
-        <ChatPanel />
-      </aside>
-
+    <div className="grid min-h-0 flex-1 grid-cols-1 lg:grid-cols-[1fr_380px]">
       <section className="flex min-h-0 min-w-0 flex-col bg-muted/30">
         <PreviewStage clipId={clipId} meta={meta} values={values} />
       </section>

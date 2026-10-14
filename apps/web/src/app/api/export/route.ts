@@ -7,7 +7,7 @@ import { isClipId } from '@cliplibrary/schemas';
 import { NextResponse } from 'next/server';
 import { setJob, updateJob } from '@/lib/export-jobs';
 import { buildRenderArgs, type ExportRequest } from '@/lib/export-run';
-import { DEFAULT_RENDER_OPTIONS, outputExtension, type RenderOptions } from '@/lib/render-options';
+import { DEFAULT_RENDER_OPTIONS, type RenderOptions } from '@/lib/render-options';
 import { repoRoot } from '@/lib/repo-root';
 
 export const runtime = 'nodejs';
@@ -30,12 +30,12 @@ export const POST = async (request: Request): Promise<Response> => {
   const options: RenderOptions = { ...DEFAULT_RENDER_OPTIONS, ...body.options };
   const root = repoRoot();
   const exportId = crypto.randomUUID();
-  const publicBase = `/exports/${exportId}`;
+  const fileBase = `/api/export/${exportId}/file`;
   const record: ExportRecord = {
     exportId,
     clipId: body.clipId,
-    mp4: `${publicBase}/${body.clipId}.${outputExtension(options.codec)}`,
-    poster: `${publicBase}/${body.clipId}.jpg`,
+    mp4: fileBase,
+    poster: `${fileBase}?poster=1`,
     createdAt: new Date().toISOString(),
     status: 'rendering',
     progress: 0,
@@ -83,6 +83,14 @@ export const POST = async (request: Request): Promise<Response> => {
   child.stderr.setEncoding('utf8');
   child.stderr.on('data', (chunk: string) => {
     stderr += chunk;
+  });
+  child.on('error', (spawnError) => {
+    const patch: Partial<ExportRecord> = {
+      status: 'error',
+      error: `Could not start the renderer: ${spawnError.message}`,
+    };
+    updateJob(exportId, patch);
+    updateExport(root, exportId, patch).catch(() => undefined);
   });
   child.on('close', (code) => {
     const patch: Partial<ExportRecord> =

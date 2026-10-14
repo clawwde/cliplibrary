@@ -15,7 +15,11 @@ const HomePage = async () => {
       </p>
       <div className="mt-7 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-5">
         {clips.map((clip) => (
-          <VideoTile key={clip.meta.id} meta={clip.meta} />
+          <VideoTile
+            key={clip.meta.id}
+            meta={clip.meta}
+            values={clip.props.values as Record<string, unknown>}
+          />
         ))}
       </div>
 

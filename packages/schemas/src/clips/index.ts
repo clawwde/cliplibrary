@@ -4,11 +4,9 @@ import type { ClipMeta, ClipModule } from '../registry';
 import { complexClips } from './complex';
 import { dataClips } from './data';
 import { mediaClips } from './media';
-import { simpleClips } from './simple';
 import { textClips } from './text';
 
 export const CLIP_MODULES: ClipModule[] = [
-  ...simpleClips,
   ...textClips,
   ...dataClips,
   ...mediaClips,

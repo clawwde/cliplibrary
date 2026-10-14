@@ -311,8 +311,7 @@ export const ExportDialog = ({
               className="w-full rounded-lg bg-black"
             />
             <a
-              href={record.mp4}
-              download
+              href={`${record.mp4}?download=1`}
               className="inline-flex items-center justify-center gap-2 rounded-md bg-muted px-4 py-2 font-medium text-sm hover:bg-accent"
             >
               <Download className="size-4" />

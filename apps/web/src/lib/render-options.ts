@@ -37,9 +37,6 @@ export const DEFAULT_RENDER_OPTIONS: RenderOptions = {
   everyNthFrame: 1,
 };
 
-export const outputExtension = (codec: RenderCodec): 'gif' | 'mp4' =>
-  codec === 'gif' ? 'gif' : 'mp4';
-
 export const CODEC_LABELS: Record<RenderCodec, string> = {
   h264: 'H.264 (mp4)',
   h265: 'H.265 (mp4)',
