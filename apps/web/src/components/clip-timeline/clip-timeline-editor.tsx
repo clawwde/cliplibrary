@@ -101,7 +101,7 @@ export const ClipTimelineEditor = ({
   initialHistory,
 }: ClipTimelineEditorProps) => {
   const editor = useClipProject(clipId, initialProject, initialHistory);
-  const { project, setProject, undo, redo } = editor;
+  const { project, setProject, setProjectLive, sealProject, undo, redo } = editor;
   useUndoRedoKeys(undo, redo);
   const exporter = useProjectExport();
 
@@ -175,8 +175,25 @@ export const ClipTimelineEditor = ({
         editor.save();
       }
     },
-    exportProject: () => exporter.run(project),
+    exportProject: () =>
+      exporter.run(project, {
+        codec: 'h264',
+        crf: 18,
+        scale: 1,
+        fps: null,
+        proResProfile: null,
+      }),
   };
+
+  useEffect(() => {
+    const onGestureEnd = () => sealProject();
+    window.addEventListener('pointerup', onGestureEnd);
+    window.addEventListener('focusout', onGestureEnd);
+    return () => {
+      window.removeEventListener('pointerup', onGestureEnd);
+      window.removeEventListener('focusout', onGestureEnd);
+    };
+  }, [sealProject]);
 
   useEffect(() => {
     const onKey = (event: KeyboardEvent) => {
@@ -224,7 +241,7 @@ export const ClipTimelineEditor = ({
           <ClipPropertySidebar
             element={selectedElement}
             descriptorsByClip={descriptorsByClip}
-            onChange={(next) => setProject(replaceElement(project, next))}
+            onChange={(next) => setProjectLive(replaceElement(project, next))}
             onDelete={handleDelete}
           />
           <CommitBar />
@@ -237,6 +254,7 @@ export const ClipTimelineEditor = ({
           canUndo={editor.canUndo}
           canRedo={editor.canRedo}
           exportState={exporter.state}
+          exportProgress={exporter.progress}
           downloadUrl={exporter.downloadUrl}
           animations={ANIMATION_OPTIONS}
           onAddElement={handleAddElement}
@@ -249,7 +267,7 @@ export const ClipTimelineEditor = ({
           onTogglePlay={() => playerRef.current?.toggle()}
           onUndo={undo}
           onRedo={redo}
-          onExport={() => exporter.run(project)}
+          onExport={(settings) => exporter.run(project, settings)}
         />
         <div className="min-h-0 flex-1">
           <Timeline
@@ -261,11 +279,11 @@ export const ClipTimelineEditor = ({
             onSeek={seek}
             onActivateTrack={setActiveTrackId}
             onSelectElement={setSelectedId}
-            onMoveElement={(id, from) => setProject(moveElement(project, id, from))}
-            onResizeElement={(id, duration) => setProject(resizeElement(project, id, duration))}
-            onTrimElementStart={(id, from) => setProject(trimElementStart(project, id, from))}
+            onMoveElement={(id, from) => setProjectLive(moveElement(project, id, from))}
+            onResizeElement={(id, duration) => setProjectLive(resizeElement(project, id, duration))}
+            onTrimElementStart={(id, from) => setProjectLive(trimElementStart(project, id, from))}
             onMoveElementToTrack={(id, trackId) =>
-              setProject(moveElementToTrack(project, id, trackId))
+              setProjectLive(moveElementToTrack(project, id, trackId))
             }
             onMoveTrack={(id, direction) => setProject(moveTrack(project, id, direction))}
             onRemoveTrack={(id) => setProject(removeTrack(project, id))}

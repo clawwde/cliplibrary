@@ -11,6 +11,8 @@ type SaveState = 'idle' | 'saving' | 'saved' | 'error';
 export interface ClipProjectEditor {
   project: Project;
   setProject: (next: Project) => void;
+  setProjectLive: (next: Project) => void;
+  sealProject: () => void;
   undo: () => void;
   redo: () => void;
   canUndo: boolean;
@@ -40,7 +42,9 @@ export const useClipProject = (
   initial: ProjectFile,
   initialHistory: VersionSnapshot[],
 ): ClipProjectEditor => {
-  const { value, set, reset, undo, redo, canUndo, canRedo } = useUndoable<Project>(initial.project);
+  const { value, set, setLive, seal, reset, undo, redo, canUndo, canRedo } = useUndoable<Project>(
+    initial.project,
+  );
   const [snapshots, setSnapshots] = useState<VersionSnapshot[]>(initialHistory);
   const [currentVersionId, setCurrentVersionId] = useState(initial.currentVersionId);
   const [savedJson, setSavedJson] = useState(() => JSON.stringify(initial.project));
@@ -105,6 +109,8 @@ export const useClipProject = (
   return {
     project: value,
     setProject: set,
+    setProjectLive: setLive,
+    sealProject: seal,
     undo,
     redo,
     canUndo,

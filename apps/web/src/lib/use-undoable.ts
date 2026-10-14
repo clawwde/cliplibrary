@@ -6,11 +6,14 @@ interface History<T> {
   past: T[];
   present: T;
   future: T[];
+  live: boolean;
 }
 
 export interface Undoable<T> {
   value: T;
   set: (next: T) => void;
+  setLive: (next: T) => void;
+  seal: () => void;
   undo: () => void;
   redo: () => void;
   reset: (value: T) => void;
@@ -19,14 +22,37 @@ export interface Undoable<T> {
 }
 
 export const useUndoable = <T>(initial: T): Undoable<T> => {
-  const [history, setHistory] = useState<History<T>>({ past: [], present: initial, future: [] });
+  const [history, setHistory] = useState<History<T>>({
+    past: [],
+    present: initial,
+    future: [],
+    live: false,
+  });
 
   const set = useCallback((next: T) => {
     setHistory((current) =>
       Object.is(current.present, next)
-        ? current
-        : { past: [...current.past, current.present], present: next, future: [] },
+        ? current.live
+          ? { ...current, live: false }
+          : current
+        : { past: [...current.past, current.present], present: next, future: [], live: false },
     );
+  }, []);
+
+  const setLive = useCallback((next: T) => {
+    setHistory((current) => {
+      if (Object.is(current.present, next)) {
+        return current;
+      }
+      if (current.live) {
+        return { ...current, present: next };
+      }
+      return { past: [...current.past, current.present], present: next, future: [], live: true };
+    });
+  }, []);
+
+  const seal = useCallback(() => {
+    setHistory((current) => (current.live ? { ...current, live: false } : current));
   }, []);
 
   const undo = useCallback(() => {
@@ -39,6 +65,7 @@ export const useUndoable = <T>(initial: T): Undoable<T> => {
         past: current.past.slice(0, -1),
         present: previous,
         future: [current.present, ...current.future],
+        live: false,
       };
     });
   }, []);
@@ -53,17 +80,20 @@ export const useUndoable = <T>(initial: T): Undoable<T> => {
         past: [...current.past, current.present],
         present: next,
         future: current.future.slice(1),
+        live: false,
       };
     });
   }, []);
 
   const reset = useCallback((value: T) => {
-    setHistory({ past: [], present: value, future: [] });
+    setHistory({ past: [], present: value, future: [], live: false });
   }, []);
 
   return {
     value: history.present,
     set,
+    setLive,
+    seal,
     undo,
     redo,
     reset,
