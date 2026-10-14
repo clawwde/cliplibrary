@@ -98,21 +98,12 @@ export const PromoIntro = ({
                   key={`${index}:${letter}`}
                   style={{
                     display: 'inline-block',
-                    overflow: 'hidden',
-                    paddingBottom: wordmarkSize * 0.12,
-                    marginBottom: -wordmarkSize * 0.12,
+                    whiteSpace: 'pre',
+                    opacity: reveal,
+                    transform: `translateY(${(1 - reveal) * 0.35 * wordmarkSize}px)`,
                   }}
                 >
-                  <span
-                    style={{
-                      display: 'inline-block',
-                      whiteSpace: 'pre',
-                      transform: `translateY(${(1 - reveal) * 105}%)`,
-                      filter: `blur(${(1 - reveal) * 6}px)`,
-                    }}
-                  >
-                    {letter}
-                  </span>
+                  {letter}
                 </span>
               );
             })}
