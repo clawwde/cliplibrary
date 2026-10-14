@@ -73,6 +73,7 @@ export const PreviewStage = ({
             compositionHeight={meta.height}
             controls
             loop
+            acknowledgeRemotionLicense
             style={{ width: '100%' }}
           />
         </div>
