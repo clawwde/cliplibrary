@@ -3,9 +3,11 @@
 import type { ControlDescriptor } from '@cliplibrary/core';
 import type { ClipId, ClipMeta } from '@cliplibrary/schemas';
 import { Download, Redo2, Undo2 } from 'lucide-react';
+import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { useUndoable, useUndoRedoKeys } from '@/lib/use-undoable';
 import { ChatPanel } from '../chat/chat-panel';
+import { ExportDialog } from './export-dialog';
 import { PreviewStage } from './preview-stage';
 import { PropertiesPanel } from './properties-panel';
 
@@ -31,6 +33,7 @@ export const ClipEditor = ({
     canRedo,
   } = useUndoable<Values>(initialValues);
   useUndoRedoKeys(undo, redo);
+  const [exportOpen, setExportOpen] = useState(false);
 
   return (
     <div className="grid min-h-0 flex-1 grid-cols-1 md:grid-cols-[1fr_340px] lg:grid-cols-[280px_1fr_380px]">
@@ -68,10 +71,16 @@ export const ClipEditor = ({
             >
               <Redo2 className="size-4" />
             </Button>
-            <Button type="button" size="sm">
+            <Button type="button" size="sm" onClick={() => setExportOpen(true)}>
               <Download className="size-4" />
               Export
             </Button>
+            <ExportDialog
+              clipId={clipId}
+              values={values}
+              open={exportOpen}
+              onOpenChange={setExportOpen}
+            />
           </div>
         </div>
         <div className="p-4">

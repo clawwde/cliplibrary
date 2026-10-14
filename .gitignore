@@ -20,6 +20,8 @@ test-results
 apps/web/public/exports/*
 !apps/web/public/exports/.gitkeep
 
+/exports/
+
 settings.local.json
 *.tsbuildinfo
 
