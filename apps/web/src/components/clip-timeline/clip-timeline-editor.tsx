@@ -102,7 +102,9 @@ export const ClipTimelineEditor = ({
   const playerRef = useRef<PlayerRef | null>(null);
   const [currentFrame, setCurrentFrame] = useState(0);
   const [playing, setPlaying] = useState(false);
-  const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [selectedId, setSelectedId] = useState<string | null>(
+    () => project.tracks[0]?.elements[0]?.id ?? null,
+  );
   const [activeTrackId, setActiveTrackId] = useState<string | null>(null);
   const [pxPerFrame, setPxPerFrame] = useState(DEFAULT_PX_PER_FRAME);
 
