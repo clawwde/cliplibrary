@@ -93,6 +93,18 @@
         "typescript": "5.9.3",
       },
     },
+    "packages/project": {
+      "name": "@cliplibrary/project",
+      "version": "0.0.0",
+      "dependencies": {
+        "@cliplibrary/schemas": "workspace:*",
+        "zod": "4.5.4",
+      },
+      "devDependencies": {
+        "@cliplibrary/tsconfig": "workspace:*",
+        "typescript": "5.9.3",
+      },
+    },
     "packages/schemas": {
       "name": "@cliplibrary/schemas",
       "version": "0.0.0",
@@ -147,6 +159,8 @@
     "@cliplibrary/compositions": ["@cliplibrary/compositions@workspace:packages/compositions"],
 
     "@cliplibrary/core": ["@cliplibrary/core@workspace:packages/core"],
+
+    "@cliplibrary/project": ["@cliplibrary/project@workspace:packages/project"],
 
     "@cliplibrary/render": ["@cliplibrary/render@workspace:apps/render"],
 
