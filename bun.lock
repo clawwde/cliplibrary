@@ -19,6 +19,7 @@
       "dependencies": {
         "@cliplibrary/compositions": "workspace:*",
         "@cliplibrary/core": "workspace:*",
+        "@cliplibrary/project": "workspace:*",
         "@cliplibrary/schemas": "workspace:*",
         "@remotion/bundler": "4.0.534",
         "@remotion/renderer": "4.0.534",
@@ -34,6 +35,7 @@
       "dependencies": {
         "@cliplibrary/compositions": "workspace:*",
         "@cliplibrary/core": "workspace:*",
+        "@cliplibrary/project": "workspace:*",
         "@cliplibrary/schemas": "workspace:*",
         "@remotion/player": "4.0.534",
         "@tailwindcss/postcss": "4.1.14",
@@ -68,6 +70,7 @@
       "name": "@cliplibrary/compositions",
       "version": "0.0.0",
       "dependencies": {
+        "@cliplibrary/project": "workspace:*",
         "@cliplibrary/schemas": "workspace:*",
         "@remotion/google-fonts": "4.0.534",
         "react": "19.3.0",
@@ -83,6 +86,18 @@
     },
     "packages/core": {
       "name": "@cliplibrary/core",
+      "version": "0.0.0",
+      "dependencies": {
+        "@cliplibrary/schemas": "workspace:*",
+        "zod": "4.5.4",
+      },
+      "devDependencies": {
+        "@cliplibrary/tsconfig": "workspace:*",
+        "typescript": "5.9.3",
+      },
+    },
+    "packages/project": {
+      "name": "@cliplibrary/project",
       "version": "0.0.0",
       "dependencies": {
         "@cliplibrary/schemas": "workspace:*",
@@ -147,6 +162,8 @@
     "@cliplibrary/compositions": ["@cliplibrary/compositions@workspace:packages/compositions"],
 
     "@cliplibrary/core": ["@cliplibrary/core@workspace:packages/core"],
+
+    "@cliplibrary/project": ["@cliplibrary/project@workspace:packages/project"],
 
     "@cliplibrary/render": ["@cliplibrary/render@workspace:apps/render"],
 
