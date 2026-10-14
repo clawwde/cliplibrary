@@ -12,7 +12,8 @@ import type { SceneModule } from '../../scene-module';
 
 const { fontFamily } = loadFont('normal', { weights: ['700'], subsets: ['latin'] });
 
-const SET = ' ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+const ALPHABET = Array.from({ length: 26 }, (_, index) => String.fromCharCode(65 + index)).join('');
+const SET = ` ${ALPHABET}`;
 const STEP_FRAMES = 2;
 const CELL_WIDTH = 124;
 const CELL_HEIGHT = 176;
