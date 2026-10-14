@@ -73,7 +73,7 @@ export const PromoOutro = ({
 }: PromoOutroProps) => {
   const raw = useCurrentFrame();
   const frame = raw * motion.speed;
-  const arrive = tween(frame, [4, 52], [0, 1], settle);
+  const arrive = tween(frame, [4, 66], [0, 1], settle);
   return (
     <TransitionFrame motion={motion}>
       <Backdrop look={look} />
@@ -85,11 +85,11 @@ export const PromoOutro = ({
               <group
                 key={`${index}:${entry.screen}`}
                 position={[
-                  side * (5.3 + (1 - arrive) * 5),
+                  side * (5.3 + (1 - arrive) * 3.5),
                   (index === 0 ? -0.35 : 0.25) + Math.sin(frame / 26 + index) * motion.float,
                   -0.3,
                 ]}
-                rotation={[0.06, -side * (0.6 + (1 - arrive) * 1.8), side * -0.08]}
+                rotation={[0.06, -side * (0.6 + (1 - arrive) * 0.7), side * -0.08]}
                 scale={phoneScale}
               >
                 <PhoneModel phone={entry} reflections={stage.reflections} />

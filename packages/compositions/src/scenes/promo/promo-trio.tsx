@@ -40,18 +40,18 @@ export const PromoTrio = ({
         <group rotation={[0, sway, 0]}>
           {phones.map((entry, index) => {
             const delay = (ENTRY_ORDER[index] ?? index) * stagger;
-            const arrive = tween(frame, [delay, delay + 56], [0, 1], settle);
+            const arrive = tween(frame, [delay, delay + 72], [0, 1], settle);
             const offset = index - 1;
-            const spin = (1 - arrive) * TAU * 0.75 * (offset === 0 ? 1 : Math.sign(offset));
+            const spin = (1 - arrive) * TAU * 0.12 * (offset === 0 ? 1 : Math.sign(offset));
             return (
               <group
                 key={`${index}:${entry.screen}`}
                 position={[
                   offset * spacing,
-                  -1.05 - (1 - arrive) * 9 + Math.sin(frame / 26 + index * 2) * motion.float,
+                  -1.05 - (1 - arrive) * 6 + Math.sin(frame / 26 + index * 2) * motion.float,
                   offset === 0 ? 0.4 : -0.5,
                 ]}
-                rotation={[0.05 + (1 - arrive) * 0.6, -offset * fan + spin, 0]}
+                rotation={[0.05 + (1 - arrive) * 0.35, -offset * fan + spin, 0]}
                 scale={phoneScale}
               >
                 <PhoneModel phone={entry} reflections={stage.reflections} />

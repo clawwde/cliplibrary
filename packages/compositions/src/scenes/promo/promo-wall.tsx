@@ -49,19 +49,19 @@ export const PromoWall = ({
             const direction = row % 2 === 0 ? 1 : -1;
             const y = ((rowCount - 1) / 2 - row) * ROW_GAP;
             return Array.from({ length: columnCount }, (_cell, column) => {
-              const delay = (Math.abs(column - middle) + row) * 3;
-              const arrive = tween(frame, [delay, delay + 34], [0, 1], settle);
+              const delay = (Math.abs(column - middle) + row) * 2.5;
+              const arrive = tween(frame, [delay, delay + 56], [0, 1], settle);
               const screen = screens[(row * 5 + column) % screens.length] ?? 'home';
               return (
                 <group
                   key={`${row}:${column}`}
                   position={[
                     (column - middle) * COLUMN_GAP + direction * travel,
-                    y,
-                    (1 - arrive) * -5,
+                    y - (1 - arrive) * 2.2,
+                    (1 - arrive) * -3,
                   ]}
-                  rotation={[0, (1 - arrive) * Math.PI, 0]}
-                  scale={arrive}
+                  rotation={[(1 - arrive) * 0.45, (1 - arrive) * 0.3, 0]}
+                  scale={0.9 + arrive * 0.1}
                 >
                   <PhoneModel
                     phone={{ screen, customScreen: '', finish }}

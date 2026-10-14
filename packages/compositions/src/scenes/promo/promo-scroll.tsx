@@ -38,8 +38,13 @@ export const PromoScroll = ({
   const { durationInFrames } = useVideoConfig();
   const frame = raw * motion.speed;
   const side = textSide === 'left' ? 1 : -1;
-  const arrive = tween(frame, [0, 46], [0, 1], settle);
-  const scroll = tween(frame, [34, durationInFrames - 6], [0, scrollAmount]);
+  const arrive = tween(frame, [0, 60], [0, 1], settle);
+  const scroll = tween(
+    frame,
+    [16, durationInFrames],
+    [0, scrollAmount],
+    (t) => t * t * (3 - 2 * t),
+  );
   const phoneX = side * 2.7;
   return (
     <TransitionFrame motion={motion}>
@@ -49,7 +54,7 @@ export const PromoScroll = ({
           position={[phoneX, -0.05 - (1 - arrive) * 6, 0]}
           rotation={[
             -0.16 + (1 - arrive) * 0.8,
-            side * (-0.34 + (1 - arrive) * 1.2) + Math.sin(frame / 45) * 0.03,
+            side * (-0.34 + (1 - arrive) * 0.6) + Math.sin(frame / 45) * 0.03,
             side * 0.08,
           ]}
           scale={phoneScale}

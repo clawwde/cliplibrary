@@ -27,7 +27,7 @@ export const PromoDuo = ({
 }: PromoDuoProps) => {
   const raw = useCurrentFrame();
   const frame = raw * motion.speed;
-  const arrive = tween(frame, [0, 48], [0, 1], settle);
+  const arrive = tween(frame, [0, 66], [0, 1], settle);
   return (
     <TransitionFrame motion={motion}>
       <Backdrop look={look} />
@@ -38,11 +38,11 @@ export const PromoDuo = ({
             <group
               key={`${index}:${entry.screen}`}
               position={[
-                side * (gap + (1 - arrive) * 7),
+                side * (gap + (1 - arrive) * 5),
                 (index === 0 ? -0.1 : 0.2) + Math.sin(frame / 26 + index * 1.6) * motion.float,
                 index === 0 ? 0.3 : -0.5,
               ]}
-              rotation={[0.05, -side * (angle + (1 - arrive) * 2.4), side * -0.04]}
+              rotation={[0.05, -side * (angle + (1 - arrive) * 0.9), side * -0.04]}
               scale={phoneScale}
             >
               <PhoneModel phone={entry} reflections={stage.reflections} />
