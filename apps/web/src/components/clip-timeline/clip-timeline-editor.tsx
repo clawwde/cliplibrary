@@ -101,7 +101,7 @@ export const ClipTimelineEditor = ({
   initialHistory,
 }: ClipTimelineEditorProps) => {
   const editor = useClipProject(clipId, initialProject, initialHistory);
-  const { project, setProject, undo, redo } = editor;
+  const { project, setProject, setProjectLive, sealProject, undo, redo } = editor;
   useUndoRedoKeys(undo, redo);
   const exporter = useProjectExport();
 
@@ -168,6 +168,16 @@ export const ClipTimelineEditor = ({
   };
 
   useEffect(() => {
+    const onGestureEnd = () => sealProject();
+    window.addEventListener('pointerup', onGestureEnd);
+    window.addEventListener('focusout', onGestureEnd);
+    return () => {
+      window.removeEventListener('pointerup', onGestureEnd);
+      window.removeEventListener('focusout', onGestureEnd);
+    };
+  }, [sealProject]);
+
+  useEffect(() => {
     const onKey = (event: KeyboardEvent) => {
       if (runModifierShortcut(event, shortcuts.current)) {
         return;
@@ -213,7 +223,7 @@ export const ClipTimelineEditor = ({
           <ClipPropertySidebar
             element={selectedElement}
             descriptorsByClip={descriptorsByClip}
-            onChange={(next) => setProject(replaceElement(project, next))}
+            onChange={(next) => setProjectLive(replaceElement(project, next))}
             onDelete={handleDelete}
           />
           <CommitBar />
@@ -249,11 +259,11 @@ export const ClipTimelineEditor = ({
             onSeek={seek}
             onActivateTrack={setActiveTrackId}
             onSelectElement={setSelectedId}
-            onMoveElement={(id, from) => setProject(moveElement(project, id, from))}
-            onResizeElement={(id, duration) => setProject(resizeElement(project, id, duration))}
-            onTrimElementStart={(id, from) => setProject(trimElementStart(project, id, from))}
+            onMoveElement={(id, from) => setProjectLive(moveElement(project, id, from))}
+            onResizeElement={(id, duration) => setProjectLive(resizeElement(project, id, duration))}
+            onTrimElementStart={(id, from) => setProjectLive(trimElementStart(project, id, from))}
             onMoveElementToTrack={(id, trackId) =>
-              setProject(moveElementToTrack(project, id, trackId))
+              setProjectLive(moveElementToTrack(project, id, trackId))
             }
             onMoveTrack={(id, direction) => setProject(moveTrack(project, id, direction))}
             onRemoveTrack={(id) => setProject(removeTrack(project, id))}
