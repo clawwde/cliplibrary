@@ -6,6 +6,7 @@ import { ramp } from '../kit/motion';
 
 const { fontFamily } = loadFont('normal', { weights: ['700'], subsets: ['latin'] });
 
+// biome-ignore lint/security/noSecrets: display alphabet for the split-flap, not a credential
 const SET = ' ABCDEFGHIJKLMNOPQRSTUVWXYZ';
 const STEP_FRAMES = 2;
 const CELL_WIDTH = 124;

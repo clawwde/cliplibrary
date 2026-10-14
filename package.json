@@ -22,8 +22,10 @@
     "test:e2e": "turbo run test:e2e",
     "render": "bun --cwd apps/render run render",
     "check:comments": "bun run scripts/strip-comments.ts --check",
+    "check:em-dashes": "bun run scripts/check-em-dashes.ts",
+    "check:repository": "bun run scripts/check-repository.ts",
     "knip": "knip",
-    "verify": "bun run lint && bun run check:comments && bun run knip && bun run typecheck && bun run test",
+    "verify": "bun run lint && bun run check:comments && bun run check:em-dashes && bun run check:repository && bun run knip && bun run typecheck && bun run test",
     "prepare": "lefthook install || true"
   },
   "devDependencies": {
