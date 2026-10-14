@@ -52,6 +52,12 @@ const describeString = (
   if (meta?.control === 'color') {
     return { kind: 'color', path, label };
   }
+  if (meta?.control === 'image') {
+    return { kind: 'image', path, label };
+  }
+  if (meta?.control === 'video') {
+    return { kind: 'video', path, label };
+  }
   const maxCheck = findCheck(checks, 'max_length');
   return {
     kind: 'text',

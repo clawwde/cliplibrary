@@ -4,7 +4,8 @@ export type ControlMeta =
   | { control: 'color' }
   | { control: 'slider'; step: number }
   | { control: 'textarea' }
-  | { control: 'image' };
+  | { control: 'image' }
+  | { control: 'video' };
 
 export const HEX_COLOR = /^#([0-9a-fA-F]{6}|[0-9a-fA-F]{8})$/;
 
@@ -25,6 +26,8 @@ export const zMultiline = () => z.string().meta({ control: 'textarea' } satisfie
 
 export const zImage = () => z.string().meta({ control: 'image' } satisfies ControlMeta);
 
+export const zVideo = () => z.string().meta({ control: 'video' } satisfies ControlMeta);
+
 export const readControlMeta = (schema: z.core.$ZodType): ControlMeta | undefined => {
   const meta = z.globalRegistry.get(schema);
   if (meta === undefined) {
@@ -34,7 +37,8 @@ export const readControlMeta = (schema: z.core.$ZodType): ControlMeta | undefine
   if (
     candidate.control === 'color' ||
     candidate.control === 'textarea' ||
-    candidate.control === 'image'
+    candidate.control === 'image' ||
+    candidate.control === 'video'
   ) {
     return { control: candidate.control };
   }

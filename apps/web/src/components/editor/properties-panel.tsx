@@ -16,7 +16,7 @@ import { FieldControl } from './field-control';
 
 type LeafDescriptor = Extract<
   ControlDescriptor,
-  { kind: 'text' | 'color' | 'number' | 'boolean' | 'enum' }
+  { kind: 'text' | 'color' | 'number' | 'boolean' | 'enum' | 'image' | 'video' }
 >;
 
 type Values = Record<string, unknown>;

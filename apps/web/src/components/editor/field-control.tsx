@@ -1,6 +1,9 @@
 'use client';
 
 import type { ControlDescriptor } from '@cliplibrary/core';
+import { Upload, X } from 'lucide-react';
+import { type DragEvent, useRef, useState } from 'react';
+import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import {
   Select,
@@ -12,11 +15,130 @@ import {
 import { Slider } from '@/components/ui/slider';
 import { Switch } from '@/components/ui/switch';
 import { Textarea } from '@/components/ui/textarea';
+import { cn } from '@/lib/utils';
 
 type LeafDescriptor = Extract<
   ControlDescriptor,
-  { kind: 'text' | 'color' | 'number' | 'boolean' | 'enum' }
+  { kind: 'text' | 'color' | 'number' | 'boolean' | 'enum' | 'image' | 'video' }
 >;
+
+type MediaKind = 'image' | 'video';
+
+const uploadMedia = async (file: File): Promise<string> => {
+  const body = new FormData();
+  body.set('file', file);
+  const response = await fetch('/api/upload', { method: 'POST', body });
+  if (!response.ok) {
+    throw new Error('upload failed');
+  }
+  const data = (await response.json()) as { url: string };
+  return data.url;
+};
+
+const MediaPreview = ({ kind, value }: { kind: MediaKind; value: string }) =>
+  kind === 'video' ? (
+    <video
+      src={value}
+      className="h-28 w-full rounded-md object-cover"
+      muted
+      playsInline
+      preload="metadata"
+    />
+  ) : (
+    <span
+      role="img"
+      aria-label="Selected image"
+      className="block h-28 w-full rounded-md bg-center bg-cover"
+      style={{ backgroundImage: `url("${value}")` }}
+    />
+  );
+
+const MediaField = ({
+  kind,
+  value,
+  onChange,
+}: {
+  kind: MediaKind;
+  value: string;
+  onChange: (next: string) => void;
+}) => {
+  const inputRef = useRef<HTMLInputElement>(null);
+  const [dragging, setDragging] = useState(false);
+  const [busy, setBusy] = useState(false);
+
+  const receive = (file: File | undefined) => {
+    if (file === undefined) {
+      return;
+    }
+    setBusy(true);
+    uploadMedia(file)
+      .then(onChange)
+      .catch(() => undefined)
+      .finally(() => setBusy(false));
+  };
+
+  const onDrop = (event: DragEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+    setDragging(false);
+    receive(event.dataTransfer.files[0]);
+  };
+
+  return (
+    <div className="flex flex-col gap-2">
+      <button
+        type="button"
+        onClick={() => inputRef.current?.click()}
+        onDragOver={(event) => {
+          event.preventDefault();
+          setDragging(true);
+        }}
+        onDragLeave={() => setDragging(false)}
+        onDrop={onDrop}
+        className={cn(
+          'flex min-h-28 w-full flex-col items-center justify-center overflow-hidden rounded-md bg-muted p-2 text-muted-foreground text-xs transition-[box-shadow] outline-none',
+          dragging && 'ring-[3px] ring-ring/40',
+        )}
+      >
+        {value ? (
+          <MediaPreview kind={kind} value={value} />
+        ) : (
+          <span className="flex flex-col items-center gap-1">
+            <Upload className="size-5" />
+            {busy ? 'Uploading' : `Drop ${kind} or click to upload`}
+          </span>
+        )}
+      </button>
+      <div className="flex items-center gap-2">
+        <Input
+          type="text"
+          value={value}
+          placeholder={`${kind} URL`}
+          onChange={(event) => onChange(event.target.value)}
+          className="font-mono text-xs"
+        />
+        {value ? (
+          <Button
+            type="button"
+            variant="ghost"
+            size="icon-sm"
+            aria-label={`Clear ${kind}`}
+            className="shrink-0 text-muted-foreground hover:text-destructive"
+            onClick={() => onChange('')}
+          >
+            <X className="size-4" />
+          </Button>
+        ) : null}
+      </div>
+      <input
+        ref={inputRef}
+        type="file"
+        accept={kind === 'image' ? 'image/*' : 'video/*'}
+        className="hidden"
+        onChange={(event) => receive(event.target.files?.[0])}
+      />
+    </div>
+  );
+};
 
 const TextField = ({
   descriptor,
@@ -129,6 +251,10 @@ export const FieldControl = ({
       return <Switch checked={Boolean(value)} onCheckedChange={onChange} />;
     case 'enum':
       return <EnumField descriptor={descriptor} value={String(value ?? '')} onChange={onChange} />;
+    case 'image':
+      return <MediaField kind="image" value={String(value ?? '')} onChange={onChange} />;
+    case 'video':
+      return <MediaField kind="video" value={String(value ?? '')} onChange={onChange} />;
     default:
       return null;
   }
