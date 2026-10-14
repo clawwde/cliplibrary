@@ -104,15 +104,12 @@ const resolveFiles = async (args: string[]): Promise<string[]> => {
   if (explicit.length === 0) {
     return scanGlob('{apps,packages,scripts}/**/*.{ts,tsx}');
   }
-  const resolved: string[] = [];
-  for (const entry of explicit) {
-    if (statSync(entry).isDirectory()) {
-      resolved.push(...(await scanGlob(`${entry}/**/*.{ts,tsx}`)));
-    } else {
-      resolved.push(entry);
-    }
-  }
-  return resolved;
+  const resolved = await Promise.all(
+    explicit.map((entry) =>
+      statSync(entry).isDirectory() ? scanGlob(`${entry}/**/*.{ts,tsx}`) : Promise.resolve([entry]),
+    ),
+  );
+  return resolved.flat();
 };
 
 const main = async (): Promise<void> => {
@@ -120,10 +117,17 @@ const main = async (): Promise<void> => {
   const checkOnly = args.includes('--check');
   const files = await resolveFiles(args);
   const violations: string[] = [];
+  const writes: Promise<unknown>[] = [];
 
-  for (const file of files) {
-    const source = await Bun.file(file).text();
-    const disallowed = collectComments(source).filter((comment) => !isAllowed(comment.text));
+  const scanned = await Promise.all(
+    files.map(async (file) => {
+      const source = await Bun.file(file).text();
+      const disallowed = collectComments(source).filter((comment) => !isAllowed(comment.text));
+      return { file, source, disallowed };
+    }),
+  );
+
+  for (const { file, source, disallowed } of scanned) {
     if (disallowed.length === 0) {
       continue;
     }
@@ -132,9 +136,10 @@ const main = async (): Promise<void> => {
         violations.push(`${file}:${comment.line}  ${comment.text.split('\n')[0]?.trim() ?? ''}`);
       }
     } else {
-      await Bun.write(file, stripFrom(source, disallowed));
+      writes.push(Bun.write(file, stripFrom(source, disallowed)));
     }
   }
+  await Promise.all(writes);
 
   if (checkOnly && violations.length > 0) {
     console.error(`Found ${violations.length} disallowed comment(s):`);

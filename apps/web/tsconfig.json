@@ -2,6 +2,7 @@
   "extends": "@cliplibrary/tsconfig/nextjs.json",
   "compilerOptions": {
     "types": ["bun"],
+    "plugins": [{ "name": "next" }],
     "paths": {
       "@/*": ["./src/*"]
     }

@@ -9,7 +9,8 @@
     "start": "next start --port 3000",
     "typecheck": "tsc --noEmit",
     "test": "bun test tests --timeout 20000",
-    "test:e2e": "playwright test"
+    "test:e2e": "playwright test",
+    "test:coverage": "bun test tests --coverage --timeout 20000"
   },
   "dependencies": {
     "@cliplibrary/compositions": "workspace:*",
@@ -18,7 +19,8 @@
     "@remotion/player": "4.0.534",
     "next": "16.4.0",
     "react": "19.3.0",
-    "react-dom": "19.3.0"
+    "react-dom": "19.3.0",
+    "server-only": "0.0.1"
   },
   "devDependencies": {
     "@cliplibrary/tsconfig": "workspace:*",
