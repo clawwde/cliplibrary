@@ -10,6 +10,9 @@ import type { ProductDemoProps } from './clips/data/product-demo';
 import type { ImageGridRevealProps } from './clips/media/image-grid-reveal';
 import type { ImageShowcaseProps } from './clips/media/image-showcase';
 import type { KenBurnsProps } from './clips/media/ken-burns';
+import type { PromoFlipProps } from './clips/promo/promo-flip';
+import type { PromoHeroProps } from './clips/promo/promo-hero';
+import type { PromoIntroProps } from './clips/promo/promo-intro';
 import type { GradientSweepTextProps } from './clips/text/gradient-sweep-text';
 import type { KineticTypeProps } from './clips/text/kinetic-type';
 import type { SlicedHeadlineProps } from './clips/text/sliced-headline';
@@ -36,6 +39,9 @@ export interface ClipPropsMap {
   'image-grid-reveal': ImageGridRevealProps;
   'notification-stack': NotificationStackProps;
   'mosaic-reveal': MosaicRevealProps;
+  'promo-intro': PromoIntroProps;
+  'promo-hero': PromoHeroProps;
+  'promo-flip': PromoFlipProps;
 }
 
 export type ClipId = keyof ClipPropsMap;

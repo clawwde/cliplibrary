@@ -2,6 +2,7 @@ import type { SceneModule } from '../scene-module';
 import { complexScenes } from './complex';
 import { dataScenes } from './data';
 import { mediaScenes } from './media';
+import { promoScenes } from './promo';
 import { textScenes } from './text';
 
 export const CLIP_SCENES: SceneModule[] = [
@@ -9,4 +10,5 @@ export const CLIP_SCENES: SceneModule[] = [
   ...dataScenes,
   ...mediaScenes,
   ...complexScenes,
+  ...promoScenes,
 ];
