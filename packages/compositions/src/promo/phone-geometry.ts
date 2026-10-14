@@ -3,15 +3,22 @@ import * as THREE from 'three';
 export const PHONE = {
   width: 1.465,
   height: 3,
-  depth: 0.168,
+  depth: 0.17,
   radius: 0.215,
-  edge: 0.024,
+  edge: 0.03,
+  glassInset: 0.032,
+  glassThickness: 0.016,
+  glassBevel: 0.006,
+  glassLift: 0.002,
   screenWidth: 1.345,
   screenHeight: 1.345 * (1950 / 900),
   screenRadius: 0.165,
   plateauSize: 0.64,
   plateauRadius: 0.17,
+  plateauDepth: 0.03,
 } as const;
+
+export const GLASS_SURFACE = PHONE.depth / 2 + PHONE.glassLift + PHONE.glassThickness / 2;
 
 const roundedShape = (width: number, height: number, radius: number): THREE.Shape => {
   const shape = new THREE.Shape();
@@ -55,7 +62,7 @@ const memo = (key: string, build: () => THREE.BufferGeometry): THREE.BufferGeome
   return geometry;
 };
 
-export const roundedPlane = (width: number, height: number, radius: number) =>
+const roundedPlane = (width: number, height: number, radius: number) =>
   memo(`plane:${width}:${height}:${radius}`, () =>
     normalizeUv(new THREE.ShapeGeometry(roundedShape(width, height, radius), 32), width, height),
   );
@@ -81,14 +88,67 @@ const roundedSlab = (width: number, height: number, radius: number, depth: numbe
 export const bodyGeometry = () =>
   roundedSlab(PHONE.width, PHONE.height, PHONE.radius, PHONE.depth, PHONE.edge);
 
-export const frontGlassGeometry = () =>
-  roundedPlane(PHONE.width - 0.03, PHONE.height - 0.03, PHONE.radius - 0.015);
+export const glassSlabGeometry = () =>
+  roundedSlab(
+    PHONE.width - PHONE.glassInset * 2,
+    PHONE.height - PHONE.glassInset * 2,
+    PHONE.radius - PHONE.glassInset,
+    PHONE.glassThickness,
+    PHONE.glassBevel,
+  );
+
+export const glassFaceGeometry = () =>
+  roundedPlane(
+    PHONE.width - PHONE.glassInset * 2 - PHONE.glassBevel * 2,
+    PHONE.height - PHONE.glassInset * 2 - PHONE.glassBevel * 2,
+    PHONE.radius - PHONE.glassInset - PHONE.glassBevel,
+  );
 
 export const screenGeometry = () =>
   roundedPlane(PHONE.screenWidth, PHONE.screenHeight, PHONE.screenRadius);
 
 export const plateauGeometry = () =>
-  roundedSlab(PHONE.plateauSize, PHONE.plateauSize, PHONE.plateauRadius, 0.04, 0.012);
+  roundedSlab(PHONE.plateauSize, PHONE.plateauSize, PHONE.plateauRadius, PHONE.plateauDepth, 0.01);
 
 export const capsuleGeometry = (width: number, height: number) =>
   roundedPlane(width, height, Math.min(width, height) / 2 - 0.0001);
+
+const HOUSING_PROFILE: [number, number][] = [
+  [0.124, 0],
+  [0.124, 0.016],
+  [0.121, 0.028],
+  [0.113, 0.035],
+  [0.098, 0.037],
+  [0.08, 0.034],
+  [0.074, 0.03],
+];
+
+export const lensHousingGeometry = () =>
+  memo(
+    'lens-housing',
+    () =>
+      new THREE.LatheGeometry(
+        HOUSING_PROFILE.map(([radius, height]) => new THREE.Vector2(radius, height)),
+        72,
+      ),
+  );
+
+const DOME_RADIUS = 0.21;
+const DOME_BASE = 0.072;
+
+export const lensDomeGeometry = () =>
+  memo(
+    'lens-dome',
+    () =>
+      new THREE.SphereGeometry(
+        DOME_RADIUS,
+        72,
+        24,
+        0,
+        Math.PI * 2,
+        0,
+        Math.asin(DOME_BASE / DOME_RADIUS),
+      ),
+  );
+
+export const LENS_DOME_OFFSET = 0.028 - DOME_RADIUS * Math.cos(Math.asin(DOME_BASE / DOME_RADIUS));

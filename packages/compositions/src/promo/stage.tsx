@@ -24,6 +24,14 @@ const CameraRig = ({ position, target, fov }: { position: Vec3; target: Vec3; fo
 
 const Studio = ({ reflections, dark }: { reflections: number; dark: boolean }) => (
   <Environment resolution={512} frames={1}>
+    <color attach="background" args={[dark ? '#1f1f24' : '#6c6c73']} />
+    <Lightformer
+      form="rect"
+      intensity={1.1 * reflections}
+      position={[-3.5, 3, 7]}
+      rotation={[-0.35, -0.45, 0]}
+      scale={[7, 9, 1]}
+    />
     <Lightformer
       form="rect"
       intensity={3.2 * reflections}

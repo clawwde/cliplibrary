@@ -61,15 +61,11 @@ export const Headline = ({
       {text.split('\n').map((line, lineIndex) => {
         const { enter, exit } = revealState(frame, { start, end }, lineIndex * stagger);
         return (
-          <div
-            key={`${lineIndex}:${line}`}
-            style={{ overflow: 'hidden', paddingBottom: size * 0.14, marginBottom: -size * 0.14 }}
-          >
+          <div key={`${lineIndex}:${line}`}>
             <div
               style={{
-                transform: `translateY(${(1 - enter) * 105 - exit * 30}%)`,
-                opacity: 1 - exit,
-                filter: `blur(${(1 - enter) * 6 + exit * 8}px)`,
+                transform: `translateY(${(1 - enter) * 0.45 * size - exit * 0.2 * size}px)`,
+                opacity: enter * (1 - exit),
               }}
             >
               {wordsOf(line).map((word, wordIndex, all) => (
