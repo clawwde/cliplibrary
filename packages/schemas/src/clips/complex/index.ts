@@ -1,4 +1,5 @@
 import type { ClipModule } from '../../registry';
+import { mosaicRevealDefaults, mosaicRevealMeta, mosaicRevealSchema } from './mosaic-reveal';
 import {
   notificationStackDefaults,
   notificationStackMeta,
@@ -11,5 +12,11 @@ export const complexClips: ClipModule[] = [
     schema: notificationStackSchema,
     defaults: notificationStackDefaults,
     meta: notificationStackMeta,
+  },
+  {
+    id: 'mosaic-reveal',
+    schema: mosaicRevealSchema,
+    defaults: mosaicRevealDefaults,
+    meta: mosaicRevealMeta,
   },
 ];

@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'bun:test';
 import { z } from 'zod';
 import {
+  barChartGrowSchema,
   blurFadeInSchema,
   CLIP_DEFAULTS,
   CLIP_IDS,
@@ -8,13 +9,17 @@ import {
   CLIP_REGISTRY,
   CLIP_SCHEMAS,
   type ClipId,
+  donutProgressSchema,
   EASING_IDS,
+  fadeInSchema,
   getClipDefaults,
   getClipMeta,
   getClipSchema,
   HEX_COLOR,
   imageShowcaseSchema,
   isClipId,
+  lineDrawSchema,
+  mosaicRevealSchema,
   notificationStackSchema,
   orbitCardsSchema,
   readControlMeta,
@@ -197,6 +202,63 @@ describe('pluggable module architecture', () => {
     expect(categoryOf('typewriter')).toBe('text');
     expect(categoryOf('count-up')).toBe('data');
     expect(categoryOf('image-showcase')).toBe('media');
+  });
+});
+
+describe('expanded clip library', () => {
+  it('ships at least twenty five clips', () => {
+    expect(CLIP_IDS.length).toBeGreaterThanOrEqual(25);
+  });
+
+  it('files the latest batch of clips in the right categories', () => {
+    const categoryOf = (id: ClipId) => getClipMeta(id).category;
+    expect(categoryOf('fade-in')).toBe('simple');
+    expect(categoryOf('slide-in')).toBe('simple');
+    expect(categoryOf('scale-pop')).toBe('simple');
+    expect(categoryOf('wipe-reveal')).toBe('simple');
+    expect(categoryOf('bounce-in')).toBe('simple');
+    expect(categoryOf('flip-card')).toBe('simple');
+    expect(categoryOf('word-reveal')).toBe('text');
+    expect(categoryOf('kinetic-type')).toBe('text');
+    expect(categoryOf('gradient-sweep-text')).toBe('text');
+    expect(categoryOf('bar-chart-grow')).toBe('data');
+    expect(categoryOf('line-draw')).toBe('data');
+    expect(categoryOf('donut-progress')).toBe('data');
+    expect(categoryOf('ken-burns')).toBe('media');
+    expect(categoryOf('image-grid-reveal')).toBe('media');
+    expect(categoryOf('mosaic-reveal')).toBe('complex');
+  });
+
+  it('enforces the bar-chart-grow bar count bounds', () => {
+    const base = CLIP_DEFAULTS['bar-chart-grow'];
+    const one = base.bars.slice(0, 1);
+    expect(barChartGrowSchema.safeParse({ ...base, bars: one }).success).toBe(false);
+    const nine = Array.from({ length: 9 }, () => base.bars[0]);
+    expect(barChartGrowSchema.safeParse({ ...base, bars: nine }).success).toBe(false);
+  });
+
+  it('enforces the line-draw point count bounds', () => {
+    const base = CLIP_DEFAULTS['line-draw'];
+    expect(lineDrawSchema.safeParse({ ...base, points: [10] }).success).toBe(false);
+    const thirteen = Array.from({ length: 13 }, () => 50);
+    expect(lineDrawSchema.safeParse({ ...base, points: thirteen }).success).toBe(false);
+  });
+
+  it('clamps the donut-progress percentage to a zero to one hundred range', () => {
+    const base = CLIP_DEFAULTS['donut-progress'];
+    expect(donutProgressSchema.safeParse({ ...base, percent: 120 }).success).toBe(false);
+    expect(donutProgressSchema.safeParse({ ...base, percent: 64 }).success).toBe(true);
+  });
+
+  it('accepts every easing id on the newest simple and complex clips', () => {
+    for (const id of EASING_IDS) {
+      expect(fadeInSchema.safeParse({ ...CLIP_DEFAULTS['fade-in'], easing: id }).success).toBe(
+        true,
+      );
+      expect(
+        mosaicRevealSchema.safeParse({ ...CLIP_DEFAULTS['mosaic-reveal'], easing: id }).success,
+      ).toBe(true);
+    }
   });
 });
 

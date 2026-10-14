@@ -1,5 +1,8 @@
 import type { ClipModule } from '../../registry';
+import { barChartGrowDefaults, barChartGrowMeta, barChartGrowSchema } from './bar-chart-grow';
 import { countUpDefaults, countUpMeta, countUpSchema } from './count-up';
+import { donutProgressDefaults, donutProgressMeta, donutProgressSchema } from './donut-progress';
+import { lineDrawDefaults, lineDrawMeta, lineDrawSchema } from './line-draw';
 import {
   odometerLedgerDefaults,
   odometerLedgerMeta,
@@ -28,4 +31,17 @@ export const dataClips: ClipModule[] = [
     meta: productDemoMeta,
   },
   { id: 'count-up', schema: countUpSchema, defaults: countUpDefaults, meta: countUpMeta },
+  {
+    id: 'bar-chart-grow',
+    schema: barChartGrowSchema,
+    defaults: barChartGrowDefaults,
+    meta: barChartGrowMeta,
+  },
+  { id: 'line-draw', schema: lineDrawSchema, defaults: lineDrawDefaults, meta: lineDrawMeta },
+  {
+    id: 'donut-progress',
+    schema: donutProgressSchema,
+    defaults: donutProgressDefaults,
+    meta: donutProgressMeta,
+  },
 ];
