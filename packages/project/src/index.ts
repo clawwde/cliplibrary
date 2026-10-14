@@ -2,6 +2,7 @@ export * from './animation';
 export * from './element';
 export * from './factories';
 export * from './ids';
+export * from './library';
 export * from './mutations';
 export * from './project';
 export * from './seed';

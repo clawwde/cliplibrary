@@ -1,23 +1,25 @@
-import { type Project, parseProject } from '@cliplibrary/project';
-import type { ClipId } from '@cliplibrary/schemas';
+import { type LibraryClipId, type Project, parseProject } from '@cliplibrary/project';
 import { projectHistoryPath, projectPath } from './fs-paths';
 import { readJsonFile, writeJsonFile } from './json-file';
 import { seedProjectForClip } from './project-seed';
 import type { VersionSnapshot } from './types';
 
 export interface ProjectFile {
-  clipId: ClipId;
+  clipId: LibraryClipId;
   currentVersionId: string;
   project: Project;
   updatedAt: string;
 }
 
-export const readProjectHistory = async (root: string, id: ClipId): Promise<VersionSnapshot[]> => {
+export const readProjectHistory = async (
+  root: string,
+  id: LibraryClipId,
+): Promise<VersionSnapshot[]> => {
   const history = await readJsonFile<VersionSnapshot[]>(projectHistoryPath(root, id));
   return history ?? [];
 };
 
-export const readProject = async (root: string, id: ClipId): Promise<ProjectFile> => {
+export const readProject = async (root: string, id: LibraryClipId): Promise<ProjectFile> => {
   const existing = await readJsonFile<ProjectFile>(projectPath(root, id));
   if (existing !== null) {
     return existing;
@@ -32,7 +34,7 @@ export const readProject = async (root: string, id: ClipId): Promise<ProjectFile
 
 export const writeProject = async (
   root: string,
-  id: ClipId,
+  id: LibraryClipId,
   project: unknown,
   label: string | null = null,
 ): Promise<ProjectFile> => {
@@ -54,7 +56,7 @@ export const writeProject = async (
 
 export const revertProjectToVersion = async (
   root: string,
-  id: ClipId,
+  id: LibraryClipId,
   versionId: string,
 ): Promise<ProjectFile | null> => {
   const history = await readProjectHistory(root, id);

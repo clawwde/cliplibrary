@@ -1,27 +1,28 @@
 'use client';
 
-import { CLIP_COMPONENTS } from '@cliplibrary/compositions';
-import type { ClipMeta } from '@cliplibrary/schemas';
+import { ProjectComposition } from '@cliplibrary/compositions';
+import type { LibraryClipMeta, Project } from '@cliplibrary/project';
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
-import { type FC, useState } from 'react';
+import { type ComponentType, useState } from 'react';
 import { Skeleton } from '@/components/ui/skeleton';
 
 const Thumbnail = dynamic(() => import('@remotion/player').then((mod) => mod.Thumbnail), {
   ssr: false,
 });
 
+const Composition = ProjectComposition as ComponentType<Record<string, unknown>>;
+
 export const VideoTile = ({
   meta,
-  values,
+  project,
   hasVideo,
 }: {
-  meta: ClipMeta;
-  values: Record<string, unknown>;
+  meta: LibraryClipMeta;
+  project: Project;
   hasVideo: boolean;
 }) => {
   const [loaded, setLoaded] = useState(false);
-  const Component = CLIP_COMPONENTS[meta.id] as FC<Record<string, unknown>>;
 
   return (
     <Link
@@ -44,13 +45,13 @@ export const VideoTile = ({
           />
         ) : (
           <Thumbnail
-            component={Component}
-            inputProps={values}
-            durationInFrames={meta.durationInFrames}
-            fps={meta.fps}
-            compositionWidth={meta.width}
-            compositionHeight={meta.height}
-            frameToDisplay={meta.posterFrame}
+            component={Composition}
+            inputProps={project as unknown as Record<string, unknown>}
+            durationInFrames={project.durationInFrames}
+            fps={project.fps}
+            compositionWidth={project.width}
+            compositionHeight={project.height}
+            frameToDisplay={Math.floor(project.durationInFrames / 2)}
             style={{ width: '100%', height: '100%' }}
           />
         )}

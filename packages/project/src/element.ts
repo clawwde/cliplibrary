@@ -40,6 +40,9 @@ export const shapeElementSchema = z.object({
   type: z.literal('shape'),
   kind: z.enum(SHAPE_KINDS),
   color: z.string(),
+  width: z.number().positive(),
+  height: z.number().positive(),
+  radius: z.number().min(0),
 });
 
 export const compositionElementSchema = z.object({

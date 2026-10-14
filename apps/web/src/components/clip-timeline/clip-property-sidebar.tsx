@@ -2,6 +2,7 @@
 
 import type { ControlDescriptor } from '@cliplibrary/core';
 import type { Element } from '@cliplibrary/project';
+import { getClipMeta, isClipId } from '@cliplibrary/schemas';
 import { Trash2 } from 'lucide-react';
 import { PropertiesPanel } from '@/components/editor/properties-panel';
 import { AnimationSection } from '@/components/timeline/property-panel/animation-section';
@@ -13,16 +14,14 @@ import { Separator } from '@/components/ui/separator';
 
 interface ClipPropertySidebarProps {
   element: Element | null;
-  clipTitle: string;
-  descriptors: ControlDescriptor[];
+  descriptorsByClip: Record<string, ControlDescriptor[]>;
   onChange: (next: Element) => void;
   onDelete: (id: string) => void;
 }
 
 export const ClipPropertySidebar = ({
   element,
-  clipTitle,
-  descriptors,
+  descriptorsByClip,
   onChange,
   onDelete,
 }: ClipPropertySidebarProps) => {
@@ -37,6 +36,9 @@ export const ClipPropertySidebar = ({
   if (element.type !== 'composition') {
     return <PropertyPanel element={element} onChange={onChange} onDelete={onDelete} />;
   }
+
+  const descriptors = descriptorsByClip[element.clipId] ?? [];
+  const clipTitle = isClipId(element.clipId) ? getClipMeta(element.clipId).title : element.clipId;
 
   return (
     <div className="flex flex-col gap-4 p-4">

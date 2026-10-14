@@ -1,5 +1,5 @@
 import { readProject, writeProject } from '@cliplibrary/core';
-import { isClipId } from '@cliplibrary/schemas';
+import { isLibraryClipId } from '@cliplibrary/project';
 import { NextResponse } from 'next/server';
 import { repoRoot } from '@/lib/repo-root';
 
@@ -19,7 +19,7 @@ const zodIssues = (error: unknown): unknown[] | null => {
 
 export const GET = async (_request: Request, context: RouteContext): Promise<Response> => {
   const { clipId } = await context.params;
-  if (!isClipId(clipId)) {
+  if (!isLibraryClipId(clipId)) {
     return NextResponse.json({ error: 'Unknown clip' }, { status: 404 });
   }
   return NextResponse.json(await readProject(repoRoot(), clipId));
@@ -27,7 +27,7 @@ export const GET = async (_request: Request, context: RouteContext): Promise<Res
 
 export const PATCH = async (request: Request, context: RouteContext): Promise<Response> => {
   const { clipId } = await context.params;
-  if (!isClipId(clipId)) {
+  if (!isLibraryClipId(clipId)) {
     return NextResponse.json({ error: 'Unknown clip' }, { status: 404 });
   }
   const body = (await request.json()) as { project: unknown; label?: string | null };
