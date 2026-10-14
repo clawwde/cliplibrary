@@ -30,7 +30,7 @@ import { CommitBar } from '@/components/editor/commit-bar';
 import { Timeline } from '@/components/timeline/timeline';
 import { TimelineToolbar } from '@/components/timeline/timeline-toolbar';
 import { Skeleton } from '@/components/ui/skeleton';
-import { clampPxPerFrame, DEFAULT_PX_PER_FRAME } from '@/lib/timeline-geometry';
+import { clampPxPerFrame, DEFAULT_PX_PER_FRAME, fitPxPerFrame } from '@/lib/timeline-geometry';
 import { useClipProject } from '@/lib/use-clip-project';
 import { useProjectExport } from '@/lib/use-project-export';
 import { useUndoRedoKeys } from '@/lib/use-undoable';
@@ -117,6 +117,17 @@ export const ClipTimelineEditor = ({
   const activeTrack = activeTrackId ?? project.tracks[0]?.id ?? null;
   const selectedElement =
     selectedId === null ? null : (findElement(project, selectedId)?.element ?? null);
+
+  const durationInFrames = project.durationInFrames;
+  const fitTimeline = useCallback(() => {
+    setPxPerFrame(
+      Math.min(DEFAULT_PX_PER_FRAME, fitPxPerFrame(durationInFrames, window.innerWidth)),
+    );
+  }, [durationInFrames]);
+
+  useEffect(() => {
+    fitTimeline();
+  }, [fitTimeline]);
 
   const seek = useCallback((frame: number) => {
     playerRef.current?.seekTo(frame);
@@ -252,6 +263,7 @@ export const ClipTimelineEditor = ({
             setProject(addTrack(project, createTrack(`Track ${project.tracks.length + 1}`)))
           }
           onZoom={(next) => setPxPerFrame(clampPxPerFrame(next))}
+          onFit={fitTimeline}
           onTogglePlay={() => playerRef.current?.toggle()}
           onUndo={undo}
           onRedo={redo}

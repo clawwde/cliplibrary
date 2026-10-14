@@ -298,7 +298,18 @@ describe('video media control', () => {
 });
 
 describe('promo clips', () => {
-  const PROMO_IDS: ClipId[] = ['promo-intro', 'promo-hero', 'promo-flip'];
+  const PROMO_IDS: ClipId[] = [
+    'app-promo',
+    'promo-intro',
+    'promo-hero',
+    'promo-flip',
+    'promo-trio',
+    'promo-features',
+    'promo-scroll',
+    'promo-wall',
+    'promo-duo',
+    'promo-outro',
+  ];
 
   it('validates every promo default against its schema', () => {
     for (const id of PROMO_IDS) {

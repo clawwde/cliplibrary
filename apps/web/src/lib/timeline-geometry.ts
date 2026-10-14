@@ -1,8 +1,12 @@
-export const MIN_PX_PER_FRAME = 1;
+export const MIN_PX_PER_FRAME = 0.25;
 export const MAX_PX_PER_FRAME = 24;
 export const DEFAULT_PX_PER_FRAME = 6;
 export const TRACK_HEIGHT = 52;
 export const RULER_HEIGHT = 28;
+export const LABEL_WIDTH = 128;
+export const ZOOM_STEP = 1.25;
+
+const FIT_GUTTER = 48;
 
 export interface Tick {
   frame: number;
@@ -15,6 +19,9 @@ export const pxToFrame = (px: number, pxPerFrame: number): number => Math.round(
 
 export const clampPxPerFrame = (pxPerFrame: number): number =>
   Math.min(MAX_PX_PER_FRAME, Math.max(MIN_PX_PER_FRAME, pxPerFrame));
+
+export const fitPxPerFrame = (durationInFrames: number, viewportWidth: number): number =>
+  clampPxPerFrame((viewportWidth - LABEL_WIDTH - FIT_GUTTER) / Math.max(1, durationInFrames));
 
 export const buildTicks = (durationInFrames: number, fps: number, pxPerFrame: number): Tick[] => {
   const pxPerSecond = Math.max(0.0001, pxPerFrame * fps);
