@@ -1,9 +1,22 @@
 import { mkdir } from 'node:fs/promises';
 import { join } from 'node:path';
 import { type ClipId, getClipMeta } from '@cliplibrary/schemas';
-import { renderMedia, renderStill, selectComposition } from '@remotion/renderer';
+import { bundle } from '@remotion/bundler';
+import { ensureBrowser, renderMedia, renderStill, selectComposition } from '@remotion/renderer';
+import { compositionsEntry } from './paths';
 import { buildRenderMediaOptions, outputExtension, type RenderOptions } from './render-options';
-import { getServeUrl } from './serve-url';
+
+let serveUrlPromise: Promise<string> | null = null;
+
+const getServeUrl = (): Promise<string> => {
+  if (serveUrlPromise === null) {
+    serveUrlPromise = (async (): Promise<string> => {
+      await ensureBrowser();
+      return bundle({ entryPoint: compositionsEntry });
+    })();
+  }
+  return serveUrlPromise;
+};
 
 export interface RenderClipArgs {
   clipId: ClipId;

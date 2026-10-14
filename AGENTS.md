@@ -73,27 +73,3 @@ Field controls are tagged on the zod schema and read back by
   empty is allowed and renders a placeholder), and `z.enum(EASING_IDS)` for an easing curve picker.
 - `EASING_IDS`/`EasingId` live in `@cliplibrary/schemas` and are the single source consumed by the
   compositions motion kit (`kit/easing.ts`).
-
-## Projects, layering and the clip library
-
-A `Project` (in `@cliplibrary/project`) is `{ fps, width, height, durationInFrames, background,
-tracks }`. Each `Track` holds ordered `Element`s (`text | image | video | shape | composition`),
-and every element is independently selectable, movable, trimmable and animatable in the timeline
-editor.
-
-- Stacking order: the FIRST track in `tracks` is the TOP visual layer and the TOP row of the
-  timeline. `ProjectComposition` paints tracks with a descending `zIndex` (`tracks.length - index`)
-  so earlier tracks sit on top; within a track, later elements paint over earlier ones. The
-  timeline UI, `moveTrack` (up = toward the top layer) and the render stay consistent with this.
-- Pure reducers in `@cliplibrary/project/mutations.ts`: `moveElementToTrack` (reassign an element's
-  layer, optionally re-clamping `from`), `moveTrack` (restack a whole track up/down) and
-  `trimElementStart` (left-edge trim: moves `from` while holding the right edge fixed, min one
-  frame). Right-edge drag uses `resizeElement`. All are frame-snapped and clamped.
-- The clip library (`@cliplibrary/project/library`) defines the gallery clips as data: each
-  `LibraryClip` has `{ meta, build() }` and `build()` returns a multi-element `Project` (every
-  element on its own track). `seedProjectForClip(id)` (in `@cliplibrary/core`) returns these, the
-  homepage lists `LIBRARY_CLIP_META`, and `/clips/[clipId]` validates with `isLibraryClipId`.
-  Split clip definitions across files under `library/` to keep each under 400 lines.
-- The hand-coded `@cliplibrary/schemas` scenes remain reusable building blocks: the timeline
-  toolbar's "Animation" picker inserts one as a `composition` element (its `clipId` is a schema
-  `ClipId`, rendered through `CLIP_COMPONENTS`), layerable alongside the primitive elements.

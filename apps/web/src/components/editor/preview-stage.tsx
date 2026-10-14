@@ -1,12 +1,18 @@
 'use client';
 
-import { ProjectComposition } from '@cliplibrary/compositions';
-import type { Project } from '@cliplibrary/project';
-import { Player, type PlayerRef } from '@remotion/player';
+import { CLIP_COMPONENTS } from '@cliplibrary/compositions';
+import type { ClipId, ClipMeta } from '@cliplibrary/schemas';
 import { Maximize, Monitor, Smartphone, Square } from 'lucide-react';
-import { type ComponentType, type RefObject, useEffect } from 'react';
+import dynamic from 'next/dynamic';
+import type { FC } from 'react';
+import { Skeleton } from '@/components/ui/skeleton';
 import { usePersistedState } from '@/lib/use-persisted-state';
 import { cn } from '@/lib/utils';
+
+const Player = dynamic(() => import('@remotion/player').then((mod) => mod.Player), {
+  ssr: false,
+  loading: () => <Skeleton className="aspect-video w-full rounded-xl" />,
+});
 
 const DEVICES = [
   { key: 'mobile', label: 'Mobile', icon: Smartphone, maxWidth: 420 },
@@ -17,41 +23,18 @@ const DEVICES = [
 
 type DeviceKey = (typeof DEVICES)[number]['key'];
 
-const Composition = ProjectComposition as ComponentType<Record<string, unknown>>;
-
-interface ClipPreviewProps {
-  project: Project;
-  playerRef: RefObject<PlayerRef | null>;
-  onFrameChange: (frame: number) => void;
-  onPlayingChange: (playing: boolean) => void;
-}
-
-export const ClipPreview = ({
-  project,
-  playerRef,
-  onFrameChange,
-  onPlayingChange,
-}: ClipPreviewProps) => {
+export const PreviewStage = ({
+  clipId,
+  meta,
+  values,
+}: {
+  clipId: ClipId;
+  meta: ClipMeta;
+  values: Record<string, unknown>;
+}) => {
   const [device, setDevice] = usePersistedState<DeviceKey>('cliplibrary-device', 'desktop');
+  const Component = CLIP_COMPONENTS[clipId] as FC<Record<string, unknown>>;
   const active = DEVICES.find((entry) => entry.key === device) ?? DEVICES[2];
-
-  useEffect(() => {
-    const player = playerRef.current;
-    if (player === null) {
-      return;
-    }
-    const handleFrame = (event: { detail: { frame: number } }) => onFrameChange(event.detail.frame);
-    const handlePlay = () => onPlayingChange(true);
-    const handlePause = () => onPlayingChange(false);
-    player.addEventListener('frameupdate', handleFrame);
-    player.addEventListener('play', handlePlay);
-    player.addEventListener('pause', handlePause);
-    return () => {
-      player.removeEventListener('frameupdate', handleFrame);
-      player.removeEventListener('play', handlePlay);
-      player.removeEventListener('pause', handlePause);
-    };
-  }, [playerRef, onFrameChange, onPlayingChange]);
 
   return (
     <div className="flex h-full flex-col">
@@ -82,16 +65,15 @@ export const ClipPreview = ({
           style={{ maxWidth: active?.maxWidth ?? undefined }}
         >
           <Player
-            ref={playerRef}
-            component={Composition}
-            inputProps={project as unknown as Record<string, unknown>}
-            durationInFrames={project.durationInFrames}
-            fps={project.fps}
-            compositionWidth={project.width}
-            compositionHeight={project.height}
-            acknowledgeRemotionLicense
+            component={Component}
+            inputProps={values}
+            durationInFrames={meta.durationInFrames}
+            fps={meta.fps}
+            compositionWidth={meta.width}
+            compositionHeight={meta.height}
             controls
             loop
+            acknowledgeRemotionLicense
             style={{ width: '100%' }}
           />
         </div>

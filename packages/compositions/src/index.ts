@@ -3,8 +3,6 @@ export * from './kit/easing';
 export * from './kit/grid-backdrop';
 export * from './kit/motion';
 export * from './kit/rise-chars';
-export { ProjectComposition } from './project/project-composition';
-export { PROJECT_COMPOSITION_ID } from './project/register';
 export { RemotionRoot } from './root';
 export { MosaicReveal } from './scenes/complex/mosaic-reveal';
 export { NotificationStack } from './scenes/complex/notification-stack';
