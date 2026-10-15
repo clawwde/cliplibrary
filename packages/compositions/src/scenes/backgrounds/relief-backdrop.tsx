@@ -8,13 +8,10 @@ import { Composition, useCurrentFrame } from 'remotion';
 import { isDarkLook, PromoLayer } from '../../promo/promo-layer';
 import { ReliefWall } from '../../promo/set-pieces';
 import { Stage } from '../../promo/stage';
-import { cameraPush, tween } from '../../promo/timing';
+import { cameraPush, swingAngle } from '../../promo/timing';
 import type { SceneModule } from '../../scene-module';
 
 const MATTE = 0.3;
-
-const reliefSwing = (frame: number, at: number, frames: number, angle: number): number =>
-  (angle * (1 - Math.cos(2 * Math.PI * tween(frame, [at, at + frames], [0, 1], (t) => t)))) / 2;
 
 export const ReliefBackdrop = ({
   wallColor,
@@ -27,7 +24,13 @@ export const ReliefBackdrop = ({
 }: ReliefBackdropProps) => {
   const frame = useCurrentFrame() * motion.speed;
   const push = cameraPush(frame, camera.pushIn, camera.pushFrames);
-  const swing = reliefSwing(frame, camera.orbitAt, camera.orbitFrames, camera.orbitAngle);
+  const swing = swingAngle(
+    frame,
+    camera.orbitAt,
+    camera.orbitFrames,
+    camera.orbitAngle,
+    camera.orbitPeak,
+  );
   return (
     <PromoLayer look={{ ...look, showBackdrop: false }} motion={motion}>
       <Stage
@@ -37,16 +40,19 @@ export const ReliefBackdrop = ({
         backdropZ={-40}
         keyPosition={[camera.lightX, camera.lightY, camera.lightZ]}
         shadowExtent={3}
+        far={600}
       >
-        <group rotation={[0, swing, 0]}>
-          <ReliefWall
-            layout={rings}
-            bevel={rings.bevel}
-            color={wallColor}
-            roughness={roughness}
-            reflections={stage.reflections * MATTE}
-            showWall={look.showBackdrop}
-          />
+        <group position={[0, 0, camera.orbitPivot]} rotation={[0, swing, 0]}>
+          <group position={[0, 0, -camera.orbitPivot]}>
+            <ReliefWall
+              layout={rings}
+              bevel={rings.bevel}
+              color={wallColor}
+              roughness={roughness}
+              reflections={stage.reflections * MATTE}
+              showWall={look.showBackdrop}
+            />
+          </group>
         </group>
       </Stage>
     </PromoLayer>

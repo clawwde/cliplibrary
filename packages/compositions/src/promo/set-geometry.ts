@@ -55,6 +55,12 @@ export const reliefRingGeometry = (ring: ReliefRingSpec, bevel: number) =>
     return geometry;
   });
 
+export const reliefTop = (layout: ReliefLayout): number =>
+  layout.depth + layout.count * layout.depthStep;
+
+export const reliefCoreGeometry = (size: number, depth: number, bevel: number) =>
+  roundedSlab(size, size, size * RELIEF_CORNER, depth, bevel);
+
 export const pedestalGeometry = (size: number, bevel: number) =>
   roundedSlab(size, size, bevel * 1.5, size, bevel);
 
@@ -68,6 +74,7 @@ export interface RibbonSpec {
   amplitude: number;
   waves: number;
   phase: number;
+  curl: number;
 }
 
 export const ribbonHeight = (spec: RibbonSpec, x: number): number =>
@@ -75,31 +82,39 @@ export const ribbonHeight = (spec: RibbonSpec, x: number): number =>
   spec.amplitude *
     (0.5 + 0.5 * Math.sin((x / spec.length) * Math.PI * 2 * spec.waves + spec.phase));
 
-const RIBBON_SEGMENTS = 160;
+export const ribbonCurl = (spec: RibbonSpec, x: number): number =>
+  spec.curl * Math.sin((x / spec.length) * Math.PI * spec.waves + 0.7);
+
+const crown = (across: number): number => Math.cos((Math.PI * across) / 2) ** 0.45;
+
+const ALONG = 220;
+const ACROSS = 24;
 
 export const ribbonGeometry = (spec: RibbonSpec) =>
   memo(
-    `ribbon:${spec.length}:${spec.width}:${spec.thickness}:${spec.amplitude}:${spec.waves}:${spec.phase}`,
+    `ribbon:${spec.length}:${spec.width}:${spec.thickness}:${spec.amplitude}:${spec.waves}:${spec.phase}:${spec.curl}`,
     () => {
-      const shape = new THREE.Shape();
-      const start = -spec.length / 2;
-      shape.moveTo(start, 0);
-      for (let step = 0; step <= RIBBON_SEGMENTS; step++) {
-        const x = start + (spec.length * step) / RIBBON_SEGMENTS;
-        shape.lineTo(x, ribbonHeight(spec, x));
+      const positions: number[] = [];
+      const indices: number[] = [];
+      for (let i = 0; i <= ALONG; i++) {
+        const x = -spec.length / 2 + (spec.length * i) / ALONG;
+        const lift = ribbonHeight(spec, x);
+        const shift = ribbonCurl(spec, x);
+        for (let j = 0; j <= ACROSS; j++) {
+          const across = (j / ACROSS) * 2 - 1;
+          positions.push(x, (across * spec.width) / 2 + shift, lift * crown(across));
+        }
       }
-      shape.lineTo(-start, 0);
-      shape.closePath();
-      const geometry = new THREE.ExtrudeGeometry(shape, {
-        depth: spec.width,
-        bevelEnabled: true,
-        bevelThickness: 0.02,
-        bevelSize: 0.02,
-        bevelSegments: 4,
-        curveSegments: 1,
-      });
-      geometry.translate(0, 0, -spec.width / 2);
-      geometry.rotateX(Math.PI / 2);
+      for (let i = 0; i < ALONG; i++) {
+        for (let j = 0; j < ACROSS; j++) {
+          const a = i * (ACROSS + 1) + j;
+          const b = a + ACROSS + 1;
+          indices.push(a, b, a + 1, a + 1, b, b + 1);
+        }
+      }
+      const geometry = new THREE.BufferGeometry();
+      geometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
+      geometry.setIndex(indices);
       geometry.computeVertexNormals();
       return geometry;
     },

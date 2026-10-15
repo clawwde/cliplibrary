@@ -8,10 +8,11 @@ import { Composition, useCurrentFrame } from 'remotion';
 import { PhoneModel } from '../../promo/phone-model';
 import { isDarkLook, PromoLayer } from '../../promo/promo-layer';
 import { Stage } from '../../promo/stage';
-import { settle, tween } from '../../promo/timing';
+import { settle, smooth, tween } from '../../promo/timing';
 import type { SceneModule } from '../../scene-module';
 
 const BEHIND_DEPTH = 0.6;
+const DRIFT_IN = 40;
 
 const FromBehind = ({
   phones,
@@ -26,7 +27,7 @@ const FromBehind = ({
   frame,
   float,
 }: PhonePairProps & { frame: number; float: number }) => {
-  const out = tween(frame, [slideDelay, slideDelay + slideFrames], [0, 1], settle);
+  const out = tween(frame, [slideDelay, slideDelay + slideFrames], [0, 1], smooth);
   const direction = behindSide === 'left' ? -1 : 1;
   const parallax = (stage.cameraDistance + BEHIND_DEPTH) / stage.cameraDistance;
   return (
@@ -56,13 +57,13 @@ const FromBehind = ({
 };
 
 export const PhonePair = (props: PhonePairProps) => {
-  const { phones, position, scale, gap, angle, stagger, entrance, slideDelay, slideFrames } = props;
+  const { phones, position, scale, gap, angle, stagger, entrance } = props;
   const { look, stage, motion } = props;
   const frame = useCurrentFrame() * motion.speed;
   const arrive = tween(frame, [0, 66], [0, 1], settle);
   const travel = Math.min(5, 2 + gap);
   const behind = entrance === 'from-behind';
-  const settled = tween(frame, [slideDelay, slideDelay + slideFrames + 30], [0, 1]);
+  const settled = tween(frame, [0, DRIFT_IN], [0, 1]);
   return (
     <PromoLayer look={look} motion={motion}>
       <Stage

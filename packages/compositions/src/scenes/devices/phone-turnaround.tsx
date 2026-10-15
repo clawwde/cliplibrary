@@ -9,7 +9,7 @@ import { Composition, useCurrentFrame, useVideoConfig } from 'remotion';
 import { PhoneModel } from '../../promo/phone-model';
 import { isDarkLook, PromoLayer } from '../../promo/promo-layer';
 import { Stage } from '../../promo/stage';
-import { glide, settle, TAU, track, tween } from '../../promo/timing';
+import { glide, settle, smooth, TAU, track, tween } from '../../promo/timing';
 import type { SceneModule } from '../../scene-module';
 
 const RISE_FRAMES = 66;
@@ -21,6 +21,9 @@ export const PhoneTurnaround = ({
   phone,
   position,
   scale,
+  entry,
+  entryYaw,
+  entryFrames,
   turnAt,
   rise,
   turnFrames,
@@ -38,9 +41,10 @@ export const PhoneTurnaround = ({
   const turnStart = Math.max(DRIFT_FROM + 8, Math.round(durationInFrames * turnAt) - 24);
   const turnEnd = turnStart + turnFrames;
   const twice = secondScreen !== 'none';
-  const secondFrom = Math.max(turnEnd + 1, secondTurnAt);
+  const secondFrom = entry === 'turn-in' ? secondTurnAt : Math.max(turnEnd + 1, secondTurnAt);
   const secondEnd = secondFrom + secondTurnFrames;
-  const lift = tween(frame, [0, RISE_FRAMES], [0, 1], settle);
+  const turnIn = entry === 'turn-in';
+  const lift = turnIn ? 1 : tween(frame, [0, RISE_FRAMES], [0, 1], settle);
   const keys: [number, number][] = twice
     ? [
         [DRIFT_FROM, 0],
@@ -61,7 +65,23 @@ export const PhoneTurnaround = ({
   const second = twice ? tween(frame, [secondFrom, secondEnd], [0, 1]) : 0;
   const calm = twice ? 1 - second : 1;
   const growEnd = twice ? secondEnd : durationInFrames;
-  const grow = scale * (0.85 + lift * 0.15) * tween(frame, [RISE_FRAMES, growEnd], [1, 1.05]);
+  const grow = turnIn
+    ? scale
+    : scale * (0.85 + lift * 0.15) * tween(frame, [RISE_FRAMES, growEnd], [1, 1.05]);
+  const arrive = tween(frame, [0, entryFrames], [0, 1], smooth);
+  const spin = twice
+    ? track(
+        frame,
+        [
+          [secondFrom, 0],
+          [secondEnd, TAU + endYaw],
+        ],
+        glide,
+      )
+    : 0;
+  const yaw = turnIn
+    ? entryYaw * (1 - arrive) + Math.sin(frame / 48) * 0.05 * arrive * calm + spin
+    : rotateY - TAU;
   const shown: PromoPhone =
     twice && frame >= secondFrom + secondTurnFrames / 2
       ? { ...phone, screen: secondScreen }
@@ -75,7 +95,7 @@ export const PhoneTurnaround = ({
             position.y - (1 - lift) * rise + Math.sin(frame / 30) * motion.float * calm,
             position.z,
           ]}
-          rotation={[0.05 + (1 - lift) * 0.6, rotateY - TAU, 0.03]}
+          rotation={[0.05 + (1 - lift) * 0.6, yaw, 0.03]}
           scale={grow}
         >
           <PhoneModel phone={shown} reflections={stage.reflections} />

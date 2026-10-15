@@ -11,12 +11,22 @@ import { useTexture } from './use-texture';
 
 export type Vec3 = [number, number, number];
 
-const CameraRig = ({ position, target, fov }: { position: Vec3; target: Vec3; fov: number }) => {
+const CameraRig = ({
+  position,
+  target,
+  fov,
+  far,
+}: {
+  position: Vec3;
+  target: Vec3;
+  fov: number;
+  far: number;
+}) => {
   const camera = useThree((state) => state.camera) as THREE.PerspectiveCamera;
   camera.position.set(...position);
   camera.fov = fov;
   camera.near = 1;
-  camera.far = 120;
+  camera.far = far;
   camera.updateProjectionMatrix();
   camera.lookAt(...target);
   return null;
@@ -71,13 +81,13 @@ const Studio = ({ reflections, dark }: { reflections: number; dark: boolean }) =
   </Environment>
 );
 
-export interface CameraFraming {
+interface CameraFraming {
   target?: Vec3;
   cameraOffset?: Vec3;
   distanceScale?: number;
 }
 
-export const stageCamera = (
+const stageCamera = (
   stage: PromoStage,
   frame: number,
   { target = [0, 0, 0], cameraOffset = [0, 0, 0], distanceScale = 1 }: CameraFraming,
@@ -103,6 +113,7 @@ export interface StageProps {
   backdropZ?: number;
   keyPosition?: Vec3;
   shadowExtent?: number;
+  far?: number;
   children: ReactNode;
 }
 
@@ -115,6 +126,7 @@ export const Stage = ({
   backdropZ = -1.8,
   keyPosition = [-2.5, 4, 12],
   shadowExtent = 1,
+  far = 120,
   children,
 }: StageProps) => {
   const { width, height } = useVideoConfig();
@@ -131,7 +143,7 @@ export const Stage = ({
       camera={{ fov: stage.fieldOfView, position }}
       style={{ position: 'absolute', inset: 0 }}
     >
-      <CameraRig position={position} target={aim} fov={stage.fieldOfView} />
+      <CameraRig position={position} target={aim} fov={stage.fieldOfView} far={far} />
       <ambientLight intensity={dark ? 0.25 : 0.55} />
       <directionalLight
         position={keyPosition}

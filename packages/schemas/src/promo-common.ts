@@ -134,7 +134,7 @@ export const lightLook = (accent = '#2f5bff', showBackdrop = true): PromoLook =>
   spotlight: 0.55,
 });
 
-export const clayLook = (accent = '#ff6b3d', showBackdrop = true): PromoLook => ({
+export const clayLook = (accent = '#9a7a0c', showBackdrop = true): PromoLook => ({
   showBackdrop,
   background: '#d4d4d1',
   backgroundEdge: '#b9b9b5',
