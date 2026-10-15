@@ -5,16 +5,12 @@ import {
   type Track,
 } from '@cliplibrary/project';
 import {
-  APP_PROMO_SEQUENCE,
   CLIP_DEFAULTS,
+  CLIP_SEQUENCES,
   type ClipId,
   type ClipSequence,
   getClipMeta,
 } from '@cliplibrary/schemas';
-
-const SEQUENCES: Partial<Record<ClipId, ClipSequence>> = {
-  'app-promo': APP_PROMO_SEQUENCE,
-};
 
 const slug = (name: string): string => name.toLowerCase().replace(/[^a-z0-9]+/g, '-');
 
@@ -51,7 +47,7 @@ const singleClipTrack = (id: ClipId): Track[] => {
 
 export const seedProjectForClip = (id: ClipId): Project => {
   const meta = getClipMeta(id);
-  const sequence = SEQUENCES[id];
+  const sequence = CLIP_SEQUENCES[id];
   return {
     fps: meta.fps,
     width: meta.width,

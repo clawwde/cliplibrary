@@ -1,11 +1,7 @@
-import { z } from 'zod';
-import type { ClipId } from '../../clip-props';
-import { zColor } from '../../control';
 import {
   darkLook,
   defaultMotion,
   lightLook,
-  PHONE_FINISHES,
   type PhoneFinish,
   phone,
   placement,
@@ -27,40 +23,20 @@ import { floatingCardsDefaults } from '../overlays/floating-cards';
 import { detailListDefaults } from '../typography/detail-list';
 import { featureCalloutsDefaults } from '../typography/feature-callouts';
 import { headlineRevealDefaults } from '../typography/headline-reveal';
-
-export const APP_PROMO_TRACKS = ['Captions', 'Text', 'Overlays', 'Devices', 'Backdrop'] as const;
-
-export type AppPromoTrack = (typeof APP_PROMO_TRACKS)[number];
-
-export interface SequenceEntry {
-  clipId: ClipId;
-  track: AppPromoTrack;
-  from: number;
-  durationInFrames: number;
-  props: Record<string, unknown>;
-}
-
-export interface ClipSequence {
-  tracks: readonly string[];
-  entries: readonly SequenceEntry[];
-}
+import {
+  type ClipSequence,
+  SEQUENCE_TRACKS,
+  type SequenceBrandProps,
+  type SequenceEntry,
+  sequenceBrandSchema,
+  sequenceEnd,
+  sequenceEntry,
+} from './sequence';
 
 const LIGHT = lightLook('#2f5bff', false);
 const DARK = darkLook('#7d9bff', false);
 
-const entry = <Props extends object>(
-  clipId: ClipId,
-  track: AppPromoTrack,
-  [from, to]: [number, number],
-  defaults: Props,
-  overrides: Partial<Props>,
-): SequenceEntry => ({
-  clipId,
-  track,
-  from,
-  durationInFrames: to - from,
-  props: { ...defaults, look: LIGHT, ...overrides } as Record<string, unknown>,
-});
+const entry = sequenceEntry(LIGHT);
 
 const headline = (
   range: [number, number],
@@ -179,21 +155,13 @@ const ENTRIES: SequenceEntry[] = [
   entry('cta-end-card', 'Text', [1366, 1500], ctaEndCardDefaults, {}),
 ];
 
-export const APP_PROMO_SEQUENCE: ClipSequence = { tracks: APP_PROMO_TRACKS, entries: ENTRIES };
+export const APP_PROMO_SEQUENCE: ClipSequence = { tracks: SEQUENCE_TRACKS, entries: ENTRIES };
 
-const sequenceEnd = ENTRIES.reduce(
-  (end, item) => Math.max(end, item.from + item.durationInFrames),
-  0,
-);
+const duration = sequenceEnd(ENTRIES);
 
-export const appPromoSchema = z.object({
-  brandName: z.string(),
-  accent: zColor(),
-  finish: z.enum(PHONE_FINISHES),
-  useFinishEverywhere: z.boolean(),
-});
+export const appPromoSchema = sequenceBrandSchema;
 
-export type AppPromoProps = z.infer<typeof appPromoSchema>;
+export type AppPromoProps = SequenceBrandProps;
 
 export const appPromoDefaults: AppPromoProps = {
   brandName: 'Halo',
@@ -212,6 +180,6 @@ export const appPromoMeta: ClipMeta = {
   tags: ['3d', 'phone', 'minimal'],
   theme: 'light',
   source: 'packages/compositions/src/scenes/sequences/app-promo.tsx',
-  durationInFrames: sequenceEnd,
-  posterFrame: Math.round(sequenceEnd * 0.2),
+  durationInFrames: duration,
+  posterFrame: Math.round(duration * 0.2),
 };

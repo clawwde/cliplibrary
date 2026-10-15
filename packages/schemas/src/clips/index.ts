@@ -9,6 +9,8 @@ import { sequencesClips } from './sequences';
 import { transitionsClips } from './transitions';
 import { typographyClips } from './typography';
 
+export { CLIP_SEQUENCES } from './sequences';
+
 export const CLIP_MODULES: ClipModule[] = [
   ...typographyClips,
   ...devicesClips,
