@@ -1,20 +1,28 @@
 import type { CSSProperties, ReactNode } from 'react';
 import { useCurrentFrame } from 'remotion';
 import { bodyFont, displayFont } from './fonts';
-import { accelerate, settle, tween } from './timing';
+import { landing, launch, settle, smooth, tween } from './timing';
 
 interface RevealWindow {
   start: number;
   end?: number | undefined;
 }
 
-const revealState = (frame: number, { start, end }: RevealWindow, delay: number) => {
-  const enter = tween(frame, [start + delay, start + delay + 32], [0, 1], settle);
-  const exit =
-    end === undefined
-      ? 0
-      : tween(frame, [end + delay * 0.4, end + delay * 0.4 + 14], [0, 1], accelerate);
-  return { enter, exit };
+const revealState = (
+  frame: number,
+  { start, end }: RevealWindow,
+  delay: number,
+  rise: number,
+  fall: number,
+) => {
+  const enterRange: [number, number] = [start + delay, start + delay + 32];
+  const enter = tween(frame, enterRange, [0, 1], settle);
+  if (end === undefined) {
+    return { enter, exit: 0, offset: landing(frame, enterRange, rise) };
+  }
+  const exitRange: [number, number] = [end + delay * 0.4, end + delay * 0.4 + 14];
+  const exit = tween(frame, exitRange, [0, 1], smooth);
+  return { enter, exit, offset: landing(frame, enterRange, rise) - launch(frame, exitRange, fall) };
 };
 
 const wordsOf = (line: string): string[] => line.split(' ').filter((word) => word.length > 0);
@@ -59,12 +67,18 @@ export const Headline = ({
       }}
     >
       {text.split('\n').map((line, lineIndex) => {
-        const { enter, exit } = revealState(frame, { start, end }, lineIndex * stagger);
+        const { enter, exit, offset } = revealState(
+          frame,
+          { start, end },
+          lineIndex * stagger,
+          0.45 * size,
+          0.2 * size,
+        );
         return (
           <div key={`${lineIndex}:${line}`}>
             <div
               style={{
-                transform: `translateY(${(1 - enter) * 0.45 * size - exit * 0.2 * size}px)`,
+                transform: `translateY(${offset}px)`,
                 opacity: enter * (1 - exit),
               }}
             >
@@ -94,12 +108,18 @@ export interface FadeInProps extends RevealWindow {
 
 export const FadeIn = ({ children, start, end, delay = 0, distance = 18, style }: FadeInProps) => {
   const frame = useCurrentFrame();
-  const { enter, exit } = revealState(frame, { start, end }, delay);
+  const { enter, exit, offset } = revealState(
+    frame,
+    { start, end },
+    delay,
+    distance,
+    distance * 0.6,
+  );
   return (
     <div
       style={{
         opacity: enter * (1 - exit),
-        transform: `translateY(${(1 - enter) * distance - exit * distance * 0.6}px)`,
+        transform: `translateY(${offset}px)`,
         filter: `blur(${(1 - enter) * 4}px)`,
         ...style,
       }}
