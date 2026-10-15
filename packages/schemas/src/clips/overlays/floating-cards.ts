@@ -44,8 +44,8 @@ export const floatingCardsDefaults: FloatingCardsProps = {
   delay: 8,
   stagger: 12,
   look: lightLook(),
-  stage: defaultStage({ cameraDrift: 0.2 }),
-  motion: defaultMotion({ exit: 'fade', exitFrames: 14 }),
+  stage: defaultStage(),
+  motion: defaultMotion({ exit: 'fade', exitFrames: 14, float: 0.16 }),
 };
 
 export const floatingCardsMeta: ClipMeta = {
