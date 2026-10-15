@@ -40,6 +40,7 @@ describe('kinetic type clips', () => {
     'echo-stack',
     'outline-marquee',
     'letter-flip',
+    'glow-reveal',
   ];
 
   it('ships every kinetic clip as dark typography with a backdrop toggle and live grain', () => {
@@ -64,5 +65,18 @@ describe('kinetic type clips', () => {
       false,
     );
     expect(getClipSchema('typewriter').safeParse({ ...writer, intro: 'typed' }).success).toBe(true);
+  });
+});
+
+describe('kinetic effect clips', () => {
+  it('validates the grid and film overlays and bounds their controls', () => {
+    for (const id of ['split-grid', 'film-dust'] as ClipId[]) {
+      expect(getClipSchema(id).safeParse(getClipDefaults(id)).success).toBe(true);
+      expect(getClipMeta(id).category).toBe('overlays');
+    }
+    const grid = getClipDefaults('split-grid');
+    expect(getClipSchema('split-grid').safeParse({ ...grid, columns: 5 }).success).toBe(false);
+    const film = getClipDefaults('film-dust');
+    expect(getClipSchema('film-dust').safeParse({ ...film, dust: 2 }).success).toBe(false);
   });
 });

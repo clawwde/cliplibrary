@@ -6,6 +6,7 @@ import {
   featureCalloutsMeta,
   featureCalloutsSchema,
 } from './feature-callouts';
+import { glowRevealDefaults, glowRevealMeta, glowRevealSchema } from './glow-reveal';
 import {
   handwrittenNoteDefaults,
   handwrittenNoteMeta,
@@ -89,5 +90,11 @@ export const typographyClips: ClipModule[] = [
     schema: letterFlipSchema,
     defaults: letterFlipDefaults,
     meta: letterFlipMeta,
+  },
+  {
+    id: 'glow-reveal',
+    schema: glowRevealSchema,
+    defaults: glowRevealDefaults,
+    meta: glowRevealMeta,
   },
 ];
