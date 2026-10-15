@@ -28,5 +28,6 @@ apps/web/public/uploads/*
 settings.local.json
 *.tsbuildinfo
 
-.claude
+.claude/*
+!.claude/skills/
 .lycheecache

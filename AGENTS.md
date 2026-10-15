@@ -47,6 +47,10 @@ file. Categories group clips by the type of animation and are defined once in
 `brand`, `backgrounds`, `transitions`, `sequences`. Every `ClipMeta` also carries `tags` (from
 `CLIP_TAGS`) and a `theme` (`light` or `dark`), which the gallery search and filters read.
 
+For promo-style clips (3D phones, headlines, brand, backdrops and layered sequences), follow
+`.claude/skills/promo-clips/SKILL.md`: the design language, 3D pitfalls, clip checklist and
+the render and motion checks every visual change must pass.
+
 - Schema side: `packages/schemas/src/clips/<category>/<id>.ts` exports `<name>Schema`,
   `<name>Defaults`, `<Name>Props` and `<name>Meta: ClipMeta` (metadata, including `category`, is
   co-located with the schema). Each category's `index.ts` exports a `ClipModule[]`, and
