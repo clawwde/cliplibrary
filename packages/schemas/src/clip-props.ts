@@ -18,6 +18,7 @@ import type { FloatingCardsProps } from './clips/overlays/floating-cards';
 import type { SplitGridProps } from './clips/overlays/split-grid';
 import type { AppPromoProps } from './clips/sequences/app-promo';
 import type { DoodlePromoProps } from './clips/sequences/doodle-promo';
+import type { KineticPromoProps } from './clips/sequences/kinetic-promo';
 import type { SceneTransitionProps } from './clips/transitions/scene-transition';
 import type { DetailListProps } from './clips/typography/detail-list';
 import type { EchoStackProps } from './clips/typography/echo-stack';
@@ -68,6 +69,7 @@ export interface ClipPropsMap {
   'scene-transition': SceneTransitionProps;
   'app-promo': AppPromoProps;
   'doodle-promo': DoodlePromoProps;
+  'kinetic-promo': KineticPromoProps;
 }
 
 export type ClipId = keyof ClipPropsMap;
