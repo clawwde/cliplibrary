@@ -36,12 +36,11 @@ describe('project seed', () => {
 describe('sequence seed', () => {
   it('opens the kinetic promo as editable blocks with the recap placed in quadrants', () => {
     const project = seedProjectForClip('kinetic-promo');
-    expect(project.durationInFrames).toBe(2580);
+    expect(project.durationInFrames).toBe(2595);
     expect(project.tracks.map((track) => track.name)).toEqual([
       'Overlays',
       'Captions',
       'Text',
-      'Devices',
       'Backdrop',
     ]);
     const elements = project.tracks.flatMap((track) => track.elements);

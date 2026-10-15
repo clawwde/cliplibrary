@@ -9,11 +9,7 @@ import { Composition } from 'remotion';
 import { type AnyScene, type SceneMap, SequencePlayer } from '../../promo/sequence-player';
 import type { SceneModule } from '../../scene-module';
 import { StudioBackdrop } from '../backgrounds/studio-backdrop';
-import { PhoneScroll } from '../devices/phone-scroll';
-import { PhoneSpinIn } from '../devices/phone-spin-in';
-import { PhoneWall } from '../devices/phone-wall';
 import { FilmDust } from '../overlays/film-dust';
-import { SplitGrid } from '../overlays/split-grid';
 import { EchoStack } from '../typography/echo-stack';
 import { GlowReveal } from '../typography/glow-reveal';
 import { HeadlineReveal } from '../typography/headline-reveal';
@@ -28,10 +24,6 @@ import { WordPunch } from '../typography/word-punch';
 const SCENE_COMPONENTS: SceneMap = {
   'studio-backdrop': StudioBackdrop as unknown as AnyScene,
   'film-dust': FilmDust as unknown as AnyScene,
-  'split-grid': SplitGrid as unknown as AnyScene,
-  'phone-scroll': PhoneScroll as unknown as AnyScene,
-  'phone-spin-in': PhoneSpinIn as unknown as AnyScene,
-  'phone-wall': PhoneWall as unknown as AnyScene,
   'echo-stack': EchoStack as unknown as AnyScene,
   'glow-reveal': GlowReveal as unknown as AnyScene,
   'headline-reveal': HeadlineReveal as unknown as AnyScene,
@@ -44,8 +36,12 @@ const SCENE_COMPONENTS: SceneMap = {
   'word-punch': WordPunch as unknown as AnyScene,
 };
 
-export const KineticPromo = (brand: KineticPromoProps) => (
-  <SequencePlayer sequence={KINETIC_PROMO_SEQUENCE} scenes={SCENE_COMPONENTS} brand={brand} />
+export const KineticPromo = ({ accent }: KineticPromoProps) => (
+  <SequencePlayer
+    sequence={KINETIC_PROMO_SEQUENCE}
+    scenes={SCENE_COMPONENTS}
+    brand={{ accent, finish: '', useFinishEverywhere: false }}
+  />
 );
 
 export const kineticPromoScene: SceneModule = {
