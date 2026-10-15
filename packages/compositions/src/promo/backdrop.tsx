@@ -1,9 +1,9 @@
 import type { PromoLook } from '@cliplibrary/schemas';
-import { AbsoluteFill } from 'remotion';
+import { AbsoluteFill, useCurrentFrame } from 'remotion';
 
 const EASED_STOPS = [0, 0.04, 0.14, 0.3, 0.5, 0.7, 0.86, 0.96, 1];
 
-const easedGradient = (from: string, to: string): string =>
+export const easedGradient = (from: string, to: string): string =>
   EASED_STOPS.map(
     (amount, index) =>
       `color-mix(in oklab, ${from}, ${to} ${(amount * 100).toFixed(1)}%) ${((index / (EASED_STOPS.length - 1)) * 100).toFixed(1)}%`,
@@ -64,6 +64,7 @@ export const Backdrop = ({
   focusX?: number;
   focusY?: number;
 }) => {
+  const frame = useCurrentFrame();
   const glow = `rgba(255, 255, 255, ${(look.spotlight * 0.35).toFixed(3)})`;
   return (
     <AbsoluteFill
@@ -89,7 +90,7 @@ export const Backdrop = ({
               type="fractalNoise"
               baseFrequency="0.9"
               numOctaves={2}
-              seed={7}
+              seed={look.liveGrain ? 7 + Math.floor(frame) : 7}
               stitchTiles="stitch"
             />
             <feColorMatrix type="saturate" values="0" />

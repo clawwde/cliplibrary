@@ -10,6 +10,13 @@ import {
   promoMeta,
 } from '../../promo-common';
 import type { ClipMeta } from '../../registry';
+import {
+  type ClipSequence,
+  type SequenceBrand,
+  type SequenceEntry,
+  sequenceBrandSchema,
+  sequenceEnd,
+} from '../../sequence';
 import { studioBackdropDefaults } from '../backgrounds/studio-backdrop';
 import { phoneFanDefaults } from '../devices/phone-fan';
 import { phoneScrollDefaults } from '../devices/phone-scroll';
@@ -18,13 +25,6 @@ import { phoneSwapDefaults } from '../devices/phone-swap';
 import { phoneTurnaroundDefaults } from '../devices/phone-turnaround';
 import { type DoodleArrow, doodleArrow, doodleArrowsDefaults } from '../overlays/doodle-arrows';
 import { handwrittenNoteDefaults } from '../typography/handwritten-note';
-import {
-  type ClipSequence,
-  type SequenceBrand,
-  type SequenceEntry,
-  sequenceBrandSchema,
-  sequenceEnd,
-} from './sequence';
 
 export const DOODLE_PROMO_TRACKS = ['Transitions', 'Doodles', 'Notes', 'Devices', 'Paper'] as const;
 

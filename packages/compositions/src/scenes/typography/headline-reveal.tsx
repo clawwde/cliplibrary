@@ -16,6 +16,8 @@ export const HeadlineReveal = ({
   highlight,
   body,
   size,
+  weight,
+  leadWeight,
   placement,
   veil,
   delay,
@@ -55,6 +57,8 @@ export const HeadlineReveal = ({
             text={headline}
             highlight={highlight}
             size={size}
+            weight={weight}
+            leadWeight={leadWeight}
             color={look.ink}
             accent={look.accent}
             align={align}
