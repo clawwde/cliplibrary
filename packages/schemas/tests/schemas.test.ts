@@ -275,6 +275,14 @@ describe('promo clips', () => {
     'app-icon-reveal',
     'phone-pedestal',
     'phone-flat-lay',
+    'number-counter',
+    'typewriter',
+    'word-build',
+    'word-punch',
+    'scribble-caption',
+    'echo-stack',
+    'outline-marquee',
+    'letter-flip',
   ];
 
   it('validates every promo default against its schema', () => {
