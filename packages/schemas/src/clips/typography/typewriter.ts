@@ -12,7 +12,7 @@ import {
 } from '../../promo-common';
 import type { ClipMeta } from '../../registry';
 
-export const TYPEWRITER_INTROS = ['none', 'block', 'typed'] as const;
+export const TYPEWRITER_INTROS = ['none', 'block', 'typed', 'cut'] as const;
 
 export const TYPEWRITER_OUTROS = ['none', 'select', 'erase'] as const;
 
@@ -24,7 +24,9 @@ export const typewriterSchema = z.object({
   intro: z.enum(TYPEWRITER_INTROS),
   outro: z.enum(TYPEWRITER_OUTROS),
   delay: zSlider({ min: 0, max: 90 }),
-  charFrames: zSlider({ min: 1, max: 6 }),
+  charFrames: zSlider({ min: 0.25, max: 6, step: 0.25 }),
+  zoom: zSlider({ min: 1, max: 4, step: 0.05 }),
+  caretHold: zSlider({ min: 0, max: 60 }),
   outroAt: zSlider({ min: 10, max: 600 }),
   showCaret: z.boolean(),
   caretPulse: zSlider({ min: 8, max: 60 }),
@@ -43,7 +45,9 @@ export const typewriterDefaults: TypewriterProps = {
   intro: 'block',
   outro: 'select',
   delay: 4,
-  charFrames: 1,
+  charFrames: 0.5,
+  caretHold: 16,
+  zoom: 1,
   outroAt: 92,
   showCaret: true,
   caretPulse: 24,

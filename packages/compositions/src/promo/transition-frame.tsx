@@ -30,6 +30,19 @@ const styleFor = (
       return { transform: `translateX(${hidden * 100 * direction}%)` };
     case 'push-up':
       return { transform: `translateY(${hidden * 100 * direction}%)` };
+    case 'grow':
+      return incoming
+        ? {
+            opacity: Math.min(1, (1 - hidden) * 4),
+            transform: `scale(${(1 - hidden * 0.6).toFixed(4)})`,
+          }
+        : { opacity: 1 - hidden, transform: `scale(${(1 - hidden * 0.6).toFixed(4)})` };
+    case 'blast':
+      return {
+        opacity: Math.min(1, (1 - hidden) * 2.5),
+        transform: `scale(${(1 + hidden * hidden * (incoming ? 2.5 : 4)).toFixed(4)})`,
+        filter: `blur(${(hidden * 10).toFixed(2)}px)`,
+      };
     case 'zoom':
       return {
         opacity: 1 - hidden,

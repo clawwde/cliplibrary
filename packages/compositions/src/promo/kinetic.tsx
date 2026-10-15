@@ -1,10 +1,10 @@
 import type { PromoLook, PromoMotion, PromoPlacement } from '@cliplibrary/schemas';
 import type { CSSProperties, ReactNode } from 'react';
-import { displayFont } from './fonts';
+import { kineticFont } from './fonts';
 import { PromoLayer, placementFrame } from './promo-layer';
 
-export const displayType = (size: number, weight: number, tracking = -0.035): CSSProperties => ({
-  fontFamily: displayFont,
+export const displayType = (size: number, weight: number, tracking = -0.02): CSSProperties => ({
+  fontFamily: kineticFont,
   fontSize: size,
   fontWeight: weight,
   letterSpacing: `${tracking}em`,

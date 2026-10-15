@@ -24,12 +24,12 @@ export const filmDustSchema = z.object({
 export type FilmDustProps = z.infer<typeof filmDustSchema>;
 
 export const filmDustDefaults: FilmDustProps = {
-  color: '#f4f4f2',
-  dust: 0.45,
-  hairs: 0.35,
-  scratches: 0.15,
-  vignette: 0.55,
-  gateFrames: 2,
+  color: '#b08a3e',
+  dust: 0.7,
+  hairs: 0.9,
+  scratches: 0.1,
+  vignette: 0,
+  gateFrames: 1,
   seed: 11,
   look: kineticLook(),
   motion: defaultMotion({ exit: 'none', exitFrames: 0 }),

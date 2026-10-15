@@ -4,163 +4,141 @@ import {
   wordBuildMeta,
   wordBuildSchema,
 } from '@cliplibrary/schemas';
-import type { CSSProperties } from 'react';
-import { AbsoluteFill, Composition, useCurrentFrame, useVideoConfig } from 'remotion';
-import { withAlpha } from '../../promo/glow';
+import { Composition, useCurrentFrame, useVideoConfig } from 'remotion';
 import { displayType, KineticLayer } from '../../promo/kinetic';
-import { land, settle, smooth, tween } from '../../promo/timing';
+import { tween } from '../../promo/timing';
+import { BigWordLayer } from '../../promo/word-build-big';
+import {
+  bigWindows,
+  centeringShift,
+  presence,
+  sentenceWordStyle,
+} from '../../promo/word-build-motion';
 import { highlightSet, linesOf, normalize } from '../../promo/words';
 import type { SceneModule } from '../../scene-module';
 
-const OVERLAP = 8;
-const WORD_STAGGER = 3;
+const EXIT_STAGGER = 3;
+const FALL_FRAMES = 14;
+const linear = (t: number): number => t;
 
-type Entry = WordBuildProps['entry'];
-
-const bigWordStyle = (
-  entry: Entry,
-  progress: number,
-  landed: number,
-  size: number,
-): CSSProperties => {
-  switch (entry) {
-    case 'zoom':
-      return { transform: `scale(${(0.62 + 0.9 * progress).toFixed(5)})` };
-    case 'slide':
-      return { transform: `translateX(${((0.5 - progress) * 640).toFixed(2)}px)` };
-    case 'tilt':
-      return {
-        transform: `perspective(${size * 4}px) rotateY(${46 - 78 * progress}deg) rotateX(${8 - 14 * progress}deg) scale(${0.9 + 0.14 * progress})`,
-      };
-    case 'pop':
-      return { transform: `scale(${((0.8 + 0.2 * landed) * (1 + 0.08 * progress)).toFixed(5)})` };
-    default:
-      return {};
-  }
-};
-
-export const WordBuild = ({
-  text,
-  highlight,
-  entry,
-  bigSize,
-  bigWeight,
-  size,
-  weight,
-  delay,
-  wordFrames,
-  echoes,
-  exitByWord,
-  placement,
-  look,
-  motion,
-}: WordBuildProps) => {
+export const WordBuild = (props: WordBuildProps) => {
+  const { entry, size, weight, delay, wordFrames, placement, look, motion } = props;
   const frame = useCurrentFrame() * motion.speed;
-  const { durationInFrames } = useVideoConfig();
-  const lines = linesOf(text);
+  const { durationInFrames, width } = useVideoConfig();
+  const lines = linesOf(props.text);
   const words = lines.flat();
-  const accented = highlightSet(highlight);
-  const sentenceStart = delay + words.length * wordFrames;
-  const exitStart = durationInFrames - motion.exitFrames - words.length * WORD_STAGGER - 12;
-  const colorOf = (word: string) => (accented.has(normalize(word)) ? look.accent : look.ink);
-  const bigWords = words.map((word, index) => {
-    const start = delay + index * wordFrames;
-    const end = start + wordFrames + OVERLAP;
-    if (frame < start || frame > end) {
-      return null;
+  const accented = highlightSet(props.highlight);
+  const bigCount = props.bigWords > 0 ? Math.min(props.bigWords, words.length) : words.length;
+  const bigList = words.slice(0, bigCount);
+  const windows = bigWindows(entry, bigCount, delay, wordFrames);
+  const bigEnd = windows.at(-1)?.end ?? delay;
+  const exitPad = props.bigExit === 'fall' ? FALL_FRAMES : props.bigExit === 'squeeze' ? 2 : 0;
+  const sentenceStart = bigEnd + exitPad;
+  const order = (index: number) => (props.buildFrom === 'left' ? index : words.length - 1 - index);
+  const appearOf = (index: number) => sentenceStart + order(index) * props.buildFrames;
+  const lastAppear = sentenceStart + (words.length - 1) * props.buildFrames;
+  const exitStart = durationInFrames - motion.exitFrames - words.length * EXIT_STAGGER - 4;
+  const isWalking = (index: number) => {
+    if (!props.walkHighlight) {
+      return false;
     }
-    const progress = (frame - start) / (end - start);
-    const landed = land(frame, [start, start + wordFrames], [0, 1], 1 / (bigSize * 0.4));
-    const isLast = index === words.length - 1;
-    const opacity =
-      tween(frame, [start, start + OVERLAP], [0, 1], (t) => t) *
-      (1 - tween(frame, [end - OVERLAP - (isLast ? 2 : 0), end], [0, 1], (t) => t));
-    const converge = land(
-      frame,
-      [start, start + wordFrames],
-      [1, 0],
-      1 / (bigSize * 0.18 * Math.max(1, echoes)),
+    const appear = appearOf(index);
+    const until =
+      appear === lastAppear ? appear + props.buildFrames + 4 : appear + props.buildFrames;
+    return frame >= appear && frame < until;
+  };
+  const colorOf = (word: string, index: number) =>
+    isWalking(index) || (!props.walkHighlight && accented.has(normalize(word)))
+      ? look.accent
+      : look.ink;
+
+  const bigLayer = (
+    <BigWordLayer
+      props={props}
+      frame={frame}
+      width={width}
+      windows={windows}
+      words={bigList}
+      exitPad={exitPad}
+      accentFor={(word) => colorOf(word, -1)}
+    />
+  );
+
+  let wordIndex = 0;
+  const sentence = lines.map((line, lineIndex) => {
+    const first = wordIndex;
+    wordIndex += line.length;
+    const hiddenChars = line.reduce(
+      (sum, word, offset) =>
+        sum + (1 - presence(frame, appearOf(first + offset))) * (word.length + 1),
+      0,
     );
     return (
-      <AbsoluteFill
-        key={`${index}:${word}`}
-        style={{ justifyContent: 'center', alignItems: 'center', opacity }}
+      <div
+        key={`${lineIndex}:${line.join(' ')}`}
+        style={{
+          ...displayType(size, weight),
+          lineHeight: 1.1,
+          transform: centeringShift(hiddenChars, props.buildFrom),
+        }}
       >
-        <div
-          style={{
-            position: 'relative',
-            willChange: 'transform',
-            ...bigWordStyle(entry, progress, landed, bigSize),
-          }}
-        >
-          {entry === 'echo'
-            ? Array.from({ length: echoes }, (_, echo) => echo + 1).map((echo) => (
-                <div
-                  key={echo}
-                  style={{
-                    ...displayType(bigSize, bigWeight),
-                    position: 'absolute',
-                    inset: 0,
-                    color: 'transparent',
-                    WebkitTextStroke: `${Math.max(1, bigSize / 220)}px ${withAlpha(look.ink, 0.55 / echo)}`,
-                    transform: `translateX(${(echo * bigSize * 0.16 * converge).toFixed(2)}px)`,
-                  }}
-                >
-                  {word}
-                </div>
-              ))
-            : null}
-          <div
-            style={{
-              ...displayType(bigSize, bigWeight),
-              position: 'relative',
-              color: colorOf(word),
-            }}
-          >
-            {word}
-          </div>
-        </div>
-      </AbsoluteFill>
+        {line.map((word, offset) => {
+          const index = first + offset;
+          const appear = appearOf(index);
+          if (frame < appear) {
+            return null;
+          }
+          const leave = props.exitByWord
+            ? tween(
+                frame,
+                [exitStart + index * EXIT_STAGGER, exitStart + index * EXIT_STAGGER + 6],
+                [0, 1],
+                linear,
+              )
+            : 0;
+          const style = sentenceWordStyle(
+            props.sentenceEntry,
+            frame,
+            appear,
+            order(index),
+            size,
+            width,
+          );
+          return (
+            <span
+              key={`${offset}:${word}`}
+              style={{
+                display: 'inline-block',
+                color: colorOf(word, index),
+                ...style,
+                opacity: (style.opacity as number) * (1 - leave),
+              }}
+            >
+              {props.sentenceEntry === 'type'
+                ? Array.from(word).map((char, at) => {
+                    const shown = presence(frame, appear + at * 0.7, 2);
+                    return (
+                      <span
+                        key={`${at}:${char}`}
+                        style={{
+                          opacity: shown,
+                          filter: shown < 1 ? `blur(${((1 - shown) * 6).toFixed(2)}px)` : undefined,
+                        }}
+                      >
+                        {char}
+                      </span>
+                    );
+                  })
+                : word}
+              {offset < line.length - 1 ? ' ' : ''}
+            </span>
+          );
+        })}
+      </div>
     );
   });
-  let wordIndex = 0;
-  const sentence = lines.map((line, lineIndex) => (
-    <div
-      key={`${lineIndex}:${line.join(' ')}`}
-      style={{ ...displayType(size, weight), lineHeight: 1.08 }}
-    >
-      {line.map((word, index) => {
-        const order = wordIndex++;
-        const start = sentenceStart - 4 + order * WORD_STAGGER;
-        const rise = land(frame, [start, start + 18], [size * 0.5, 0]);
-        const shown = tween(frame, [start, start + 12], [0, 1], settle);
-        const leave = exitByWord
-          ? tween(
-              frame,
-              [exitStart + order * WORD_STAGGER, exitStart + order * WORD_STAGGER + 10],
-              [0, 1],
-              smooth,
-            )
-          : 0;
-        return (
-          <span
-            key={`${index}:${word}`}
-            style={{
-              display: 'inline-block',
-              color: colorOf(word),
-              opacity: shown * (1 - leave),
-              transform: `translateY(${rise.toFixed(2)}px)`,
-            }}
-          >
-            {word}
-            {index < line.length - 1 ? ' ' : ''}
-          </span>
-        );
-      })}
-    </div>
-  ));
   return (
-    <KineticLayer look={look} motion={motion} placement={placement} stage={bigWords}>
+    <KineticLayer look={look} motion={motion} placement={placement} stage={bigLayer}>
       {sentence}
     </KineticLayer>
   );

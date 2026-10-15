@@ -13,7 +13,7 @@ export interface FilmSettings {
 }
 
 const DUST_SLOTS = 36;
-const HAIR_SLOTS = 6;
+const HAIR_SLOTS = 24;
 const SCRATCH_SLOTS = 3;
 
 const hairPath = (key: string, x: number, y: number): string => {
@@ -54,7 +54,7 @@ export const filmMarks = (
       x: random(`${key}-x`) * width,
       y: random(`${key}-y`) * height,
       r: 0.8 + random(`${key}-r`) ** 3 * 2.6,
-      alpha: (0.2 + random(`${key}-a`) * 0.35) * fade,
+      alpha: (0.45 + random(`${key}-a`) * 0.45) * fade,
     };
   }).filter((speck) => speck.show);
   const strands = Array.from({ length: HAIR_SLOTS }, (_, index) => {
@@ -64,7 +64,7 @@ export const filmMarks = (
       index,
       show: random(`${key}-on`) < hairs * 0.6,
       d: hairPath(key, random(`${key}-x`) * width, random(`${key}-y`) * height),
-      alpha: (0.14 + random(`${key}-a`) * 0.24) * fade,
+      alpha: (0.5 + random(`${key}-a`) * 0.4) * fade,
     };
   }).filter((strand) => strand.show);
   const lines = Array.from({ length: SCRATCH_SLOTS }, (_, index) => {
@@ -113,7 +113,7 @@ export const FilmLayer = ({
             d={strand.d}
             fill="none"
             stroke={withAlpha(color, strand.alpha)}
-            strokeWidth={1.3}
+            strokeWidth={1.8}
             strokeLinecap="round"
           />
         ))}

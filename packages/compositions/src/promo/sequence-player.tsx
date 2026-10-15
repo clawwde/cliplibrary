@@ -53,6 +53,7 @@ const placed = (transform: EntryTransform | undefined) =>
     : {
         transform: `translate(${transform.x}px, ${transform.y}px) scale(${transform.scale})`,
         transformOrigin: 'center center',
+        overflow: 'hidden' as const,
       };
 
 export const SequencePlayer = ({

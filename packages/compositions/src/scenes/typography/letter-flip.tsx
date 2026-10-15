@@ -4,7 +4,8 @@ import {
   letterFlipMeta,
   letterFlipSchema,
 } from '@cliplibrary/schemas';
-import { Composition, useCurrentFrame } from 'remotion';
+import { Composition, useCurrentFrame, useVideoConfig } from 'remotion';
+import { glowShadow } from '../../promo/glow';
 import { displayType, KineticLayer } from '../../promo/kinetic';
 import { land, settle, tween } from '../../promo/timing';
 import type { SceneModule } from '../../scene-module';
@@ -20,6 +21,7 @@ export const LetterFlip = ({
   stagger,
   flipFrames,
   highlight,
+  glowOut,
   placement,
   look,
   motion,
@@ -27,9 +29,20 @@ export const LetterFlip = ({
   const frame = useCurrentFrame() * motion.speed;
   const letters = Array.from(text);
   const reach = size * (0.3 * startAngle * (Math.PI / 180) + slide);
+  const { durationInFrames } = useVideoConfig();
+  const burnAt = durationInFrames - motion.exitFrames - Math.round(letters.length * 2.5) - 10;
+  const burn = glowOut * tween(frame, [burnAt, burnAt + 12], [0, 1], (t) => t);
   return (
     <KineticLayer look={look} motion={motion} placement={placement}>
-      <div style={{ ...displayType(size, weight, tracking), color: look.ink, display: 'flex' }}>
+      <div
+        style={{
+          ...displayType(size, weight, tracking),
+          color: look.ink,
+          display: 'flex',
+          textShadow: glowShadow(look.ink, burn * 1.4, size),
+          filter: burn > 0 ? `blur(${(burn * 5).toFixed(2)}px)` : undefined,
+        }}
+      >
         {letters.map((letter, index) => {
           const start = delay + index * stagger;
           const turn = land(frame, [start, start + flipFrames], [1, 0], 1 / Math.max(1, reach));
@@ -39,7 +52,16 @@ export const LetterFlip = ({
               style={{
                 display: 'inline-block',
                 color: index + 1 === highlight ? look.accent : undefined,
-                opacity: tween(frame, [start, start + flipFrames * 0.4], [0, 1], settle),
+                opacity:
+                  tween(frame, [delay, delay + 3], [0, 1], settle) *
+                  (1 -
+                    glowOut *
+                      tween(
+                        frame,
+                        [burnAt + 12 + index * 2.5, burnAt + 16 + index * 2.5],
+                        [0, 1],
+                        (t) => t,
+                      )),
                 transform: `perspective(${size * 3}px) translateX(${(-slide * size * turn).toFixed(2)}px) rotateY(${(-startAngle * turn).toFixed(3)}deg)`,
                 transformOrigin: '50% 50%',
                 willChange: 'transform',

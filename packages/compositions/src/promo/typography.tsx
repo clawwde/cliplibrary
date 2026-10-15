@@ -14,8 +14,9 @@ const revealState = (
   { start, end }: RevealWindow,
   delay: number,
   [rise, sink]: [number, number],
+  duration = 32,
 ) => {
-  const enterRange: [number, number] = [start + delay, start + delay + 32];
+  const enterRange: [number, number] = [start + delay, start + delay + duration];
   const exitRange: [number, number] | undefined =
     end === undefined ? undefined : [end + delay * 0.4, end + delay * 0.4 + 14];
   const enter = tween(frame, enterRange, [0, 1], settle);
@@ -36,6 +37,9 @@ export interface HeadlineProps extends RevealWindow {
   weight?: number;
   leadWeight?: number;
   stagger?: number;
+  duration?: number;
+  family?: string;
+  tracking?: number;
 }
 
 export const Headline = ({
@@ -48,6 +52,9 @@ export const Headline = ({
   weight = 600,
   leadWeight = weight,
   stagger = 5,
+  duration = 32,
+  family = displayFont,
+  tracking = -0.045,
   start,
   end,
 }: HeadlineProps) => {
@@ -56,19 +63,22 @@ export const Headline = ({
   return (
     <div
       style={{
-        fontFamily: displayFont,
+        fontFamily: family,
         fontSize: size,
         lineHeight: 1.02,
-        letterSpacing: '-0.045em',
+        letterSpacing: `${tracking}em`,
         color,
         textAlign: align,
       }}
     >
       {text.split('\n').map((line, lineIndex) => {
-        const { enter, exit, offset } = revealState(frame, { start, end }, lineIndex * stagger, [
-          0.45 * size,
-          0.2 * size,
-        ]);
+        const { enter, exit, offset } = revealState(
+          frame,
+          { start, end },
+          lineIndex * stagger,
+          [0.45 * size, 0.2 * size],
+          duration,
+        );
         return (
           <div
             key={`${lineIndex}:${line}`}
