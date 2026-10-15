@@ -27,40 +27,54 @@ const hairPath = (key: string, x: number, y: number): string => {
   return `M${x.toFixed(1)} ${y.toFixed(1)} c ${(dx * 0.3 + nx).toFixed(1)} ${(dy * 0.3 + ny).toFixed(1)}, ${(dx * 0.7 - nx).toFixed(1)} ${(dy * 0.7 - ny).toFixed(1)}, ${dx.toFixed(1)} ${dy.toFixed(1)}`;
 };
 
+const lifeEnvelope = (
+  frame: number,
+  hold: number,
+  offset: number,
+): { cycle: number; fade: number } => {
+  const shifted = frame + offset * hold;
+  const cycle = Math.floor(shifted / hold);
+  const phase = (shifted - cycle * hold) / hold;
+  return { cycle, fade: Math.sin(phase * Math.PI) ** 2 };
+};
+
 export const filmMarks = (
   { dust, hairs, scratches, gateFrames, seed }: FilmSettings,
   frame: number,
   width: number,
   height: number,
 ) => {
-  const gate = Math.floor(frame / Math.max(1, gateFrames));
+  const gate = Math.max(1, gateFrames);
   const specks = Array.from({ length: DUST_SLOTS }, (_, index) => {
-    const key = `film-${seed}-dust-${gate}-${index}`;
+    const { cycle, fade } = lifeEnvelope(frame, gate * 3, index / DUST_SLOTS);
+    const key = `film-${seed}-dust-${cycle}-${index}`;
     return {
       index,
       show: random(`${key}-on`) < dust * 0.5,
       x: random(`${key}-x`) * width,
       y: random(`${key}-y`) * height,
-      r: 0.8 + random(`${key}-r`) ** 3 * 3.2,
-      alpha: 0.25 + random(`${key}-a`) * 0.45,
+      r: 0.8 + random(`${key}-r`) ** 3 * 2.6,
+      alpha: (0.2 + random(`${key}-a`) * 0.35) * fade,
     };
   }).filter((speck) => speck.show);
   const strands = Array.from({ length: HAIR_SLOTS }, (_, index) => {
-    const key = `film-${seed}-hair-${Math.floor(gate / (3 + index))}-${index}`;
+    const { cycle, fade } = lifeEnvelope(frame, gate * (8 + index * 2), index / HAIR_SLOTS);
+    const key = `film-${seed}-hair-${cycle}-${index}`;
     return {
       index,
       show: random(`${key}-on`) < hairs * 0.6,
       d: hairPath(key, random(`${key}-x`) * width, random(`${key}-y`) * height),
-      alpha: 0.18 + random(`${key}-a`) * 0.3,
+      alpha: (0.14 + random(`${key}-a`) * 0.24) * fade,
     };
   }).filter((strand) => strand.show);
   const lines = Array.from({ length: SCRATCH_SLOTS }, (_, index) => {
-    const key = `film-${seed}-scratch-${Math.floor(gate / (5 + index * 2))}-${index}`;
+    const { cycle, fade } = lifeEnvelope(frame, gate * (14 + index * 4), index / SCRATCH_SLOTS);
+    const key = `film-${seed}-scratch-${cycle}-${index}`;
     return {
       index,
       show: random(`${key}-on`) < scratches * 0.5,
-      x: random(`${key}-x`) * width + (random(`${key}-j-${gate}`) - 0.5) * 3,
-      alpha: 0.08 + random(`${key}-a`) * 0.14,
+      x: random(`${key}-x`) * width + Math.sin(frame * 0.9 + index) * 0.8,
+      alpha: (0.08 + random(`${key}-a`) * 0.12) * fade,
     };
   }).filter((line) => line.show);
   return { specks, strands, lines };
