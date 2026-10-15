@@ -62,7 +62,7 @@ const ENTRIES: SequenceEntry[] = [
   }),
   entry('relief-backdrop', 'Set', [0, 262], reliefBackdropDefaults, {
     look: clayLook(ACCENT),
-    motion: crossfade(0, 12),
+    motion: crossfade(0, 0),
   }),
   entry('app-icon-reveal', 'Text', [0, 102], appIconRevealDefaults, {
     icon: { ...appIconRevealDefaults.icon, size: 1.05 },
@@ -80,23 +80,24 @@ const ENTRIES: SequenceEntry[] = [
     entrance: 'spread',
     spreadDelay: 62,
     flyFrom: -6,
-    motion: { ...crossfade(0, 12), float: 0.04 },
+    motion: { ...crossfade(10, 0), float: 0.04 },
   }),
   entry('phone-pedestal', 'Scenes', [250, 412], phonePedestalDefaults, {
     look: phonePedestalDefaults.look,
-    motion: crossfade(10, 12),
+    motion: crossfade(10, 0),
   }),
-  entry('phone-flat-lay', 'Scenes', [400, 568], phoneFlatLayDefaults, {
+  entry('phone-flat-lay', 'Scenes', [400, 516], phoneFlatLayDefaults, {
     look: clayLook(ACCENT),
     motion: { ...crossfade(10, 12), float: 0 },
   }),
-  entry('phone-turnaround', 'Devices', [470, 728], phoneTurnaroundDefaults, {
+  entry('phone-turnaround', 'Devices', [504, 720], phoneTurnaroundDefaults, {
     phone: phone('ride-receipt'),
     scale: HANDOFF.scale,
-    turnAt: 0.4,
+    turnAt: 0.34,
+    turnFrames: 48,
     secondScreen: 'ride-welcome',
-    secondTurnAt: 160,
-    secondTurnFrames: 90,
+    secondTurnAt: 120,
+    secondTurnFrames: 96,
     travelX: HANDOFF.x,
     endYaw: HANDOFF.yaw,
     stage: STUDIO,
@@ -106,14 +107,14 @@ const ENTRIES: SequenceEntry[] = [
     phones: [phone('ride-welcome'), phone('ride-nearby')],
     position: position(HANDOFF.x, 0, 0),
     scale: HANDOFF.scale * 1.05,
-    gap: 0.62,
+    gap: 0.95,
     angle: HANDOFF.yaw,
     entrance: 'from-behind',
     behindSide: 'left',
-    slideDelay: 10,
+    slideDelay: 0,
     slideFrames: 56,
     stage: STUDIO,
-    motion: { ...crossfade(8, 0), float: 0.05 },
+    motion: { ...crossfade(0, 0), float: 0.05 },
   }),
   entry('cta-end-card', 'Text', [652, 851], ctaEndCardDefaults, {
     brandName: '',
