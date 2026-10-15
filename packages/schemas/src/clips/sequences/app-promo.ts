@@ -127,13 +127,14 @@ const ENTRIES: SequenceEntry[] = [
     position: position(2.7, -0.05),
     motion: fade(18),
   }),
-  entry('floating-cards', 'Overlays', [926, 1054], floatingCardsDefaults, {
+  entry('floating-cards', 'Overlays', [926, 1044], floatingCardsDefaults, {
     cards: [
       { kind: 'growth', x: 0.95, y: 1.75, z: 1.1, turn: 0.28, size: 2.1 },
       { kind: 'goal', x: 1.1, y: -1.75, z: 1.5, turn: 0.22, size: 2.1 },
       { kind: 'income', x: 4.85, y: 0.35, z: 0.9, turn: -0.4, size: 2.1 },
     ],
     delay: 0,
+    motion: fade(10),
   }),
   headline([906, 1052], {
     eyebrow: 'Discover',
