@@ -139,7 +139,7 @@ export const CtaEndCard = ({
               <BodyCopy text={subline} color={look.muted} width={900} align="center" size={32} />
             </FadeIn>
           ) : null}
-          <FadeIn start={42} style={{ display: 'flex', gap: 18, marginTop: 8 }}>
+          <FadeIn start={38} style={{ display: 'flex', gap: 18, marginTop: 8 }}>
             <StoreButton
               caption={primaryCaption}
               label={primaryLabel}
@@ -156,7 +156,7 @@ export const CtaEndCard = ({
             />
           </FadeIn>
           {url.length > 0 ? (
-            <FadeIn start={54}>
+            <FadeIn start={50}>
               <div
                 style={{
                   fontFamily: bodyFont,

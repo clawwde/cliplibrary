@@ -28,6 +28,7 @@ const FromBehind = ({
 }: PhonePairProps & { frame: number; float: number }) => {
   const out = tween(frame, [slideDelay, slideDelay + slideFrames], [0, 1], settle);
   const direction = behindSide === 'left' ? -1 : 1;
+  const parallax = (stage.cameraDistance + BEHIND_DEPTH) / stage.cameraDistance;
   return (
     <>
       {phones.map((entry, index) => {
@@ -35,9 +36,12 @@ const FromBehind = ({
         return (
           <group
             key={`${index}:${entry.screen}`}
+            visible={!behind || out > 0}
             position={[
-              position.x + (behind ? direction * gap * 2 * out : 0),
-              position.y + (behind ? Math.sin(frame / 26 + 1.6) * float * out : 0),
+              behind ? position.x * parallax + direction * gap * 2 * out : position.x,
+              behind
+                ? position.y * parallax + Math.sin(frame / 26 + 1.6) * float * out
+                : position.y,
               position.z - (behind ? BEHIND_DEPTH : 0),
             ]}
             rotation={[0.05, angle, 0.03]}
