@@ -1,11 +1,8 @@
-import { z } from 'zod';
 import type { ClipId } from '../../clip-props';
-import { zColor } from '../../control';
 import {
   darkLook,
   defaultMotion,
   lightLook,
-  PHONE_FINISHES,
   type PhoneFinish,
   phone,
   placement,
@@ -27,23 +24,17 @@ import { floatingCardsDefaults } from '../overlays/floating-cards';
 import { detailListDefaults } from '../typography/detail-list';
 import { featureCalloutsDefaults } from '../typography/feature-callouts';
 import { headlineRevealDefaults } from '../typography/headline-reveal';
+import {
+  type ClipSequence,
+  type SequenceBrand,
+  type SequenceEntry,
+  sequenceBrandSchema,
+  sequenceEnd,
+} from './sequence';
 
 export const APP_PROMO_TRACKS = ['Captions', 'Text', 'Overlays', 'Devices', 'Backdrop'] as const;
 
-export type AppPromoTrack = (typeof APP_PROMO_TRACKS)[number];
-
-export interface SequenceEntry {
-  clipId: ClipId;
-  track: AppPromoTrack;
-  from: number;
-  durationInFrames: number;
-  props: Record<string, unknown>;
-}
-
-export interface ClipSequence {
-  tracks: readonly string[];
-  entries: readonly SequenceEntry[];
-}
+type AppPromoTrack = (typeof APP_PROMO_TRACKS)[number];
 
 const LIGHT = lightLook('#2f5bff', false);
 const DARK = darkLook('#7d9bff', false);
@@ -182,19 +173,11 @@ const ENTRIES: SequenceEntry[] = [
 
 export const APP_PROMO_SEQUENCE: ClipSequence = { tracks: APP_PROMO_TRACKS, entries: ENTRIES };
 
-const sequenceEnd = ENTRIES.reduce(
-  (end, item) => Math.max(end, item.from + item.durationInFrames),
-  0,
-);
+const APP_PROMO_END = sequenceEnd(ENTRIES);
 
-export const appPromoSchema = z.object({
-  brandName: z.string(),
-  accent: zColor(),
-  finish: z.enum(PHONE_FINISHES),
-  useFinishEverywhere: z.boolean(),
-});
+export const appPromoSchema = sequenceBrandSchema;
 
-export type AppPromoProps = z.infer<typeof appPromoSchema>;
+export type AppPromoProps = SequenceBrand;
 
 export const appPromoDefaults: AppPromoProps = {
   brandName: 'Halo',
@@ -213,6 +196,6 @@ export const appPromoMeta: ClipMeta = {
   tags: ['3d', 'phone', 'minimal'],
   theme: 'light',
   source: 'packages/compositions/src/scenes/sequences/app-promo.tsx',
-  durationInFrames: sequenceEnd,
-  posterFrame: Math.round(sequenceEnd * 0.2),
+  durationInFrames: APP_PROMO_END,
+  posterFrame: Math.round(APP_PROMO_END * 0.2),
 };
