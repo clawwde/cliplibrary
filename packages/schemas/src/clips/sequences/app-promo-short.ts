@@ -49,7 +49,7 @@ const ENTRIES: SequenceEntry[] = [
   entry('studio-backdrop', 'Backdrop', [0, 750], studioBackdropDefaults, {
     look: lightLook(ACCENT),
   }),
-  entry('studio-backdrop', 'Backdrop', [600, 672], studioBackdropDefaults, {
+  entry('studio-backdrop', 'Backdrop', [600, 680], studioBackdropDefaults, {
     look: darkLook(DARK_ACCENT),
     motion: defaultMotion({ enter: 'iris', enterFrames: 22, exit: 'fade', exitFrames: 20 }),
   }),
@@ -62,7 +62,8 @@ const ENTRIES: SequenceEntry[] = [
     phone: phone('onboarding', 'white'),
     position: position(-2.55, -0.1),
     scale: 1.28,
-    motion: fade(16),
+    stage: { ...phoneSpinInDefaults.stage, cameraDrift: 0.6 },
+    motion: defaultMotion({ exit: 'fade', exitFrames: 16, float: 0.1 }),
   }),
   headline([82, 196], {
     eyebrow: 'Meet Tempo',
@@ -73,12 +74,13 @@ const ENTRIES: SequenceEntry[] = [
     placement: placement('right', 'center', { insetX: 150, width: 700 }),
     motion: fade(14),
   }),
-  entry('phone-turnaround', 'Devices', [180, 306], phoneTurnaroundDefaults, {
-    phone: phone('profile', 'desert'),
+  entry('phone-turnaround', 'Devices', [180, 330], phoneTurnaroundDefaults, {
+    phone: phone('profile', 'blue'),
     position: position(2.2, 0),
-    motion: fade(18),
+    turnAt: 0.6,
+    motion: defaultMotion({ enter: 'fade', enterFrames: 30, exit: 'fade', exitFrames: 18 }),
   }),
-  headline([188, 306], {
+  headline([188, 326], {
     eyebrow: 'Design',
     headline: 'Made to\nbe held.',
     highlight: 'held',
@@ -87,11 +89,11 @@ const ENTRIES: SequenceEntry[] = [
     placement: placement('left', 'center', { insetX: 150, width: 620 }),
     motion: fade(14),
   }),
-  entry('phone-fan', 'Devices', [290, 408], phoneFanDefaults, {
+  entry('phone-fan', 'Devices', [314, 420], phoneFanDefaults, {
     phones: [phone('messages', 'white'), phone('feed', 'black'), phone('settings', 'white')],
     motion: fade(18),
   }),
-  headline([298, 404], {
+  headline([322, 416], {
     eyebrow: '',
     headline: 'One app. Every day.',
     highlight: 'Every',
@@ -101,7 +103,7 @@ const ENTRIES: SequenceEntry[] = [
     placement: placement('center', 'top', { insetY: 84, width: 1400 }),
     motion: fade(14),
   }),
-  entry('phone-swap', 'Devices', [392, 528], phoneSwapDefaults, {
+  entry('phone-swap', 'Devices', [404, 532], phoneSwapDefaults, {
     screens: [
       { screen: 'map', customScreen: '' },
       { screen: 'music', customScreen: '' },
@@ -109,7 +111,7 @@ const ENTRIES: SequenceEntry[] = [
     finish: 'white',
     motion: fade(18),
   }),
-  entry('feature-callouts', 'Text', [392, 528], featureCalloutsDefaults, {
+  entry('feature-callouts', 'Text', [404, 532], featureCalloutsDefaults, {
     label: 'Built in',
     features: [
       { title: 'Live routes', body: 'Leave on time with traffic folded into every plan.' },
@@ -117,11 +119,11 @@ const ENTRIES: SequenceEntry[] = [
     ],
     motion: fade(14),
   }),
-  entry('phone-wall', 'Devices', [512, 616], phoneWallDefaults, {
+  entry('phone-wall', 'Devices', [516, 604], phoneWallDefaults, {
     finish: 'white',
     motion: defaultMotion({ enter: 'fade', enterFrames: 16, exit: 'fade', exitFrames: 16 }),
   }),
-  headline([528, 612], {
+  headline([528, 600], {
     eyebrow: '',
     headline: 'Every screen, ready',
     highlight: 'ready',
@@ -132,12 +134,12 @@ const ENTRIES: SequenceEntry[] = [
     placement: placement('center', 'center', { width: 1500 }),
     motion: fade(14),
   }),
-  entry('phone-pair', 'Devices', [612, 672], phonePairDefaults, {
+  entry('phone-pair', 'Devices', [616, 672], phonePairDefaults, {
     look: DARK,
     phones: [phone('wallet', 'black'), phone('calendar', 'desert')],
-    motion: fade(16),
+    motion: defaultMotion({ enter: 'fade', enterFrames: 12, exit: 'fade', exitFrames: 16 }),
   }),
-  headline([618, 668], {
+  headline([622, 668], {
     eyebrow: 'After hours',
     headline: 'Calm in the dark.',
     highlight: 'dark',
