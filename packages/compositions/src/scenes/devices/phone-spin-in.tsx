@@ -8,7 +8,7 @@ import { Composition, useCurrentFrame } from 'remotion';
 import { PhoneModel } from '../../promo/phone-model';
 import { isDarkLook, PromoLayer } from '../../promo/promo-layer';
 import { Stage } from '../../promo/stage';
-import { settle, TAU, tween } from '../../promo/timing';
+import { glide, TAU, tween } from '../../promo/timing';
 import type { SceneModule } from '../../scene-module';
 
 export const PhoneSpinIn = ({
@@ -24,7 +24,7 @@ export const PhoneSpinIn = ({
 }: PhoneSpinInProps) => {
   const frame = useCurrentFrame() * motion.speed;
   const side = position.x === 0 ? 1 : Math.sign(position.x);
-  const arrive = tween(frame, [0, 84], [0, 1], settle);
+  const arrive = tween(frame, [0, 84], [0, 1], glide);
   const rotateY =
     -side * tilt - (1 - arrive) * side * spinTurns * TAU + Math.sin(frame / 48) * 0.03;
   return (

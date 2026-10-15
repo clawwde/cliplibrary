@@ -8,7 +8,7 @@ import { Composition, useCurrentFrame } from 'remotion';
 import { PhoneModel } from '../../promo/phone-model';
 import { isDarkLook, PromoLayer } from '../../promo/promo-layer';
 import { Stage } from '../../promo/stage';
-import { settle, tween } from '../../promo/timing';
+import { glide, tween } from '../../promo/timing';
 import type { SceneModule } from '../../scene-module';
 
 export const PhonePair = ({
@@ -23,7 +23,7 @@ export const PhonePair = ({
   motion,
 }: PhonePairProps) => {
   const frame = useCurrentFrame() * motion.speed;
-  const arrive = tween(frame, [0, 66], [0, 1], settle);
+  const arrive = tween(frame, [0, 66], [0, 1], glide);
   const travel = Math.min(5, 2 + gap);
   return (
     <PromoLayer look={look} motion={motion}>

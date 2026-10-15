@@ -8,7 +8,7 @@ import { Composition, useCurrentFrame, useVideoConfig } from 'remotion';
 import { PhoneModel } from '../../promo/phone-model';
 import { isDarkLook, PromoLayer } from '../../promo/promo-layer';
 import { Stage } from '../../promo/stage';
-import { settle, tween } from '../../promo/timing';
+import { glide, tween } from '../../promo/timing';
 import type { SceneModule } from '../../scene-module';
 
 const easeInOutSmooth = (t: number) => t * t * (3 - 2 * t);
@@ -26,7 +26,7 @@ export const PhoneScroll = ({
   const frame = useCurrentFrame() * motion.speed;
   const { durationInFrames } = useVideoConfig();
   const side = position.x < 0 ? -1 : 1;
-  const arrive = tween(frame, [0, 60], [0, 1], settle);
+  const arrive = tween(frame, [0, 60], [0, 1], glide);
   const scroll = tween(frame, [16, durationInFrames], [0, scrollAmount], easeInOutSmooth);
   return (
     <PromoLayer look={look} motion={motion} focusX={50 + side * 18}>
