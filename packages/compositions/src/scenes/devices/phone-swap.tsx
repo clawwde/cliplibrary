@@ -38,7 +38,7 @@ export const PhoneSwap = ({
     customScreen: screens[index]?.customScreen ?? '',
     finish,
   });
-  const mix = progress > 0 ? tween(progress, [0.3, 0.7], [0, 1]) : 0;
+  const mix = progress > 0 ? tween(progress, [0.06, 0.94], [0, 1]) : 0;
   const arrive = tween(frame, [0, 60], [0, 1], settle);
   const rotateY =
     -0.36 * side +

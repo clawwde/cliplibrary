@@ -8,7 +8,7 @@ import { Composition, useCurrentFrame, useVideoConfig } from 'remotion';
 import { PhoneModel } from '../../promo/phone-model';
 import { isDarkLook, PromoLayer } from '../../promo/promo-layer';
 import { Stage } from '../../promo/stage';
-import { settle, TAU, track, tween } from '../../promo/timing';
+import { settle, TAU, tween } from '../../promo/timing';
 import type { SceneModule } from '../../scene-module';
 
 const RISE_FRAMES = 66;
@@ -26,14 +26,11 @@ export const PhoneTurnaround = ({
   const { durationInFrames } = useVideoConfig();
   const turn = Math.round(durationInFrames * turnAt);
   const rise = tween(frame, [0, RISE_FRAMES], [0, 1], settle);
-  const turned = Math.max(RISE_FRAMES + 50, turn + 50);
+  const turned = Math.max(RISE_FRAMES + 60, turn + 60);
   const rotateY =
-    tween(frame, [0, RISE_FRAMES], [Math.PI + 1.1, Math.PI - 0.3], settle) +
-    track(frame, [
-      [RISE_FRAMES, 0],
-      [turned, Math.PI + 0.05],
-      [Math.max(durationInFrames, turned + 1), Math.PI + 0.52],
-    ]);
+    tween(frame, [0, RISE_FRAMES], [Math.PI + 1.1, Math.PI], settle) +
+    tween(frame, [RISE_FRAMES, turned], [0, Math.PI - 0.25]) +
+    tween(frame, [turned, Math.max(durationInFrames, turned + 1)], [0, 0.47]);
   const grow =
     scale * (0.85 + rise * 0.15) * tween(frame, [RISE_FRAMES, durationInFrames], [1, 1.05]);
   return (
