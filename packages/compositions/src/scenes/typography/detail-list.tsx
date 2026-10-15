@@ -37,7 +37,16 @@ export const DetailList = ({
               }}
             >
               {numbered ? (
-                <span style={{ fontSize: size * 0.57, color: look.muted, letterSpacing: '0.1em' }}>
+                <span
+                  style={{
+                    display: 'inline-block',
+                    minWidth: size * 0.95,
+                    fontSize: size * 0.57,
+                    fontVariantNumeric: 'tabular-nums',
+                    color: look.muted,
+                    letterSpacing: '0.1em',
+                  }}
+                >
                   {String(index + 1).padStart(2, '0')}
                 </span>
               ) : null}

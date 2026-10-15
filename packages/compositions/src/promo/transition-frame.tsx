@@ -20,7 +20,7 @@ const styleFor = (kind: PromoTransition, hidden: number, incoming: boolean): CSS
     case 'rise':
       return { transform: `translateY(${hidden * 100 * direction}%)` };
     case 'iris':
-      return { clipPath: `circle(${(1 - hidden) * 75}% at 50% 50%)` };
+      return { clipPath: `circle(${(1 - hidden) * 101}% at 50% 50%)` };
     case 'push-left':
       return { transform: `translateX(${hidden * 100 * direction}%)` };
     case 'push-up':

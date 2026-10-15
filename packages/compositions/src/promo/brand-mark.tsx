@@ -24,11 +24,11 @@ export const BrandMark = ({
         r="38"
         fill="none"
         stroke={color}
-        strokeWidth="11"
+        strokeWidth={11 * Math.max(0.15, Math.min(1, draw * 4))}
         strokeLinecap="round"
         strokeDasharray={RING}
         strokeDashoffset={RING * (1 - draw)}
-        opacity={Math.min(1, draw * 10)}
+        opacity={Math.min(1, draw * 4)}
         transform="rotate(-90 50 50)"
       />
       <circle

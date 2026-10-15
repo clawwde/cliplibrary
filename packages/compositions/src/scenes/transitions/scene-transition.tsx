@@ -18,9 +18,9 @@ const coverStyle = (
     case 'iris':
       return open > 0
         ? {
-            maskImage: `radial-gradient(circle at 50% 50%, transparent ${open * 75}%, black ${open * 75 + 0.5}%)`,
+            maskImage: `radial-gradient(circle at 50% 50%, transparent ${open * 101}%, black ${open * 101 + 0.5}%)`,
           }
-        : { clipPath: `circle(${cover * 75}% at 50% 50%)` };
+        : { clipPath: `circle(${cover * 101}% at 50% 50%)` };
     case 'wipe-left':
       return { transform: `translateX(${(1 - cover) * 100 - open * 100}%)` };
     case 'wipe-up':
