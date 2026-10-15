@@ -123,11 +123,11 @@ const ENTRIES: SequenceEntry[] = [
   }),
   entry('phone-swap', 'Devices', [636, 904], phoneSwapDefaults, { motion: fade(18) }),
   entry('feature-callouts', 'Text', [640, 904], featureCalloutsDefaults, { motion: fade(14) }),
-  entry('phone-scroll', 'Devices', [888, 1060], phoneScrollDefaults, {
+  entry('phone-scroll', 'Devices', [898, 1060], phoneScrollDefaults, {
     position: position(2.7, -0.05),
     motion: fade(18),
   }),
-  entry('floating-cards', 'Overlays', [926, 1058], floatingCardsDefaults, {
+  entry('floating-cards', 'Overlays', [926, 1054], floatingCardsDefaults, {
     cards: [
       { kind: 'growth', x: 0.95, y: 1.75, z: 1.1, turn: 0.28, size: 2.1 },
       { kind: 'goal', x: 1.1, y: -1.75, z: 1.5, turn: 0.22, size: 2.1 },
@@ -135,7 +135,7 @@ const ENTRIES: SequenceEntry[] = [
     ],
     delay: 0,
   }),
-  headline([906, 1058], {
+  headline([906, 1052], {
     eyebrow: 'Discover',
     headline: 'Insights that\nmove with you.',
     highlight: 'move',
@@ -169,10 +169,10 @@ const ENTRIES: SequenceEntry[] = [
   }),
   entry('phone-pair', 'Devices', [1356, 1500], phonePairDefaults, {
     phones: [phone('profile', 'white'), phone('home', 'natural')],
-    position: position(0.15, 0, 0),
+    position: position(0.24, 0, 0),
     gap: 4.6,
     angle: 0.6,
-    stagger: 0,
+    stagger: -0.18,
     scale: 1.15,
     stage: { ...phonePairDefaults.stage, keyLight: 2, shadow: 0.16 },
     motion: defaultMotion({ enter: 'fade', enterFrames: 18, exit: 'none', exitFrames: 0 }),
