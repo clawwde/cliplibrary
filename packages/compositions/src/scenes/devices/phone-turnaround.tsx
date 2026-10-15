@@ -16,6 +16,7 @@ export const PhoneTurnaround = ({
   position,
   scale,
   turnAt,
+  rise: riseDistance,
   look,
   stage,
   motion,
@@ -23,11 +24,12 @@ export const PhoneTurnaround = ({
   const frame = useCurrentFrame() * motion.speed;
   const { durationInFrames } = useVideoConfig();
   const turn = Math.round(durationInFrames * turnAt);
+  const leanStart = Math.min(66, turn - 54);
   const rise = tween(frame, [0, 66], [0, 1], settle);
   const rotateY =
     tween(frame, [0, 66], [Math.PI + 1.1, Math.PI - 0.3], settle) +
     track(frame, [
-      [66, 0],
+      [leanStart, 0],
       [turn - 24, 0.6],
       [turn + 40, Math.PI + 0.05],
       [durationInFrames, Math.PI + 0.52],
@@ -39,7 +41,7 @@ export const PhoneTurnaround = ({
         <group
           position={[
             position.x,
-            position.y + (1 - rise) * -7.5 + Math.sin(frame / 30) * motion.float,
+            position.y + (1 - rise) * -riseDistance + Math.sin(frame / 30) * motion.float,
             position.z,
           ]}
           rotation={[0.05 + (1 - rise) * 0.6, rotateY - TAU, 0.03]}

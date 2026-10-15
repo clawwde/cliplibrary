@@ -20,6 +20,7 @@ export const phoneTurnaroundSchema = z.object({
   position: positionSchema,
   scale: zSlider({ min: 0.4, max: 2.6, step: 0.01 }),
   turnAt: zSlider({ min: 0.2, max: 0.8, step: 0.01 }),
+  rise: zSlider({ min: 0, max: 10, step: 0.1 }),
   look: lookSchema,
   stage: stageSchema,
   motion: motionSchema,
@@ -32,9 +33,10 @@ export const phoneTurnaroundDefaults: PhoneTurnaroundProps = {
   position: position(0, 0),
   scale: 1.38,
   turnAt: 0.5,
+  rise: 4.5,
   look: lightLook(),
   stage: defaultStage({ cameraDistance: 13 }),
-  motion: defaultMotion({ exit: 'fade', exitFrames: 18 }),
+  motion: defaultMotion({ enter: 'fade', enterFrames: 16, exit: 'fade', exitFrames: 18 }),
 };
 
 export const phoneTurnaroundMeta: ClipMeta = {

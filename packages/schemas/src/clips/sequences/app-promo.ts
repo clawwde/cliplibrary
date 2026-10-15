@@ -89,6 +89,7 @@ const ENTRIES: SequenceEntry[] = [
   }),
   headline([114, 312], { motion: fade(16) }),
   entry('phone-turnaround', 'Devices', [296, 476], phoneTurnaroundDefaults, {
+    rise: 7.5,
     motion: fade(20),
   }),
   headline([304, 392], {
