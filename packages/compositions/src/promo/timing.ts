@@ -18,25 +18,24 @@ export const tween = (
 
 export const pixelTween = (
   frame: number,
-  [first, last]: [number, number],
+  range: [number, number],
   [from, to]: [number, number],
   easing: (t: number) => number = smooth,
 ): number => {
   const start = Math.round(from);
-  const target = Math.round(to);
-  if (start === target || frame <= first) {
+  const distance = Math.abs(Math.round(to) - start);
+  if (distance === 0 || frame <= range[0]) {
     return start;
   }
-  const direction = Math.sign(target - start);
-  let position = start;
-  for (let step = Math.ceil(first + 1e-9); step <= Math.min(frame, last); step++) {
-    const eased = Math.round(tween(step, [first, last], [from, to], easing));
-    position =
-      direction > 0
-        ? Math.min(target, Math.max(eased, position + 1))
-        : Math.max(target, Math.min(eased, position - 1));
+  const direction = Math.sign(Math.round(to) - start);
+  let travelled = 0;
+  for (let step = Math.floor(range[0]) + 1; step <= frame && travelled < distance; step++) {
+    const ideal = Math.abs(
+      tween(step, range, [from, to], easing) - tween(step - 1, range, [from, to], easing),
+    );
+    travelled = Math.min(distance, travelled + Math.max(1, Math.round(ideal)));
   }
-  return frame >= last ? target : position;
+  return start + direction * travelled;
 };
 
 export const TAU = Math.PI * 2;

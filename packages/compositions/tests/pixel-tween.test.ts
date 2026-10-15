@@ -18,6 +18,15 @@ describe('pixelTween', () => {
     expect(path.at(-1)).toBe(0);
   });
 
+  it('only ever shortens its steps while settling, so the slowdown reads as even', () => {
+    const path = frames(40).map((frame) => pixelTween(frame, [0, 32], [50, 0], settle));
+    const steps = path.slice(1).map((value, index) => (path[index] ?? 0) - value);
+    const moving = steps.slice(0, path.indexOf(0));
+    expect(moving.every((step, index) => index === 0 || step <= (moving[index - 1] ?? 0))).toBe(
+      true,
+    );
+  });
+
   it('starts an accelerating move at one pixel per frame', () => {
     const path = frames(15).map((frame) => pixelTween(frame, [0, 14], [0, -22], accelerate));
     expect(path[1]).toBe(-1);
