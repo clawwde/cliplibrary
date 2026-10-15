@@ -4,11 +4,11 @@ import {
   brandRevealMeta,
   brandRevealSchema,
 } from '@cliplibrary/schemas';
-import { AbsoluteFill, Composition, useCurrentFrame, useVideoConfig } from 'remotion';
+import { AbsoluteFill, Composition, useCurrentFrame } from 'remotion';
 import { BrandMark } from '../../promo/brand-mark';
 import { bodyFont, displayFont } from '../../promo/fonts';
 import { PromoLayer } from '../../promo/promo-layer';
-import { settle, tween } from '../../promo/timing';
+import { pixelTween, settle, tween } from '../../promo/timing';
 import { FadeIn } from '../../promo/typography';
 import type { SceneModule } from '../../scene-module';
 
@@ -19,20 +19,14 @@ export const BrandReveal = ({
   showMark,
   markColor,
   wordmarkSize,
-  pushIn,
   look,
   motion,
 }: BrandRevealProps) => {
-  const raw = useCurrentFrame();
-  const { durationInFrames } = useVideoConfig();
-  const frame = raw * motion.speed;
-  const scale = 1 + tween(raw, [0, durationInFrames], [0, pushIn], (t) => t);
+  const frame = useCurrentFrame() * motion.speed;
   const letters = brandName.split('');
   return (
     <PromoLayer look={look} motion={motion}>
-      <AbsoluteFill
-        style={{ alignItems: 'center', justifyContent: 'center', transform: `scale(${scale})` }}
-      >
+      <AbsoluteFill style={{ alignItems: 'center', justifyContent: 'center' }}>
         <FadeIn start={0} delay={2} style={{ marginBottom: 34 }}>
           <div
             style={{
@@ -71,7 +65,7 @@ export const BrandReveal = ({
                     display: 'inline-block',
                     whiteSpace: 'pre',
                     opacity: reveal,
-                    transform: `translateY(${(1 - reveal) * 0.35 * wordmarkSize}px)`,
+                    transform: `translateY(${pixelTween(frame, [14 + index * 3, 40 + index * 3], [0.35 * wordmarkSize, 0], settle)}px)`,
                   }}
                 >
                   {letter}

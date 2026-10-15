@@ -68,7 +68,7 @@ export const CtaEndCard = ({
     <PromoLayer look={look} motion={motion}>
       <AbsoluteFill style={{ alignItems: 'center', justifyContent: 'center', gap: 34 }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 18 }}>
-          {showMark ? <BrandMark color={markColor} frame={frame} size={64} start={10} /> : null}
+          {showMark ? <BrandMark color={markColor} frame={frame} size={64} start={16} /> : null}
           <FadeIn start={16}>
             <span
               style={{
