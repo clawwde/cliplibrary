@@ -32,6 +32,7 @@ export const CLIP_TAGS = [
   'minimal',
   'doodle',
   'sketch',
+  'kinetic',
 ] as const;
 
 export type ClipTag = (typeof CLIP_TAGS)[number];
