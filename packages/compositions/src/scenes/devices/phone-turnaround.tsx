@@ -9,12 +9,11 @@ import { Composition, useCurrentFrame, useVideoConfig } from 'remotion';
 import { PhoneModel } from '../../promo/phone-model';
 import { isDarkLook, PromoLayer } from '../../promo/promo-layer';
 import { Stage } from '../../promo/stage';
-import { settle, TAU, track, tween } from '../../promo/timing';
+import { glide, settle, TAU, track, tween } from '../../promo/timing';
 import type { SceneModule } from '../../scene-module';
 
 const RISE_FRAMES = 66;
 const DRIFT_FROM = 40;
-const TURN_FRAMES = 64;
 
 const yawKey = (yaw: number): number => yaw + Math.PI + 0.3;
 
@@ -24,6 +23,7 @@ export const PhoneTurnaround = ({
   scale,
   turnAt,
   rise,
+  turnFrames,
   secondScreen,
   secondTurnAt,
   secondTurnFrames,
@@ -35,8 +35,8 @@ export const PhoneTurnaround = ({
 }: PhoneTurnaroundProps) => {
   const frame = useCurrentFrame() * motion.speed;
   const { durationInFrames } = useVideoConfig();
-  const turnStart = Math.max(RISE_FRAMES + 12, Math.round(durationInFrames * turnAt) - 24);
-  const turnEnd = turnStart + TURN_FRAMES;
+  const turnStart = Math.max(DRIFT_FROM + 8, Math.round(durationInFrames * turnAt) - 24);
+  const turnEnd = turnStart + turnFrames;
   const twice = secondScreen !== 'none';
   const secondFrom = Math.max(turnEnd + 1, secondTurnAt);
   const secondEnd = secondFrom + secondTurnFrames;
@@ -56,7 +56,8 @@ export const PhoneTurnaround = ({
         [Math.max(turnEnd + 1, durationInFrames), Math.PI + 0.52],
       ];
   const rotateY =
-    tween(frame, [0, RISE_FRAMES], [Math.PI + 1.1, Math.PI - 0.3], settle) + track(frame, keys);
+    tween(frame, [0, RISE_FRAMES], [Math.PI + 1.1, Math.PI - 0.3], settle) +
+    track(frame, keys, glide);
   const second = twice ? tween(frame, [secondFrom, secondEnd], [0, 1]) : 0;
   const calm = twice ? 1 - second : 1;
   const growEnd = twice ? secondEnd : durationInFrames;
