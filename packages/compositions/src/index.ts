@@ -27,3 +27,7 @@ export { DetailList } from './scenes/typography/detail-list';
 export { FeatureCallouts } from './scenes/typography/feature-callouts';
 export { HandwrittenNote } from './scenes/typography/handwritten-note';
 export { HeadlineReveal } from './scenes/typography/headline-reveal';
+export { NumberCounter } from './scenes/typography/number-counter';
+export { Typewriter } from './scenes/typography/typewriter';
+export { WordBuild } from './scenes/typography/word-build';
+export { WordPunch } from './scenes/typography/word-punch';

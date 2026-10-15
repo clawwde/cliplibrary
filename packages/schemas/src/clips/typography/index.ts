@@ -15,6 +15,10 @@ import {
   headlineRevealMeta,
   headlineRevealSchema,
 } from './headline-reveal';
+import { numberCounterDefaults, numberCounterMeta, numberCounterSchema } from './number-counter';
+import { typewriterDefaults, typewriterMeta, typewriterSchema } from './typewriter';
+import { wordBuildDefaults, wordBuildMeta, wordBuildSchema } from './word-build';
+import { wordPunchDefaults, wordPunchMeta, wordPunchSchema } from './word-punch';
 
 export const typographyClips: ClipModule[] = [
   {
@@ -41,4 +45,18 @@ export const typographyClips: ClipModule[] = [
     defaults: handwrittenNoteDefaults,
     meta: handwrittenNoteMeta,
   },
+  {
+    id: 'number-counter',
+    schema: numberCounterSchema,
+    defaults: numberCounterDefaults,
+    meta: numberCounterMeta,
+  },
+  {
+    id: 'typewriter',
+    schema: typewriterSchema,
+    defaults: typewriterDefaults,
+    meta: typewriterMeta,
+  },
+  { id: 'word-build', schema: wordBuildSchema, defaults: wordBuildDefaults, meta: wordBuildMeta },
+  { id: 'word-punch', schema: wordPunchSchema, defaults: wordPunchDefaults, meta: wordPunchMeta },
 ];

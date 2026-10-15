@@ -1,0 +1,166 @@
+import {
+  type TypewriterProps,
+  typewriterDefaults,
+  typewriterMeta,
+  typewriterSchema,
+} from '@cliplibrary/schemas';
+import { Composition, useCurrentFrame } from 'remotion';
+import { displayType, KineticLayer } from '../../promo/kinetic';
+import { land, settle, smooth, tween } from '../../promo/timing';
+import type { SceneModule } from '../../scene-module';
+
+const FADE_FRAMES = 3;
+const BLOCK_FRAMES = 30;
+
+const EDGE = 30;
+const linear = (t: number): number => t;
+
+const softEdge = (progress: number, side: 'reveal-before' | 'reveal-after') => {
+  const at = progress * (100 + EDGE);
+  const [first, second] =
+    side === 'reveal-before' ? ['#000', 'transparent'] : ['transparent', '#000'];
+  const mask = `linear-gradient(90deg, ${first} ${(at - EDGE).toFixed(2)}%, ${second} ${at.toFixed(2)}%)`;
+  return { maskImage: mask, WebkitMaskImage: mask };
+};
+
+const clamp01 = (value: number): number => Math.min(1, Math.max(0, value));
+
+const charOpacities = (
+  frame: number,
+  count: number,
+  { intro, outro, charFrames, outroAt }: TypewriterProps,
+  typeStart: number,
+  typedIn: number,
+): number[] =>
+  Array.from({ length: count }, (_, index) => {
+    const shown =
+      intro === 'typed' ? typedIn : clamp01((frame - typeStart - index * charFrames) / FADE_FRAMES);
+    const erased =
+      outro === 'erase'
+        ? clamp01((frame - outroAt - (count - 1 - index) * charFrames) / FADE_FRAMES)
+        : 0;
+    return shown * (1 - erased);
+  });
+
+const blockStyle = (frame: number, delay: number, size: number, caretWidth: number) => {
+  const grow = land(frame, [delay, delay + 12], [0, 1], 1 / size);
+  const shrink = tween(frame, [delay + 16, delay + BLOCK_FRAMES], [0, 1], smooth);
+  const side = size * 0.86 * grow;
+  const width = side + (caretWidth - side) * shrink;
+  const height = (0.86 + 0.04 * shrink) * grow;
+  return { left: -width / 2, top: `${0.5 - height / 2}em`, width, height: `${height}em` };
+};
+
+const caretOpacity = (
+  frame: number,
+  { intro, showCaret, caretPulse }: TypewriterProps,
+  typeStart: number,
+  typedIn: number,
+  select: number,
+): number => {
+  if (!showCaret || frame < typeStart) {
+    return 0;
+  }
+  const pulse = 0.55 + 0.45 * Math.cos(((frame - typeStart) / caretPulse) * Math.PI * 2);
+  return pulse * (1 - select) * (intro === 'typed' ? typedIn : 1);
+};
+
+export const Typewriter = (props: TypewriterProps) => {
+  const { text, size, weight, tracking, intro, outro, delay, outroAt, placement, look, motion } =
+    props;
+  const frame = useCurrentFrame() * motion.speed;
+  const chars = Array.from(text);
+  const typeStart = delay + (intro === 'block' ? BLOCK_FRAMES : 0);
+  const typedIn = tween(frame, [delay, delay + 18], [0, 1], settle);
+  const typedRise = land(frame, [delay, delay + 18], [size * 0.3, 0]);
+  const opacities = charOpacities(frame, chars.length, props, typeStart, typedIn);
+  const caretAt = opacities.filter((opacity) => opacity > 0).length;
+  const select = outro === 'select' ? tween(frame, [outroAt, outroAt + 24], [0, 1], linear) : 0;
+  const collapse =
+    outro === 'select' ? tween(frame, [outroAt + 30, outroAt + 52], [0, 1], linear) : 0;
+  const caretWidth = Math.max(3, size * 0.06);
+  const blockActive = intro === 'block' && frame < typeStart;
+  const caret = (
+    <span
+      key="caret"
+      style={{ position: 'relative', display: 'inline-block', width: 0, height: '1em' }}
+    >
+      <span
+        style={{
+          position: 'absolute',
+          background: look.ink,
+          ...(blockActive
+            ? { ...blockStyle(frame, delay, size, caretWidth), opacity: 1 }
+            : {
+                left: size * 0.03,
+                top: '0.05em',
+                width: caretWidth,
+                height: '0.9em',
+                opacity: caretOpacity(frame, props, typeStart, typedIn, select),
+              }),
+        }}
+      />
+    </span>
+  );
+  const line = chars.map((char, index) => (
+    <span
+      key={`${index}:${char}`}
+      style={{
+        opacity: opacities[index],
+        display: (opacities[index] ?? 0) > 0 ? 'inline' : 'none',
+      }}
+    >
+      {char}
+    </span>
+  ));
+  const selected = select > 0;
+  return (
+    <KineticLayer look={look} motion={motion} placement={placement}>
+      <div
+        style={{
+          ...displayType(size, weight, tracking),
+          color: look.ink,
+          position: 'relative',
+          transform: intro === 'typed' ? `translateY(${typedRise}px)` : undefined,
+        }}
+      >
+        <span style={selected ? softEdge(select, 'reveal-after') : undefined}>
+          {[...line.slice(0, caretAt), caret, ...line.slice(caretAt)]}
+        </span>
+        {selected ? (
+          <span
+            aria-hidden="true"
+            style={{
+              position: 'absolute',
+              inset: '-0.06em -0.04em',
+              padding: '0.06em 0.04em',
+              background: look.ink,
+              color: look.background,
+              ...softEdge(Math.min(select, 1 - collapse), 'reveal-before'),
+            }}
+          >
+            {line}
+          </span>
+        ) : null}
+      </div>
+    </KineticLayer>
+  );
+};
+
+export const typewriterScene: SceneModule = {
+  id: 'typewriter',
+  component: Typewriter,
+  render: (key) => (
+    <Composition
+      key={key}
+      id="typewriter"
+      component={Typewriter}
+      schema={typewriterSchema}
+      defaultProps={typewriterDefaults}
+      durationInFrames={typewriterMeta.durationInFrames}
+      fps={typewriterMeta.fps}
+      width={typewriterMeta.width}
+      height={typewriterMeta.height}
+    />
+  ),
+};

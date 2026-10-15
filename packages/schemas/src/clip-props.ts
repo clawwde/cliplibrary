@@ -21,12 +21,20 @@ import type { DetailListProps } from './clips/typography/detail-list';
 import type { FeatureCalloutsProps } from './clips/typography/feature-callouts';
 import type { HandwrittenNoteProps } from './clips/typography/handwritten-note';
 import type { HeadlineRevealProps } from './clips/typography/headline-reveal';
+import type { NumberCounterProps } from './clips/typography/number-counter';
+import type { TypewriterProps } from './clips/typography/typewriter';
+import type { WordBuildProps } from './clips/typography/word-build';
+import type { WordPunchProps } from './clips/typography/word-punch';
 
 export interface ClipPropsMap {
   'phone-flat-lay': PhoneFlatLayProps;
   'phone-pedestal': PhonePedestalProps;
   'app-icon-reveal': AppIconRevealProps;
   'detail-list': DetailListProps;
+  'number-counter': NumberCounterProps;
+  typewriter: TypewriterProps;
+  'word-build': WordBuildProps;
+  'word-punch': WordPunchProps;
   'feature-callouts': FeatureCalloutsProps;
   'headline-reveal': HeadlineRevealProps;
   'handwritten-note': HandwrittenNoteProps;
