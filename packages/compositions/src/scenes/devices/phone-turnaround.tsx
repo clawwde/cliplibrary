@@ -5,7 +5,7 @@ import {
   phoneTurnaroundSchema,
 } from '@cliplibrary/schemas';
 import { Composition, useCurrentFrame, useVideoConfig } from 'remotion';
-import { PhoneModel } from '../../promo/phone-model';
+import { facingBrightness, PhoneModel } from '../../promo/phone-model';
 import { isDarkLook, PromoLayer } from '../../promo/promo-layer';
 import { Stage } from '../../promo/stage';
 import { settle, TAU, tween } from '../../promo/timing';
@@ -45,7 +45,11 @@ export const PhoneTurnaround = ({
           rotation={[0.05 + (1 - rise) * 0.6, rotateY - TAU, 0.03]}
           scale={grow}
         >
-          <PhoneModel phone={phone} reflections={stage.reflections} />
+          <PhoneModel
+            phone={phone}
+            reflections={stage.reflections}
+            brightness={facingBrightness(rotateY)}
+          />
         </group>
       </Stage>
     </PromoLayer>

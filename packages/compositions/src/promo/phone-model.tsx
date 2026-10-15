@@ -12,6 +12,7 @@ import {
 } from './phone-geometry';
 import { phoneMaterials } from './phone-materials';
 import { isTallScreen, screenUrl } from './screen-assets';
+import { smooth, tween } from './timing';
 import { useTexture } from './use-texture';
 
 const TALL_VISIBLE = 0.5;
@@ -29,6 +30,9 @@ const useScreenMap = (phone: PromoPhone, scroll: number): THREE.Texture => {
 };
 
 const SCREEN_LIFT = 0.002;
+
+export const facingBrightness = (rotationY: number): number =>
+  tween(Math.cos(rotationY), [0.04, 0.4], [0, 1], smooth);
 
 const ScreenSurface = ({
   phone,
