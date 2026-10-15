@@ -9,7 +9,7 @@ import { Composition, useCurrentFrame, useVideoConfig } from 'remotion';
 import { beatAt } from '../../promo/beats';
 import { PhoneModel } from '../../promo/phone-model';
 import { isDarkLook, PromoLayer } from '../../promo/promo-layer';
-import { Stage } from '../../promo/stage';
+import { offscreenDrop, Stage } from '../../promo/stage';
 import { settle, TAU, tween } from '../../promo/timing';
 import type { SceneModule } from '../../scene-module';
 
@@ -38,7 +38,7 @@ export const PhoneSwap = ({
     customScreen: screens[index]?.customScreen ?? '',
     finish,
   });
-  const mix = progress > 0 ? tween(progress, [0.3, 0.7], [0, 1]) : 0;
+  const mix = progress > 0 ? tween(progress, [0.06, 0.94], [0, 1]) : 0;
   const arrive = tween(frame, [0, 60], [0, 1], settle);
   const rotateY =
     -0.36 * side +
@@ -46,12 +46,12 @@ export const PhoneSwap = ({
     Math.sin(frame / 36) * 0.13 +
     (1 - arrive) * -0.7;
   return (
-    <PromoLayer look={look} motion={motion} focusX={50 + from * 16}>
+    <PromoLayer look={look} motion={motion} focusX={50 + side * 16}>
       <Stage stage={stage} dark={isDarkLook(look)}>
         <group
           position={[
             offset * side,
-            (1 - arrive) * -5 + Math.sin(frame / 28) * motion.float * 1.6,
+            (1 - arrive) * -offscreenDrop(stage, scale) + Math.sin(frame / 28) * motion.float * 1.6,
             0,
           ]}
           rotation={[0.06 + (1 - arrive) * 0.35, rotateY, 0]}

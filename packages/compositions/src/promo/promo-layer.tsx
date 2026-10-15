@@ -1,18 +1,10 @@
 import type { PromoLook, PromoMotion, PromoPlacement } from '@cliplibrary/schemas';
 import type { CSSProperties, ReactNode } from 'react';
 import { Backdrop } from './backdrop';
+
+export { isDarkLook } from './backdrop';
+
 import { TransitionFrame } from './transition-frame';
-
-const channel = (hex: string, start: number): number => {
-  const value = Number.parseInt(hex.slice(start, start + 2), 16) / 255;
-  return value <= 0.03928 ? value / 12.92 : ((value + 0.055) / 1.055) ** 2.4;
-};
-
-export const isDarkLook = (look: PromoLook): boolean =>
-  0.2126 * channel(look.background, 1) +
-    0.7152 * channel(look.background, 3) +
-    0.0722 * channel(look.background, 5) <
-  0.25;
 
 export const PromoLayer = ({
   look,

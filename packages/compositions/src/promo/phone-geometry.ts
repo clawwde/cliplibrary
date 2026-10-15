@@ -113,6 +113,33 @@ export const glassFaceGeometry = () =>
 export const screenGeometry = () =>
   roundedPlane(PHONE.screenWidth, PHONE.screenHeight, PHONE.screenRadius);
 
+export const STATUS_BAR_SHARE = 130 / 1950;
+
+const topRoundedShape = (width: number, height: number, radius: number): THREE.Shape => {
+  const shape = new THREE.Shape();
+  const x = -width / 2;
+  const y = -height / 2;
+  shape.moveTo(x, y);
+  shape.lineTo(x + width, y);
+  shape.lineTo(x + width, y + height - radius);
+  shape.absarc(x + width - radius, y + height - radius, radius, 0, Math.PI / 2, false);
+  shape.lineTo(x + radius, y + height);
+  shape.absarc(x + radius, y + height - radius, radius, Math.PI / 2, Math.PI, false);
+  shape.lineTo(x, y);
+  return shape;
+};
+
+export const statusBarGeometry = () => {
+  const height = PHONE.screenHeight * STATUS_BAR_SHARE;
+  return memo('status-bar', () =>
+    normalizeUv(
+      new THREE.ShapeGeometry(topRoundedShape(PHONE.screenWidth, height, PHONE.screenRadius), 32),
+      PHONE.screenWidth,
+      height,
+    ),
+  );
+};
+
 export const plateauGeometry = () =>
   roundedSlab(PHONE.plateauSize, PHONE.plateauSize, PHONE.plateauRadius, PHONE.plateauDepth, 0.01);
 

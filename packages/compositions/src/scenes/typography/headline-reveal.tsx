@@ -5,6 +5,7 @@ import {
   headlineRevealSchema,
 } from '@cliplibrary/schemas';
 import { AbsoluteFill, Composition, useCurrentFrame } from 'remotion';
+import { displayFont, kineticFont } from '../../promo/fonts';
 import { PromoLayer, placementFrame } from '../../promo/promo-layer';
 import { tween } from '../../promo/timing';
 import { BodyCopy, Eyebrow, FadeIn, Headline } from '../../promo/typography';
@@ -16,6 +17,10 @@ export const HeadlineReveal = ({
   highlight,
   body,
   size,
+  weight,
+  leadWeight,
+  typeface,
+  revealFrames,
   placement,
   veil,
   delay,
@@ -31,7 +36,7 @@ export const HeadlineReveal = ({
         <AbsoluteFill
           style={{
             opacity: veilOpacity,
-            background: `radial-gradient(40% 36% at 50% 50%, ${look.background}f2 0%, ${look.background}c0 45%, ${look.background}00 100%)`,
+            background: `radial-gradient(54% 48% at 50% 54%, ${look.background}f2 0%, ${look.background}d0 50%, ${look.background}00 100%)`,
           }}
         />
       ) : null}
@@ -55,6 +60,11 @@ export const HeadlineReveal = ({
             text={headline}
             highlight={highlight}
             size={size}
+            weight={weight}
+            leadWeight={leadWeight}
+            duration={revealFrames}
+            family={typeface === 'onest' ? kineticFont : displayFont}
+            tracking={typeface === 'onest' ? -0.02 : -0.045}
             color={look.ink}
             accent={look.accent}
             align={align}
