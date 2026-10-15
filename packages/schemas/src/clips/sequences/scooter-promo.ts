@@ -1,11 +1,9 @@
-import { z } from 'zod';
+import type { z } from 'zod';
 import type { ClipId } from '../../clip-props';
-import { zColor } from '../../control';
 import {
   clayLook,
   defaultMotion,
   defaultStage,
-  PHONE_FINISHES,
   type PhoneFinish,
   phone,
   placement,
@@ -13,6 +11,12 @@ import {
   promoMeta,
 } from '../../promo-common';
 import type { ClipMeta } from '../../registry';
+import {
+  type ClipSequence,
+  type SequenceEntry,
+  sequenceBrandSchema,
+  sequenceEnd,
+} from '../../sequence';
 import { reliefBackdropDefaults } from '../backgrounds/relief-backdrop';
 import { studioBackdropDefaults } from '../backgrounds/studio-backdrop';
 import { appIconRevealDefaults } from '../brand/app-icon-reveal';
@@ -22,7 +26,6 @@ import { phoneFlatLayDefaults } from '../devices/phone-flat-lay';
 import { phonePairDefaults } from '../devices/phone-pair';
 import { phonePedestalDefaults } from '../devices/phone-pedestal';
 import { phoneTurnaroundDefaults } from '../devices/phone-turnaround';
-import { type ClipSequence, type SequenceEntry, sequenceEnd } from './sequence';
 
 export const SCOOTER_PROMO_TRACKS = ['Text', 'Scenes', 'Devices', 'Set', 'Backdrop'] as const;
 
@@ -232,12 +235,7 @@ export const SCOOTER_PROMO_SEQUENCE: ClipSequence = {
 
 const end = sequenceEnd(ENTRIES);
 
-export const scooterPromoSchema = z.object({
-  brandName: z.string(),
-  accent: zColor(),
-  finish: z.enum(PHONE_FINISHES),
-  useFinishEverywhere: z.boolean(),
-});
+export const scooterPromoSchema = sequenceBrandSchema;
 
 export type ScooterPromoProps = z.infer<typeof scooterPromoSchema>;
 

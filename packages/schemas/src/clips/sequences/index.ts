@@ -14,6 +14,12 @@ import {
   kineticPromoMeta,
   kineticPromoSchema,
 } from './kinetic-promo';
+import {
+  SCOOTER_PROMO_SEQUENCE,
+  scooterPromoDefaults,
+  scooterPromoMeta,
+  scooterPromoSchema,
+} from './scooter-promo';
 
 export const sequencesClips: ClipModule[] = [
   { id: 'app-promo', schema: appPromoSchema, defaults: appPromoDefaults, meta: appPromoMeta },
@@ -29,10 +35,17 @@ export const sequencesClips: ClipModule[] = [
     defaults: kineticPromoDefaults,
     meta: kineticPromoMeta,
   },
+  {
+    id: 'scooter-promo',
+    schema: scooterPromoSchema,
+    defaults: scooterPromoDefaults,
+    meta: scooterPromoMeta,
+  },
 ];
 
 export const CLIP_SEQUENCES: Partial<Record<ClipId, ClipSequence>> = {
   'app-promo': APP_PROMO_SEQUENCE,
   'doodle-promo': DOODLE_PROMO_SEQUENCE,
   'kinetic-promo': KINETIC_PROMO_SEQUENCE,
+  'scooter-promo': SCOOTER_PROMO_SEQUENCE,
 };

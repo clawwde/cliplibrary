@@ -19,6 +19,7 @@ import type { SplitGridProps } from './clips/overlays/split-grid';
 import type { AppPromoProps } from './clips/sequences/app-promo';
 import type { DoodlePromoProps } from './clips/sequences/doodle-promo';
 import type { KineticPromoProps } from './clips/sequences/kinetic-promo';
+import type { ScooterPromoProps } from './clips/sequences/scooter-promo';
 import type { SceneTransitionProps } from './clips/transitions/scene-transition';
 import type { DetailListProps } from './clips/typography/detail-list';
 import type { EchoStackProps } from './clips/typography/echo-stack';
@@ -35,6 +36,7 @@ import type { WordBuildProps } from './clips/typography/word-build';
 import type { WordPunchProps } from './clips/typography/word-punch';
 
 export interface ClipPropsMap {
+  'scooter-promo': ScooterPromoProps;
   'phone-flat-lay': PhoneFlatLayProps;
   'phone-pedestal': PhonePedestalProps;
   'app-icon-reveal': AppIconRevealProps;
