@@ -14,6 +14,7 @@ export const BrandMark = ({
   start?: number;
 }) => {
   const draw = tween(frame, [start, start + 36], [0, 1], smooth);
+  const length = Math.min(1, draw * 1.03);
   const dot = tween(frame, [start + 22, start + 42], [0, 1], settle);
   const angle = -Math.PI / 4 + (1 - dot) * Math.PI * 1.2;
   return (
@@ -24,16 +25,16 @@ export const BrandMark = ({
         r="38"
         fill="none"
         stroke={color}
-        strokeWidth="11"
-        strokeLinecap="round"
-        strokeDasharray={RING}
-        strokeDashoffset={RING * (1 - draw)}
+        strokeWidth={11 * Math.max(0.15, Math.min(1, draw * 4))}
+        strokeLinecap="butt"
+        strokeDasharray={length >= 1 ? undefined : `${RING * length} ${RING * 2}`}
+        opacity={Math.min(1, draw * 4)}
         transform="rotate(-90 50 50)"
       />
       <circle
-        cx={50 + Math.cos(angle) * 38}
-        cy={50 + Math.sin(angle) * 38}
-        r={9 * dot}
+        cx={50 + Math.cos(angle) * 21}
+        cy={50 + Math.sin(angle) * 21}
+        r={7 * dot}
         fill={color}
       />
     </svg>

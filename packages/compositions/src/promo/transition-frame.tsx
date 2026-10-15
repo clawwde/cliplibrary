@@ -3,7 +3,12 @@ import type { CSSProperties, ReactNode } from 'react';
 import { AbsoluteFill, useCurrentFrame, useVideoConfig } from 'remotion';
 import { smooth, tween } from './timing';
 
-const styleFor = (kind: PromoTransition, hidden: number, incoming: boolean): CSSProperties => {
+const styleFor = (
+  kind: PromoTransition,
+  hidden: number,
+  incoming: boolean,
+  halfSide: number,
+): CSSProperties => {
   if (kind === 'none' || hidden <= 0) {
     return {};
   }
@@ -15,12 +20,12 @@ const styleFor = (kind: PromoTransition, hidden: number, incoming: boolean): CSS
       return {
         opacity: 1 - hidden,
         filter: `blur(${hidden * 28}px)`,
-        transform: `scale(${1 + hidden * 0.04 * direction})`,
+        transform: `scale(${1 + (hidden * 28 * 3 + Math.min(1, hidden * 20) * 2) / halfSide})`,
       };
     case 'rise':
       return { transform: `translateY(${hidden * 100 * direction}%)` };
     case 'iris':
-      return { clipPath: `circle(${(1 - hidden) * 75}% at 50% 50%)` };
+      return { clipPath: `circle(${(1 - hidden) * 101}% at 50% 50%)` };
     case 'push-left':
       return { transform: `translateX(${hidden * 100 * direction}%)` };
     case 'push-up':
@@ -43,15 +48,16 @@ export const TransitionFrame = ({
   children: ReactNode;
 }) => {
   const frame = useCurrentFrame();
-  const { durationInFrames } = useVideoConfig();
+  const { durationInFrames, width, height } = useVideoConfig();
+  const halfSide = Math.min(width, height) / 2;
   const entering =
     motion.enterFrames > 0 ? tween(frame, [0, motion.enterFrames], [1, 0], smooth) : 0;
   const exiting =
     motion.exitFrames > 0
       ? tween(frame, [durationInFrames - motion.exitFrames, durationInFrames], [0, 1], smooth)
       : 0;
-  const inStyle = styleFor(motion.enter, entering, true);
-  const outStyle = styleFor(motion.exit, exiting, false);
+  const inStyle = styleFor(motion.enter, entering, true, halfSide);
+  const outStyle = styleFor(motion.exit, exiting, false, halfSide);
   return (
     <AbsoluteFill style={{ overflow: 'hidden' }}>
       <AbsoluteFill style={inStyle}>
