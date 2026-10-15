@@ -21,6 +21,7 @@ export * from './clips/overlays/split-grid';
 export * from './clips/sequences';
 export * from './clips/sequences/app-promo';
 export * from './clips/sequences/doodle-promo';
+export * from './clips/sequences/kinetic-promo';
 export * from './clips/transitions/scene-transition';
 export * from './clips/typography/detail-list';
 export * from './clips/typography/echo-stack';

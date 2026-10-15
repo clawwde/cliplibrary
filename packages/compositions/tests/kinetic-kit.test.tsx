@@ -19,9 +19,17 @@ const film = {
 };
 
 describe('film marks', () => {
-  it('is deterministic for a frame and holds across one gate', () => {
+  it('is deterministic for a frame and fades marks in and out instead of popping', () => {
     expect(filmMarks(film, 10, 1920, 1080)).toEqual(filmMarks(film, 10, 1920, 1080));
-    expect(filmMarks(film, 10, 1920, 1080)).toEqual(filmMarks(film, 11, 1920, 1080));
+    for (let frame = 1; frame < 120; frame++) {
+      const before = filmMarks(film, frame - 1, 1920, 1080);
+      const after = filmMarks(film, frame, 1920, 1080);
+      for (const strand of after.strands) {
+        const previous = before.strands.find((item) => item.index === strand.index);
+        const change = Math.abs(strand.alpha - (previous?.d === strand.d ? previous.alpha : 0));
+        expect(change).toBeLessThan(0.2);
+      }
+    }
   });
 
   it('draws nothing when every density is zero', () => {

@@ -25,21 +25,20 @@ const softEdge = (progress: number, side: 'reveal-before' | 'reveal-after') => {
 
 const clamp01 = (value: number): number => Math.min(1, Math.max(0, value));
 
-const charOpacities = (
+const charStates = (
   frame: number,
   count: number,
   { intro, outro, charFrames, outroAt }: TypewriterProps,
   typeStart: number,
   typedIn: number,
-): number[] =>
+): { opacity: number; typed: boolean }[] =>
   Array.from({ length: count }, (_, index) => {
+    const fade = Math.max(FADE_FRAMES, charFrames * 1.5);
     const shown =
-      intro === 'typed' ? typedIn : clamp01((frame - typeStart - index * charFrames) / FADE_FRAMES);
+      intro === 'typed' ? typedIn : clamp01((frame - typeStart - index * charFrames) / fade);
     const erased =
-      outro === 'erase'
-        ? clamp01((frame - outroAt - (count - 1 - index) * charFrames) / FADE_FRAMES)
-        : 0;
-    return shown * (1 - erased);
+      outro === 'erase' ? clamp01((frame - outroAt - (count - 1 - index) * charFrames) / fade) : 0;
+    return { opacity: shown * (1 - erased), typed: shown > 0 };
   });
 
 const blockStyle = (frame: number, delay: number, size: number, caretWidth: number) => {
@@ -73,8 +72,8 @@ export const Typewriter = (props: TypewriterProps) => {
   const typeStart = delay + (intro === 'block' ? BLOCK_FRAMES : 0);
   const typedIn = tween(frame, [delay, delay + 18], [0, 1], settle);
   const typedRise = land(frame, [delay, delay + 18], [size * 0.3, 0]);
-  const opacities = charOpacities(frame, chars.length, props, typeStart, typedIn);
-  const caretAt = opacities.filter((opacity) => opacity > 0).length;
+  const states = charStates(frame, chars.length, props, typeStart, typedIn);
+  const caretAt = states.filter((state) => state.opacity > 0).length;
   const select = outro === 'select' ? tween(frame, [outroAt, outroAt + 24], [0, 1], linear) : 0;
   const collapse =
     outro === 'select' ? tween(frame, [outroAt + 30, outroAt + 52], [0, 1], linear) : 0;
@@ -106,8 +105,8 @@ export const Typewriter = (props: TypewriterProps) => {
     <span
       key={`${index}:${char}`}
       style={{
-        opacity: opacities[index],
-        display: (opacities[index] ?? 0) > 0 ? 'inline' : 'none',
+        opacity: states[index]?.opacity ?? 0,
+        display: states[index]?.typed ? 'inline' : 'none',
       }}
     >
       {char}

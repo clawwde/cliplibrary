@@ -27,13 +27,13 @@ const bigWordStyle = (
     case 'zoom':
       return { transform: `scale(${(0.62 + 0.9 * progress).toFixed(5)})` };
     case 'slide':
-      return { transform: `translateX(${((0.5 - progress) * 1100).toFixed(2)}px)` };
+      return { transform: `translateX(${((0.5 - progress) * 640).toFixed(2)}px)` };
     case 'tilt':
       return {
         transform: `perspective(${size * 4}px) rotateY(${46 - 78 * progress}deg) rotateX(${8 - 14 * progress}deg) scale(${0.9 + 0.14 * progress})`,
       };
     case 'pop':
-      return { transform: `scale(${0.8 + 0.2 * landed})` };
+      return { transform: `scale(${((0.8 + 0.2 * landed) * (1 + 0.08 * progress)).toFixed(5)})` };
     default:
       return {};
   }
@@ -70,7 +70,7 @@ export const WordBuild = ({
       return null;
     }
     const progress = (frame - start) / (end - start);
-    const landed = land(frame, [start, start + 10], [0, 1], 1 / (bigSize * 0.4));
+    const landed = land(frame, [start, start + wordFrames], [0, 1], 1 / (bigSize * 0.4));
     const isLast = index === words.length - 1;
     const opacity =
       tween(frame, [start, start + OVERLAP], [0, 1], (t) => t) *
@@ -131,7 +131,7 @@ export const WordBuild = ({
     >
       {line.map((word, index) => {
         const order = wordIndex++;
-        const start = sentenceStart - 2 + order * WORD_STAGGER;
+        const start = sentenceStart - 4 + order * WORD_STAGGER;
         const rise = land(frame, [start, start + 18], [size * 0.5, 0]);
         const shown = tween(frame, [start, start + 12], [0, 1], settle);
         const leave = exitByWord
@@ -150,7 +150,6 @@ export const WordBuild = ({
               color: colorOf(word),
               opacity: shown * (1 - leave),
               transform: `translateY(${rise.toFixed(2)}px)`,
-              willChange: 'transform',
             }}
           >
             {word}

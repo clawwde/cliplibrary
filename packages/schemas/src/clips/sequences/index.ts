@@ -8,6 +8,12 @@ import {
   doodlePromoMeta,
   doodlePromoSchema,
 } from './doodle-promo';
+import {
+  KINETIC_PROMO_SEQUENCE,
+  kineticPromoDefaults,
+  kineticPromoMeta,
+  kineticPromoSchema,
+} from './kinetic-promo';
 
 export const sequencesClips: ClipModule[] = [
   { id: 'app-promo', schema: appPromoSchema, defaults: appPromoDefaults, meta: appPromoMeta },
@@ -17,9 +23,16 @@ export const sequencesClips: ClipModule[] = [
     defaults: doodlePromoDefaults,
     meta: doodlePromoMeta,
   },
+  {
+    id: 'kinetic-promo',
+    schema: kineticPromoSchema,
+    defaults: kineticPromoDefaults,
+    meta: kineticPromoMeta,
+  },
 ];
 
 export const CLIP_SEQUENCES: Partial<Record<ClipId, ClipSequence>> = {
   'app-promo': APP_PROMO_SEQUENCE,
   'doodle-promo': DOODLE_PROMO_SEQUENCE,
+  'kinetic-promo': KINETIC_PROMO_SEQUENCE,
 };

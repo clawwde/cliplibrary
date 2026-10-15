@@ -4,7 +4,7 @@ import {
   scribbleCaptionMeta,
   scribbleCaptionSchema,
 } from '@cliplibrary/schemas';
-import { AbsoluteFill, Composition, useCurrentFrame } from 'remotion';
+import { Composition, useCurrentFrame } from 'remotion';
 import { bodyFont } from '../../promo/fonts';
 import { KineticLayer } from '../../promo/kinetic';
 import { Scribble } from '../../promo/scribble';
@@ -46,50 +46,55 @@ export const ScribbleCaption = ({
     ? 0
     : tween(frame, [delay + drawFrames * 0.6, delay + drawFrames * 1.7], [0, 1], smooth);
   const scribble = (
-    <AbsoluteFill style={{ justifyContent: 'center', alignItems: 'center' }}>
-      <div
-        style={{
-          transform: `translateY(${OFFSET_Y[scribblePlace] * size}px) scale(${scribblePlace === 'around' ? 1.25 : 1})`,
-        }}
-      >
-        <Scribble
-          shape={shape}
-          head={head}
-          tail={tail}
-          width={scribbleWidth}
-          strokeWidth={strokeWidth}
-          color={look.ink}
-        />
-      </div>
-    </AbsoluteFill>
+    <div
+      style={{
+        position: 'absolute',
+        left: '50%',
+        top: '50%',
+        transform: `translate(-50%, -50%) translateY(${OFFSET_Y[scribblePlace] * size}px) scale(${scribblePlace === 'around' ? 1.25 : 1})`,
+        pointerEvents: 'none',
+      }}
+    >
+      <Scribble
+        shape={shape}
+        head={head}
+        tail={tail}
+        width={scribbleWidth}
+        strokeWidth={strokeWidth}
+        color={look.ink}
+      />
+    </div>
   );
   return (
-    <KineticLayer look={look} motion={motion} placement={placement} stage={scribble}>
-      <div
-        style={{
-          fontFamily: bodyFont,
-          fontSize: size,
-          fontWeight: weight,
-          letterSpacing: `${tracking}em`,
-          lineHeight: 1.2,
-          whiteSpace: 'pre',
-          color: look.ink,
-          opacity: shown,
-          marginRight: `-${tracking}em`,
-        }}
-      >
-        {letters.map((letter, index) => (
-          <span
-            key={`${index}:${letter}`}
-            style={{
-              display: 'inline-block',
-              transform: `translateX(${(-(index - middle) * tracking * spread * size * open).toFixed(3)}px)`,
-              willChange: 'transform',
-            }}
-          >
-            {letter}
-          </span>
-        ))}
+    <KineticLayer look={look} motion={motion} placement={placement}>
+      <div style={{ position: 'relative' }}>
+        {scribble}
+        <div
+          style={{
+            fontFamily: bodyFont,
+            fontSize: size,
+            fontWeight: weight,
+            letterSpacing: `${tracking}em`,
+            lineHeight: 1.2,
+            whiteSpace: 'pre',
+            color: look.ink,
+            opacity: shown,
+            marginRight: `-${tracking}em`,
+          }}
+        >
+          {letters.map((letter, index) => (
+            <span
+              key={`${index}:${letter}`}
+              style={{
+                display: 'inline-block',
+                transform: `translateX(${(-(index - middle) * tracking * spread * size * open).toFixed(3)}px)`,
+                willChange: 'transform',
+              }}
+            >
+              {letter}
+            </span>
+          ))}
+        </div>
       </div>
     </KineticLayer>
   );

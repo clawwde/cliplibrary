@@ -7,6 +7,8 @@ import {
   getClipMeta,
   getClipSchema,
   headlineRevealSchema,
+  KINETIC_PROMO_SEQUENCE,
+  KINETIC_PROMO_TRACKS,
   kineticLook,
   quadrantTransform,
   sequenceLength,
@@ -78,5 +80,55 @@ describe('kinetic effect clips', () => {
     expect(getClipSchema('split-grid').safeParse({ ...grid, columns: 5 }).success).toBe(false);
     const film = getClipDefaults('film-dust');
     expect(getClipSchema('film-dust').safeParse({ ...film, dust: 2 }).success).toBe(false);
+  });
+});
+
+describe('kinetic promo sequence', () => {
+  const entries = KINETIC_PROMO_SEQUENCE.entries;
+
+  it('runs the full 86 second reference length on named tracks', () => {
+    expect(sequenceLength(KINETIC_PROMO_SEQUENCE)).toBe(2580);
+    expect(getClipMeta('kinetic-promo').durationInFrames).toBe(2580);
+    for (const item of entries) {
+      expect(KINETIC_PROMO_TRACKS).toContain(item.track as (typeof KINETIC_PROMO_TRACKS)[number]);
+      expect(getClipSchema(item.clipId).safeParse(item.props).success).toBe(true);
+    }
+  });
+
+  it('keeps layered entries off their own backdrop except the one studio backdrop', () => {
+    const withBackdrop = entries.filter(
+      (item) => (item.props as { look?: { showBackdrop?: boolean } }).look?.showBackdrop,
+    );
+    expect(withBackdrop.map((item) => item.clipId)).toEqual(['studio-backdrop']);
+  });
+
+  it('overlaps every consecutive full-frame beat so no handoff is a hard cut', () => {
+    const fullFrame = entries
+      .filter((item) => item.transform === undefined && ['Text', 'Captions'].includes(item.track))
+      .toSorted((a, b) => a.from - b.from);
+    for (let index = 1; index < fullFrame.length; index++) {
+      const previous = fullFrame[index - 1];
+      const current = fullFrame[index];
+      if (previous === undefined || current === undefined) {
+        continue;
+      }
+      const previousEnd = previous.from + previous.durationInFrames;
+      if (current.from >= 1548 && previousEnd <= 1560) {
+        continue;
+      }
+      expect(previousEnd - current.from).toBeGreaterThanOrEqual(6);
+    }
+  });
+
+  it('places the recap in all four quadrants with phones in at least two', () => {
+    const quadrants = entries.filter((item) => item.transform !== undefined);
+    const corners = new Set(quadrants.map((item) => `${item.transform?.x}:${item.transform?.y}`));
+    expect(corners.size).toBe(4);
+    const phoneCorners = new Set(
+      quadrants
+        .filter((item) => item.clipId.startsWith('phone-'))
+        .map((item) => `${item.transform?.x}:${item.transform?.y}`),
+    );
+    expect(phoneCorners.size).toBeGreaterThanOrEqual(2);
   });
 });
