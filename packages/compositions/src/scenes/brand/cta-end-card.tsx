@@ -4,30 +4,72 @@ import {
   ctaEndCardMeta,
   ctaEndCardSchema,
 } from '@cliplibrary/schemas';
-import { Composition, useCurrentFrame } from 'remotion';
+import { Composition, Img, useCurrentFrame } from 'remotion';
 import { BrandMark } from '../../promo/brand-mark';
-import { bodyFont, displayFont, roundedFont } from '../../promo/fonts';
+import { bodyFont, displayFont } from '../../promo/fonts';
 import { PromoLayer, placementFrame } from '../../promo/promo-layer';
 import { glyphUrl } from '../../promo/screen-assets';
-import { AppIconMark, StoreButton } from '../../promo/store-badges';
 import { BodyCopy, FadeIn, Headline } from '../../promo/typography';
 import type { SceneModule } from '../../scene-module';
+
+const StoreButton = ({
+  caption,
+  label,
+  filled,
+  ink,
+  paper,
+}: {
+  caption: string;
+  label: string;
+  filled: boolean;
+  ink: string;
+  paper: string;
+}) => (
+  <div
+    style={{
+      display: 'flex',
+      flexDirection: 'column',
+      justifyContent: 'center',
+      minWidth: 220,
+      padding: '16px 34px',
+      borderRadius: 999,
+      background: filled ? ink : 'transparent',
+      border: `1.5px solid ${filled ? ink : `${ink}40`}`,
+      color: filled ? paper : ink,
+      lineHeight: 1.1,
+      textAlign: 'center',
+    }}
+  >
+    <span style={{ fontFamily: bodyFont, fontSize: 15, opacity: 0.65 }}>{caption}</span>
+    <span
+      style={{ fontFamily: displayFont, fontSize: 30, fontWeight: 600, letterSpacing: '-0.02em' }}
+    >
+      {label}
+    </span>
+  </div>
+);
+
+const AppIconMark = ({ color, glyph, size }: { color: string; glyph: string; size: number }) => (
+  <div
+    style={{
+      width: size,
+      height: size,
+      borderRadius: size * 0.23,
+      background: color,
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+    }}
+  >
+    <Img src={glyphUrl(glyph)} style={{ width: size * 0.72, height: size * 0.72 }} />
+  </div>
+);
 
 export const CtaEndCard = ({
   brandName,
   showMark,
   markColor,
-  markColorEnd,
-  markInk,
   mark,
-  font,
-  headlineWeight,
-  badges,
-  badgeScale,
-  gap,
-  markAt,
-  headlineAt,
-  badgesAt,
   markGlyph,
   markSize,
   headlineSize,
@@ -53,27 +95,21 @@ export const CtaEndCard = ({
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
-            gap,
+            gap: 34,
           }}
         >
           {showMark || brandName.length > 0 ? (
             <div style={{ display: 'flex', alignItems: 'center', gap: 18 }}>
               {showMark && mark === 'ring' ? (
-                <BrandMark color={markColor} frame={frame} size={markSize} start={markAt} />
+                <BrandMark color={markColor} frame={frame} size={markSize} start={16} />
               ) : null}
               {showMark && mark === 'app-icon' ? (
-                <FadeIn start={markAt}>
-                  <AppIconMark
-                    color={markColor}
-                    colorEnd={markColorEnd}
-                    ink={markInk}
-                    glyph={glyphUrl(markGlyph)}
-                    size={markSize}
-                  />
+                <FadeIn start={10}>
+                  <AppIconMark color={markColor} glyph={markGlyph} size={markSize} />
                 </FadeIn>
               ) : null}
               {brandName.length > 0 ? (
-                <FadeIn start={markAt + 6}>
+                <FadeIn start={16}>
                   <span
                     style={{
                       fontFamily: displayFont,
@@ -96,25 +132,20 @@ export const CtaEndCard = ({
             color={look.ink}
             accent={look.accent}
             align="center"
-            weight={headlineWeight}
-            font={font === 'rounded' ? roundedFont : displayFont}
-            tracking={font === 'rounded' ? '-0.01em' : '-0.045em'}
-            start={headlineAt}
+            start={22}
           />
           {subline.length > 0 ? (
-            <FadeIn start={headlineAt + 16}>
+            <FadeIn start={38}>
               <BodyCopy text={subline} color={look.muted} width={900} align="center" size={32} />
             </FadeIn>
           ) : null}
-          <FadeIn start={badgesAt} style={{ display: 'flex', gap: 18, marginTop: 8 }}>
+          <FadeIn start={38} style={{ display: 'flex', gap: 18, marginTop: 8 }}>
             <StoreButton
               caption={primaryCaption}
               label={primaryLabel}
               filled
               ink={look.ink}
               paper={look.background}
-              variant={badges}
-              scale={badgeScale}
             />
             <StoreButton
               caption={secondaryCaption}
@@ -122,12 +153,10 @@ export const CtaEndCard = ({
               filled={false}
               ink={look.ink}
               paper={look.background}
-              variant={badges}
-              scale={badgeScale}
             />
           </FadeIn>
           {url.length > 0 ? (
-            <FadeIn start={badgesAt + 12}>
+            <FadeIn start={50}>
               <div
                 style={{
                   fontFamily: bodyFont,

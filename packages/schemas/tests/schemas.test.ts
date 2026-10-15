@@ -13,6 +13,7 @@ import {
   CLIP_THEMES,
   type ClipId,
   categoryLabel,
+  DOODLE_PROMO_SEQUENCE,
   EASING_IDS,
   floatingCardsSchema,
   getClipDefaults,
@@ -267,6 +268,9 @@ describe('promo clips', () => {
     'cta-end-card',
     'studio-backdrop',
     'scene-transition',
+    'doodle-arrows',
+    'handwritten-note',
+    'doodle-promo',
     'relief-backdrop',
     'app-icon-reveal',
     'phone-pedestal',
@@ -294,6 +298,48 @@ describe('promo clips', () => {
     const defaults = getClipDefaults('detail-list');
     const items = ['a', 'b', 'c', 'd', 'e', 'f', 'g'];
     expect(getClipSchema('detail-list').safeParse({ ...defaults, items }).success).toBe(false);
+  });
+
+  it('bounds the doodle arrows and rejects unknown shapes', () => {
+    const defaults = getClipDefaults('doodle-arrows');
+    const schema = getClipSchema('doodle-arrows');
+    const arrow = defaults.arrows[0];
+    expect(schema.safeParse({ ...defaults, arrows: [] }).success).toBe(false);
+    expect(schema.safeParse({ ...defaults, arrows: new Array(15).fill(arrow) }).success).toBe(
+      false,
+    );
+    expect(schema.safeParse({ ...defaults, arrows: [{ ...arrow, shape: 'star' }] }).success).toBe(
+      false,
+    );
+  });
+
+  it('rejects an unknown handwriting font and paper pattern', () => {
+    const defaults = getClipDefaults('handwritten-note');
+    const schema = getClipSchema('handwritten-note');
+    expect(schema.safeParse({ ...defaults, font: 'comic' }).success).toBe(false);
+    expect(
+      schema.safeParse({ ...defaults, look: { ...defaults.look, paper: 'dotted' } }).success,
+    ).toBe(false);
+  });
+
+  it('builds every doodle promo layer from props its clip schema accepts', () => {
+    for (const entry of DOODLE_PROMO_SEQUENCE.entries) {
+      expect(getClipSchema(entry.clipId).safeParse(entry.props).success).toBe(true);
+      expect(DOODLE_PROMO_SEQUENCE.tracks).toContain(entry.track);
+    }
+  });
+
+  it('overlaps consecutive doodle promo devices so beats crossfade', () => {
+    const devices = DOODLE_PROMO_SEQUENCE.entries.filter((entry) => entry.track === 'Devices');
+    for (let index = 1; index < devices.length; index++) {
+      const previous = devices[index - 1];
+      const current = devices[index];
+      if (previous && current) {
+        const overlap = previous.from + previous.durationInFrames - current.from;
+        expect(overlap).toBeGreaterThanOrEqual(12);
+        expect(overlap).toBeLessThanOrEqual(24);
+      }
+    }
   });
 
   it('builds every app promo layer from props its clip schema accepts', () => {

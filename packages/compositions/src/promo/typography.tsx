@@ -1,41 +1,27 @@
 import type { CSSProperties, ReactNode } from 'react';
 import { useCurrentFrame } from 'remotion';
 import { bodyFont, displayFont } from './fonts';
-import { accelerate, settle, tween } from './timing';
+import { accelerate, pixelTween, settle, smooth, tween } from './timing';
 
 interface RevealWindow {
   start: number;
   end?: number | undefined;
 }
 
-const ENTER_FRAMES = 32;
-const EXIT_FRAMES = 14;
-
-const glideIn = (frame: number, from: number, distance: number): number => {
-  let shown = distance;
-  for (let step = from + 1; step <= Math.min(frame, from + ENTER_FRAMES); step++) {
-    const target = distance * (1 - settle((step - from) / ENTER_FRAMES));
-    shown = Math.max(0, Math.min(target, shown - 1));
-  }
-  return frame <= from ? distance : shown;
-};
-
-const glideOut = (frame: number, from: number, distance: number): number => {
-  let shown = 0;
-  for (let step = from + 1; step <= Math.min(frame, from + EXIT_FRAMES); step++) {
-    shown = Math.max(distance * accelerate((step - from) / EXIT_FRAMES), shown + 1);
-  }
-  return shown;
-};
-
-const revealState = (frame: number, { start, end }: RevealWindow, delay: number) => {
-  const from = start + delay;
-  const leaveAt = end === undefined ? Number.POSITIVE_INFINITY : end + delay * 0.4;
-  const enter = tween(frame, [from, from + ENTER_FRAMES], [0, 1], settle);
-  const exit =
-    end === undefined ? 0 : tween(frame, [leaveAt, leaveAt + EXIT_FRAMES], [0, 1], accelerate);
-  const offset = (rise: number, fall: number): number =>
-    Math.round(glideIn(frame, from, rise)) - Math.round(glideOut(frame, leaveAt, fall));
+const revealState = (
+  frame: number,
+  { start, end }: RevealWindow,
+  delay: number,
+  [rise, sink]: [number, number],
+) => {
+  const enterRange: [number, number] = [start + delay, start + delay + 32];
+  const exitRange: [number, number] | undefined =
+    end === undefined ? undefined : [end + delay * 0.4, end + delay * 0.4 + 14];
+  const enter = tween(frame, enterRange, [0, 1], settle);
+  const exit = exitRange === undefined ? 0 : tween(frame, exitRange, [0, 1], smooth);
+  const offset =
+    pixelTween(frame, enterRange, [rise, 0], settle) -
+    (exitRange === undefined ? 0 : pixelTween(frame, exitRange, [0, sink], accelerate));
   return { enter, exit, offset };
 };
 
@@ -52,8 +38,6 @@ export interface HeadlineProps extends RevealWindow {
   align?: 'left' | 'center' | 'right';
   weight?: number;
   stagger?: number;
-  font?: string;
-  tracking?: string;
 }
 
 export const Headline = ({
@@ -65,8 +49,6 @@ export const Headline = ({
   align = 'left',
   weight = 600,
   stagger = 5,
-  font = displayFont,
-  tracking = '-0.045em',
   start,
   end,
 }: HeadlineProps) => {
@@ -75,22 +57,25 @@ export const Headline = ({
   return (
     <div
       style={{
-        fontFamily: font,
+        fontFamily: displayFont,
         fontSize: size,
         fontWeight: weight,
         lineHeight: 1.02,
-        letterSpacing: tracking,
+        letterSpacing: '-0.045em',
         color,
         textAlign: align,
       }}
     >
       {text.split('\n').map((line, lineIndex) => {
-        const { enter, exit, offset } = revealState(frame, { start, end }, lineIndex * stagger);
+        const { enter, exit, offset } = revealState(frame, { start, end }, lineIndex * stagger, [
+          0.45 * size,
+          0.2 * size,
+        ]);
         return (
           <div key={`${lineIndex}:${line}`}>
             <div
               style={{
-                transform: `translateY(${offset(0.45 * size, 0.2 * size)}px)`,
+                transform: `translateY(${offset}px)`,
                 opacity: enter * (1 - exit),
               }}
             >
@@ -120,13 +105,16 @@ export interface FadeInProps extends RevealWindow {
 
 export const FadeIn = ({ children, start, end, delay = 0, distance = 18, style }: FadeInProps) => {
   const frame = useCurrentFrame();
-  const { enter, exit, offset } = revealState(frame, { start, end }, delay);
+  const { enter, exit, offset } = revealState(frame, { start, end }, delay, [
+    distance,
+    distance * 0.6,
+  ]);
   return (
     <div
       style={{
         opacity: enter * (1 - exit),
-        transform: `translateY(${offset(distance, distance * 0.6)}px)`,
-        filter: enter < 1 ? `blur(${(1 - enter) * 4}px)` : undefined,
+        transform: `translateY(${offset}px)`,
+        filter: `blur(${(1 - enter) * 4}px)`,
         ...style,
       }}
     >

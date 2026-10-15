@@ -50,7 +50,6 @@ export const PhoneFlatLay = ({
                 step={surface.step}
                 amplitude={surface.amplitude}
                 waves={surface.waves}
-                curl={surface.curl}
                 color={surface.color}
                 roughness={surface.roughness}
                 reflections={stage.reflections}

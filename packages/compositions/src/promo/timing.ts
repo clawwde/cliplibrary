@@ -18,6 +18,28 @@ export const tween = (
     extrapolateRight: 'clamp',
   });
 
+export const pixelTween = (
+  frame: number,
+  range: [number, number],
+  [from, to]: [number, number],
+  easing: (t: number) => number = smooth,
+): number => {
+  const start = Math.round(from);
+  const distance = Math.abs(Math.round(to) - start);
+  if (distance === 0 || frame <= range[0]) {
+    return start;
+  }
+  const direction = Math.sign(Math.round(to) - start);
+  let travelled = 0;
+  for (let step = Math.floor(range[0]) + 1; step <= frame && travelled < distance; step++) {
+    const ideal = Math.abs(
+      tween(step, range, [from, to], easing) - tween(step - 1, range, [from, to], easing),
+    );
+    travelled = Math.min(distance, travelled + Math.max(1, Math.round(ideal)));
+  }
+  return start + direction * travelled;
+};
+
 export const track = (
   frame: number,
   keys: [number, number][],
@@ -42,19 +64,6 @@ export const track = (
 };
 
 export const TAU = Math.PI * 2;
-
-export const swingAngle = (
-  frame: number,
-  at: number,
-  frames: number,
-  angle: number,
-  peak = 0.5,
-): number => {
-  const top = at + frames * peak;
-  return frame <= top
-    ? angle * tween(frame, [at, top], [0, 1], smooth)
-    : angle * tween(frame, [top, at + frames], [1, 0], smooth);
-};
 
 export const cameraPush = (frame: number, amount: number, frames: number): number =>
   1 - amount * Math.min(1, Math.max(0, frame / frames));

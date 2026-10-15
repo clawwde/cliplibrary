@@ -16,15 +16,10 @@ import {
 } from '../../promo-common';
 import type { ClipMeta } from '../../registry';
 
-export const TURNAROUND_ENTRIES = ['rise-back', 'turn-in'] as const;
-
 export const phoneTurnaroundSchema = z.object({
   phone: phoneSchema,
   position: positionSchema,
   scale: zSlider({ min: 0.4, max: 2.6, step: 0.01 }),
-  entry: z.enum(TURNAROUND_ENTRIES),
-  entryYaw: zSlider({ min: -3.2, max: 3.2, step: 0.01 }),
-  entryFrames: zSlider({ min: 4, max: 120 }),
   turnAt: zSlider({ min: 0.05, max: 0.8, step: 0.01 }),
   rise: zSlider({ min: 0, max: 10, step: 0.1 }),
   turnFrames: zSlider({ min: 20, max: 120 }),
@@ -44,12 +39,9 @@ export const phoneTurnaroundDefaults: PhoneTurnaroundProps = {
   phone: phone('analytics', 'blue'),
   position: position(0, 0),
   scale: 1.38,
-  entry: 'rise-back',
-  entryYaw: -1.5,
-  entryFrames: 18,
   turnAt: 0.5,
-  rise: 4.6,
-  turnFrames: 64,
+  rise: 4.5,
+  turnFrames: 60,
   secondScreen: 'none',
   secondTurnAt: 140,
   secondTurnFrames: 100,
@@ -57,7 +49,7 @@ export const phoneTurnaroundDefaults: PhoneTurnaroundProps = {
   endYaw: 0.2,
   look: lightLook(),
   stage: defaultStage({ cameraDistance: 13 }),
-  motion: defaultMotion({ exit: 'fade', exitFrames: 18 }),
+  motion: defaultMotion({ enter: 'fade', enterFrames: 16, exit: 'fade', exitFrames: 18 }),
 };
 
 export const phoneTurnaroundMeta: ClipMeta = {

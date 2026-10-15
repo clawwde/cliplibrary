@@ -3,7 +3,6 @@ import { staticFile } from 'remotion';
 import cardGoal from './assets/card-goal.png';
 import cardGrowth from './assets/card-growth.png';
 import cardIncome from './assets/card-income.png';
-import iconArt from './assets/icon-art.png';
 import iconGlyph from './assets/icon-glyph.png';
 import activity from './assets/screen-activity.jpg';
 import analytics from './assets/screen-analytics.jpg';
@@ -71,6 +70,3 @@ export const cardUrl = (id: PromoCardId): string => url(CARDS[id]);
 
 export const glyphUrl = (customGlyph: string): string =>
   customGlyph.length > 0 ? resolveCustom(customGlyph) : url(iconGlyph);
-
-export const artUrl = (customArt: string): string =>
-  customArt.length > 0 ? resolveCustom(customArt) : url(iconArt);

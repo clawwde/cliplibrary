@@ -7,14 +7,13 @@ import {
 import { Composition, useCurrentFrame, useVideoConfig } from 'remotion';
 import { PhoneModel } from '../../promo/phone-model';
 import { isDarkLook, PromoLayer } from '../../promo/promo-layer';
-import { Stage } from '../../promo/stage';
-import { settle, smooth, TAU, tween } from '../../promo/timing';
+import { offscreenDrop, Stage } from '../../promo/stage';
+import { settle, TAU, tween } from '../../promo/timing';
 import type { SceneModule } from '../../scene-module';
 
 const ENTRY_ORDER = [1, 0, 2];
 
 interface FanPose {
-  visible: boolean;
   x: number;
   y: number;
   tilt: number;
@@ -25,18 +24,20 @@ const risePose = (
   frame: number,
   offset: number,
   delay: number,
-  { spacing, fan }: { spacing: number; fan: number },
+  { spacing, fan, drop }: { spacing: number; fan: number; drop: number },
 ): FanPose => {
   const arrive = tween(frame, [delay, delay + 72], [0, 1], settle);
   const spin = (1 - arrive) * TAU * 0.12 * (offset === 0 ? 1 : Math.sign(offset));
   return {
-    visible: true,
     x: offset * spacing,
-    y: -(1 - arrive) * 6,
+    y: -(1 - arrive) * drop,
     tilt: 0.05 + (1 - arrive) * 0.35,
     yaw: -offset * fan + spin,
   };
 };
+
+const FLY_FRAMES = 66;
+const SPREAD_FRAMES = 50;
 
 const spreadPose = (
   frame: number,
@@ -46,28 +47,15 @@ const spreadPose = (
     fan,
     spreadDelay,
     flyFrom,
-    flyYaw,
-    flyFrames,
-    spreadFrames,
-  }: {
-    spacing: number;
-    fan: number;
-    spreadDelay: number;
-    flyFrom: number;
-    flyYaw: number;
-    flyFrames: number;
-    spreadFrames: number;
-  },
+  }: { spacing: number; fan: number; spreadDelay: number; flyFrom: number },
 ): FanPose => {
-  const arrive = tween(frame, [0, flyFrames], [0, 1], settle);
-  const face = tween(frame, [0, flyFrames * 0.5], [0, 1], smooth);
-  const out = tween(frame, [spreadDelay, spreadDelay + spreadFrames], [0, 1], smooth);
+  const arrive = tween(frame, [0, FLY_FRAMES], [0, 1], settle);
+  const out = tween(frame, [spreadDelay, spreadDelay + SPREAD_FRAMES], [0, 1], settle);
   return {
-    visible: offset === 0 || out > 0,
-    x: offset === 0 ? flyFrom * (1 - arrive) : offset * spacing * out,
+    x: flyFrom * (1 - arrive) + offset * spacing * out,
     y: 0,
-    tilt: 0.04,
-    yaw: offset === 0 ? flyYaw * (1 - face) : -offset * fan * out,
+    tilt: 0.05,
+    yaw: -1.25 * (1 - arrive) - offset * fan * out,
   };
 };
 
@@ -82,9 +70,6 @@ export const PhoneFan = ({
   entrance,
   spreadDelay,
   flyFrom,
-  flyYaw,
-  flyFrames,
-  spreadFrames,
   look,
   stage,
   motion,
@@ -94,6 +79,7 @@ export const PhoneFan = ({
   const frame = raw * motion.speed;
   const dolly = tween(raw, [0, durationInFrames], [1.1, 0.98], (t) => t);
   const sway = tween(raw, [0, durationInFrames], [-orbit, orbit], (t) => t);
+  const drop = offscreenDrop(stage, scale, 1.1);
   return (
     <PromoLayer look={look} motion={motion}>
       <Stage
@@ -108,23 +94,15 @@ export const PhoneFan = ({
             const offset = index - 1;
             const pose =
               entrance === 'spread'
-                ? spreadPose(frame, offset, {
-                    spacing,
-                    fan,
-                    spreadDelay,
-                    flyFrom,
-                    flyYaw,
-                    flyFrames,
-                    spreadFrames,
-                  })
+                ? spreadPose(frame, offset, { spacing, fan, spreadDelay, flyFrom })
                 : risePose(frame, offset, (ENTRY_ORDER[index] ?? index) * stagger, {
                     spacing,
                     fan,
+                    drop,
                   });
             return (
               <group
                 key={`${index}:${entry.screen}`}
-                visible={pose.visible}
                 position={[
                   pose.x,
                   pose.y + Math.sin(frame / 26 + index * 2) * motion.float,
