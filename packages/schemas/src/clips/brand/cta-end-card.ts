@@ -1,12 +1,27 @@
 import { z } from 'zod';
-import { zColor } from '../../control';
-import { defaultMotion, lightLook, lookSchema, motionSchema, promoMeta } from '../../promo-common';
+import { zColor, zImage, zSlider } from '../../control';
+import {
+  defaultMotion,
+  lightLook,
+  lookSchema,
+  motionSchema,
+  placement,
+  placementSchema,
+  promoMeta,
+} from '../../promo-common';
 import type { ClipMeta } from '../../registry';
+
+export const CTA_MARKS = ['ring', 'app-icon'] as const;
 
 export const ctaEndCardSchema = z.object({
   brandName: z.string(),
   showMark: z.boolean(),
   markColor: zColor(),
+  mark: z.enum(CTA_MARKS),
+  markGlyph: zImage(),
+  markSize: zSlider({ min: 32, max: 200 }),
+  headlineSize: zSlider({ min: 40, max: 160 }),
+  placement: placementSchema,
   headline: z.string(),
   highlight: z.string(),
   subline: z.string(),
@@ -25,6 +40,11 @@ export const ctaEndCardDefaults: CtaEndCardProps = {
   brandName: 'Halo',
   showMark: true,
   markColor: '#2f5bff',
+  mark: 'ring',
+  markGlyph: '',
+  markSize: 64,
+  headlineSize: 104,
+  placement: placement('center', 'center', { insetX: 0, insetY: 0, width: 1600 }),
   headline: 'Download Halo today.',
   highlight: 'Halo',
   subline: 'Free to start. Built for calm.',
