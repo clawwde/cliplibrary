@@ -16,6 +16,10 @@ export const PROMO_SCREEN_IDS = [
   'map',
   'profile',
   'settings',
+  'ride-welcome',
+  'ride-unlock',
+  'ride-nearby',
+  'ride-receipt',
 ] as const;
 
 export type PromoScreenId = (typeof PROMO_SCREEN_IDS)[number];
