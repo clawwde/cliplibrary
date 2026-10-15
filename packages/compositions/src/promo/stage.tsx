@@ -71,6 +71,11 @@ const Studio = ({ reflections, dark }: { reflections: number; dark: boolean }) =
   </Environment>
 );
 
+export const offscreenDrop = (stage: PromoStage, scale: number, distanceScale = 1): number =>
+  Math.tan((stage.fieldOfView * Math.PI) / 360) * stage.cameraDistance * distanceScale +
+  1.8 * scale +
+  0.6;
+
 export interface StageProps {
   stage: PromoStage;
   dark?: boolean;

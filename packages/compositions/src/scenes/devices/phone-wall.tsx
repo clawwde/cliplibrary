@@ -42,7 +42,7 @@ export const PhoneWall = ({
             const y = ((rowCount - 1) / 2 - row) * ROW_GAP;
             return Array.from({ length: columnCount }, (_cell, column) => {
               const delay = (Math.abs(column - middle) + row) * 2.5;
-              const arrive = tween(frame, [delay, delay + 56], [0, 1], settle);
+              const arrive = tween(frame, [0, 56 + delay], [0, 1], settle);
               const screen = screens[(row * 5 + column) % screens.length] ?? 'home';
               return (
                 <group
