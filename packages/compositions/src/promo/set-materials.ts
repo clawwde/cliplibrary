@@ -14,7 +14,7 @@ export const clayMaterial = (color: string, roughness = 0.82, reflections = 1) =
     roughness,
     sheen: 0.25,
     sheenRoughness: 0.8,
-    sheenColor: new THREE.Color(color),
+    sheenColor: new THREE.Color('#ffffff'),
     envMapIntensity: 0.45 * reflections,
   });
   cache.set(key, material);
