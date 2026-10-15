@@ -283,6 +283,7 @@ describe('promo clips', () => {
     'echo-stack',
     'outline-marquee',
     'letter-flip',
+    'scooter-promo',
   ];
 
   it('validates every promo default against its schema', () => {

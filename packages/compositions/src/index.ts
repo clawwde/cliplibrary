@@ -25,6 +25,7 @@ export { SplitGrid } from './scenes/overlays/split-grid';
 export { AppPromo } from './scenes/sequences/app-promo';
 export { DoodlePromo } from './scenes/sequences/doodle-promo';
 export { KineticPromo } from './scenes/sequences/kinetic-promo';
+export { ScooterPromo } from './scenes/sequences/scooter-promo';
 export { SceneTransition } from './scenes/transitions/scene-transition';
 export { DetailList } from './scenes/typography/detail-list';
 export { EchoStack } from './scenes/typography/echo-stack';

@@ -69,6 +69,23 @@ describe('sequence seed', () => {
     expect(Math.max(...ends)).toBe(project.durationInFrames);
   });
 
+  it('opens the scooter promo as editable blocks on its named tracks', () => {
+    const project = seedProjectForClip('scooter-promo');
+    expect(project.tracks.map((track) => track.name)).toEqual([
+      'Text',
+      'Scenes',
+      'Devices',
+      'Set',
+      'Backdrop',
+    ]);
+    const elements = project.tracks.flatMap((track) => track.elements);
+    expect(elements).toHaveLength(9);
+    expect(elements.every((element) => element.type === 'composition')).toBe(true);
+    const ends = elements.map((element) => element.from + element.durationInFrames);
+    expect(Math.max(...ends)).toBe(project.durationInFrames);
+    expect(project.durationInFrames).toBe(851);
+  });
+
   it('keeps a backdrop under every frame of the film', () => {
     const project = seedProjectForClip('app-promo');
     const backdrop = project.tracks.find((track) => track.name === 'Backdrop');
