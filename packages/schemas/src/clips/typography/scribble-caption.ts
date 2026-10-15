@@ -15,12 +15,20 @@ import type { ClipMeta } from '../../registry';
 
 export const SCRIBBLE_PLACES = ['through', 'under', 'around'] as const;
 
+export const CAPTION_REVEALS = ['spread', 'type'] as const;
+
+export const SCRIBBLE_TIMINGS = ['start', 'end'] as const;
+
 export const scribbleCaptionSchema = z.object({
   text: z.string(),
   size: zSlider({ min: 16, max: 96 }),
   weight: zSlider(FONT_WEIGHT),
   tracking: zSlider({ min: 0, max: 0.8, step: 0.01 }),
   spread: zSlider({ min: 0, max: 1, step: 0.05 }),
+  reveal: z.enum(CAPTION_REVEALS),
+  typeFrames: zSlider({ min: 0.25, max: 4, step: 0.25 }),
+  scribbleAt: z.enum(SCRIBBLE_TIMINGS),
+  glowOut: zSlider({ min: 0, max: 1, step: 0.01 }),
   shape: z.enum(SCRIBBLE_SHAPES),
   scribblePlace: z.enum(SCRIBBLE_PLACES),
   scribbleWidth: zSlider({ min: 160, max: 1800 }),
@@ -36,14 +44,18 @@ export const scribbleCaptionSchema = z.object({
 export type ScribbleCaptionProps = z.infer<typeof scribbleCaptionSchema>;
 
 export const scribbleCaptionDefaults: ScribbleCaptionProps = {
-  text: 'SAVE PLAN GROW TOGETHER',
-  size: 30,
-  weight: 600,
-  tracking: 0.34,
-  spread: 0.5,
+  text: 'Turn Plans Into Savings',
+  size: 40,
+  weight: 700,
+  tracking: 0.3,
+  spread: 0.6,
+  reveal: 'type',
+  typeFrames: 0.75,
+  scribbleAt: 'start',
+  glowOut: 0,
   shape: 'loop',
   scribblePlace: 'through',
-  scribbleWidth: 760,
+  scribbleWidth: 640,
   strokeWidth: 3,
   keepScribble: false,
   delay: 4,

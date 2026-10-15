@@ -26,6 +26,7 @@ export const GlowReveal = ({
   bloomFrames,
   exitFlare,
   flareFrames,
+  typeFrames,
   placement,
   look,
   motion,
@@ -63,15 +64,37 @@ export const GlowReveal = ({
           textShadow: glowShadow(look.ink, glow + heat, size * 1.6),
         }}
       >
-        {wordsOf(text).map((word, index, all) => (
-          <span
-            key={`${index}:${word}`}
-            style={{ color: accented.has(normalize(word)) ? look.accent : undefined }}
-          >
-            {word}
-            {index < all.length - 1 ? ' ' : ''}
-          </span>
-        ))}
+        {wordsOf(text).map((word, index, all) => {
+          const before = all.slice(0, index).join(' ').length + (index > 0 ? 1 : 0);
+          return (
+            <span
+              key={`${index}:${word}`}
+              style={{ color: accented.has(normalize(word)) ? look.accent : undefined }}
+            >
+              {typeFrames > 0
+                ? Array.from(word).map((char, at) => (
+                    <span
+                      key={`${at}:${char}`}
+                      style={{
+                        opacity: tween(
+                          frame,
+                          [
+                            delay + (before + at) * typeFrames,
+                            delay + (before + at) * typeFrames + 2,
+                          ],
+                          [0, 1],
+                          (t) => t,
+                        ),
+                      }}
+                    >
+                      {char}
+                    </span>
+                  ))
+                : word}
+              {index < all.length - 1 ? ' ' : ''}
+            </span>
+          );
+        })}
       </div>
     </KineticLayer>
   );

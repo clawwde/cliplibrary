@@ -3,6 +3,7 @@ import { loadFont as loadCaveatBrush } from '@remotion/google-fonts/CaveatBrush'
 import { loadFont as loadInter } from '@remotion/google-fonts/Inter';
 import { loadFont as loadInterTight } from '@remotion/google-fonts/InterTight';
 import { loadFont as loadKalam } from '@remotion/google-fonts/Kalam';
+import { loadFont as loadOnest } from '@remotion/google-fonts/Onest';
 import { loadFont as loadPermanentMarker } from '@remotion/google-fonts/PermanentMarker';
 
 export const displayFont = loadInterTight('normal', {
@@ -21,3 +22,7 @@ export const handFonts: Record<HandFont, string> = {
     .fontFamily,
   kalam: loadKalam('normal', { weights: ['700'], subsets: ['latin'] }).fontFamily,
 };
+export const kineticFont = loadOnest('normal', {
+  weights: ['300', '500', '600', '700', '800'],
+  subsets: ['latin'],
+}).fontFamily;

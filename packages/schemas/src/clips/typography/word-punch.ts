@@ -12,14 +12,19 @@ import {
 } from '../../promo-common';
 import type { ClipMeta } from '../../registry';
 
+export const WORD_PUNCH_STYLES = ['punch', 'type'] as const;
+
 export const wordPunchSchema = z.object({
   text: z.string(),
   highlight: z.string(),
-  size: zSlider({ min: 120, max: 560 }),
+  style: z.enum(WORD_PUNCH_STYLES),
+  size: zSlider({ min: 120, max: 800 }),
+  shrink: zSlider({ min: 0, max: 0.6, step: 0.01 }),
   weight: zSlider(FONT_WEIGHT),
   delay: zSlider({ min: 0, max: 90 }),
   wordFrames: zSlider({ min: 8, max: 60 }),
-  swapFrames: zSlider({ min: 3, max: 16 }),
+  swapFrames: zSlider({ min: 1, max: 16 }),
+  typeFrames: zSlider({ min: 1, max: 6, step: 0.25 }),
   punch: zSlider({ min: 0, max: 0.4, step: 0.01 }),
   placement: placementSchema,
   look: lookSchema,
@@ -29,13 +34,16 @@ export const wordPunchSchema = z.object({
 export type WordPunchProps = z.infer<typeof wordPunchSchema>;
 
 export const wordPunchDefaults: WordPunchProps = {
-  text: 'Save. Plan. Grow.',
-  highlight: 'Grow.',
-  size: 300,
+  text: 'Turn. Plans. Into.',
+  highlight: '',
+  style: 'type',
+  size: 760,
+  shrink: 0.3,
   weight: 700,
   delay: 4,
-  wordFrames: 22,
+  wordFrames: 16,
   swapFrames: 10,
+  typeFrames: 2.25,
   punch: 0.14,
   placement: placement('center', 'center', { width: 1700 }),
   look: kineticLook(),
@@ -46,7 +54,8 @@ export const wordPunchMeta: ClipMeta = {
   ...promoMeta,
   id: 'word-punch',
   title: 'Word Punch',
-  description: 'One huge word at a time punches in and hands over to the next on the beat.',
+  description:
+    'One huge word at a time types on behind its full stop and deletes from the front, or punches in.',
   category: 'typography',
   tags: ['kinetic', 'headline', 'text'],
   theme: 'dark',

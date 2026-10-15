@@ -35,7 +35,11 @@ const charStates = (
   Array.from({ length: count }, (_, index) => {
     const fade = Math.max(FADE_FRAMES, charFrames * 1.5);
     const shown =
-      intro === 'typed' ? typedIn : clamp01((frame - typeStart - index * charFrames) / fade);
+      intro === 'cut'
+        ? 1
+        : intro === 'typed'
+          ? typedIn
+          : clamp01((frame - typeStart - index * charFrames) / fade);
     const erased =
       outro === 'erase' ? clamp01((frame - outroAt - (count - 1 - index) * charFrames) / fade) : 0;
     return { opacity: shown * (1 - erased), typed: shown > 0 };
@@ -53,14 +57,14 @@ const blockStyle = (frame: number, delay: number, size: number, caretWidth: numb
 const caretOpacity = (
   frame: number,
   { intro, showCaret, caretPulse }: TypewriterProps,
-  typeStart: number,
+  caretFrom: number,
   typedIn: number,
   select: number,
 ): number => {
-  if (!showCaret || frame < typeStart) {
+  if (!showCaret || frame < caretFrom) {
     return 0;
   }
-  const pulse = 0.55 + 0.45 * Math.cos(((frame - typeStart) / caretPulse) * Math.PI * 2);
+  const pulse = 0.55 + 0.45 * Math.cos(((frame - caretFrom) / caretPulse) * Math.PI * 2);
   return pulse * (1 - select) * (intro === 'typed' ? typedIn : 1);
 };
 
@@ -69,16 +73,21 @@ export const Typewriter = (props: TypewriterProps) => {
     props;
   const frame = useCurrentFrame() * motion.speed;
   const chars = Array.from(text);
-  const typeStart = delay + (intro === 'block' ? BLOCK_FRAMES : 0);
+  const caretFrom = delay + (intro === 'block' ? BLOCK_FRAMES : 0);
+  const typeStart = caretFrom + props.caretHold;
   const typedIn = tween(frame, [delay, delay + 18], [0, 1], settle);
   const typedRise = land(frame, [delay, delay + 18], [size * 0.3, 0]);
   const states = charStates(frame, chars.length, props, typeStart, typedIn);
   const caretAt = states.filter((state) => state.opacity > 0).length;
-  const select = outro === 'select' ? tween(frame, [outroAt, outroAt + 24], [0, 1], linear) : 0;
+  const select = outro === 'select' ? tween(frame, [outroAt, outroAt + 9], [0, 1], linear) : 0;
   const collapse =
-    outro === 'select' ? tween(frame, [outroAt + 30, outroAt + 52], [0, 1], linear) : 0;
+    outro === 'select' ? tween(frame, [outroAt + 10, outroAt + 18], [0, 0.96], linear) : 0;
+  const vanish =
+    outro === 'select' ? tween(frame, [outroAt + 19, outroAt + 22], [0, 1], linear) : 0;
+  const zoomEnd = outroAt + (outro === 'erase' ? chars.length * props.charFrames : 0);
+  const zoom = land(frame, [delay, zoomEnd], [props.zoom, 1], 4 / size);
   const caretWidth = Math.max(3, size * 0.06);
-  const blockActive = intro === 'block' && frame < typeStart;
+  const blockActive = intro === 'block' && frame < caretFrom;
   const caret = (
     <span
       key="caret"
@@ -95,7 +104,7 @@ export const Typewriter = (props: TypewriterProps) => {
                 top: '0.05em',
                 width: caretWidth,
                 height: '0.9em',
-                opacity: caretOpacity(frame, props, typeStart, typedIn, select),
+                opacity: caretOpacity(frame, props, caretFrom, typedIn, select),
               }),
         }}
       />
@@ -120,10 +129,10 @@ export const Typewriter = (props: TypewriterProps) => {
           ...displayType(size, weight, tracking),
           color: look.ink,
           position: 'relative',
-          transform: intro === 'typed' ? `translateY(${typedRise}px)` : undefined,
+          transform: `translateY(${intro === 'typed' ? typedRise : 0}px) scale(${zoom.toFixed(5)})`,
         }}
       >
-        <span style={selected ? softEdge(select, 'reveal-after') : undefined}>
+        <span style={selected ? softEdge(1 - select, 'reveal-before') : undefined}>
           {[...line.slice(0, caretAt), caret, ...line.slice(caretAt)]}
         </span>
         {selected ? (
@@ -135,7 +144,10 @@ export const Typewriter = (props: TypewriterProps) => {
               padding: '0.06em 0.04em',
               background: look.ink,
               color: look.background,
-              ...softEdge(Math.min(select, 1 - collapse), 'reveal-before'),
+              opacity: 1 - vanish,
+              ...(collapse > 0
+                ? { clipPath: `inset(0 ${(collapse * 50).toFixed(3)}%)` }
+                : softEdge(1 - select, 'reveal-after')),
             }}
           >
             {line}

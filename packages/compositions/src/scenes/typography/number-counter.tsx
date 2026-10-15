@@ -97,8 +97,9 @@ export const NumberCounter = ({
   const countAt = (at: number) => land(at, [delay, delay + countFrames], [from, to], minSpeed, 1.2);
   const value = countAt(frame);
   const previous = countAt(frame - motion.speed);
-  const enter = tween(frame, [delay, delay + 14], [0, 1], settle);
+  const enter = roll > 0 ? tween(frame, [delay, delay + 14], [0, 1], settle) : 1;
   const flare = 1 - tween(frame, [delay, delay + countFrames + 10], [0, 1], settle);
+  const shown = Math.floor(countAt(frame) + 0.0001);
   const places = Math.max(digitCount(from), digitCount(to));
   const columns = Array.from({ length: places }, (_, index) => places - 1 - index);
   return (
@@ -109,13 +110,16 @@ export const NumberCounter = ({
           color: look.ink,
           opacity: enter,
           fontVariantNumeric: 'tabular-nums',
-          textShadow: glowShadow(look.ink, glow + bloom * flare, size),
+          textShadow: glowShadow(look.ink, glow + bloom * 1.6 * flare, size),
+          filter:
+            roll === 0 && flare > 0.6 ? `blur(${((flare - 0.6) * 10).toFixed(2)}px)` : undefined,
           display: 'flex',
           alignItems: 'baseline',
         }}
       >
         {prefix.length > 0 ? <span>{prefix}</span> : null}
-        {columns.map((place) => (
+        {roll === 0 ? <span>{shown}</span> : null}
+        {(roll === 0 ? [] : columns).map((place) => (
           <DigitColumn
             key={place}
             position={columnPosition(value, place)}

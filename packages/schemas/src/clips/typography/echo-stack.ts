@@ -30,15 +30,15 @@ export const echoStackSchema = z.object({
 export type EchoStackProps = z.infer<typeof echoStackSchema>;
 
 export const echoStackDefaults: EchoStackProps = {
-  text: 'ALWAYS IN SYNC',
+  text: 'HALO SAVES',
   rows: 7,
   accentRow: 0,
-  size: 64,
+  size: 112,
   weight: 700,
-  lineHeight: 1.04,
+  lineHeight: 1.24,
   delay: 4,
-  rowStagger: 3,
-  exitAt: 84,
+  rowStagger: 2,
+  exitAt: 76,
   placement: placement('center', 'center', { width: 1200 }),
   look: kineticLook(),
   motion: defaultMotion({ exit: 'fade', exitFrames: 12 }),

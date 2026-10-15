@@ -22,6 +22,7 @@ export const OutlineMarquee = ({
   outlineOpacity,
   speed,
   labelSize,
+  labelTracking,
   labelWeight,
   delay,
   placement,
@@ -30,7 +31,7 @@ export const OutlineMarquee = ({
 }: OutlineMarqueeProps) => {
   const rawFrame = useCurrentFrame();
   const frame = rawFrame * motion.speed;
-  const pitch = size * 0.94;
+  const pitch = size * 1.3;
   const filterId = `outline-${useId().replace(/[^a-zA-Z0-9-]/g, '')}`;
   const travel = Math.round(rawFrame * speed);
   const band = (
@@ -55,12 +56,22 @@ export const OutlineMarquee = ({
               lineHeight: `${pitch}px`,
               color: look.ink,
               wordSpacing: '0.2em',
-              filter: `url(#${filterId})`,
               opacity: tween(frame, [start, start + 18], [0, 1], settle),
               transform: `translateX(${direction * travel + (direction > 0 ? -size * 2 : 0)}px)`,
             }}
           >
-            {Array.from({ length: REPEATS }, () => text).join('   ')}
+            {[...new Array(REPEATS).keys()].map((copy) => (
+              <span
+                key={copy}
+                style={{
+                  filter: `url(#${filterId})`,
+                  display: 'inline-block',
+                  paddingRight: '0.5em',
+                }}
+              >
+                {text}
+              </span>
+            ))}
           </div>
         );
       })}
@@ -71,7 +82,7 @@ export const OutlineMarquee = ({
     <KineticLayer look={look} motion={motion} placement={placement} stage={band}>
       <div
         style={{
-          ...displayType(labelSize, labelWeight, -0.03),
+          ...displayType(labelSize, labelWeight, labelTracking),
           color: look.ink,
           opacity: tween(frame, [delay + 8, delay + 22], [0, 1], settle),
           transform: `translateY(${rise.toFixed(2)}px)`,

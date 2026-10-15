@@ -30,11 +30,11 @@ export const EchoStack = ({
       {Array.from({ length: rows }, (_, row) => {
         const start = delay + row * rowStagger;
         const leave = exitAt + row * rowStagger;
-        const rise = land(frame, [start, start + 20], [size * 0.45, 0]);
-        const drop = launch(frame, [leave, leave + 16], [0, pitch * 0.8]);
+        const rise = land(frame, [start, start + 8], [size * 0.6, 0]);
+        const drop = launch(frame, [leave, leave + 8], [0, pitch * 0.8]);
         const opacity =
-          tween(frame, [start, start + 12], [0, 1], settle) *
-          (1 - tween(frame, [leave + 2, leave + 14], [0, 1], smooth));
+          tween(frame, [start, start + 6], [0, 1], settle) *
+          (1 - tween(frame, [leave, leave + 7], [0, 1], smooth));
         return (
           <div
             key={row}

@@ -41,11 +41,15 @@ export const PROMO_TRANSITIONS = [
   'push-left',
   'push-up',
   'zoom',
+  'grow',
+  'blast',
 ] as const;
 
 export type PromoTransition = (typeof PROMO_TRANSITIONS)[number];
 
 export const TEXT_SIDES = ['left', 'right'] as const;
+
+export const TYPEFACES = ['inter-tight', 'onest'] as const;
 
 export const SCRIBBLE_SHAPES = ['swash', 'loop', 'underline', 'circle'] as const;
 
@@ -186,16 +190,16 @@ export const darkLook = (accent = '#7d9bff', showBackdrop = true): PromoLook => 
   paperMargin: false,
 });
 
-export const kineticLook = (accent = '#ff4d3d', showBackdrop = true): PromoLook => ({
+export const kineticLook = (accent = '#e5262b', showBackdrop = true): PromoLook => ({
   showBackdrop,
-  background: '#111113',
-  backgroundEdge: '#020203',
-  ink: '#f4f4f2',
-  muted: '#8a8a90',
+  background: '#020202',
+  backgroundEdge: '#000000',
+  ink: '#f1f1f1',
+  muted: '#7d7d7d',
   accent,
-  grain: 0.1,
+  grain: 0.14,
   liveGrain: true,
-  spotlight: 0.32,
+  spotlight: 0,
   paper: 'plain',
   paperLine: '#2a2d36',
   paperSpacing: 54,

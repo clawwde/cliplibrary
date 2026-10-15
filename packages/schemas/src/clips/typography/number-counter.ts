@@ -32,17 +32,17 @@ export const numberCounterSchema = z.object({
 export type NumberCounterProps = z.infer<typeof numberCounterSchema>;
 
 export const numberCounterDefaults: NumberCounterProps = {
-  from: 1,
+  from: 0,
   to: 12,
   prefix: '',
   suffix: '',
-  size: 240,
+  size: 330,
   weight: 700,
   delay: 2,
-  countFrames: 60,
+  countFrames: 27,
   roll: 0,
   glow: 0.25,
-  bloom: 0.8,
+  bloom: 1,
   placement: placement('center', 'center', { width: 1400 }),
   look: kineticLook(),
   motion: defaultMotion({ exit: 'blur', exitFrames: 14 }),
