@@ -85,7 +85,7 @@ const build = (finish: PhoneFinish, reflections: number): PhoneMaterials => {
       polygonOffset: true,
       polygonOffsetFactor: -6,
       polygonOffsetUnits: -10,
-      envMapIntensity: 0.08 * reflections,
+      envMapIntensity: 0.04 * reflections,
     }),
     lensGlass: new THREE.MeshPhysicalMaterial({
       color: '#0b0c14',
@@ -101,8 +101,8 @@ const build = (finish: PhoneFinish, reflections: number): PhoneMaterials => {
     lensCore: new THREE.MeshPhysicalMaterial({
       color: '#1d2346',
       metalness: 0.6,
-      roughness: 0.12,
-      iridescence: 1,
+      roughness: 0.36,
+      iridescence: 0.6,
       iridescenceThicknessRange: [300, 600],
       envMapIntensity: 1.5 * reflections,
     }),

@@ -34,7 +34,7 @@ const useScreenMap = (phone: PromoPhone, scroll: number): THREE.Texture => {
 const SCREEN_LIFT = 0.002;
 
 export const facingBrightness = (rotationY: number): number =>
-  tween(Math.cos(rotationY), [0.04, 0.4], [0, 1], smooth);
+  tween(Math.cos(rotationY), [0.08, 0.55], [0, 1], smooth);
 
 const ScreenSurface = ({
   phone,
