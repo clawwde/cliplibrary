@@ -146,6 +146,21 @@ export const lightLook = (accent = '#2f5bff', showBackdrop = true): PromoLook =>
   paperMargin: false,
 });
 
+export const clayLook = (accent = '#ff6b3d', showBackdrop = true): PromoLook => ({
+  showBackdrop,
+  background: '#d4d4d1',
+  backgroundEdge: '#b9b9b5',
+  ink: '#1b1f3b',
+  muted: '#6f7184',
+  accent,
+  grain: 0.05,
+  spotlight: 0.45,
+  paper: 'plain',
+  paperLine: '#cbd3de',
+  paperSpacing: 54,
+  paperMargin: false,
+});
+
 export const darkLook = (accent = '#7d9bff', showBackdrop = true): PromoLook => ({
   showBackdrop,
   background: '#16161a',

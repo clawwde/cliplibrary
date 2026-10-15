@@ -4,10 +4,11 @@ import {
   ctaEndCardMeta,
   ctaEndCardSchema,
 } from '@cliplibrary/schemas';
-import { AbsoluteFill, Composition, useCurrentFrame } from 'remotion';
+import { Composition, Img, useCurrentFrame } from 'remotion';
 import { BrandMark } from '../../promo/brand-mark';
 import { bodyFont, displayFont } from '../../promo/fonts';
-import { PromoLayer } from '../../promo/promo-layer';
+import { PromoLayer, placementFrame } from '../../promo/promo-layer';
+import { glyphUrl } from '../../promo/screen-assets';
 import { BodyCopy, FadeIn, Headline } from '../../promo/typography';
 import type { SceneModule } from '../../scene-module';
 
@@ -48,10 +49,31 @@ const StoreButton = ({
   </div>
 );
 
+const AppIconMark = ({ color, glyph, size }: { color: string; glyph: string; size: number }) => (
+  <div
+    style={{
+      width: size,
+      height: size,
+      borderRadius: size * 0.23,
+      background: color,
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+    }}
+  >
+    <Img src={glyphUrl(glyph)} style={{ width: size * 0.72, height: size * 0.72 }} />
+  </div>
+);
+
 export const CtaEndCard = ({
   brandName,
   showMark,
   markColor,
+  mark,
+  markGlyph,
+  markSize,
+  headlineSize,
+  placement,
   headline,
   highlight,
   subline,
@@ -66,66 +88,91 @@ export const CtaEndCard = ({
   const frame = useCurrentFrame() * motion.speed;
   return (
     <PromoLayer look={look} motion={motion}>
-      <AbsoluteFill style={{ alignItems: 'center', justifyContent: 'center', gap: 34 }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 18 }}>
-          {showMark ? <BrandMark color={markColor} frame={frame} size={64} start={16} /> : null}
-          <FadeIn start={16}>
-            <span
-              style={{
-                fontFamily: displayFont,
-                fontSize: 54,
-                fontWeight: 600,
-                letterSpacing: '-0.05em',
-                color: look.ink,
-              }}
-            >
-              {brandName}
-            </span>
+      <div style={placementFrame(placement)}>
+        <div
+          style={{
+            width: placement.width,
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            gap: 34,
+          }}
+        >
+          {showMark || brandName.length > 0 ? (
+            <div style={{ display: 'flex', alignItems: 'center', gap: 18 }}>
+              {showMark && mark === 'ring' ? (
+                <BrandMark color={markColor} frame={frame} size={markSize} start={16} />
+              ) : null}
+              {showMark && mark === 'app-icon' ? (
+                <FadeIn start={10}>
+                  <AppIconMark color={markColor} glyph={markGlyph} size={markSize} />
+                </FadeIn>
+              ) : null}
+              {brandName.length > 0 ? (
+                <FadeIn start={16}>
+                  <span
+                    style={{
+                      fontFamily: displayFont,
+                      fontSize: 54,
+                      fontWeight: 600,
+                      letterSpacing: '-0.05em',
+                      color: look.ink,
+                    }}
+                  >
+                    {brandName}
+                  </span>
+                </FadeIn>
+              ) : null}
+            </div>
+          ) : null}
+          <Headline
+            text={headline}
+            highlight={highlight}
+            size={headlineSize}
+            color={look.ink}
+            accent={look.accent}
+            align="center"
+            start={22}
+          />
+          {subline.length > 0 ? (
+            <FadeIn start={38}>
+              <BodyCopy text={subline} color={look.muted} width={900} align="center" size={32} />
+            </FadeIn>
+          ) : null}
+          <FadeIn start={38} style={{ display: 'flex', gap: 18, marginTop: 8 }}>
+            <StoreButton
+              caption={primaryCaption}
+              label={primaryLabel}
+              filled
+              ink={look.ink}
+              paper={look.background}
+            />
+            <StoreButton
+              caption={secondaryCaption}
+              label={secondaryLabel}
+              filled={false}
+              ink={look.ink}
+              paper={look.background}
+            />
           </FadeIn>
+          {url.length > 0 ? (
+            <FadeIn start={50}>
+              <div
+                style={{
+                  fontFamily: bodyFont,
+                  fontSize: 20,
+                  fontWeight: 500,
+                  letterSpacing: '0.24em',
+                  textTransform: 'uppercase',
+                  color: look.muted,
+                }}
+              >
+                {url}
+              </div>
+            </FadeIn>
+          ) : null}
         </div>
-        <Headline
-          text={headline}
-          highlight={highlight}
-          size={104}
-          color={look.ink}
-          accent={look.accent}
-          align="center"
-          start={22}
-        />
-        <FadeIn start={38}>
-          <BodyCopy text={subline} color={look.muted} width={900} align="center" size={32} />
-        </FadeIn>
-        <FadeIn start={48} style={{ display: 'flex', gap: 18, marginTop: 8 }}>
-          <StoreButton
-            caption={primaryCaption}
-            label={primaryLabel}
-            filled
-            ink={look.ink}
-            paper={look.background}
-          />
-          <StoreButton
-            caption={secondaryCaption}
-            label={secondaryLabel}
-            filled={false}
-            ink={look.ink}
-            paper={look.background}
-          />
-        </FadeIn>
-        <FadeIn start={60}>
-          <div
-            style={{
-              fontFamily: bodyFont,
-              fontSize: 20,
-              fontWeight: 500,
-              letterSpacing: '0.24em',
-              textTransform: 'uppercase',
-              color: look.muted,
-            }}
-          >
-            {url}
-          </div>
-        </FadeIn>
-      </AbsoluteFill>
+      </div>
     </PromoLayer>
   );
 };

@@ -34,6 +34,49 @@ const useNearViewport = <Node extends HTMLElement>() => {
   return { ref, near };
 };
 
+const pending: (() => void)[] = [];
+let draining = false;
+
+const whenIdle = (run: () => void) => {
+  if (typeof requestIdleCallback === 'function') {
+    requestIdleCallback(run, { timeout: 1500 });
+  } else {
+    setTimeout(run, 60);
+  }
+};
+
+const drain = () => {
+  const next = pending.shift();
+  if (next === undefined) {
+    draining = false;
+    return;
+  }
+  next();
+  whenIdle(drain);
+};
+
+const useIdleTurn = (wanted: boolean): boolean => {
+  const [ready, setReady] = useState(false);
+  useEffect(() => {
+    if (!wanted || ready) {
+      return;
+    }
+    const grant = () => setReady(true);
+    pending.push(grant);
+    if (!draining) {
+      draining = true;
+      whenIdle(drain);
+    }
+    return () => {
+      const index = pending.indexOf(grant);
+      if (index >= 0) {
+        pending.splice(index, 1);
+      }
+    };
+  }, [wanted, ready]);
+  return ready;
+};
+
 export const VideoTile = ({
   meta,
   project,
@@ -45,6 +88,7 @@ export const VideoTile = ({
 }) => {
   const [loaded, setLoaded] = useState(false);
   const { ref, near } = useNearViewport<HTMLAnchorElement>();
+  const previewReady = useIdleTurn(near && !hasVideo);
 
   return (
     <Link
@@ -53,7 +97,7 @@ export const VideoTile = ({
       className="group flex flex-col overflow-hidden rounded-xl bg-card transition-transform duration-150 hover:-translate-y-0.5"
     >
       <div className="relative aspect-video overflow-hidden bg-black">
-        {!near || (hasVideo && !loaded) ? (
+        {!near || (hasVideo && !loaded) || !(hasVideo || previewReady) ? (
           <Skeleton className="absolute inset-0 rounded-none" />
         ) : null}
         <div className="size-full transition-transform duration-300 ease-out group-hover:scale-105">
@@ -70,7 +114,7 @@ export const VideoTile = ({
               className="size-full object-cover"
             />
           ) : null}
-          {near && !hasVideo ? (
+          {near && !hasVideo && previewReady ? (
             <Thumbnail
               component={Composition}
               inputProps={project as unknown as Record<string, unknown>}

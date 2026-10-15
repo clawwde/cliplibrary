@@ -15,6 +15,8 @@ import {
 } from '../../promo-common';
 import type { ClipMeta } from '../../registry';
 
+export const FAN_ENTRANCES = ['rise', 'spread'] as const;
+
 export const phoneFanSchema = z.object({
   phones: z.array(phoneSchema).length(3),
   position: positionSchema,
@@ -23,6 +25,9 @@ export const phoneFanSchema = z.object({
   fan: zSlider({ min: 0, max: 0.9, step: 0.01 }),
   stagger: zSlider({ min: 0, max: 30 }),
   orbit: zSlider({ min: 0, max: 0.5, step: 0.01 }),
+  entrance: z.enum(FAN_ENTRANCES),
+  spreadDelay: zSlider({ min: 0, max: 160 }),
+  flyFrom: zSlider({ min: -8, max: 8, step: 0.05 }),
   look: lookSchema,
   stage: stageSchema,
   motion: motionSchema,
@@ -38,6 +43,9 @@ export const phoneFanDefaults: PhoneFanProps = {
   fan: 0.4,
   stagger: 9,
   orbit: 0.14,
+  entrance: 'rise',
+  spreadDelay: 60,
+  flyFrom: -6,
   look: lightLook(),
   stage: defaultStage({ cameraDistance: 15 }),
   motion: defaultMotion({ exit: 'fade', exitFrames: 18 }),

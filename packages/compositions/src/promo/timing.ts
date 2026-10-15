@@ -3,6 +3,8 @@ import { Easing, interpolate } from 'remotion';
 export const smooth = Easing.bezier(0.65, 0, 0.35, 1);
 export const settle = Easing.bezier(0.25, 0.8, 0.35, 1);
 export const accelerate = Easing.bezier(0.7, 0, 0.84, 0);
+export const turn = Easing.bezier(0.4, 0, 0.2, 1);
+export const glide = Easing.inOut(Easing.sin);
 
 export const tween = (
   frame: number,
@@ -38,4 +40,30 @@ export const pixelTween = (
   return start + direction * travelled;
 };
 
+export const track = (
+  frame: number,
+  keys: [number, number][],
+  easing: (t: number) => number = smooth,
+): number => {
+  const first = keys[0];
+  const last = keys.at(-1);
+  if (first === undefined || last === undefined) {
+    return 0;
+  }
+  if (frame <= first[0]) {
+    return first[1];
+  }
+  for (let index = 0; index < keys.length - 1; index++) {
+    const current = keys[index];
+    const next = keys[index + 1];
+    if (current !== undefined && next !== undefined && frame <= next[0]) {
+      return tween(frame, [current[0], next[0]], [current[1], next[1]], easing);
+    }
+  }
+  return last[1];
+};
+
 export const TAU = Math.PI * 2;
+
+export const cameraPush = (frame: number, amount: number, frames: number): number =>
+  1 - amount * Math.min(1, Math.max(0, frame / frames));
