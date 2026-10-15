@@ -8,6 +8,15 @@ interface FinishPalette {
   ring: string;
 }
 
+THREE.ShaderChunk.dithering_pars_fragment = `
+#ifdef DITHERING
+vec3 dithering( vec3 color ) {
+  float spread = rand( gl_FragCoord.xy ) + rand( gl_FragCoord.yx + 0.5 ) - 1.0;
+  return color + vec3( 2.0 * spread / 255.0 );
+}
+#endif
+`;
+
 const FINISHES: Record<PhoneFinish, FinishPalette> = {
   natural: { frame: '#b8b3aa', back: '#c8c4bb', plateau: '#bdb8af', ring: '#a9a49b' },
   black: { frame: '#3a3a3d', back: '#28282b', plateau: '#2f2f33', ring: '#4a4a4e' },
@@ -134,6 +143,9 @@ export const phoneMaterials = (finish: PhoneFinish, reflections: number): PhoneM
     return hit;
   }
   const materials = build(finish, reflections);
+  for (const material of Object.values(materials)) {
+    material.dithering = true;
+  }
   cache.set(key, materials);
   return materials;
 };
