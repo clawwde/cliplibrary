@@ -79,7 +79,7 @@ const ENTRIES: SequenceEntry[] = [
     delay: 0,
   }),
   headline([114, 312], { motion: fade(16) }),
-  entry('phone-turnaround', 'Devices', [296, 476], phoneTurnaroundDefaults, {
+  entry('phone-turnaround', 'Devices', [296, 466], phoneTurnaroundDefaults, {
     rise: 7.5,
     motion: fade(20),
   }),
@@ -103,7 +103,7 @@ const ENTRIES: SequenceEntry[] = [
     motion: fade(14),
   }),
   entry('detail-list', 'Captions', [304, 476], detailListDefaults, { motion: fade(14) }),
-  entry('phone-fan', 'Devices', [458, 652], phoneFanDefaults, { motion: fade(18) }),
+  entry('phone-fan', 'Devices', [458, 644], phoneFanDefaults, { motion: fade(18) }),
   headline([486, 640], {
     eyebrow: '',
     headline: 'Plan. Track. Connect.',
@@ -115,19 +115,20 @@ const ENTRIES: SequenceEntry[] = [
   }),
   entry('phone-swap', 'Devices', [636, 904], phoneSwapDefaults, { motion: fade(18) }),
   entry('feature-callouts', 'Text', [640, 904], featureCalloutsDefaults, { motion: fade(14) }),
-  entry('phone-scroll', 'Devices', [888, 1068], phoneScrollDefaults, {
+  entry('phone-scroll', 'Devices', [898, 1054], phoneScrollDefaults, {
     position: position(2.7, -0.05),
     motion: fade(18),
   }),
-  entry('floating-cards', 'Overlays', [926, 1068], floatingCardsDefaults, {
+  entry('floating-cards', 'Overlays', [926, 1044], floatingCardsDefaults, {
     cards: [
       { kind: 'growth', x: 0.95, y: 1.75, z: 1.1, turn: 0.28, size: 2.1 },
       { kind: 'goal', x: 1.1, y: -1.75, z: 1.5, turn: 0.22, size: 2.1 },
       { kind: 'income', x: 4.85, y: 0.35, z: 0.9, turn: -0.4, size: 2.1 },
     ],
     delay: 0,
+    motion: fade(10),
   }),
-  headline([906, 1068], {
+  headline([906, 1052], {
     eyebrow: 'Discover',
     headline: 'Insights that\nmove with you.',
     highlight: 'move',
@@ -138,7 +139,7 @@ const ENTRIES: SequenceEntry[] = [
   entry('phone-wall', 'Devices', [1050, 1248], phoneWallDefaults, {
     motion: defaultMotion({ enter: 'fade', enterFrames: 16, exit: 'fade', exitFrames: 16 }),
   }),
-  headline([1090, 1240], {
+  headline([1090, 1248], {
     eyebrow: '',
     headline: '14 crafted screens',
     highlight: '14',
@@ -161,12 +162,13 @@ const ENTRIES: SequenceEntry[] = [
   }),
   entry('phone-pair', 'Devices', [1356, 1500], phonePairDefaults, {
     phones: [phone('profile', 'white'), phone('home', 'natural')],
-    gap: 5.3,
+    position: position(0.24, 0, 0),
+    gap: 4.6,
     angle: 0.6,
-    stagger: -0.3,
+    stagger: -0.18,
     scale: 1.15,
     stage: { ...phonePairDefaults.stage, keyLight: 2, shadow: 0.16 },
-    motion: defaultMotion({ exit: 'none', exitFrames: 0 }),
+    motion: defaultMotion({ enter: 'fade', enterFrames: 18, exit: 'none', exitFrames: 0 }),
   }),
   entry('cta-end-card', 'Text', [1366, 1500], ctaEndCardDefaults, {}),
 ];
