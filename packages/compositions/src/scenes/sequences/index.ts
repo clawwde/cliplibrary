@@ -1,5 +1,6 @@
 import type { SceneModule } from '../../scene-module';
 import { appPromoScene } from './app-promo';
-import { scooterPromoScene } from './scooter-promo';
+import { doodlePromoScene } from './doodle-promo';
+import { kineticPromoScene } from './kinetic-promo';
 
-export const sequencesScenes: SceneModule[] = [scooterPromoScene, appPromoScene];
+export const sequencesScenes: SceneModule[] = [appPromoScene, doodlePromoScene, kineticPromoScene];

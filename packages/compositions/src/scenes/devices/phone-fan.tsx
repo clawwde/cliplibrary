@@ -7,7 +7,7 @@ import {
 import { Composition, useCurrentFrame, useVideoConfig } from 'remotion';
 import { PhoneModel } from '../../promo/phone-model';
 import { isDarkLook, PromoLayer } from '../../promo/promo-layer';
-import { Stage } from '../../promo/stage';
+import { offscreenDrop, Stage } from '../../promo/stage';
 import { settle, smooth, TAU, tween } from '../../promo/timing';
 import type { SceneModule } from '../../scene-module';
 
@@ -25,14 +25,14 @@ const risePose = (
   frame: number,
   offset: number,
   delay: number,
-  { spacing, fan }: { spacing: number; fan: number },
+  { spacing, fan, drop }: { spacing: number; fan: number; drop: number },
 ): FanPose => {
   const arrive = tween(frame, [delay, delay + 72], [0, 1], settle);
   const spin = (1 - arrive) * TAU * 0.12 * (offset === 0 ? 1 : Math.sign(offset));
   return {
     visible: true,
     x: offset * spacing,
-    y: -(1 - arrive) * 6,
+    y: -(1 - arrive) * drop,
     tilt: 0.05 + (1 - arrive) * 0.35,
     yaw: -offset * fan + spin,
   };
@@ -94,6 +94,7 @@ export const PhoneFan = ({
   const frame = raw * motion.speed;
   const dolly = tween(raw, [0, durationInFrames], [1.1, 0.98], (t) => t);
   const sway = tween(raw, [0, durationInFrames], [-orbit, orbit], (t) => t);
+  const drop = offscreenDrop(stage, scale, 1.1);
   return (
     <PromoLayer look={look} motion={motion}>
       <Stage
@@ -120,6 +121,7 @@ export const PhoneFan = ({
                 : risePose(frame, offset, (ENTRY_ORDER[index] ?? index) * stagger, {
                     spacing,
                     fan,
+                    drop,
                   });
             return (
               <group

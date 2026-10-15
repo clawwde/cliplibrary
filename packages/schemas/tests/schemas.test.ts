@@ -13,6 +13,7 @@ import {
   CLIP_THEMES,
   type ClipId,
   categoryLabel,
+  DOODLE_PROMO_SEQUENCE,
   EASING_IDS,
   floatingCardsSchema,
   getClipDefaults,
@@ -21,12 +22,9 @@ import {
   HEX_COLOR,
   headlineRevealSchema,
   isClipId,
-  type PhonePairProps,
-  type PhoneTurnaroundProps,
   phoneFanSchema,
   phoneSpinInSchema,
   readControlMeta,
-  SCOOTER_PROMO_SEQUENCE,
   sceneTransitionSchema,
   zColor,
   zImage,
@@ -270,11 +268,21 @@ describe('promo clips', () => {
     'cta-end-card',
     'studio-backdrop',
     'scene-transition',
+    'doodle-arrows',
+    'handwritten-note',
+    'doodle-promo',
     'relief-backdrop',
     'app-icon-reveal',
     'phone-pedestal',
     'phone-flat-lay',
-    'scooter-promo',
+    'number-counter',
+    'typewriter',
+    'word-build',
+    'word-punch',
+    'scribble-caption',
+    'echo-stack',
+    'outline-marquee',
+    'letter-flip',
   ];
 
   it('validates every promo default against its schema', () => {
@@ -300,41 +308,53 @@ describe('promo clips', () => {
     expect(getClipSchema('detail-list').safeParse({ ...defaults, items }).success).toBe(false);
   });
 
+  it('bounds the doodle arrows and rejects unknown shapes', () => {
+    const defaults = getClipDefaults('doodle-arrows');
+    const schema = getClipSchema('doodle-arrows');
+    const arrow = defaults.arrows[0];
+    expect(schema.safeParse({ ...defaults, arrows: [] }).success).toBe(false);
+    expect(schema.safeParse({ ...defaults, arrows: new Array(15).fill(arrow) }).success).toBe(
+      false,
+    );
+    expect(schema.safeParse({ ...defaults, arrows: [{ ...arrow, shape: 'star' }] }).success).toBe(
+      false,
+    );
+  });
+
+  it('rejects an unknown handwriting font and paper pattern', () => {
+    const defaults = getClipDefaults('handwritten-note');
+    const schema = getClipSchema('handwritten-note');
+    expect(schema.safeParse({ ...defaults, font: 'comic' }).success).toBe(false);
+    expect(
+      schema.safeParse({ ...defaults, look: { ...defaults.look, paper: 'dotted' } }).success,
+    ).toBe(false);
+  });
+
+  it('builds every doodle promo layer from props its clip schema accepts', () => {
+    for (const entry of DOODLE_PROMO_SEQUENCE.entries) {
+      expect(getClipSchema(entry.clipId).safeParse(entry.props).success).toBe(true);
+      expect(DOODLE_PROMO_SEQUENCE.tracks).toContain(entry.track);
+    }
+  });
+
+  it('overlaps consecutive doodle promo devices so beats crossfade', () => {
+    const devices = DOODLE_PROMO_SEQUENCE.entries.filter((entry) => entry.track === 'Devices');
+    for (let index = 1; index < devices.length; index++) {
+      const previous = devices[index - 1];
+      const current = devices[index];
+      if (previous && current) {
+        const overlap = previous.from + previous.durationInFrames - current.from;
+        expect(overlap).toBeGreaterThanOrEqual(12);
+        expect(overlap).toBeLessThanOrEqual(24);
+      }
+    }
+  });
+
   it('builds every app promo layer from props its clip schema accepts', () => {
     for (const entry of APP_PROMO_SEQUENCE.entries) {
       const result = getClipSchema(entry.clipId).safeParse(entry.props);
       expect(result.success).toBe(true);
     }
-  });
-
-  it('builds every scooter promo layer from props its clip schema accepts', () => {
-    for (const entry of SCOOTER_PROMO_SEQUENCE.entries) {
-      const result = getClipSchema(entry.clipId).safeParse(entry.props);
-      expect(result.success).toBe(true);
-    }
-  });
-
-  it('runs the scooter promo for the 28.4 second length of its reference', () => {
-    expect(getClipMeta('scooter-promo').durationInFrames).toBe(851);
-  });
-
-  it('hands the scooter turnaround to the phone pair on the same pose', () => {
-    const turn = SCOOTER_PROMO_SEQUENCE.entries.find((item) => item.clipId === 'phone-turnaround');
-    const pair = SCOOTER_PROMO_SEQUENCE.entries.find((item) => item.clipId === 'phone-pair');
-    const turnProps = getClipSchema('phone-turnaround').parse(turn?.props) as PhoneTurnaroundProps;
-    const pairProps = getClipSchema('phone-pair').parse(pair?.props) as PhonePairProps;
-    expect(pairProps.entrance).toBe('from-behind');
-    expect(pairProps.position.x).toBeCloseTo(turnProps.position.x + turnProps.travelX);
-    expect(turnProps.entry).toBe('turn-in');
-    expect(pairProps.scale).toBeCloseTo(turnProps.scale);
-    expect(pairProps.angle).toBeCloseTo(turnProps.endYaw);
-    expect(pairProps.phones[0]?.screen).toBe(turnProps.secondScreen);
-    expect(pairProps.stage).toEqual(turnProps.stage);
-    const turnFrom = turn?.from ?? 0;
-    expect(turnFrom + turnProps.secondTurnAt + turnProps.secondTurnFrames).toBeLessThanOrEqual(
-      pair?.from ?? 0,
-    );
-    expect(turnFrom + (turn?.durationInFrames ?? 0)).toBe(pair?.from ?? 0);
   });
 
   it('keeps phone swap and its feature callouts on the same beats', () => {

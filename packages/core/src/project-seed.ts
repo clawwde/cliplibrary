@@ -1,22 +1,17 @@
 import {
   createCompositionElement,
   createTrack,
+  identityTransform,
   type Project,
   type Track,
 } from '@cliplibrary/project';
 import {
-  APP_PROMO_SEQUENCE,
   CLIP_DEFAULTS,
+  CLIP_SEQUENCES,
   type ClipId,
   type ClipSequence,
   getClipMeta,
-  SCOOTER_PROMO_SEQUENCE,
 } from '@cliplibrary/schemas';
-
-const SEQUENCES: Partial<Record<ClipId, ClipSequence>> = {
-  'app-promo': APP_PROMO_SEQUENCE,
-  'scooter-promo': SCOOTER_PROMO_SEQUENCE,
-};
 
 const slug = (name: string): string => name.toLowerCase().replace(/[^a-z0-9]+/g, '-');
 
@@ -33,6 +28,7 @@ const sequenceTracks = (id: ClipId, sequence: ClipSequence): Track[] =>
             id: `${id}-layer-${index}-${entry.clipId}`,
             from: entry.from,
             durationInFrames: entry.durationInFrames,
+            transform: { ...identityTransform(), ...entry.transform },
           }),
         ),
     );
@@ -53,7 +49,7 @@ const singleClipTrack = (id: ClipId): Track[] => {
 
 export const seedProjectForClip = (id: ClipId): Project => {
   const meta = getClipMeta(id);
-  const sequence = SEQUENCES[id];
+  const sequence = CLIP_SEQUENCES[id];
   return {
     fps: meta.fps,
     width: meta.width,

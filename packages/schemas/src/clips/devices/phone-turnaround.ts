@@ -48,8 +48,8 @@ export const phoneTurnaroundDefaults: PhoneTurnaroundProps = {
   entryYaw: -1.5,
   entryFrames: 18,
   turnAt: 0.5,
-  rise: 4.6,
-  turnFrames: 64,
+  rise: 4.5,
+  turnFrames: 60,
   secondScreen: 'none',
   secondTurnAt: 140,
   secondTurnFrames: 100,
@@ -57,7 +57,7 @@ export const phoneTurnaroundDefaults: PhoneTurnaroundProps = {
   endYaw: 0.2,
   look: lightLook(),
   stage: defaultStage({ cameraDistance: 13 }),
-  motion: defaultMotion({ exit: 'fade', exitFrames: 18 }),
+  motion: defaultMotion({ enter: 'fade', enterFrames: 16, exit: 'fade', exitFrames: 18 }),
 };
 
 export const phoneTurnaroundMeta: ClipMeta = {
