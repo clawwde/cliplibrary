@@ -9,7 +9,7 @@ import { DoubleSide } from 'three';
 import { cardUrl } from './screen-assets';
 import { useTexture } from './use-texture';
 
-type Vec3 = [number, number, number];
+export type Vec3 = [number, number, number];
 
 const CameraRig = ({ position, target, fov }: { position: Vec3; target: Vec3; fov: number }) => {
   const camera = useThree((state) => state.camera) as THREE.PerspectiveCamera;
@@ -71,6 +71,29 @@ const Studio = ({ reflections, dark }: { reflections: number; dark: boolean }) =
   </Environment>
 );
 
+export interface CameraFraming {
+  target?: Vec3;
+  cameraOffset?: Vec3;
+  distanceScale?: number;
+}
+
+export const stageCamera = (
+  stage: PromoStage,
+  frame: number,
+  { target = [0, 0, 0], cameraOffset = [0, 0, 0], distanceScale = 1 }: CameraFraming,
+): { position: Vec3; aim: Vec3 } => {
+  const driftX = Math.sin(frame / 110) * 0.6 * stage.cameraDrift;
+  const driftY = Math.cos(frame / 140) * 0.3 * stage.cameraDrift;
+  return {
+    position: [
+      cameraOffset[0] + driftX,
+      cameraOffset[1] + driftY,
+      stage.cameraDistance * distanceScale + cameraOffset[2],
+    ],
+    aim: [target[0] + driftX * 0.4, target[1] + driftY * 0.4, target[2]],
+  };
+};
+
 export interface StageProps {
   stage: PromoStage;
   dark?: boolean;
@@ -78,6 +101,7 @@ export interface StageProps {
   cameraOffset?: Vec3;
   distanceScale?: number;
   backdropZ?: number;
+  keyPosition?: Vec3;
   children: ReactNode;
 }
 
@@ -88,18 +112,12 @@ export const Stage = ({
   cameraOffset = [0, 0, 0],
   distanceScale = 1,
   backdropZ = -1.8,
+  keyPosition = [-2.5, 4, 12],
   children,
 }: StageProps) => {
   const { width, height } = useVideoConfig();
   const frame = useCurrentFrame();
-  const driftX = Math.sin(frame / 110) * 0.6 * stage.cameraDrift;
-  const driftY = Math.cos(frame / 140) * 0.3 * stage.cameraDrift;
-  const position: Vec3 = [
-    cameraOffset[0] + driftX,
-    cameraOffset[1] + driftY,
-    stage.cameraDistance * distanceScale + cameraOffset[2],
-  ];
-  const aim: Vec3 = [target[0] + driftX * 0.4, target[1] + driftY * 0.4, target[2]];
+  const { position, aim } = stageCamera(stage, frame, { target, cameraOffset, distanceScale });
   const pixelRatio = getRemotionEnvironment().isRendering ? 2 : 1;
   return (
     <ThreeCanvas
@@ -114,7 +132,7 @@ export const Stage = ({
       <CameraRig position={position} target={aim} fov={stage.fieldOfView} />
       <ambientLight intensity={dark ? 0.25 : 0.55} />
       <directionalLight
-        position={[-2.5, 4, 12]}
+        position={keyPosition}
         intensity={stage.keyLight}
         castShadow
         shadow-mapSize={[2048, 2048]}

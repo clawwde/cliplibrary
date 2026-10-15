@@ -62,7 +62,7 @@ export const memo = (key: string, build: () => THREE.BufferGeometry): THREE.Buff
   return geometry;
 };
 
-const roundedPlane = (width: number, height: number, radius: number) =>
+export const roundedPlane = (width: number, height: number, radius: number) =>
   memo(`plane:${width}:${height}:${radius}`, () =>
     normalizeUv(new THREE.ShapeGeometry(roundedShape(width, height, radius), 32), width, height),
   );

@@ -3,6 +3,7 @@ import { staticFile } from 'remotion';
 import cardGoal from './assets/card-goal.png';
 import cardGrowth from './assets/card-growth.png';
 import cardIncome from './assets/card-income.png';
+import iconGlyph from './assets/icon-glyph.png';
 import activity from './assets/screen-activity.jpg';
 import analytics from './assets/screen-analytics.jpg';
 import calendar from './assets/screen-calendar.jpg';
@@ -66,3 +67,6 @@ export const isTallScreen = (phone: PromoPhone): boolean =>
   phone.customScreen.length === 0 && TALL_SCREENS.has(phone.screen);
 
 export const cardUrl = (id: PromoCardId): string => url(CARDS[id]);
+
+export const glyphUrl = (customGlyph: string): string =>
+  customGlyph.length > 0 ? resolveCustom(customGlyph) : url(iconGlyph);

@@ -267,6 +267,10 @@ describe('promo clips', () => {
     'cta-end-card',
     'studio-backdrop',
     'scene-transition',
+    'relief-backdrop',
+    'app-icon-reveal',
+    'phone-pedestal',
+    'phone-flat-lay',
   ];
 
   it('validates every promo default against its schema', () => {

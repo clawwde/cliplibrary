@@ -1,8 +1,12 @@
+import type { ReliefBackdropProps } from './clips/backgrounds/relief-backdrop';
 import type { StudioBackdropProps } from './clips/backgrounds/studio-backdrop';
+import type { AppIconRevealProps } from './clips/brand/app-icon-reveal';
 import type { BrandRevealProps } from './clips/brand/brand-reveal';
 import type { CtaEndCardProps } from './clips/brand/cta-end-card';
 import type { PhoneFanProps } from './clips/devices/phone-fan';
+import type { PhoneFlatLayProps } from './clips/devices/phone-flat-lay';
 import type { PhonePairProps } from './clips/devices/phone-pair';
+import type { PhonePedestalProps } from './clips/devices/phone-pedestal';
 import type { PhoneScrollProps } from './clips/devices/phone-scroll';
 import type { PhoneSpinInProps } from './clips/devices/phone-spin-in';
 import type { PhoneSwapProps } from './clips/devices/phone-swap';
@@ -16,6 +20,9 @@ import type { FeatureCalloutsProps } from './clips/typography/feature-callouts';
 import type { HeadlineRevealProps } from './clips/typography/headline-reveal';
 
 export interface ClipPropsMap {
+  'phone-flat-lay': PhoneFlatLayProps;
+  'phone-pedestal': PhonePedestalProps;
+  'app-icon-reveal': AppIconRevealProps;
   'detail-list': DetailListProps;
   'feature-callouts': FeatureCalloutsProps;
   'headline-reveal': HeadlineRevealProps;
@@ -29,6 +36,7 @@ export interface ClipPropsMap {
   'floating-cards': FloatingCardsProps;
   'brand-reveal': BrandRevealProps;
   'cta-end-card': CtaEndCardProps;
+  'relief-backdrop': ReliefBackdropProps;
   'studio-backdrop': StudioBackdropProps;
   'scene-transition': SceneTransitionProps;
   'app-promo': AppPromoProps;

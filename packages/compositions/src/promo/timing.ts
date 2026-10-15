@@ -3,6 +3,7 @@ import { Easing, interpolate } from 'remotion';
 export const smooth = Easing.bezier(0.65, 0, 0.35, 1);
 export const settle = Easing.bezier(0.25, 0.8, 0.35, 1);
 export const accelerate = Easing.bezier(0.7, 0, 0.84, 0);
+export const turn = Easing.bezier(0.4, 0, 0.2, 1);
 
 export const tween = (
   frame: number,
@@ -40,3 +41,6 @@ export const track = (
 };
 
 export const TAU = Math.PI * 2;
+
+export const cameraPush = (frame: number, amount: number, frames: number): number =>
+  1 - amount * Math.min(1, Math.max(0, frame / frames));
