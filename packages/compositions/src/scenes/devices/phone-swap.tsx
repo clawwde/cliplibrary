@@ -9,7 +9,7 @@ import { Composition, useCurrentFrame, useVideoConfig } from 'remotion';
 import { beatAt } from '../../promo/beats';
 import { PhoneModel } from '../../promo/phone-model';
 import { isDarkLook, PromoLayer } from '../../promo/promo-layer';
-import { Stage } from '../../promo/stage';
+import { offscreenDrop, Stage } from '../../promo/stage';
 import { settle, TAU, tween } from '../../promo/timing';
 import type { SceneModule } from '../../scene-module';
 
@@ -51,7 +51,7 @@ export const PhoneSwap = ({
         <group
           position={[
             offset * side,
-            (1 - arrive) * -5 + Math.sin(frame / 28) * motion.float * 1.6,
+            (1 - arrive) * -offscreenDrop(stage, scale) + Math.sin(frame / 28) * motion.float * 1.6,
             0,
           ]}
           rotation={[0.06 + (1 - arrive) * 0.35, rotateY, 0]}

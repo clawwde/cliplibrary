@@ -7,7 +7,7 @@ import {
 import { Composition, useCurrentFrame, useVideoConfig } from 'remotion';
 import { PhoneModel } from '../../promo/phone-model';
 import { isDarkLook, PromoLayer } from '../../promo/promo-layer';
-import { Stage } from '../../promo/stage';
+import { offscreenDrop, Stage } from '../../promo/stage';
 import { settle, TAU, tween } from '../../promo/timing';
 import type { SceneModule } from '../../scene-module';
 
@@ -30,6 +30,7 @@ export const PhoneFan = ({
   const frame = raw * motion.speed;
   const dolly = tween(raw, [0, durationInFrames], [1.1, 0.98], (t) => t);
   const sway = tween(raw, [0, durationInFrames], [-orbit, orbit], (t) => t);
+  const drop = offscreenDrop(stage, scale, 1.1);
   return (
     <PromoLayer look={look} motion={motion}>
       <Stage
@@ -50,7 +51,7 @@ export const PhoneFan = ({
                 key={`${index}:${entry.screen}`}
                 position={[
                   offset * spacing,
-                  -(1 - arrive) * 6 + Math.sin(frame / 26 + index * 2) * motion.float,
+                  -(1 - arrive) * drop + Math.sin(frame / 26 + index * 2) * motion.float,
                   offset === 0 ? 0.4 : -0.5,
                 ]}
                 rotation={[0.05 + (1 - arrive) * 0.35, -offset * fan + spin, 0]}
