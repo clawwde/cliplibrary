@@ -162,6 +162,7 @@ export const clayLook = (accent = '#ff6b3d', showBackdrop = true): PromoLook => 
   muted: '#6f7184',
   accent,
   grain: 0.05,
+  liveGrain: false,
   spotlight: 0.45,
   paper: 'plain',
   paperLine: '#cbd3de',
