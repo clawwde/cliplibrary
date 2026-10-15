@@ -41,11 +41,21 @@ export const PROMO_TRANSITIONS = [
   'push-left',
   'push-up',
   'zoom',
+  'grow',
+  'blast',
 ] as const;
 
 export type PromoTransition = (typeof PROMO_TRANSITIONS)[number];
 
 export const TEXT_SIDES = ['left', 'right'] as const;
+
+export const TYPEFACES = ['inter-tight', 'onest'] as const;
+
+export const SCRIBBLE_SHAPES = ['swash', 'loop', 'underline', 'circle'] as const;
+
+export type ScribbleShape = (typeof SCRIBBLE_SHAPES)[number];
+
+export const FONT_WEIGHT = { min: 300, max: 700, step: 100 } as const;
 
 export const HORIZONTAL_ALIGNMENTS = ['left', 'center', 'right'] as const;
 
@@ -99,6 +109,7 @@ export const lookSchema = z.object({
   muted: zColor(),
   accent: zColor(),
   grain: zSlider({ min: 0, max: 0.3, step: 0.01 }),
+  liveGrain: z.boolean(),
   spotlight: zSlider({ min: 0, max: 1, step: 0.01 }),
   paper: z.enum(PAPER_PATTERNS),
   paperLine: zColor(),
@@ -139,6 +150,7 @@ export const lightLook = (accent = '#2f5bff', showBackdrop = true): PromoLook =>
   muted: '#7c7c80',
   accent,
   grain: 0.06,
+  liveGrain: false,
   spotlight: 0.55,
   paper: 'plain',
   paperLine: '#cbd3de',
@@ -154,6 +166,7 @@ export const clayLook = (accent = '#9a7a0c', showBackdrop = true): PromoLook => 
   muted: '#6f7184',
   accent,
   grain: 0.05,
+  liveGrain: false,
   spotlight: 0.45,
   paper: 'plain',
   paperLine: '#cbd3de',
@@ -169,7 +182,24 @@ export const darkLook = (accent = '#7d9bff', showBackdrop = true): PromoLook => 
   muted: '#8d8d93',
   accent,
   grain: 0.08,
+  liveGrain: false,
   spotlight: 0.7,
+  paper: 'plain',
+  paperLine: '#2a2d36',
+  paperSpacing: 54,
+  paperMargin: false,
+});
+
+export const kineticLook = (accent = '#e5262b', showBackdrop = true): PromoLook => ({
+  showBackdrop,
+  background: '#020202',
+  backgroundEdge: '#000000',
+  ink: '#f1f1f1',
+  muted: '#7d7d7d',
+  accent,
+  grain: 0.14,
+  liveGrain: true,
+  spotlight: 0,
   paper: 'plain',
   paperLine: '#2a2d36',
   paperSpacing: 54,

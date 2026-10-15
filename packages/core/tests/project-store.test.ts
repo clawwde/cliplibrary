@@ -34,6 +34,25 @@ describe('project seed', () => {
 });
 
 describe('sequence seed', () => {
+  it('opens the kinetic promo as editable blocks with the recap placed in quadrants', () => {
+    const project = seedProjectForClip('kinetic-promo');
+    expect(project.durationInFrames).toBe(2595);
+    expect(project.tracks.map((track) => track.name)).toEqual([
+      'Overlays',
+      'Captions',
+      'Text',
+      'Backdrop',
+    ]);
+    const elements = project.tracks.flatMap((track) => track.elements);
+    expect(elements.length).toBeGreaterThan(30);
+    const placed = elements.filter((element) => element.transform.scale === 0.5);
+    expect(placed.length).toBeGreaterThanOrEqual(20);
+    expect(
+      new Set(placed.map((element) => `${element.transform.x}:${element.transform.y}`)).size,
+    ).toBe(4);
+    expect(elements.filter((element) => element.transform.scale === 1).length).toBeGreaterThan(10);
+  });
+
   it('lays the app promo out as layered tracks of atomic clips', () => {
     const project = seedProjectForClip('app-promo');
     expect(project.tracks.map((track) => track.name)).toEqual([

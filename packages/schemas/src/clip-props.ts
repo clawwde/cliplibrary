@@ -13,20 +13,40 @@ import type { PhoneSwapProps } from './clips/devices/phone-swap';
 import type { PhoneTurnaroundProps } from './clips/devices/phone-turnaround';
 import type { PhoneWallProps } from './clips/devices/phone-wall';
 import type { DoodleArrowsProps } from './clips/overlays/doodle-arrows';
+import type { FilmDustProps } from './clips/overlays/film-dust';
 import type { FloatingCardsProps } from './clips/overlays/floating-cards';
+import type { SplitGridProps } from './clips/overlays/split-grid';
 import type { AppPromoProps } from './clips/sequences/app-promo';
 import type { DoodlePromoProps } from './clips/sequences/doodle-promo';
+import type { KineticPromoProps } from './clips/sequences/kinetic-promo';
 import type { SceneTransitionProps } from './clips/transitions/scene-transition';
 import type { DetailListProps } from './clips/typography/detail-list';
+import type { EchoStackProps } from './clips/typography/echo-stack';
 import type { FeatureCalloutsProps } from './clips/typography/feature-callouts';
+import type { GlowRevealProps } from './clips/typography/glow-reveal';
 import type { HandwrittenNoteProps } from './clips/typography/handwritten-note';
 import type { HeadlineRevealProps } from './clips/typography/headline-reveal';
+import type { LetterFlipProps } from './clips/typography/letter-flip';
+import type { NumberCounterProps } from './clips/typography/number-counter';
+import type { OutlineMarqueeProps } from './clips/typography/outline-marquee';
+import type { ScribbleCaptionProps } from './clips/typography/scribble-caption';
+import type { TypewriterProps } from './clips/typography/typewriter';
+import type { WordBuildProps } from './clips/typography/word-build';
+import type { WordPunchProps } from './clips/typography/word-punch';
 
 export interface ClipPropsMap {
   'phone-flat-lay': PhoneFlatLayProps;
   'phone-pedestal': PhonePedestalProps;
   'app-icon-reveal': AppIconRevealProps;
   'detail-list': DetailListProps;
+  'number-counter': NumberCounterProps;
+  typewriter: TypewriterProps;
+  'word-build': WordBuildProps;
+  'word-punch': WordPunchProps;
+  'scribble-caption': ScribbleCaptionProps;
+  'echo-stack': EchoStackProps;
+  'outline-marquee': OutlineMarqueeProps;
+  'letter-flip': LetterFlipProps;
   'feature-callouts': FeatureCalloutsProps;
   'headline-reveal': HeadlineRevealProps;
   'handwritten-note': HandwrittenNoteProps;
@@ -39,6 +59,9 @@ export interface ClipPropsMap {
   'phone-wall': PhoneWallProps;
   'floating-cards': FloatingCardsProps;
   'doodle-arrows': DoodleArrowsProps;
+  'split-grid': SplitGridProps;
+  'film-dust': FilmDustProps;
+  'glow-reveal': GlowRevealProps;
   'brand-reveal': BrandRevealProps;
   'cta-end-card': CtaEndCardProps;
   'relief-backdrop': ReliefBackdropProps;
@@ -46,6 +69,7 @@ export interface ClipPropsMap {
   'scene-transition': SceneTransitionProps;
   'app-promo': AppPromoProps;
   'doodle-promo': DoodlePromoProps;
+  'kinetic-promo': KineticPromoProps;
 }
 
 export type ClipId = keyof ClipPropsMap;

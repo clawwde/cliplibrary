@@ -33,7 +33,14 @@ export const ElementView = ({ element }: { element: Element }) => {
 
   if (element.type === 'composition') {
     return (
-      <AbsoluteFill style={{ opacity, transform: transformCss, transformOrigin: 'center center' }}>
+      <AbsoluteFill
+        style={{
+          opacity,
+          transform: transformCss,
+          transformOrigin: 'center center',
+          overflow: 'hidden',
+        }}
+      >
         <CompositionElementView element={element} />
       </AbsoluteFill>
     );
