@@ -14,12 +14,14 @@ import type { PhoneTurnaroundProps } from './clips/devices/phone-turnaround';
 import type { PhoneWallProps } from './clips/devices/phone-wall';
 import type { FloatingCardsProps } from './clips/overlays/floating-cards';
 import type { AppPromoProps } from './clips/sequences/app-promo';
+import type { ScooterPromoProps } from './clips/sequences/scooter-promo';
 import type { SceneTransitionProps } from './clips/transitions/scene-transition';
 import type { DetailListProps } from './clips/typography/detail-list';
 import type { FeatureCalloutsProps } from './clips/typography/feature-callouts';
 import type { HeadlineRevealProps } from './clips/typography/headline-reveal';
 
 export interface ClipPropsMap {
+  'scooter-promo': ScooterPromoProps;
   'phone-flat-lay': PhoneFlatLayProps;
   'phone-pedestal': PhonePedestalProps;
   'app-icon-reveal': AppIconRevealProps;
