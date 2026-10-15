@@ -2,13 +2,18 @@ import type { ArrowShape, DoodleInk } from '@cliplibrary/schemas';
 import { useId } from 'react';
 import { Easing } from 'remotion';
 import { arrowHead, arrowShaft, scalePoints } from './arrow-paths';
-import { type Point, smoothstep, wobble } from './ink-geometry';
+import { type Point, pathLength, smoothstep, wobble } from './ink-geometry';
 import { InkFilter, InkStroke } from './ink-stroke';
 import { tween } from './timing';
 
 const stroke = Easing.bezier(0.3, 0.1, 0.45, 1);
 
 const SHAFT_SHARE = 0.8;
+
+const REFERENCE_LENGTH = pathLength(arrowShaft('straight'));
+
+const penFrames = (shape: ArrowShape, frames: number): number =>
+  frames * Math.max(1, (pathLength(arrowShaft(shape)) / REFERENCE_LENGTH) ** 0.75);
 
 export interface InkTiming {
   drawStart: number;
@@ -79,7 +84,10 @@ export const InkArrow = ({
   ...timing
 }: InkArrowProps) => {
   const filterId = useId().replace(/:/g, '');
-  const { draw, erase, active } = inkPhase(frame, timing);
+  const { draw, erase, active } = inkPhase(frame, {
+    ...timing,
+    drawFrames: penFrames(shape, timing.drawFrames),
+  });
   if (draw <= 0 || erase >= 1) {
     return null;
   }

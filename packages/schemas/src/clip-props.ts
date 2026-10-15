@@ -11,6 +11,7 @@ import type { PhoneWallProps } from './clips/devices/phone-wall';
 import type { DoodleArrowsProps } from './clips/overlays/doodle-arrows';
 import type { FloatingCardsProps } from './clips/overlays/floating-cards';
 import type { AppPromoProps } from './clips/sequences/app-promo';
+import type { DoodlePromoProps } from './clips/sequences/doodle-promo';
 import type { SceneTransitionProps } from './clips/transitions/scene-transition';
 import type { DetailListProps } from './clips/typography/detail-list';
 import type { FeatureCalloutsProps } from './clips/typography/feature-callouts';
@@ -36,6 +37,7 @@ export interface ClipPropsMap {
   'studio-backdrop': StudioBackdropProps;
   'scene-transition': SceneTransitionProps;
   'app-promo': AppPromoProps;
+  'doodle-promo': DoodlePromoProps;
 }
 
 export type ClipId = keyof ClipPropsMap;

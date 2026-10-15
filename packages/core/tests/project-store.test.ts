@@ -62,6 +62,22 @@ describe('sequence seed', () => {
     }
   });
 
+  it('lays the doodle promo out as editable notebook tracks', () => {
+    const project = seedProjectForClip('doodle-promo');
+    expect(project.tracks.map((track) => track.name)).toEqual([
+      'Transitions',
+      'Doodles',
+      'Notes',
+      'Devices',
+      'Paper',
+    ]);
+    const elements = project.tracks.flatMap((track) => track.elements);
+    expect(elements.length).toBeGreaterThan(15);
+    expect(elements.every((element) => element.type === 'composition')).toBe(true);
+    const ends = elements.map((element) => element.from + element.durationInFrames);
+    expect(Math.max(...ends)).toBe(project.durationInFrames);
+  });
+
   it('gives every seeded scene its own copy of the defaults', () => {
     const first = seedProjectForClip('app-promo').tracks[0]?.elements[0];
     const second = seedProjectForClip('app-promo').tracks[0]?.elements[0];
