@@ -123,7 +123,7 @@ const ENTRIES: SequenceEntry[] = [
   }),
   entry('phone-swap', 'Devices', [636, 904], phoneSwapDefaults, { motion: fade(18) }),
   entry('feature-callouts', 'Text', [640, 904], featureCalloutsDefaults, { motion: fade(14) }),
-  entry('phone-scroll', 'Devices', [898, 1060], phoneScrollDefaults, {
+  entry('phone-scroll', 'Devices', [898, 1054], phoneScrollDefaults, {
     position: position(2.7, -0.05),
     motion: fade(18),
   }),
@@ -146,7 +146,7 @@ const ENTRIES: SequenceEntry[] = [
   entry('phone-wall', 'Devices', [1050, 1248], phoneWallDefaults, {
     motion: defaultMotion({ enter: 'fade', enterFrames: 16, exit: 'fade', exitFrames: 16 }),
   }),
-  headline([1090, 1240], {
+  headline([1090, 1248], {
     eyebrow: '',
     headline: '14 crafted screens',
     highlight: '14',
