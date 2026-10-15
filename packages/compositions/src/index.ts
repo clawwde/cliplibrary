@@ -17,6 +17,7 @@ export { PhoneWall } from './scenes/devices/phone-wall';
 export { DoodleArrows } from './scenes/overlays/doodle-arrows';
 export { FloatingCards } from './scenes/overlays/floating-cards';
 export { AppPromo } from './scenes/sequences/app-promo';
+export { DoodlePromo } from './scenes/sequences/doodle-promo';
 export { SceneTransition } from './scenes/transitions/scene-transition';
 export { DetailList } from './scenes/typography/detail-list';
 export { FeatureCallouts } from './scenes/typography/feature-callouts';

@@ -13,6 +13,7 @@ import {
   CLIP_THEMES,
   type ClipId,
   categoryLabel,
+  DOODLE_PROMO_SEQUENCE,
   EASING_IDS,
   floatingCardsSchema,
   getClipDefaults,
@@ -269,6 +270,7 @@ describe('promo clips', () => {
     'scene-transition',
     'doodle-arrows',
     'handwritten-note',
+    'doodle-promo',
   ];
 
   it('validates every promo default against its schema', () => {
@@ -314,6 +316,26 @@ describe('promo clips', () => {
     expect(
       schema.safeParse({ ...defaults, look: { ...defaults.look, paper: 'dotted' } }).success,
     ).toBe(false);
+  });
+
+  it('builds every doodle promo layer from props its clip schema accepts', () => {
+    for (const entry of DOODLE_PROMO_SEQUENCE.entries) {
+      expect(getClipSchema(entry.clipId).safeParse(entry.props).success).toBe(true);
+      expect(DOODLE_PROMO_SEQUENCE.tracks).toContain(entry.track);
+    }
+  });
+
+  it('overlaps consecutive doodle promo devices so beats crossfade', () => {
+    const devices = DOODLE_PROMO_SEQUENCE.entries.filter((entry) => entry.track === 'Devices');
+    for (let index = 1; index < devices.length; index++) {
+      const previous = devices[index - 1];
+      const current = devices[index];
+      if (previous && current) {
+        const overlap = previous.from + previous.durationInFrames - current.from;
+        expect(overlap).toBeGreaterThanOrEqual(12);
+        expect(overlap).toBeLessThanOrEqual(24);
+      }
+    }
   });
 
   it('builds every app promo layer from props its clip schema accepts', () => {

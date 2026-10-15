@@ -13,6 +13,7 @@ export * from './clips/devices/phone-wall';
 export * from './clips/overlays/doodle-arrows';
 export * from './clips/overlays/floating-cards';
 export * from './clips/sequences/app-promo';
+export * from './clips/sequences/doodle-promo';
 export * from './clips/sequences/sequence';
 export * from './clips/transitions/scene-transition';
 export * from './clips/typography/detail-list';
