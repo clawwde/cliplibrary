@@ -97,8 +97,8 @@ export const CtaEndCard = ({
             accent={look.accent}
             align="center"
             weight={headlineWeight}
-            font={font === 'rounded' ? roundedFont : displayFont}
-            tracking={font === 'rounded' ? '-0.01em' : '-0.045em'}
+            family={font === 'rounded' ? roundedFont : displayFont}
+            tracking={font === 'rounded' ? -0.01 : -0.045}
             start={headlineAt}
           />
           {subline.length > 0 ? (
