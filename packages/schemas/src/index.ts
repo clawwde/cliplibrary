@@ -12,6 +12,7 @@ export * from './clips/devices/phone-turnaround';
 export * from './clips/devices/phone-wall';
 export * from './clips/overlays/floating-cards';
 export * from './clips/sequences/app-promo';
+export * from './clips/sequences/app-promo-short';
 export * from './clips/sequences/sequence';
 export * from './clips/transitions/scene-transition';
 export * from './clips/typography/detail-list';

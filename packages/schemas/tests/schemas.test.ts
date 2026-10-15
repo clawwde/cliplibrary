@@ -1,7 +1,6 @@
 import { describe, expect, it } from 'bun:test';
 import { z } from 'zod';
 import {
-  APP_PROMO_SEQUENCE,
   brandRevealSchema,
   CLIP_CATEGORY_IDS,
   CLIP_DEFAULTS,
@@ -9,6 +8,7 @@ import {
   CLIP_MODULES,
   CLIP_REGISTRY,
   CLIP_SCHEMAS,
+  CLIP_SEQUENCES,
   CLIP_TAGS,
   CLIP_THEMES,
   type ClipId,
@@ -252,6 +252,7 @@ describe('video media control', () => {
 describe('promo clips', () => {
   const PROMO_IDS: ClipId[] = [
     'app-promo',
+    'app-promo-short',
     'phone-spin-in',
     'phone-turnaround',
     'phone-fan',
@@ -292,23 +293,33 @@ describe('promo clips', () => {
     expect(getClipSchema('detail-list').safeParse({ ...defaults, items }).success).toBe(false);
   });
 
-  it('builds every app promo layer from props its clip schema accepts', () => {
-    for (const entry of APP_PROMO_SEQUENCE.entries) {
-      const result = getClipSchema(entry.clipId).safeParse(entry.props);
-      expect(result.success).toBe(true);
+  const sequences = Object.entries(CLIP_SEQUENCES);
+
+  it('builds every sequence layer from props its clip schema accepts', () => {
+    expect(sequences.length).toBe(2);
+    for (const [, sequence] of sequences) {
+      for (const entry of sequence?.entries ?? []) {
+        const result = getClipSchema(entry.clipId).safeParse(entry.props);
+        expect(result.success).toBe(true);
+      }
     }
   });
 
-  it('keeps phone swap and its feature callouts on the same beats', () => {
-    const swap = APP_PROMO_SEQUENCE.entries.find((entry) => entry.clipId === 'phone-swap');
-    const callouts = APP_PROMO_SEQUENCE.entries.find(
-      (entry) => entry.clipId === 'feature-callouts',
-    );
-    expect(swap).toBeDefined();
-    expect(callouts).toBeDefined();
-    const end = (item: { from: number; durationInFrames: number } | undefined) =>
-      (item?.from ?? 0) + (item?.durationInFrames ?? 0);
-    expect(end(swap)).toBe(end(callouts));
+  it('keeps phone swap and its feature callouts on the same beats in every sequence', () => {
+    for (const [, sequence] of sequences) {
+      const swap = sequence?.entries.find((entry) => entry.clipId === 'phone-swap');
+      const callouts = sequence?.entries.find((entry) => entry.clipId === 'feature-callouts');
+      expect(swap).toBeDefined();
+      expect(callouts).toBeDefined();
+      const end = (item: { from: number; durationInFrames: number } | undefined) =>
+        (item?.from ?? 0) + (item?.durationInFrames ?? 0);
+      expect(end(swap)).toBe(end(callouts));
+    }
+  });
+
+  it('cuts the short app promo to 25 seconds', () => {
+    const meta = getClipMeta('app-promo-short');
+    expect(meta.durationInFrames / meta.fps).toBe(25);
   });
 });
 

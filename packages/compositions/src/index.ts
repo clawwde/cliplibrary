@@ -16,6 +16,7 @@ export { PhoneTurnaround } from './scenes/devices/phone-turnaround';
 export { PhoneWall } from './scenes/devices/phone-wall';
 export { FloatingCards } from './scenes/overlays/floating-cards';
 export { AppPromo } from './scenes/sequences/app-promo';
+export { AppPromoShort } from './scenes/sequences/app-promo-short';
 export { SceneTransition } from './scenes/transitions/scene-transition';
 export { DetailList } from './scenes/typography/detail-list';
 export { FeatureCallouts } from './scenes/typography/feature-callouts';

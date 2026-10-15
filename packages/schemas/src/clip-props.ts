@@ -10,6 +10,7 @@ import type { PhoneTurnaroundProps } from './clips/devices/phone-turnaround';
 import type { PhoneWallProps } from './clips/devices/phone-wall';
 import type { FloatingCardsProps } from './clips/overlays/floating-cards';
 import type { AppPromoProps } from './clips/sequences/app-promo';
+import type { AppPromoShortProps } from './clips/sequences/app-promo-short';
 import type { SceneTransitionProps } from './clips/transitions/scene-transition';
 import type { DetailListProps } from './clips/typography/detail-list';
 import type { FeatureCalloutsProps } from './clips/typography/feature-callouts';
@@ -32,6 +33,7 @@ export interface ClipPropsMap {
   'studio-backdrop': StudioBackdropProps;
   'scene-transition': SceneTransitionProps;
   'app-promo': AppPromoProps;
+  'app-promo-short': AppPromoShortProps;
 }
 
 export type ClipId = keyof ClipPropsMap;
