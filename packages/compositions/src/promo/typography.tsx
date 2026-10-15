@@ -2,6 +2,7 @@ import type { CSSProperties, ReactNode } from 'react';
 import { useCurrentFrame } from 'remotion';
 import { bodyFont, displayFont } from './fonts';
 import { accelerate, pixelTween, settle, smooth, tween } from './timing';
+import { normalize, wordsOf } from './words';
 
 interface RevealWindow {
   start: number;
@@ -13,8 +14,9 @@ const revealState = (
   { start, end }: RevealWindow,
   delay: number,
   [rise, sink]: [number, number],
+  duration = 32,
 ) => {
-  const enterRange: [number, number] = [start + delay, start + delay + 32];
+  const enterRange: [number, number] = [start + delay, start + delay + duration];
   const exitRange: [number, number] | undefined =
     end === undefined ? undefined : [end + delay * 0.4, end + delay * 0.4 + 14];
   const enter = tween(frame, enterRange, [0, 1], settle);
@@ -25,10 +27,6 @@ const revealState = (
   return { enter, exit, offset };
 };
 
-const wordsOf = (line: string): string[] => line.split(' ').filter((word) => word.length > 0);
-
-const normalize = (word: string): string => word.replace(/[.,!?;:]/g, '').toLowerCase();
-
 export interface HeadlineProps extends RevealWindow {
   text: string;
   size: number;
@@ -37,9 +35,11 @@ export interface HeadlineProps extends RevealWindow {
   highlight?: string;
   align?: 'left' | 'center' | 'right';
   weight?: number;
+  leadWeight?: number;
   stagger?: number;
-  font?: string;
-  tracking?: string;
+  duration?: number;
+  family?: string;
+  tracking?: number;
 }
 
 export const Headline = ({
@@ -50,9 +50,11 @@ export const Headline = ({
   highlight = '',
   align = 'left',
   weight = 600,
+  leadWeight = weight,
   stagger = 5,
-  font = displayFont,
-  tracking = '-0.045em',
+  duration = 32,
+  family = displayFont,
+  tracking = -0.045,
   start,
   end,
 }: HeadlineProps) => {
@@ -61,22 +63,27 @@ export const Headline = ({
   return (
     <div
       style={{
-        fontFamily: font,
+        fontFamily: family,
         fontSize: size,
-        fontWeight: weight,
         lineHeight: 1.02,
-        letterSpacing: tracking,
+        letterSpacing: `${tracking}em`,
         color,
         textAlign: align,
       }}
     >
       {text.split('\n').map((line, lineIndex) => {
-        const { enter, exit, offset } = revealState(frame, { start, end }, lineIndex * stagger, [
-          0.45 * size,
-          0.2 * size,
-        ]);
+        const { enter, exit, offset } = revealState(
+          frame,
+          { start, end },
+          lineIndex * stagger,
+          [0.45 * size, 0.2 * size],
+          duration,
+        );
         return (
-          <div key={`${lineIndex}:${line}`}>
+          <div
+            key={`${lineIndex}:${line}`}
+            style={{ fontWeight: lineIndex === 0 ? leadWeight : weight }}
+          >
             <div
               style={{
                 transform: `translateY(${offset}px)`,
