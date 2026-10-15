@@ -267,6 +267,7 @@ describe('promo clips', () => {
     'cta-end-card',
     'studio-backdrop',
     'scene-transition',
+    'doodle-arrows',
   ];
 
   it('validates every promo default against its schema', () => {
@@ -290,6 +291,19 @@ describe('promo clips', () => {
     const defaults = getClipDefaults('detail-list');
     const items = ['a', 'b', 'c', 'd', 'e', 'f', 'g'];
     expect(getClipSchema('detail-list').safeParse({ ...defaults, items }).success).toBe(false);
+  });
+
+  it('bounds the doodle arrows and rejects unknown shapes', () => {
+    const defaults = getClipDefaults('doodle-arrows');
+    const schema = getClipSchema('doodle-arrows');
+    const arrow = defaults.arrows[0];
+    expect(schema.safeParse({ ...defaults, arrows: [] }).success).toBe(false);
+    expect(schema.safeParse({ ...defaults, arrows: new Array(15).fill(arrow) }).success).toBe(
+      false,
+    );
+    expect(schema.safeParse({ ...defaults, arrows: [{ ...arrow, shape: 'star' }] }).success).toBe(
+      false,
+    );
   });
 
   it('builds every app promo layer from props its clip schema accepts', () => {

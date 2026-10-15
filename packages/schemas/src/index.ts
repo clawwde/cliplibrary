@@ -10,6 +10,7 @@ export * from './clips/devices/phone-spin-in';
 export * from './clips/devices/phone-swap';
 export * from './clips/devices/phone-turnaround';
 export * from './clips/devices/phone-wall';
+export * from './clips/overlays/doodle-arrows';
 export * from './clips/overlays/floating-cards';
 export * from './clips/sequences/app-promo';
 export * from './clips/transitions/scene-transition';

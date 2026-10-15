@@ -1,4 +1,5 @@
 import type { ClipModule } from '../../registry';
+import { doodleArrowsDefaults, doodleArrowsMeta, doodleArrowsSchema } from './doodle-arrows';
 import { floatingCardsDefaults, floatingCardsMeta, floatingCardsSchema } from './floating-cards';
 
 export const overlaysClips: ClipModule[] = [
@@ -7,5 +8,11 @@ export const overlaysClips: ClipModule[] = [
     schema: floatingCardsSchema,
     defaults: floatingCardsDefaults,
     meta: floatingCardsMeta,
+  },
+  {
+    id: 'doodle-arrows',
+    schema: doodleArrowsSchema,
+    defaults: doodleArrowsDefaults,
+    meta: doodleArrowsMeta,
   },
 ];

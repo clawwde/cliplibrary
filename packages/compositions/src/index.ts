@@ -14,6 +14,7 @@ export { PhoneSpinIn } from './scenes/devices/phone-spin-in';
 export { PhoneSwap } from './scenes/devices/phone-swap';
 export { PhoneTurnaround } from './scenes/devices/phone-turnaround';
 export { PhoneWall } from './scenes/devices/phone-wall';
+export { DoodleArrows } from './scenes/overlays/doodle-arrows';
 export { FloatingCards } from './scenes/overlays/floating-cards';
 export { AppPromo } from './scenes/sequences/app-promo';
 export { SceneTransition } from './scenes/transitions/scene-transition';
