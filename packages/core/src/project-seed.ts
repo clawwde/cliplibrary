@@ -9,11 +9,13 @@ import {
   CLIP_DEFAULTS,
   type ClipId,
   type ClipSequence,
+  DOODLE_PROMO_SEQUENCE,
   getClipMeta,
 } from '@cliplibrary/schemas';
 
 const SEQUENCES: Partial<Record<ClipId, ClipSequence>> = {
   'app-promo': APP_PROMO_SEQUENCE,
+  'doodle-promo': DOODLE_PROMO_SEQUENCE,
 };
 
 const slug = (name: string): string => name.toLowerCase().replace(/[^a-z0-9]+/g, '-');

@@ -5,7 +5,7 @@ import {
   phoneSpinInSchema,
 } from '@cliplibrary/schemas';
 import { Composition, useCurrentFrame } from 'remotion';
-import { PhoneModel } from '../../promo/phone-model';
+import { facingBrightness, PhoneModel } from '../../promo/phone-model';
 import { isDarkLook, PromoLayer } from '../../promo/promo-layer';
 import { Stage } from '../../promo/stage';
 import { settle, TAU, tween } from '../../promo/timing';
@@ -39,7 +39,11 @@ export const PhoneSpinIn = ({
           rotation={[0.04 + (1 - arrive) * 0.45, rotateY, (1 - arrive) * -0.25 * side]}
           scale={scale}
         >
-          <PhoneModel phone={phone} reflections={stage.reflections} />
+          <PhoneModel
+            phone={phone}
+            reflections={stage.reflections}
+            brightness={facingBrightness(rotateY)}
+          />
         </group>
       </Stage>
     </PromoLayer>
