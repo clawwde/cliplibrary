@@ -39,10 +39,10 @@ const build = (finish: PhoneFinish, reflections: number): PhoneMaterials => {
     frame: new THREE.MeshPhysicalMaterial({
       color: palette.frame,
       metalness: 1,
-      roughness: 0.22,
+      roughness: 0.3,
       anisotropy: 0.5,
       clearcoat: 0.3,
-      clearcoatRoughness: 0.2,
+      clearcoatRoughness: 0.4,
       envMapIntensity: reflections,
     }),
     back: new THREE.MeshPhysicalMaterial({
