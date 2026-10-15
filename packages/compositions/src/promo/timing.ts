@@ -18,27 +18,26 @@ export const tween = (
     extrapolateRight: 'clamp',
   });
 
-export const track = (
+export const pixelTween = (
   frame: number,
-  keys: [number, number][],
+  range: [number, number],
+  [from, to]: [number, number],
   easing: (t: number) => number = smooth,
 ): number => {
-  const first = keys[0];
-  const last = keys.at(-1);
-  if (first === undefined || last === undefined) {
-    return 0;
+  const start = Math.round(from);
+  const distance = Math.abs(Math.round(to) - start);
+  if (distance === 0 || frame <= range[0]) {
+    return start;
   }
-  if (frame <= first[0]) {
-    return first[1];
+  const direction = Math.sign(Math.round(to) - start);
+  let travelled = 0;
+  for (let step = Math.floor(range[0]) + 1; step <= frame && travelled < distance; step++) {
+    const ideal = Math.abs(
+      tween(step, range, [from, to], easing) - tween(step - 1, range, [from, to], easing),
+    );
+    travelled = Math.min(distance, travelled + Math.max(1, Math.round(ideal)));
   }
-  for (let index = 0; index < keys.length - 1; index++) {
-    const current = keys[index];
-    const next = keys[index + 1];
-    if (current !== undefined && next !== undefined && frame <= next[0]) {
-      return tween(frame, [current[0], next[0]], [current[1], next[1]], easing);
-    }
-  }
-  return last[1];
+  return start + direction * travelled;
 };
 
 export const TAU = Math.PI * 2;
