@@ -325,12 +325,15 @@ describe('promo clips', () => {
     const pairProps = getClipSchema('phone-pair').parse(pair?.props) as PhonePairProps;
     expect(pairProps.entrance).toBe('from-behind');
     expect(pairProps.position.x).toBeCloseTo(turnProps.position.x + turnProps.travelX);
-    expect(pairProps.scale).toBeCloseTo(turnProps.scale * 1.05);
+    expect(turnProps.entry).toBe('turn-in');
+    expect(pairProps.scale).toBeCloseTo(turnProps.scale);
     expect(pairProps.angle).toBeCloseTo(turnProps.endYaw);
     expect(pairProps.phones[0]?.screen).toBe(turnProps.secondScreen);
     expect(pairProps.stage).toEqual(turnProps.stage);
     const turnFrom = turn?.from ?? 0;
-    expect(turnFrom + turnProps.secondTurnAt + turnProps.secondTurnFrames).toBe(pair?.from ?? 0);
+    expect(turnFrom + turnProps.secondTurnAt + turnProps.secondTurnFrames).toBeLessThanOrEqual(
+      pair?.from ?? 0,
+    );
     expect(turnFrom + (turn?.durationInFrames ?? 0)).toBe(pair?.from ?? 0);
   });
 

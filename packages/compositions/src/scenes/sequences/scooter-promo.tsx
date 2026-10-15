@@ -11,7 +11,6 @@ import type { SceneModule } from '../../scene-module';
 import { isRecord, SequencePlayer, withFinish } from './sequence-player';
 
 const ACCENT_PATHS: Partial<Record<ClipId, readonly [string, string]>> = {
-  'app-icon-reveal': ['icon', 'color'],
   'phone-pedestal': ['pedestal', 'color'],
   'phone-flat-lay': ['surface', 'color'],
 };
@@ -23,11 +22,7 @@ const accentScene = (
 ): Record<string, unknown> => {
   const { look } = props;
   const named: Record<string, unknown> =
-    clipId === 'app-icon-reveal'
-      ? { brandName: brand.brandName }
-      : clipId === 'cta-end-card'
-        ? { markColor: brand.accent }
-        : {};
+    clipId === 'app-icon-reveal' ? { brandName: brand.brandName } : {};
   const next: Record<string, unknown> = {
     ...props,
     ...named,
