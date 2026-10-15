@@ -5,7 +5,7 @@ import { easedGradient } from '../src/promo/backdrop';
 import { FilmLayer, filmMarks } from '../src/promo/film';
 import { glowShadow, withAlpha } from '../src/promo/glow';
 import { SCRIBBLE_PATHS, Scribble } from '../src/promo/scribble';
-import { land } from '../src/promo/timing';
+import { land, launch } from '../src/promo/timing';
 import { highlightSet, linesOf, normalize, wordsOf } from '../src/promo/words';
 
 const film = {
@@ -59,14 +59,27 @@ describe('kinetic text helpers', () => {
     expect(withAlpha('#ff0000', 2)).toContain('100.0%');
   });
 
-  it('lands without creeping under the minimum speed', () => {
-    expect(land(0, [0, 30], [80, 0])).toBe(80);
-    expect(land(40, [0, 30], [80, 0])).toBe(0);
-    let previous = 80;
-    for (let frame = 1; frame <= 30; frame++) {
-      const value = land(frame, [0, 30], [80, 0]);
-      expect(previous - value).toBeGreaterThanOrEqual(0.95);
-      previous = value;
+  it('lands and launches without ever creeping under the minimum speed', () => {
+    for (const [frames, distance] of [
+      [30, 80],
+      [20, 28.8],
+      [18, 12],
+      [40, 400],
+    ] as const) {
+      expect(land(0, [0, frames], [distance, 0])).toBe(distance);
+      expect(land(frames + 5, [0, frames], [distance, 0])).toBe(0);
+      expect(launch(0, [0, frames], [0, distance])).toBe(0);
+      expect(launch(frames, [0, frames], [0, distance])).toBe(distance);
+      let previous = distance;
+      let previousStep = Number.POSITIVE_INFINITY;
+      for (let frame = 1; frame <= frames; frame++) {
+        const value = land(frame, [0, frames], [distance, 0]);
+        const step = previous - value;
+        expect(step).toBeGreaterThanOrEqual(Math.min(1.5, distance / frames) - 0.01);
+        expect(step).toBeLessThanOrEqual(previousStep + 1e-9);
+        previous = value;
+        previousStep = step;
+      }
     }
   });
 

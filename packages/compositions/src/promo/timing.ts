@@ -78,7 +78,8 @@ export const land = (
   frame: number,
   [start, end]: [number, number],
   [from, to]: [number, number],
-  minSpeed = 1,
+  minSpeed = 1.5,
+  startSlope?: number,
 ): number => {
   if (frame <= start) {
     return from;
@@ -89,5 +90,13 @@ export const land = (
   const frames = end - start;
   const distance = Math.abs(to - from);
   const endSlope = distance > 0 ? Math.min(1, (minSpeed * frames) / distance) : 1;
-  return from + (to - from) * hermite((frame - start) / frames, 2.2, endSlope);
+  const launchSlope = Math.min(3 - 2 * endSlope, startSlope ?? Number.POSITIVE_INFINITY);
+  return from + (to - from) * hermite((frame - start) / frames, launchSlope, endSlope);
 };
+
+export const launch = (
+  frame: number,
+  [start, end]: [number, number],
+  [from, to]: [number, number],
+  minSpeed = 1.5,
+): number => land(start + end - frame, [start, end], [to, from], minSpeed);
