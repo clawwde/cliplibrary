@@ -4,6 +4,7 @@ import {
   pedestalGeometry,
   reliefRingGeometry,
   reliefRings,
+  ribbonCurl,
   ribbonGeometry,
   ribbonHeight,
 } from '../src/promo/set-geometry';
@@ -19,7 +20,15 @@ const LAYOUT = {
   depthStep: 0.08,
 };
 
-const RIBBON = { length: 20, width: 1.4, thickness: 0.2, amplitude: 0.3, waves: 1.5, phase: 0.4 };
+const RIBBON = {
+  length: 20,
+  width: 1.4,
+  thickness: 0.2,
+  amplitude: 0.3,
+  waves: 1.5,
+  phase: 0.4,
+  curl: 0,
+};
 
 describe('relief rings', () => {
   it('nests every ring outside the previous one without overlap', () => {
@@ -76,10 +85,16 @@ describe('ribbon surface', () => {
     const geometry = ribbonGeometry(RIBBON);
     geometry.computeBoundingBox();
     const box = geometry.boundingBox;
-    expect((box?.max.x ?? 0) - (box?.min.x ?? 0)).toBeGreaterThan(RIBBON.length);
-    expect((box?.max.y ?? 0) - (box?.min.y ?? 0)).toBeCloseTo(RIBBON.width + 0.04, 2);
-    expect(box?.max.z).toBeLessThanOrEqual(RIBBON.thickness + RIBBON.amplitude + 0.03);
-    expect(box?.min.z).toBeGreaterThanOrEqual(-0.03);
+    expect((box?.max.x ?? 0) - (box?.min.x ?? 0)).toBeCloseTo(RIBBON.length, 3);
+    expect((box?.max.y ?? 0) - (box?.min.y ?? 0)).toBeCloseTo(RIBBON.width, 3);
+    expect(box?.max.z).toBeLessThanOrEqual(RIBBON.thickness + RIBBON.amplitude + 1e-6);
+    expect(box?.min.z).toBeGreaterThanOrEqual(-1e-6);
+  });
+
+  it('curls every ribbon sideways by the same offset so neighbours stay seamless', () => {
+    const curled = { ...RIBBON, curl: 0.5 };
+    expect(ribbonCurl(curled, 3)).toBeCloseTo(ribbonCurl({ ...curled, phase: 2 }, 3));
+    expect(Math.abs(ribbonCurl(curled, 3))).toBeLessThanOrEqual(0.5);
   });
 });
 
