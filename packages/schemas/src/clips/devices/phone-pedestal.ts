@@ -30,7 +30,7 @@ export const phonePedestalSchema = z.object({
     roughness: zSlider({ min: 0.2, max: 1, step: 0.01 }),
   }),
   entry: z.object({
-    drop: zSlider({ min: 0, max: 8, step: 0.1 }),
+    drop: zSlider({ min: -10, max: 10, step: 0.1 }),
     frames: zSlider({ min: 10, max: 120 }),
     cameraTilt: zSlider({ min: 0, max: 3, step: 0.05 }),
   }),
@@ -59,7 +59,7 @@ export const phonePedestalDefaults: PhonePedestalProps = {
   rock: 0.035,
   pedestal: {
     show: true,
-    color: '#ff6b3d',
+    color: '#9a7a0c',
     size: 34,
     turn: 0.785,
     top: -1.7,

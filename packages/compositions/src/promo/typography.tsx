@@ -38,6 +38,8 @@ export interface HeadlineProps extends RevealWindow {
   align?: 'left' | 'center' | 'right';
   weight?: number;
   stagger?: number;
+  font?: string;
+  tracking?: string;
 }
 
 export const Headline = ({
@@ -49,6 +51,8 @@ export const Headline = ({
   align = 'left',
   weight = 600,
   stagger = 5,
+  font = displayFont,
+  tracking = '-0.045em',
   start,
   end,
 }: HeadlineProps) => {
@@ -57,11 +61,11 @@ export const Headline = ({
   return (
     <div
       style={{
-        fontFamily: displayFont,
+        fontFamily: font,
         fontSize: size,
         fontWeight: weight,
         lineHeight: 1.02,
-        letterSpacing: '-0.045em',
+        letterSpacing: tracking,
         color,
         textAlign: align,
       }}

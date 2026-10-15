@@ -5,8 +5,10 @@ import {
   iconTileGeometry,
   pedestalGeometry,
   type ReliefLayout,
+  reliefCoreGeometry,
   reliefRingGeometry,
   reliefRings,
+  reliefTop,
   ribbonGeometry,
 } from './set-geometry';
 import { clayMaterial } from './set-materials';
@@ -32,8 +34,17 @@ export const ReliefWall = ({
     <group>
       {showWall ? (
         <mesh material={material} receiveShadow>
-          <planeGeometry args={[240, 140]} />
+          <planeGeometry args={[900, 300]} />
         </mesh>
+      ) : null}
+      {layout.depthStep > 0 ? (
+        <mesh
+          position={[0, 0, reliefTop(layout) / 2]}
+          geometry={reliefCoreGeometry(layout.core + bevel * 2, reliefTop(layout), bevel)}
+          material={material}
+          castShadow
+          receiveShadow
+        />
       ) : null}
       {rings.map((ring) => (
         <mesh
@@ -71,6 +82,7 @@ interface RibbonFieldProps extends ClayProps {
   step: number;
   amplitude: number;
   waves: number;
+  curl: number;
 }
 
 export const RibbonField = ({
@@ -81,6 +93,7 @@ export const RibbonField = ({
   step,
   amplitude,
   waves,
+  curl,
   color,
   roughness,
   reflections,
@@ -97,6 +110,7 @@ export const RibbonField = ({
           amplitude,
           waves,
           phase: index * 0.9,
+          curl,
         };
         return (
           <mesh
