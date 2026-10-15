@@ -102,6 +102,7 @@ export interface StageProps {
   distanceScale?: number;
   backdropZ?: number;
   keyPosition?: Vec3;
+  shadowExtent?: number;
   children: ReactNode;
 }
 
@@ -113,6 +114,7 @@ export const Stage = ({
   distanceScale = 1,
   backdropZ = -1.8,
   keyPosition = [-2.5, 4, 12],
+  shadowExtent = 1,
   children,
 }: StageProps) => {
   const { width, height } = useVideoConfig();
@@ -139,12 +141,12 @@ export const Stage = ({
         shadow-radius={stage.shadowSoftness}
         shadow-blurSamples={24}
         shadow-bias={-0.0004}
-        shadow-camera-left={-16}
-        shadow-camera-right={16}
-        shadow-camera-top={11}
-        shadow-camera-bottom={-11}
+        shadow-camera-left={-16 * shadowExtent}
+        shadow-camera-right={16 * shadowExtent}
+        shadow-camera-top={11 * shadowExtent}
+        shadow-camera-bottom={-11 * shadowExtent}
         shadow-camera-near={1}
-        shadow-camera-far={40}
+        shadow-camera-far={40 * shadowExtent}
       />
       <directionalLight position={[5, 2, -6]} intensity={dark ? 1.6 : 0.8} color="#ffffff" />
       <Studio reflections={stage.reflections} dark={dark} />

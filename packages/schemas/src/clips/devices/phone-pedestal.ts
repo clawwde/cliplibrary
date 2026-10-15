@@ -70,7 +70,7 @@ export const phonePedestalDefaults: PhonePedestalProps = {
   camera: {
     height: -4.3,
     rise: 0.8,
-    orbit: 0.32,
+    orbit: 0.45,
     aimY: 0.1,
     lightX: -5,
     lightY: 8,

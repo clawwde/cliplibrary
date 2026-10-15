@@ -8,11 +8,13 @@ import { Composition, useCurrentFrame } from 'remotion';
 import { isDarkLook, PromoLayer } from '../../promo/promo-layer';
 import { ReliefWall } from '../../promo/set-pieces';
 import { Stage } from '../../promo/stage';
-import { cameraPush, smooth, tween } from '../../promo/timing';
+import { cameraPush, tween } from '../../promo/timing';
 import type { SceneModule } from '../../scene-module';
 
+const MATTE = 0.3;
+
 const reliefSwing = (frame: number, at: number, frames: number, angle: number): number =>
-  angle * Math.sin(Math.PI * tween(frame, [at, at + frames], [0, 1], smooth));
+  (angle * (1 - Math.cos(2 * Math.PI * tween(frame, [at, at + frames], [0, 1], (t) => t)))) / 2;
 
 export const ReliefBackdrop = ({
   wallColor,
@@ -34,6 +36,7 @@ export const ReliefBackdrop = ({
         distanceScale={push}
         backdropZ={-40}
         keyPosition={[camera.lightX, camera.lightY, camera.lightZ]}
+        shadowExtent={3}
       >
         <group rotation={[0, swing, 0]}>
           <ReliefWall
@@ -41,7 +44,7 @@ export const ReliefBackdrop = ({
             bevel={rings.bevel}
             color={wallColor}
             roughness={roughness}
-            reflections={stage.reflections}
+            reflections={stage.reflections * MATTE}
             showWall={look.showBackdrop}
           />
         </group>
