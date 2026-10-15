@@ -271,6 +271,10 @@ describe('promo clips', () => {
     'doodle-arrows',
     'handwritten-note',
     'doodle-promo',
+    'relief-backdrop',
+    'app-icon-reveal',
+    'phone-pedestal',
+    'phone-flat-lay',
   ];
 
   it('validates every promo default against its schema', () => {

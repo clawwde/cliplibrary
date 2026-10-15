@@ -13,6 +13,52 @@ import type { SceneModule } from '../../scene-module';
 
 const ENTRY_ORDER = [1, 0, 2];
 
+interface FanPose {
+  x: number;
+  y: number;
+  tilt: number;
+  yaw: number;
+}
+
+const risePose = (
+  frame: number,
+  offset: number,
+  delay: number,
+  { spacing, fan, drop }: { spacing: number; fan: number; drop: number },
+): FanPose => {
+  const arrive = tween(frame, [delay, delay + 72], [0, 1], settle);
+  const spin = (1 - arrive) * TAU * 0.12 * (offset === 0 ? 1 : Math.sign(offset));
+  return {
+    x: offset * spacing,
+    y: -(1 - arrive) * drop,
+    tilt: 0.05 + (1 - arrive) * 0.35,
+    yaw: -offset * fan + spin,
+  };
+};
+
+const FLY_FRAMES = 66;
+const SPREAD_FRAMES = 50;
+
+const spreadPose = (
+  frame: number,
+  offset: number,
+  {
+    spacing,
+    fan,
+    spreadDelay,
+    flyFrom,
+  }: { spacing: number; fan: number; spreadDelay: number; flyFrom: number },
+): FanPose => {
+  const arrive = tween(frame, [0, FLY_FRAMES], [0, 1], settle);
+  const out = tween(frame, [spreadDelay, spreadDelay + SPREAD_FRAMES], [0, 1], settle);
+  return {
+    x: flyFrom * (1 - arrive) + offset * spacing * out,
+    y: 0,
+    tilt: 0.05,
+    yaw: -1.25 * (1 - arrive) - offset * fan * out,
+  };
+};
+
 export const PhoneFan = ({
   phones,
   position,
@@ -21,6 +67,9 @@ export const PhoneFan = ({
   fan,
   stagger,
   orbit,
+  entrance,
+  spreadDelay,
+  flyFrom,
   look,
   stage,
   motion,
@@ -42,19 +91,24 @@ export const PhoneFan = ({
       >
         <group rotation={[0, sway, 0]} position={[position.x, position.y, position.z]}>
           {phones.map((entry, index) => {
-            const delay = (ENTRY_ORDER[index] ?? index) * stagger;
-            const arrive = tween(frame, [delay, delay + 72], [0, 1], settle);
             const offset = index - 1;
-            const spin = (1 - arrive) * TAU * 0.12 * (offset === 0 ? 1 : Math.sign(offset));
+            const pose =
+              entrance === 'spread'
+                ? spreadPose(frame, offset, { spacing, fan, spreadDelay, flyFrom })
+                : risePose(frame, offset, (ENTRY_ORDER[index] ?? index) * stagger, {
+                    spacing,
+                    fan,
+                    drop,
+                  });
             return (
               <group
                 key={`${index}:${entry.screen}`}
                 position={[
-                  offset * spacing,
-                  -(1 - arrive) * drop + Math.sin(frame / 26 + index * 2) * motion.float,
+                  pose.x,
+                  pose.y + Math.sin(frame / 26 + index * 2) * motion.float,
                   offset === 0 ? 0.4 : -0.5,
                 ]}
-                rotation={[0.05 + (1 - arrive) * 0.35, -offset * fan + spin, 0]}
+                rotation={[pose.tilt, pose.yaw, 0]}
                 scale={scale}
               >
                 <PhoneModel phone={entry} reflections={stage.reflections} />
