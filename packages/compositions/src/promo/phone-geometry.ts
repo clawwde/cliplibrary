@@ -20,7 +20,7 @@ export const PHONE = {
 
 export const GLASS_SURFACE = PHONE.depth / 2 + PHONE.glassLift + PHONE.glassThickness / 2;
 
-const roundedShape = (width: number, height: number, radius: number): THREE.Shape => {
+export const roundedShape = (width: number, height: number, radius: number): THREE.Shape => {
   const shape = new THREE.Shape();
   const x = -width / 2;
   const y = -height / 2;
@@ -52,7 +52,7 @@ const normalizeUv = (geometry: THREE.BufferGeometry, width: number, height: numb
 
 const cache = new Map<string, THREE.BufferGeometry>();
 
-const memo = (key: string, build: () => THREE.BufferGeometry): THREE.BufferGeometry => {
+export const memo = (key: string, build: () => THREE.BufferGeometry): THREE.BufferGeometry => {
   const hit = cache.get(key);
   if (hit !== undefined) {
     return hit;
@@ -67,7 +67,13 @@ const roundedPlane = (width: number, height: number, radius: number) =>
     normalizeUv(new THREE.ShapeGeometry(roundedShape(width, height, radius), 32), width, height),
   );
 
-const roundedSlab = (width: number, height: number, radius: number, depth: number, bevel: number) =>
+export const roundedSlab = (
+  width: number,
+  height: number,
+  radius: number,
+  depth: number,
+  bevel: number,
+) =>
   memo(`slab:${width}:${height}:${radius}:${depth}:${bevel}`, () => {
     const geometry = new THREE.ExtrudeGeometry(
       roundedShape(width - bevel * 2, height - bevel * 2, Math.max(0.001, radius - bevel)),

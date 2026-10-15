@@ -14,6 +14,10 @@ import messages from './assets/screen-messages.jpg';
 import music from './assets/screen-music.jpg';
 import onboarding from './assets/screen-onboarding.jpg';
 import profile from './assets/screen-profile.jpg';
+import rideNearby from './assets/screen-ride-nearby.jpg';
+import rideReceipt from './assets/screen-ride-receipt.jpg';
+import rideUnlock from './assets/screen-ride-unlock.jpg';
+import rideWelcome from './assets/screen-ride-welcome.jpg';
 import settings from './assets/screen-settings.jpg';
 import tasks from './assets/screen-tasks.jpg';
 import wallet from './assets/screen-wallet.jpg';
@@ -37,6 +41,10 @@ const SCREENS: Record<PromoScreenId, ImportedAsset> = {
   map,
   profile,
   settings,
+  'ride-welcome': rideWelcome,
+  'ride-unlock': rideUnlock,
+  'ride-nearby': rideNearby,
+  'ride-receipt': rideReceipt,
 };
 
 const CARDS: Record<PromoCardId, ImportedAsset> = {

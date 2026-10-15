@@ -14,7 +14,7 @@ import {
 import type { ClipMeta } from '../../registry';
 
 export const phoneWallSchema = z.object({
-  screens: z.array(z.enum(PROMO_SCREEN_IDS)).min(1).max(14),
+  screens: z.array(z.enum(PROMO_SCREEN_IDS)).min(1).max(PROMO_SCREEN_IDS.length),
   finish: z.enum(PHONE_FINISHES),
   rows: zSlider({ min: 1, max: 4 }),
   columns: zSlider({ min: 3, max: 11 }),
@@ -29,7 +29,7 @@ export const phoneWallSchema = z.object({
 export type PhoneWallProps = z.infer<typeof phoneWallSchema>;
 
 export const phoneWallDefaults: PhoneWallProps = {
-  screens: [...PROMO_SCREEN_IDS],
+  screens: PROMO_SCREEN_IDS.filter((id) => !id.startsWith('ride-')),
   finish: 'black',
   rows: 3,
   columns: 9,
