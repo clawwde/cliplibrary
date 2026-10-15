@@ -65,6 +65,19 @@ export const track = (
 
 export const TAU = Math.PI * 2;
 
+export const swingAngle = (
+  frame: number,
+  at: number,
+  frames: number,
+  angle: number,
+  peak = 0.5,
+): number => {
+  const top = at + frames * peak;
+  return frame <= top
+    ? angle * tween(frame, [at, top], [0, 1], smooth)
+    : angle * tween(frame, [top, at + frames], [1, 0], smooth);
+};
+
 export const cameraPush = (frame: number, amount: number, frames: number): number =>
   1 - amount * Math.min(1, Math.max(0, frame / frames));
 
