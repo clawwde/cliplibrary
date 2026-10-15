@@ -29,7 +29,7 @@ export const PhoneTurnaround = ({
   const turned = Math.max(RISE_FRAMES + 60, turn + 60);
   const rotateY =
     tween(frame, [0, RISE_FRAMES], [Math.PI + 1.1, Math.PI], settle) +
-    tween(frame, [RISE_FRAMES - 18, turned], [0, Math.PI - 0.25]) +
+    tween(frame, [RISE_FRAMES - 36, turned], [0, Math.PI - 0.25]) +
     tween(frame, [turned, Math.max(durationInFrames, turned + 1)], [0, 0.47]);
   const grow =
     scale * (0.85 + rise * 0.15) * tween(frame, [RISE_FRAMES, durationInFrames], [1, 1.05]);
