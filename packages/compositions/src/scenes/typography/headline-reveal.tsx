@@ -31,7 +31,7 @@ export const HeadlineReveal = ({
         <AbsoluteFill
           style={{
             opacity: veilOpacity,
-            background: `radial-gradient(40% 36% at 50% 50%, ${look.background}f2 0%, ${look.background}c0 45%, ${look.background}00 100%)`,
+            background: `radial-gradient(54% 48% at 50% 54%, ${look.background}f2 0%, ${look.background}d0 50%, ${look.background}00 100%)`,
           }}
         />
       ) : null}

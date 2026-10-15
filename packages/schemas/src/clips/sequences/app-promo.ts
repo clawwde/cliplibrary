@@ -135,7 +135,7 @@ const ENTRIES: SequenceEntry[] = [
     ],
     delay: 0,
   }),
-  headline([906, 1068], {
+  headline([906, 1058], {
     eyebrow: 'Discover',
     headline: 'Insights that\nmove with you.',
     highlight: 'move',
@@ -169,12 +169,12 @@ const ENTRIES: SequenceEntry[] = [
   }),
   entry('phone-pair', 'Devices', [1356, 1500], phonePairDefaults, {
     phones: [phone('profile', 'white'), phone('home', 'natural')],
-    gap: 5.3,
+    gap: 4.9,
     angle: 0.6,
     stagger: -0.3,
     scale: 1.15,
     stage: { ...phonePairDefaults.stage, keyLight: 2, shadow: 0.16 },
-    motion: defaultMotion({ exit: 'none', exitFrames: 0 }),
+    motion: defaultMotion({ enter: 'fade', enterFrames: 18, exit: 'none', exitFrames: 0 }),
   }),
   entry('cta-end-card', 'Text', [1366, 1500], ctaEndCardDefaults, {}),
 ];
