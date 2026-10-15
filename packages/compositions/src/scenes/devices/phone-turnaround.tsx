@@ -8,7 +8,7 @@ import { Composition, useCurrentFrame, useVideoConfig } from 'remotion';
 import { PhoneModel } from '../../promo/phone-model';
 import { isDarkLook, PromoLayer } from '../../promo/promo-layer';
 import { Stage } from '../../promo/stage';
-import { settle, TAU, track, tween } from '../../promo/timing';
+import { glide, TAU, track, tween } from '../../promo/timing';
 import type { SceneModule } from '../../scene-module';
 
 export const PhoneTurnaround = ({
@@ -24,9 +24,9 @@ export const PhoneTurnaround = ({
   const { durationInFrames } = useVideoConfig();
   const turn = Math.round(durationInFrames * turnAt);
   const turnEnd = Math.max(108, Math.min(turn + 40, durationInFrames - 1));
-  const rise = tween(frame, [0, 66], [0, 1], settle);
+  const rise = tween(frame, [0, 66], [0, 1], glide);
   const rotateY =
-    tween(frame, [0, 66], [Math.PI + 1.1, Math.PI - 0.3], settle) +
+    tween(frame, [0, 66], [Math.PI + 1.1, Math.PI - 0.3], glide) +
     track(frame, [
       [48, 0],
       [turnEnd, Math.PI + 0.05],

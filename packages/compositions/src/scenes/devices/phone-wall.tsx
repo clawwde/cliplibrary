@@ -8,7 +8,7 @@ import { Composition, useCurrentFrame, useVideoConfig } from 'remotion';
 import { PhoneModel } from '../../promo/phone-model';
 import { isDarkLook, PromoLayer } from '../../promo/promo-layer';
 import { Stage } from '../../promo/stage';
-import { settle, tween } from '../../promo/timing';
+import { glide, tween } from '../../promo/timing';
 import type { SceneModule } from '../../scene-module';
 
 const COLUMN_GAP = 1.95;
@@ -42,7 +42,7 @@ export const PhoneWall = ({
             const y = ((rowCount - 1) / 2 - row) * ROW_GAP;
             return Array.from({ length: columnCount }, (_cell, column) => {
               const delay = (Math.abs(column - middle) + row) * 2.5;
-              const arrive = tween(frame, [delay, delay + 56], [0, 1], settle);
+              const arrive = tween(frame, [delay, delay + 56], [0, 1], glide);
               const screen = screens[(row * 5 + column) % screens.length] ?? 'home';
               return (
                 <group

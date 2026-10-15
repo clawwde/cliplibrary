@@ -38,7 +38,7 @@ export const phonePairDefaults: PhonePairProps = {
   stagger: 0.3,
   look: darkLook(),
   stage: defaultStage({ cameraDistance: 13, keyLight: 1.4, shadow: 0.45 }),
-  motion: defaultMotion({ exit: 'fade', exitFrames: 16 }),
+  motion: defaultMotion({ enter: 'fade', enterFrames: 24, exit: 'fade', exitFrames: 16 }),
 };
 
 export const phonePairMeta: ClipMeta = {

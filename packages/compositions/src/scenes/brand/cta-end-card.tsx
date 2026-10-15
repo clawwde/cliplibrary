@@ -92,10 +92,10 @@ export const CtaEndCard = ({
           align="center"
           start={22}
         />
-        <FadeIn start={38}>
+        <FadeIn start={32}>
           <BodyCopy text={subline} color={look.muted} width={900} align="center" size={32} />
         </FadeIn>
-        <FadeIn start={48} style={{ display: 'flex', gap: 18, marginTop: 8 }}>
+        <FadeIn start={42} style={{ display: 'flex', gap: 18, marginTop: 8 }}>
           <StoreButton
             caption={primaryCaption}
             label={primaryLabel}
@@ -111,7 +111,7 @@ export const CtaEndCard = ({
             paper={look.background}
           />
         </FadeIn>
-        <FadeIn start={60}>
+        <FadeIn start={54}>
           <div
             style={{
               fontFamily: bodyFont,

@@ -2,7 +2,8 @@ import { Easing, interpolate } from 'remotion';
 
 export const smooth = Easing.bezier(0.65, 0, 0.35, 1);
 export const settle = Easing.bezier(0.25, 0.8, 0.35, 1);
-export const accelerate = Easing.bezier(0.7, 0, 0.84, 0);
+export const glide = Easing.bezier(0.42, 0.1, 0.25, 1);
+const accelerate = Easing.bezier(0.7, 0, 0.84, 0);
 
 export const tween = (
   frame: number,
@@ -15,6 +16,43 @@ export const tween = (
     extrapolateLeft: 'clamp',
     extrapolateRight: 'clamp',
   });
+
+export const MIN_TEXT_SPEED = 1;
+
+export const landing = (
+  frame: number,
+  range: [number, number],
+  distance: number,
+  easing: (t: number) => number = settle,
+): number => {
+  const offset = (at: number) => distance * (1 - tween(at, range, [0, 1], easing));
+  let slow = range[0];
+  while (slow < range[1] && offset(slow) - offset(slow + 1) >= MIN_TEXT_SPEED) {
+    slow += 1;
+  }
+  if (frame <= slow) {
+    return offset(frame);
+  }
+  const tail = offset(slow);
+  const speed = tail / Math.max(1, Math.floor(tail / MIN_TEXT_SPEED));
+  return Math.max(0, tail - (frame - slow) * speed);
+};
+
+export const launch = (
+  frame: number,
+  range: [number, number],
+  distance: number,
+  easing: (t: number) => number = accelerate,
+): number =>
+  frame <= range[0]
+    ? 0
+    : Math.min(
+        distance,
+        Math.max(
+          distance * tween(frame, range, [0, 1], easing),
+          (frame - range[0]) * MIN_TEXT_SPEED,
+        ),
+      );
 
 export const track = (
   frame: number,

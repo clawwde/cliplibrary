@@ -8,7 +8,7 @@ import { AbsoluteFill, Composition, useCurrentFrame, useVideoConfig } from 'remo
 import { BrandMark } from '../../promo/brand-mark';
 import { bodyFont, displayFont } from '../../promo/fonts';
 import { PromoLayer } from '../../promo/promo-layer';
-import { settle, tween } from '../../promo/timing';
+import { landing, settle, tween } from '../../promo/timing';
 import { FadeIn } from '../../promo/typography';
 import type { SceneModule } from '../../scene-module';
 
@@ -31,7 +31,12 @@ export const BrandReveal = ({
   return (
     <PromoLayer look={look} motion={motion}>
       <AbsoluteFill
-        style={{ alignItems: 'center', justifyContent: 'center', transform: `scale(${scale})` }}
+        style={{
+          alignItems: 'center',
+          justifyContent: 'center',
+          transform: `scale(${scale})`,
+          willChange: 'transform',
+        }}
       >
         <FadeIn start={0} delay={2} style={{ marginBottom: 34 }}>
           <div
@@ -63,7 +68,8 @@ export const BrandReveal = ({
             }}
           >
             {letters.map((letter, index) => {
-              const reveal = tween(frame, [14 + index * 3, 40 + index * 3], [0, 1], settle);
+              const range: [number, number] = [14 + index * 3, 40 + index * 3];
+              const reveal = tween(frame, range, [0, 1], settle);
               return (
                 <span
                   key={`${index}:${letter}`}
@@ -71,7 +77,7 @@ export const BrandReveal = ({
                     display: 'inline-block',
                     whiteSpace: 'pre',
                     opacity: reveal,
-                    transform: `translateY(${(1 - reveal) * 0.35 * wordmarkSize}px)`,
+                    transform: `translateY(${landing(frame, range, 0.35 * wordmarkSize)}px)`,
                   }}
                 >
                   {letter}
