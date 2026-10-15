@@ -8,17 +8,20 @@ import type { PhoneSpinInProps } from './clips/devices/phone-spin-in';
 import type { PhoneSwapProps } from './clips/devices/phone-swap';
 import type { PhoneTurnaroundProps } from './clips/devices/phone-turnaround';
 import type { PhoneWallProps } from './clips/devices/phone-wall';
+import type { DoodleArrowsProps } from './clips/overlays/doodle-arrows';
 import type { FloatingCardsProps } from './clips/overlays/floating-cards';
 import type { AppPromoProps } from './clips/sequences/app-promo';
 import type { SceneTransitionProps } from './clips/transitions/scene-transition';
 import type { DetailListProps } from './clips/typography/detail-list';
 import type { FeatureCalloutsProps } from './clips/typography/feature-callouts';
+import type { HandwrittenNoteProps } from './clips/typography/handwritten-note';
 import type { HeadlineRevealProps } from './clips/typography/headline-reveal';
 
 export interface ClipPropsMap {
   'detail-list': DetailListProps;
   'feature-callouts': FeatureCalloutsProps;
   'headline-reveal': HeadlineRevealProps;
+  'handwritten-note': HandwrittenNoteProps;
   'phone-fan': PhoneFanProps;
   'phone-pair': PhonePairProps;
   'phone-scroll': PhoneScrollProps;
@@ -27,6 +30,7 @@ export interface ClipPropsMap {
   'phone-turnaround': PhoneTurnaroundProps;
   'phone-wall': PhoneWallProps;
   'floating-cards': FloatingCardsProps;
+  'doodle-arrows': DoodleArrowsProps;
   'brand-reveal': BrandRevealProps;
   'cta-end-card': CtaEndCardProps;
   'studio-backdrop': StudioBackdropProps;
