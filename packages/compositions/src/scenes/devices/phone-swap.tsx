@@ -46,7 +46,7 @@ export const PhoneSwap = ({
     Math.sin(frame / 36) * 0.13 +
     (1 - arrive) * -0.7;
   return (
-    <PromoLayer look={look} motion={motion} focusX={50 + from * 16}>
+    <PromoLayer look={look} motion={motion} focusX={50 + side * 16}>
       <Stage stage={stage} dark={isDarkLook(look)}>
         <group
           position={[

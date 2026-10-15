@@ -11,6 +11,8 @@ import { Stage } from '../../promo/stage';
 import { settle, TAU, track, tween } from '../../promo/timing';
 import type { SceneModule } from '../../scene-module';
 
+const RISE_FRAMES = 66;
+
 export const PhoneTurnaround = ({
   phone,
   position,
@@ -23,16 +25,17 @@ export const PhoneTurnaround = ({
   const frame = useCurrentFrame() * motion.speed;
   const { durationInFrames } = useVideoConfig();
   const turn = Math.round(durationInFrames * turnAt);
-  const rise = tween(frame, [0, 66], [0, 1], settle);
+  const rise = tween(frame, [0, RISE_FRAMES], [0, 1], settle);
+  const turned = Math.max(RISE_FRAMES + 50, turn + 50);
   const rotateY =
-    tween(frame, [0, 66], [Math.PI + 1.1, Math.PI - 0.3], settle) +
+    tween(frame, [0, RISE_FRAMES], [Math.PI + 1.1, Math.PI - 0.3], settle) +
     track(frame, [
-      [66, 0],
-      [turn - 24, 0.6],
-      [turn + 40, Math.PI + 0.05],
-      [durationInFrames, Math.PI + 0.52],
+      [RISE_FRAMES, 0],
+      [turned, Math.PI + 0.05],
+      [Math.max(durationInFrames, turned + 1), Math.PI + 0.52],
     ]);
-  const grow = scale * (0.85 + rise * 0.15) * tween(frame, [66, durationInFrames], [1, 1.05]);
+  const grow =
+    scale * (0.85 + rise * 0.15) * tween(frame, [RISE_FRAMES, durationInFrames], [1, 1.05]);
   return (
     <PromoLayer look={look} motion={motion}>
       <Stage stage={stage} dark={isDarkLook(look)}>
