@@ -75,6 +75,10 @@ export const position = (x = 0, y = 0, depth = 0): PromoPosition => ({ x, y, z: 
 
 export const BACKDROP_TONES = ['light', 'dark'] as const;
 
+export const PAPER_PATTERNS = ['plain', 'ruled', 'grid'] as const;
+
+export type PaperPattern = (typeof PAPER_PATTERNS)[number];
+
 export const phoneSchema = z.object({
   screen: z.enum(PROMO_SCREEN_IDS),
   customScreen: zImage(),
@@ -92,6 +96,10 @@ export const lookSchema = z.object({
   accent: zColor(),
   grain: zSlider({ min: 0, max: 0.3, step: 0.01 }),
   spotlight: zSlider({ min: 0, max: 1, step: 0.01 }),
+  paper: z.enum(PAPER_PATTERNS),
+  paperLine: zColor(),
+  paperSpacing: zSlider({ min: 20, max: 120 }),
+  paperMargin: z.boolean(),
 });
 
 export type PromoLook = z.infer<typeof lookSchema>;
@@ -128,6 +136,10 @@ export const lightLook = (accent = '#2f5bff', showBackdrop = true): PromoLook =>
   accent,
   grain: 0.06,
   spotlight: 0.55,
+  paper: 'plain',
+  paperLine: '#cbd3de',
+  paperSpacing: 54,
+  paperMargin: false,
 });
 
 export const darkLook = (accent = '#7d9bff', showBackdrop = true): PromoLook => ({
@@ -139,6 +151,10 @@ export const darkLook = (accent = '#7d9bff', showBackdrop = true): PromoLook => 
   accent,
   grain: 0.08,
   spotlight: 0.7,
+  paper: 'plain',
+  paperLine: '#2a2d36',
+  paperSpacing: 54,
+  paperMargin: false,
 });
 
 export const defaultStage = (overrides: Partial<PromoStage> = {}): PromoStage => ({
