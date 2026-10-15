@@ -26,9 +26,18 @@ export const BrandMark = ({
         stroke={color}
         strokeWidth={11 * Math.max(0.15, Math.min(1, draw * 4))}
         strokeLinecap="round"
-        strokeDasharray={`${RING * 1.02 * draw} ${RING * 2}`}
+        strokeDasharray={`${RING * draw} ${RING * 2}`}
         opacity={Math.min(1, draw * 4)}
         transform="rotate(-90 50 50)"
+      />
+      <circle
+        cx="50"
+        cy="50"
+        r="38"
+        fill="none"
+        stroke={color}
+        strokeWidth={11}
+        opacity={tween(draw, [0.82, 0.95], [0, 1], smooth)}
       />
       <circle
         cx={50 + Math.cos(angle) * 38}

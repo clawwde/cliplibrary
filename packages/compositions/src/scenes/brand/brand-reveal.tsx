@@ -38,7 +38,7 @@ export const BrandReveal = ({
           willChange: 'transform',
         }}
       >
-        <FadeIn start={0} delay={2} style={{ marginBottom: 34 }}>
+        <FadeIn start={0} delay={2} subpixel style={{ marginBottom: 34 }}>
           <div
             style={{
               fontFamily: bodyFont,
@@ -85,7 +85,7 @@ export const BrandReveal = ({
             })}
           </div>
         </div>
-        <FadeIn start={44} style={{ marginTop: 34 }}>
+        <FadeIn start={44} subpixel style={{ marginTop: 34 }}>
           <div
             style={{
               fontFamily: bodyFont,
