@@ -15,7 +15,7 @@ const styleFor = (kind: PromoTransition, hidden: number, incoming: boolean): CSS
       return {
         opacity: 1 - hidden,
         filter: `blur(${hidden * 28}px)`,
-        transform: `scale(${1 + hidden * 0.04 * direction})`,
+        transform: `scale(${1 + hidden * 0.07})`,
       };
     case 'rise':
       return { transform: `translateY(${hidden * 100 * direction}%)` };

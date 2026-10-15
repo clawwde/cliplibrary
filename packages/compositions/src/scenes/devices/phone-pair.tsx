@@ -4,7 +4,7 @@ import {
   phonePairMeta,
   phonePairSchema,
 } from '@cliplibrary/schemas';
-import { Composition, useCurrentFrame } from 'remotion';
+import { Composition, useCurrentFrame, useVideoConfig } from 'remotion';
 import { PhoneModel } from '../../promo/phone-model';
 import { isDarkLook, PromoLayer } from '../../promo/promo-layer';
 import { Stage } from '../../promo/stage';
@@ -24,7 +24,10 @@ export const PhonePair = ({
 }: PhonePairProps) => {
   const frame = useCurrentFrame() * motion.speed;
   const arrive = tween(frame, [0, 66], [0, 1], settle);
-  const travel = Math.min(5, 2 + gap);
+  const { width, height } = useVideoConfig();
+  const halfWidth =
+    Math.tan((stage.fieldOfView * Math.PI) / 360) * stage.cameraDistance * (width / height);
+  const travel = Math.max(0, halfWidth + 1.3 * scale - gap);
   return (
     <PromoLayer look={look} motion={motion}>
       <Stage stage={stage} dark={isDarkLook(look)}>

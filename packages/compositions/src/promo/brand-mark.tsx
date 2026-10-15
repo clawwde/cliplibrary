@@ -28,6 +28,7 @@ export const BrandMark = ({
         strokeLinecap="round"
         strokeDasharray={RING}
         strokeDashoffset={RING * (1 - draw)}
+        opacity={Math.min(1, draw * 10)}
         transform="rotate(-90 50 50)"
       />
       <circle
