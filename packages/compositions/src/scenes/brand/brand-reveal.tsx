@@ -31,7 +31,12 @@ export const BrandReveal = ({
   return (
     <PromoLayer look={look} motion={motion}>
       <AbsoluteFill
-        style={{ alignItems: 'center', justifyContent: 'center', transform: `scale(${scale})` }}
+        style={{
+          alignItems: 'center',
+          justifyContent: 'center',
+          transform: `scale(${scale})`,
+          willChange: 'transform',
+        }}
       >
         <FadeIn start={0} delay={2} style={{ marginBottom: 34 }}>
           <div
