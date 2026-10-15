@@ -2,6 +2,7 @@ import type { CSSProperties, ReactNode } from 'react';
 import { useCurrentFrame } from 'remotion';
 import { bodyFont, displayFont } from './fonts';
 import { accelerate, pixelTween, settle, smooth, tween } from './timing';
+import { normalize, wordsOf } from './words';
 
 interface RevealWindow {
   start: number;
@@ -25,10 +26,6 @@ const revealState = (
   return { enter, exit, offset };
 };
 
-const wordsOf = (line: string): string[] => line.split(' ').filter((word) => word.length > 0);
-
-const normalize = (word: string): string => word.replace(/[.,!?;:]/g, '').toLowerCase();
-
 export interface HeadlineProps extends RevealWindow {
   text: string;
   size: number;
@@ -37,6 +34,7 @@ export interface HeadlineProps extends RevealWindow {
   highlight?: string;
   align?: 'left' | 'center' | 'right';
   weight?: number;
+  leadWeight?: number;
   stagger?: number;
 }
 
@@ -48,6 +46,7 @@ export const Headline = ({
   highlight = '',
   align = 'left',
   weight = 600,
+  leadWeight = weight,
   stagger = 5,
   start,
   end,
@@ -59,7 +58,6 @@ export const Headline = ({
       style={{
         fontFamily: displayFont,
         fontSize: size,
-        fontWeight: weight,
         lineHeight: 1.02,
         letterSpacing: '-0.045em',
         color,
@@ -72,7 +70,10 @@ export const Headline = ({
           0.2 * size,
         ]);
         return (
-          <div key={`${lineIndex}:${line}`}>
+          <div
+            key={`${lineIndex}:${line}`}
+            style={{ fontWeight: lineIndex === 0 ? leadWeight : weight }}
+          >
             <div
               style={{
                 transform: `translateY(${offset}px)`,

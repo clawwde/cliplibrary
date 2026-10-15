@@ -6,12 +6,12 @@ import { loadFont as loadKalam } from '@remotion/google-fonts/Kalam';
 import { loadFont as loadPermanentMarker } from '@remotion/google-fonts/PermanentMarker';
 
 export const displayFont = loadInterTight('normal', {
-  weights: ['500', '600', '700'],
+  weights: ['300', '500', '600', '700'],
   subsets: ['latin'],
 }).fontFamily;
 
 export const bodyFont = loadInter('normal', {
-  weights: ['400', '500', '600'],
+  weights: ['400', '500', '600', '700'],
   subsets: ['latin'],
 }).fontFamily;
 

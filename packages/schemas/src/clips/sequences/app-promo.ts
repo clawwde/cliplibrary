@@ -10,6 +10,13 @@ import {
   promoMeta,
 } from '../../promo-common';
 import type { ClipMeta } from '../../registry';
+import {
+  type ClipSequence,
+  type SequenceBrand,
+  type SequenceEntry,
+  sequenceBrandSchema,
+  sequenceEnd,
+} from '../../sequence';
 import { studioBackdropDefaults } from '../backgrounds/studio-backdrop';
 import { brandRevealDefaults } from '../brand/brand-reveal';
 import { ctaEndCardDefaults } from '../brand/cta-end-card';
@@ -24,13 +31,6 @@ import { floatingCardsDefaults } from '../overlays/floating-cards';
 import { detailListDefaults } from '../typography/detail-list';
 import { featureCalloutsDefaults } from '../typography/feature-callouts';
 import { headlineRevealDefaults } from '../typography/headline-reveal';
-import {
-  type ClipSequence,
-  type SequenceBrand,
-  type SequenceEntry,
-  sequenceBrandSchema,
-  sequenceEnd,
-} from './sequence';
 
 export const APP_PROMO_TRACKS = ['Captions', 'Text', 'Overlays', 'Devices', 'Backdrop'] as const;
 

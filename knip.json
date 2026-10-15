@@ -30,8 +30,8 @@
       "project": ["src/**/*.ts", "tests/**/*.ts"]
     },
     "packages/compositions": {
-      "entry": ["tests/**/*.test.ts"],
-      "project": ["src/**/*.{ts,tsx}", "tests/**/*.ts"]
+      "entry": ["tests/**/*.test.{ts,tsx}"],
+      "project": ["src/**/*.{ts,tsx}", "tests/**/*.{ts,tsx}"]
     }
   }
 }

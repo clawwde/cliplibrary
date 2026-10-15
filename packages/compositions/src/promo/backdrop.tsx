@@ -1,9 +1,29 @@
 import type { PromoLook } from '@cliplibrary/schemas';
-import { AbsoluteFill } from 'remotion';
+import { AbsoluteFill, useCurrentFrame } from 'remotion';
+
+const channel = (hex: string, start: number): number => {
+  const value = Number.parseInt(hex.slice(start, start + 2), 16) / 255;
+  return value <= 0.03928 ? value / 12.92 : ((value + 0.055) / 1.055) ** 2.4;
+};
+
+export const isDarkLook = (look: PromoLook): boolean =>
+  0.2126 * channel(look.background, 1) +
+    0.7152 * channel(look.background, 3) +
+    0.0722 * channel(look.background, 5) <
+  0.25;
+
+const grainBlend = (look: PromoLook) => {
+  if (!look.liveGrain) {
+    return { opacity: look.grain, mixBlendMode: 'overlay' as const };
+  }
+  return isDarkLook(look)
+    ? { opacity: look.grain * 0.55, mixBlendMode: 'screen' as const }
+    : { opacity: look.grain * 0.7, mixBlendMode: 'multiply' as const };
+};
 
 const EASED_STOPS = [0, 0.04, 0.14, 0.3, 0.5, 0.7, 0.86, 0.96, 1];
 
-const easedGradient = (from: string, to: string): string =>
+export const easedGradient = (from: string, to: string): string =>
   EASED_STOPS.map(
     (amount, index) =>
       `color-mix(in oklab, ${from}, ${to} ${(amount * 100).toFixed(1)}%) ${((index / (EASED_STOPS.length - 1)) * 100).toFixed(1)}%`,
@@ -64,6 +84,7 @@ export const Backdrop = ({
   focusX?: number;
   focusY?: number;
 }) => {
+  const frame = useCurrentFrame();
   const glow = `rgba(255, 255, 255, ${(look.spotlight * 0.35).toFixed(3)})`;
   return (
     <AbsoluteFill
@@ -81,7 +102,7 @@ export const Backdrop = ({
         <svg
           width="100%"
           height="100%"
-          style={{ position: 'absolute', inset: 0, opacity: look.grain, mixBlendMode: 'overlay' }}
+          style={{ position: 'absolute', inset: 0, ...grainBlend(look) }}
           aria-hidden="true"
         >
           <filter id="promo-grain">
@@ -89,7 +110,7 @@ export const Backdrop = ({
               type="fractalNoise"
               baseFrequency="0.9"
               numOctaves={2}
-              seed={7}
+              seed={look.liveGrain ? 7 + Math.floor(frame) : 7}
               stitchTiles="stitch"
             />
             <feColorMatrix type="saturate" values="0" />

@@ -2,6 +2,7 @@ import { z } from 'zod';
 import { zMultiline, zSlider } from '../../control';
 import {
   defaultMotion,
+  FONT_WEIGHT,
   lightLook,
   lookSchema,
   motionSchema,
@@ -17,6 +18,8 @@ export const headlineRevealSchema = z.object({
   highlight: z.string(),
   body: zMultiline(),
   size: zSlider({ min: 40, max: 200 }),
+  weight: zSlider(FONT_WEIGHT),
+  leadWeight: zSlider(FONT_WEIGHT),
   placement: placementSchema,
   veil: z.boolean(),
   delay: zSlider({ min: 0, max: 90 }),
@@ -32,6 +35,8 @@ export const headlineRevealDefaults: HeadlineRevealProps = {
   highlight: 'simple',
   body: 'Money, plans and people, organised in one calm place.',
   size: 112,
+  weight: 600,
+  leadWeight: 600,
   placement: placement('left', 'center'),
   veil: false,
   delay: 8,

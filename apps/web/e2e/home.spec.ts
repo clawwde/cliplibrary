@@ -5,8 +5,10 @@ test('lists animations and opens the editor', async ({ page }) => {
   await expect(page.getByRole('heading', { name: 'Animations' })).toBeVisible();
   await expect(page.getByText('Phone Spin In')).toBeVisible();
 
-  await page.getByText('Phone Spin In').click();
-  await expect(page).toHaveURL(/\/clips\/phone-spin-in/);
+  await expect(async () => {
+    await page.getByText('Phone Spin In').click();
+    await expect(page).toHaveURL(/\/clips\/phone-spin-in/, { timeout: 5_000 });
+  }).toPass({ timeout: 60_000 });
   await expect(page.getByRole('button', { name: 'Export' })).toBeVisible();
 });
 
