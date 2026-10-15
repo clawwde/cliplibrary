@@ -4,7 +4,7 @@ import {
   brandRevealMeta,
   brandRevealSchema,
 } from '@cliplibrary/schemas';
-import { AbsoluteFill, Composition, useCurrentFrame, useVideoConfig } from 'remotion';
+import { AbsoluteFill, Composition, useCurrentFrame } from 'remotion';
 import { BrandMark } from '../../promo/brand-mark';
 import { bodyFont, displayFont } from '../../promo/fonts';
 import { PromoLayer } from '../../promo/promo-layer';
@@ -19,26 +19,15 @@ export const BrandReveal = ({
   showMark,
   markColor,
   wordmarkSize,
-  pushIn,
   look,
   motion,
 }: BrandRevealProps) => {
-  const raw = useCurrentFrame();
-  const { durationInFrames } = useVideoConfig();
-  const frame = raw * motion.speed;
-  const scale = 1 + tween(raw, [0, durationInFrames], [0, pushIn], (t) => t);
+  const frame = useCurrentFrame() * motion.speed;
   const letters = brandName.split('');
   return (
     <PromoLayer look={look} motion={motion}>
-      <AbsoluteFill
-        style={{
-          alignItems: 'center',
-          justifyContent: 'center',
-          transform: `scale(${scale})`,
-          willChange: 'transform',
-        }}
-      >
-        <FadeIn start={0} delay={2} subpixel style={{ marginBottom: 34 }}>
+      <AbsoluteFill style={{ alignItems: 'center', justifyContent: 'center' }}>
+        <FadeIn start={0} delay={2} style={{ marginBottom: 34 }}>
           <div
             style={{
               fontFamily: bodyFont,
@@ -85,7 +74,7 @@ export const BrandReveal = ({
             })}
           </div>
         </div>
-        <FadeIn start={44} subpixel style={{ marginTop: 34 }}>
+        <FadeIn start={44} style={{ marginTop: 34 }}>
           <div
             style={{
               fontFamily: bodyFont,

@@ -20,7 +20,7 @@ const styleFor = (
       return {
         opacity: 1 - hidden,
         filter: `blur(${hidden * 28}px)`,
-        transform: `scale(${1 + (hidden * 28 * 3 + 2) / halfSide})`,
+        transform: `scale(${1 + (hidden * 28 * 3 + Math.min(1, hidden * 20) * 2) / halfSide})`,
       };
     case 'rise':
       return { transform: `translateY(${hidden * 100 * direction}%)` };

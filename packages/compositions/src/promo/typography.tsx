@@ -100,30 +100,20 @@ export interface FadeInProps extends RevealWindow {
   children: ReactNode;
   delay?: number;
   distance?: number;
-  subpixel?: boolean;
   style?: CSSProperties;
 }
 
-export const FadeIn = ({
-  children,
-  start,
-  end,
-  delay = 0,
-  distance = 18,
-  subpixel = false,
-  style,
-}: FadeInProps) => {
+export const FadeIn = ({ children, start, end, delay = 0, distance = 18, style }: FadeInProps) => {
   const frame = useCurrentFrame();
   const { enter, exit, offset } = revealState(frame, { start, end }, delay, [
     distance,
     distance * 0.6,
   ]);
-  const shift = subpixel ? (1 - enter) * distance - exit * distance * 0.6 : offset;
   return (
     <div
       style={{
         opacity: enter * (1 - exit),
-        transform: `translateY(${shift}px)`,
+        transform: `translateY(${offset}px)`,
         filter: `blur(${(1 - enter) * 4}px)`,
         ...style,
       }}

@@ -10,7 +10,6 @@ export const brandRevealSchema = z.object({
   showMark: z.boolean(),
   markColor: zColor(),
   wordmarkSize: zSlider({ min: 80, max: 320 }),
-  pushIn: zSlider({ min: 0, max: 0.2, step: 0.005 }),
   look: lookSchema,
   motion: motionSchema,
 });
@@ -24,7 +23,6 @@ export const brandRevealDefaults: BrandRevealProps = {
   showMark: true,
   markColor: '#2f5bff',
   wordmarkSize: 200,
-  pushIn: 0.08,
   look: lightLook(),
   motion: defaultMotion({ exit: 'blur', exitFrames: 18 }),
 };
