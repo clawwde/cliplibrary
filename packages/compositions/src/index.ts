@@ -20,4 +20,5 @@ export { AppPromo } from './scenes/sequences/app-promo';
 export { SceneTransition } from './scenes/transitions/scene-transition';
 export { DetailList } from './scenes/typography/detail-list';
 export { FeatureCallouts } from './scenes/typography/feature-callouts';
+export { HandwrittenNote } from './scenes/typography/handwritten-note';
 export { HeadlineReveal } from './scenes/typography/headline-reveal';

@@ -6,6 +6,11 @@ import {
   featureCalloutsSchema,
 } from './feature-callouts';
 import {
+  handwrittenNoteDefaults,
+  handwrittenNoteMeta,
+  handwrittenNoteSchema,
+} from './handwritten-note';
+import {
   headlineRevealDefaults,
   headlineRevealMeta,
   headlineRevealSchema,
@@ -29,5 +34,11 @@ export const typographyClips: ClipModule[] = [
     schema: headlineRevealSchema,
     defaults: headlineRevealDefaults,
     meta: headlineRevealMeta,
+  },
+  {
+    id: 'handwritten-note',
+    schema: handwrittenNoteSchema,
+    defaults: handwrittenNoteDefaults,
+    meta: handwrittenNoteMeta,
   },
 ];

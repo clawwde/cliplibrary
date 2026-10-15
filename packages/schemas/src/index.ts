@@ -16,6 +16,7 @@ export * from './clips/sequences/app-promo';
 export * from './clips/transitions/scene-transition';
 export * from './clips/typography/detail-list';
 export * from './clips/typography/feature-callouts';
+export * from './clips/typography/handwritten-note';
 export * from './clips/typography/headline-reveal';
 export * from './control';
 export * from './doodle-common';

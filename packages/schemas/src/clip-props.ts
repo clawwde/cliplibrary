@@ -14,12 +14,14 @@ import type { AppPromoProps } from './clips/sequences/app-promo';
 import type { SceneTransitionProps } from './clips/transitions/scene-transition';
 import type { DetailListProps } from './clips/typography/detail-list';
 import type { FeatureCalloutsProps } from './clips/typography/feature-callouts';
+import type { HandwrittenNoteProps } from './clips/typography/handwritten-note';
 import type { HeadlineRevealProps } from './clips/typography/headline-reveal';
 
 export interface ClipPropsMap {
   'detail-list': DetailListProps;
   'feature-callouts': FeatureCalloutsProps;
   'headline-reveal': HeadlineRevealProps;
+  'handwritten-note': HandwrittenNoteProps;
   'phone-fan': PhoneFanProps;
   'phone-pair': PhonePairProps;
   'phone-scroll': PhoneScrollProps;

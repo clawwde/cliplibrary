@@ -17,7 +17,7 @@ export interface InkTiming {
   eraseFrames: number;
 }
 
-const inkPhase = (frame: number, timing: InkTiming) => {
+export const inkPhase = (frame: number, timing: InkTiming) => {
   const drawEnd = timing.drawStart + timing.drawFrames;
   const draw = tween(frame, [timing.drawStart, drawEnd], [0, 1], stroke);
   const erase = tween(
@@ -32,9 +32,15 @@ const inkPhase = (frame: number, timing: InkTiming) => {
   return { draw, erase, active };
 };
 
-const boilTime = (frame: number, ink: DoodleInk): number => frame / Math.max(1, ink.boilFrames);
+export const boilTime = (frame: number, ink: DoodleInk): number =>
+  frame / Math.max(1, ink.boilFrames);
 
-const inkPath = (points: readonly Point[], ink: DoodleInk, seed: number, time: number): Point[] => {
+export const inkPath = (
+  points: readonly Point[],
+  ink: DoodleInk,
+  seed: number,
+  time: number,
+): Point[] => {
   const base = wobble(points, ink.roughness * ink.width * 1.1, seed, 1 / 110);
   const amount = ink.boil * ink.width * 0.22;
   if (amount === 0) {

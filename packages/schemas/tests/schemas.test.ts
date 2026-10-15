@@ -268,6 +268,7 @@ describe('promo clips', () => {
     'studio-backdrop',
     'scene-transition',
     'doodle-arrows',
+    'handwritten-note',
   ];
 
   it('validates every promo default against its schema', () => {
@@ -304,6 +305,15 @@ describe('promo clips', () => {
     expect(schema.safeParse({ ...defaults, arrows: [{ ...arrow, shape: 'star' }] }).success).toBe(
       false,
     );
+  });
+
+  it('rejects an unknown handwriting font and paper pattern', () => {
+    const defaults = getClipDefaults('handwritten-note');
+    const schema = getClipSchema('handwritten-note');
+    expect(schema.safeParse({ ...defaults, font: 'comic' }).success).toBe(false);
+    expect(
+      schema.safeParse({ ...defaults, look: { ...defaults.look, paper: 'dotted' } }).success,
+    ).toBe(false);
   });
 
   it('builds every app promo layer from props its clip schema accepts', () => {
