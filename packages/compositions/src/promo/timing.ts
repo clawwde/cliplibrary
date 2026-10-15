@@ -16,6 +16,29 @@ export const tween = (
     extrapolateRight: 'clamp',
   });
 
+export const pixelTween = (
+  frame: number,
+  [first, last]: [number, number],
+  [from, to]: [number, number],
+  easing: (t: number) => number = smooth,
+): number => {
+  const start = Math.round(from);
+  const target = Math.round(to);
+  if (start === target || frame <= first) {
+    return start;
+  }
+  const direction = Math.sign(target - start);
+  let position = start;
+  for (let step = Math.ceil(first + 1e-9); step <= Math.min(frame, last); step++) {
+    const eased = Math.round(tween(step, [first, last], [from, to], easing));
+    position =
+      direction > 0
+        ? Math.min(target, Math.max(eased, position + 1))
+        : Math.max(target, Math.min(eased, position - 1));
+  }
+  return frame >= last ? target : position;
+};
+
 export const track = (
   frame: number,
   keys: [number, number][],

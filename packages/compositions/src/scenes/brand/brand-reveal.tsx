@@ -8,7 +8,7 @@ import { AbsoluteFill, Composition, useCurrentFrame, useVideoConfig } from 'remo
 import { BrandMark } from '../../promo/brand-mark';
 import { bodyFont, displayFont } from '../../promo/fonts';
 import { PromoLayer } from '../../promo/promo-layer';
-import { settle, tween } from '../../promo/timing';
+import { pixelTween, settle, tween } from '../../promo/timing';
 import { FadeIn } from '../../promo/typography';
 import type { SceneModule } from '../../scene-module';
 
@@ -31,7 +31,12 @@ export const BrandReveal = ({
   return (
     <PromoLayer look={look} motion={motion}>
       <AbsoluteFill
-        style={{ alignItems: 'center', justifyContent: 'center', transform: `scale(${scale})` }}
+        style={{
+          alignItems: 'center',
+          justifyContent: 'center',
+          transform: `scale(${scale})`,
+          willChange: 'transform',
+        }}
       >
         <FadeIn start={0} delay={2} style={{ marginBottom: 34 }}>
           <div
@@ -71,7 +76,7 @@ export const BrandReveal = ({
                     display: 'inline-block',
                     whiteSpace: 'pre',
                     opacity: reveal,
-                    transform: `translateY(${(1 - reveal) * 0.35 * wordmarkSize}px)`,
+                    transform: `translateY(${pixelTween(frame, [14 + index * 3, 40 + index * 3], [0.35 * wordmarkSize, 0], settle)}px)`,
                   }}
                 >
                   {letter}
