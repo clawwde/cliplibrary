@@ -15,5 +15,5 @@ test('lists animations and opens the editor', async ({ page }) => {
 test('shows a tile for every seeded clip', async ({ page }) => {
   await page.goto('/');
   await expect(page.getByText('Phone Wall')).toBeVisible();
-  await expect(page.getByText('Headline Reveal')).toBeVisible();
+  await expect(page.getByText('Handwritten Note')).toBeVisible();
 });

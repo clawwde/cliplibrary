@@ -1,6 +1,5 @@
 'use client';
 
-import type { Project } from '@cliplibrary/project';
 import type { ClipMeta } from '@cliplibrary/schemas';
 import { SearchX } from 'lucide-react';
 import type { ComponentType } from 'react';
@@ -15,14 +14,14 @@ import { FilterBar } from './filter-bar';
 
 export interface GalleryItem {
   meta: ClipMeta;
-  project: Project;
-  hasVideo: boolean;
+  video: string | null;
+  firstFrame: string | null;
 }
 
 type GalleryTile = ComponentType<GalleryItem>;
 
 const Grid = ({ items, Tile }: { items: GalleryItem[]; Tile: GalleryTile }) => (
-  <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-5">
+  <div className="grid grid-cols-[repeat(auto-fill,minmax(min(100%,18rem),1fr))] gap-5">
     {items.map((item) => (
       <Tile key={item.meta.id} {...item} />
     ))}

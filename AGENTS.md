@@ -31,6 +31,9 @@ A Turborepo for a library of Remotion animation clips with a deep, schema-driven
 - `bun run lint` / `bun run lint:fix` - Biome.
 - `bun run typecheck` - `tsc --noEmit` across the graph.
 - `bun run test` / `bun run test:e2e` - unit/component / Playwright.
+- `bun run render [clipId...]` - gallery previews: a half-size mp4 plus a 48px first-frame jpg per
+  clip in `apps/web/public/exports`. The homepage inlines the first frame as a blurred data-URI
+  card background and lazily plays the mp4 over it once the card nears the viewport.
 
 ## Rules
 

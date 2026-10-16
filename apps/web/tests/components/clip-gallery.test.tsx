@@ -1,5 +1,4 @@
 import { describe, expect, it } from 'bun:test';
-import { createEmptyProject } from '@cliplibrary/project';
 import { CLIP_REGISTRY } from '@cliplibrary/schemas';
 import { fireEvent, render, screen } from '@testing-library/react';
 import { useState } from 'react';
@@ -8,8 +7,8 @@ import { DEFAULT_FILTERS, type GalleryFilters } from '../../src/lib/gallery-filt
 
 const items: GalleryItem[] = CLIP_REGISTRY.map((meta) => ({
   meta,
-  project: createEmptyProject(),
-  hasVideo: false,
+  video: null,
+  firstFrame: null,
 }));
 
 const StubTile = ({ meta }: GalleryItem) => <article>{meta.title}</article>;

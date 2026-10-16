@@ -1,132 +1,90 @@
 'use client';
 
-import { ProjectComposition } from '@cliplibrary/compositions';
-import type { Project } from '@cliplibrary/project';
-import { type ClipMeta, categoryLabel } from '@cliplibrary/schemas';
-import dynamic from 'next/dynamic';
+import { categoryLabel } from '@cliplibrary/schemas';
 import Link from 'next/link';
-import { type ComponentType, useEffect, useRef, useState } from 'react';
-import { Skeleton } from '@/components/ui/skeleton';
+import { useEffect, useRef, useState } from 'react';
 import { formatDuration } from '@/lib/gallery-filters';
+import type { GalleryItem } from './clip-gallery';
 
-const Thumbnail = dynamic(() => import('@remotion/player').then((mod) => mod.Thumbnail), {
-  ssr: false,
-});
-
-const Composition = ProjectComposition as ComponentType<Record<string, unknown>>;
-
-const useNearViewport = <Node extends HTMLElement>() => {
+const useInView = <Node extends HTMLElement>() => {
   const ref = useRef<Node>(null);
-  const [near, setNear] = useState(false);
+  const [inView, setInView] = useState(false);
   useEffect(() => {
     const node = ref.current;
-    if (node === null || typeof IntersectionObserver === 'undefined') {
-      setNear(true);
+    if (node === null) {
       return;
     }
     const observer = new IntersectionObserver(
-      ([entry]) => setNear(entry?.isIntersecting ?? false),
-      { rootMargin: '240px 0px' },
+      ([entry]) => setInView(entry?.isIntersecting ?? false),
+      { rootMargin: '200px 0px' },
     );
     observer.observe(node);
     return () => observer.disconnect();
   }, []);
-  return { ref, near };
+  return { ref, inView };
 };
 
-const pending: (() => void)[] = [];
-let draining = false;
+const ClipVideo = ({ src, inView }: { src: string; inView: boolean }) => {
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const [requested, setRequested] = useState(false);
+  const [playing, setPlaying] = useState(false);
 
-const whenIdle = (run: () => void) => {
-  if (typeof requestIdleCallback === 'function') {
-    requestIdleCallback(run, { timeout: 1500 });
-  } else {
-    setTimeout(run, 60);
-  }
-};
-
-const drain = () => {
-  const next = pending.shift();
-  if (next === undefined) {
-    draining = false;
-    return;
-  }
-  next();
-  whenIdle(drain);
-};
-
-const useIdleTurn = (wanted: boolean): boolean => {
-  const [ready, setReady] = useState(false);
   useEffect(() => {
-    if (!wanted || ready) {
+    if (inView) {
+      setRequested(true);
+    }
+  }, [inView]);
+
+  useEffect(() => {
+    const video = videoRef.current;
+    if (video === null || !requested) {
       return;
     }
-    const grant = () => setReady(true);
-    pending.push(grant);
-    if (!draining) {
-      draining = true;
-      whenIdle(drain);
+    if (inView) {
+      video.play().catch(() => undefined);
+    } else {
+      video.pause();
     }
-    return () => {
-      const index = pending.indexOf(grant);
-      if (index >= 0) {
-        pending.splice(index, 1);
-      }
-    };
-  }, [wanted, ready]);
-  return ready;
+  }, [inView, requested]);
+
+  return (
+    <video
+      ref={videoRef}
+      src={requested ? src : undefined}
+      muted
+      loop
+      playsInline
+      preload="none"
+      onPlaying={() => setPlaying(true)}
+      className={`absolute inset-0 size-full object-cover transition-opacity duration-300 ${playing ? 'opacity-100' : 'opacity-0'}`}
+    />
+  );
 };
 
-export const VideoTile = ({
-  meta,
-  project,
-  hasVideo,
-}: {
-  meta: ClipMeta;
-  project: Project;
-  hasVideo: boolean;
-}) => {
-  const [loaded, setLoaded] = useState(false);
-  const { ref, near } = useNearViewport<HTMLAnchorElement>();
-  const previewReady = useIdleTurn(near && !hasVideo);
+export const VideoTile = ({ meta, video, firstFrame }: GalleryItem) => {
+  const { ref, inView } = useInView<HTMLAnchorElement>();
 
   return (
     <Link
       ref={ref}
       href={`/clips/${meta.id}`}
-      className="group flex flex-col overflow-hidden rounded-xl bg-card transition-transform duration-150 hover:-translate-y-0.5"
+      className="group flex flex-col overflow-hidden rounded-xl border bg-card transition-colors hover:border-foreground/25"
     >
-      <div className="relative aspect-video overflow-hidden bg-black">
-        {!near || (hasVideo && !loaded) || !(hasVideo || previewReady) ? (
-          <Skeleton className="absolute inset-0 rounded-none" />
-        ) : null}
-        <div className="size-full transition-transform duration-300 ease-out group-hover:scale-105">
-          {near && hasVideo ? (
-            <video
-              src={`/exports/${meta.id}.mp4`}
-              poster={`/exports/${meta.id}.jpg`}
-              muted
-              loop
-              autoPlay
-              playsInline
-              preload="metadata"
-              onLoadedData={() => setLoaded(true)}
-              className="size-full object-cover"
-            />
-          ) : null}
-          {near && !hasVideo && previewReady ? (
-            <Thumbnail
-              component={Composition}
-              inputProps={project as unknown as Record<string, unknown>}
-              durationInFrames={project.durationInFrames}
-              fps={project.fps}
-              compositionWidth={project.width}
-              compositionHeight={project.height}
-              frameToDisplay={Math.min(meta.posterFrame, project.durationInFrames - 1)}
-              style={{ width: '100%', height: '100%' }}
-            />
-          ) : null}
-        </div>
+      <div className="relative aspect-video overflow-hidden bg-muted">
+        {firstFrame === null ? null : (
+          <div
+            aria-hidden
+            className="absolute inset-0 scale-110 bg-center bg-cover blur-sm"
+            style={{ backgroundImage: `url(${firstFrame})` }}
+          />
+        )}
+        {video === null ? (
+          <span className="absolute inset-0 grid place-items-center px-4 text-center text-muted-foreground text-xs">
+            No preview yet. Run bun run render.
+          </span>
+        ) : (
+          <ClipVideo src={video} inView={inView} />
+        )}
         <span className="absolute top-2 right-2 rounded-md bg-black/55 px-1.5 py-0.5 font-medium text-[11px] text-white tabular-nums backdrop-blur">
           {formatDuration(meta)}
         </span>
