@@ -101,7 +101,7 @@ export const appIconRevealMeta: ClipMeta = {
   description:
     'A blank clay tile flips over to reveal the app icon while the name types on beneath it.',
   category: 'brand',
-  tags: ['3d', 'logo', 'reveal'],
+  tags: ['3d', 'logo', 'icon', 'flip', 'reveal'],
   theme: 'light',
   source: 'packages/compositions/src/scenes/brand/app-icon-reveal.tsx',
   durationInFrames: 120,

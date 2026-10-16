@@ -182,8 +182,13 @@ describe('pluggable module architecture', () => {
 
   it('places the clips in their intended categories', () => {
     const categoryOf = (id: ClipId) => getClipMeta(id).category;
-    expect(categoryOf('typewriter')).toBe('typography');
-    expect(categoryOf('phone-spin-in')).toBe('devices');
+    expect(categoryOf('typewriter')).toBe('text-reveals');
+    expect(categoryOf('word-punch')).toBe('kinetic-type');
+    expect(categoryOf('handwritten-note')).toBe('hand-drawn');
+    expect(categoryOf('doodle-arrows')).toBe('hand-drawn');
+    expect(categoryOf('phone-spin-in')).toBe('phone-reveals');
+    expect(categoryOf('phone-wall')).toBe('phone-layouts');
+    expect(categoryOf('phone-scroll')).toBe('screen-demos');
     expect(categoryOf('floating-cards')).toBe('overlays');
     expect(categoryOf('brand-reveal')).toBe('brand');
     expect(categoryOf('relief-backdrop')).toBe('backgrounds');
@@ -329,7 +334,7 @@ describe('clip taxonomy', () => {
   });
 
   it('labels categories for display', () => {
-    expect(categoryLabel('devices')).toBe('3D Devices');
-    expect(categoryLabel('overlays')).toBe('UI Overlays');
+    expect(categoryLabel('phone-layouts')).toBe('Multi-phone Layouts');
+    expect(categoryLabel('hand-drawn')).toBe('Hand-drawn');
   });
 });

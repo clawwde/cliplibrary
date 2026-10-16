@@ -5,16 +5,16 @@ import { ctaEndCardDefaults, ctaEndCardMeta, ctaEndCardSchema } from './cta-end-
 
 export const brandClips: ClipModule[] = [
   {
-    id: 'app-icon-reveal',
-    schema: appIconRevealSchema,
-    defaults: appIconRevealDefaults,
-    meta: appIconRevealMeta,
-  },
-  {
     id: 'brand-reveal',
     schema: brandRevealSchema,
     defaults: brandRevealDefaults,
     meta: brandRevealMeta,
+  },
+  {
+    id: 'app-icon-reveal',
+    schema: appIconRevealSchema,
+    defaults: appIconRevealDefaults,
+    meta: appIconRevealMeta,
   },
   {
     id: 'cta-end-card',

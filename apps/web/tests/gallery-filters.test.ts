@@ -18,7 +18,7 @@ describe('gallery filters', () => {
   it('round-trips filters through the URL and drops defaults', () => {
     const filters = {
       query: 'phone',
-      category: 'devices' as const,
+      category: 'phone-layouts' as const,
       tags: ['3d' as const, 'grid' as const],
       theme: 'light' as const,
       sort: 'longest' as const,
@@ -43,7 +43,7 @@ describe('gallery filters', () => {
     expect(wall).toBeDefined();
     if (wall !== undefined) {
       expect(matchesQuery(wall, 'PHONE grid')).toBe(true);
-      expect(matchesQuery(wall, '3d devices')).toBe(true);
+      expect(matchesQuery(wall, '3d multi-phone layouts')).toBe(true);
       expect(matchesQuery(wall, 'phone chart')).toBe(false);
     }
   });
@@ -51,7 +51,7 @@ describe('gallery filters', () => {
   it('filters by category, every selected tag and theme together', () => {
     const result = filterClips(items, {
       ...DEFAULT_FILTERS,
-      category: 'devices',
+      category: 'phone-layouts',
       tags: ['3d', 'phone'],
       theme: 'dark',
     });
@@ -69,9 +69,9 @@ describe('gallery filters', () => {
   });
 
   it('counts each facet against the other active filters', () => {
-    const filters = { ...DEFAULT_FILTERS, category: 'devices' as const };
+    const filters = { ...DEFAULT_FILTERS, category: 'phone-layouts' as const };
     const categories = facetCounts(items, filters, 'category', (meta) => [meta.category]);
-    expect(categories.get('typography')).toBeGreaterThan(0);
+    expect(categories.get('kinetic-type')).toBeGreaterThan(0);
     const themes = facetCounts(items, filters, 'theme', (meta) => [meta.theme]);
     expect(themes.get('dark')).toBe(1);
   });

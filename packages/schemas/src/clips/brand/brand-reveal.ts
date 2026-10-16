@@ -34,7 +34,7 @@ export const brandRevealMeta: ClipMeta = {
   description:
     'A ring mark draws itself, the wordmark rises letter by letter and a tagline follows.',
   category: 'brand',
-  tags: ['logo', 'reveal', 'minimal'],
+  tags: ['logo', 'reveal', 'draw', 'minimal'],
   theme: 'light',
   source: 'packages/compositions/src/scenes/brand/brand-reveal.tsx',
   durationInFrames: 120,

@@ -42,7 +42,7 @@ export const filmDustMeta: ClipMeta = {
   description:
     'Flickering dust, stray hairs, faint scratches and a vignette like a worn film print.',
   category: 'overlays',
-  tags: ['kinetic', 'film', 'minimal'],
+  tags: ['film', 'grain', 'texture', 'overlay'],
   theme: 'dark',
   source: 'packages/compositions/src/scenes/overlays/film-dust.tsx',
   durationInFrames: 150,

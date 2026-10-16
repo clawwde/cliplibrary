@@ -1,6 +1,5 @@
 import type { SceneModule } from '../../scene-module';
-import { doodleArrowsScene } from './doodle-arrows';
 import { filmDustScene } from './film-dust';
 import { floatingCardsScene } from './floating-cards';
 
-export const overlaysScenes: SceneModule[] = [floatingCardsScene, doodleArrowsScene, filmDustScene];
+export const overlaysScenes: SceneModule[] = [floatingCardsScene, filmDustScene];

@@ -27,7 +27,7 @@ export const sceneTransitionMeta: ClipMeta = {
   description:
     'A solid colour covers the frame and opens again, to bridge two clips on the timeline.',
   category: 'transitions',
-  tags: ['wipe', 'minimal'],
+  tags: ['wipe', 'cover', 'minimal'],
   theme: 'dark',
   source: 'packages/compositions/src/scenes/transitions/scene-transition.tsx',
   durationInFrames: 40,

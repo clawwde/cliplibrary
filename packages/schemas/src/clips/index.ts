@@ -3,14 +3,22 @@ import type { ClipId, ClipPropsMap } from '../clip-props';
 import type { ClipMeta, ClipModule } from '../registry';
 import { backgroundsClips } from './backgrounds';
 import { brandClips } from './brand';
-import { devicesClips } from './devices';
+import { handDrawnClips } from './hand-drawn';
+import { kineticTypeClips } from './kinetic-type';
 import { overlaysClips } from './overlays';
+import { phoneLayoutsClips } from './phone-layouts';
+import { phoneRevealsClips } from './phone-reveals';
+import { screenDemosClips } from './screen-demos';
+import { textRevealsClips } from './text-reveals';
 import { transitionsClips } from './transitions';
-import { typographyClips } from './typography';
 
 export const CLIP_MODULES: ClipModule[] = [
-  ...typographyClips,
-  ...devicesClips,
+  ...kineticTypeClips,
+  ...textRevealsClips,
+  ...handDrawnClips,
+  ...phoneRevealsClips,
+  ...phoneLayoutsClips,
+  ...screenDemosClips,
   ...overlaysClips,
   ...brandClips,
   ...backgroundsClips,

@@ -1,10 +1,56 @@
+const PHONE_KEYWORDS = ['device', 'iphone', 'mobile', 'smartphone', 'mockup', 'app'] as const;
+
 export const CLIP_CATEGORIES = [
-  { id: 'typography', label: 'Typography' },
-  { id: 'devices', label: '3D Devices' },
-  { id: 'overlays', label: 'UI Overlays' },
-  { id: 'brand', label: 'Brand & CTA' },
-  { id: 'backgrounds', label: 'Backgrounds' },
-  { id: 'transitions', label: 'Transitions' },
+  {
+    id: 'kinetic-type',
+    label: 'Kinetic Type',
+    keywords: ['typography', 'type', 'words', 'title', 'motion text', 'big text'],
+  },
+  {
+    id: 'text-reveals',
+    label: 'Text Reveals',
+    keywords: ['typography', 'type', 'title', 'letters', 'characters', 'numbers', 'stats'],
+  },
+  {
+    id: 'hand-drawn',
+    label: 'Hand-drawn',
+    keywords: ['handwritten', 'marker', 'ink', 'scribble', 'drawn', 'pen', 'annotation'],
+  },
+  {
+    id: 'phone-reveals',
+    label: 'Phone Reveals',
+    keywords: [...PHONE_KEYWORDS, 'entrance', 'intro', 'hero'],
+  },
+  {
+    id: 'phone-layouts',
+    label: 'Multi-phone Layouts',
+    keywords: [...PHONE_KEYWORDS, 'phones', 'multiple', 'arrangement', 'composition'],
+  },
+  {
+    id: 'screen-demos',
+    label: 'Screen Demos',
+    keywords: [...PHONE_KEYWORDS, 'ui', 'walkthrough', 'demo', 'screens', 'feed'],
+  },
+  {
+    id: 'overlays',
+    label: 'Overlays',
+    keywords: ['layer', 'effect', 'ui', 'popup', 'vintage'],
+  },
+  {
+    id: 'brand',
+    label: 'Logo & End Cards',
+    keywords: ['brand', 'branding', 'intro', 'outro', 'ending', 'call to action', 'wordmark'],
+  },
+  {
+    id: 'backgrounds',
+    label: 'Backgrounds',
+    keywords: ['background', 'bg', 'scene', 'set', 'clay', 'wall'],
+  },
+  {
+    id: 'transitions',
+    label: 'Transitions',
+    keywords: ['transition', 'cut', 'bridge', 'cover', 'between'],
+  },
 ] as const;
 
 export type ClipCategory = (typeof CLIP_CATEGORIES)[number]['id'];
@@ -14,25 +60,53 @@ export const CLIP_CATEGORY_IDS: readonly ClipCategory[] = CLIP_CATEGORIES.map(
 );
 
 export const CLIP_TAGS = [
-  '3d',
-  'phone',
-  'cards',
+  'kinetic',
   'headline',
   'text',
-  'logo',
-  'cta',
-  'list',
-  'grid',
-  'scroll',
-  'notification',
-  'gradient',
+  'typing',
+  'caret',
+  'counter',
+  'marquee',
+  'outline',
+  'repeat',
+  'stack',
+  'zoom',
+  'flip',
+  'glow',
   'reveal',
-  'wipe',
-  'minimal',
+  'handwriting',
   'doodle',
   'sketch',
-  'kinetic',
+  'arrows',
+  'draw',
+  '3d',
+  'phone',
+  'multi-phone',
+  'screen',
+  'spin',
+  'float',
+  'drop',
+  'slide',
+  'orbit',
+  'grid',
+  'scroll',
+  'crossfade',
+  'top-down',
+  'camera-move',
+  'cards',
+  'notification',
+  'overlay',
   'film',
+  'grain',
+  'texture',
+  'logo',
+  'icon',
+  'cta',
+  'end-card',
+  'backdrop',
+  'wipe',
+  'cover',
+  'minimal',
 ] as const;
 
 export type ClipTag = (typeof CLIP_TAGS)[number];
@@ -41,5 +115,9 @@ export const CLIP_THEMES = ['light', 'dark'] as const;
 
 export type ClipTheme = (typeof CLIP_THEMES)[number];
 
-export const categoryLabel = (id: ClipCategory): string =>
-  CLIP_CATEGORIES.find((category) => category.id === id)?.label ?? id;
+const categoryById = (id: ClipCategory) => CLIP_CATEGORIES.find((category) => category.id === id);
+
+export const categoryLabel = (id: ClipCategory): string => categoryById(id)?.label ?? id;
+
+export const categoryKeywords = (id: ClipCategory): readonly string[] =>
+  categoryById(id)?.keywords ?? [];

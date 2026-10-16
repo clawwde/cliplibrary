@@ -87,7 +87,7 @@ export const ctaEndCardMeta: ClipMeta = {
   title: 'CTA End Card',
   description: 'A closing card with the brand mark, a headline, two store buttons and a URL.',
   category: 'brand',
-  tags: ['cta', 'logo', 'minimal'],
+  tags: ['cta', 'logo', 'end-card', 'minimal'],
   theme: 'light',
   source: 'packages/compositions/src/scenes/brand/cta-end-card.tsx',
   durationInFrames: 150,

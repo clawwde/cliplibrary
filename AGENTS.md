@@ -43,9 +43,11 @@ A Turborepo for a library of Remotion animation clips with a deep, schema-driven
 
 Clips are pluggable, category-organized modules so that parallel authors rarely touch the same
 file. Categories group clips by the type of animation and are defined once in
-`packages/schemas/src/taxonomy.ts` (`CLIP_CATEGORIES`): `typography`, `devices`, `overlays`,
-`brand`, `backgrounds`, `transitions`. Every `ClipMeta` also carries `tags` (from
-`CLIP_TAGS`) and a `theme` (`light` or `dark`), which the gallery search and filters read.
+`packages/schemas/src/taxonomy.ts` (`CLIP_CATEGORIES`): `kinetic-type`, `text-reveals`, `hand-drawn`,
+`phone-reveals`, `phone-layouts`, `screen-demos`, `overlays`, `brand`, `backgrounds`, `transitions`.
+Each category also lists search `keywords` (synonyms the gallery search matches). Every
+`ClipMeta` also carries `tags` (from `CLIP_TAGS`) and a `theme` (`light` or `dark`), which the
+gallery search and filters read.
 
 - Schema side: `packages/schemas/src/clips/<category>/<id>.ts` exports `<name>Schema`,
   `<name>Defaults`, `<Name>Props` and `<name>Meta: ClipMeta` (metadata, including `category`, is

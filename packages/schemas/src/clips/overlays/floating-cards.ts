@@ -54,7 +54,7 @@ export const floatingCardsMeta: ClipMeta = {
   title: 'Floating Cards',
   description: 'UI notification cards pop into 3D space and bob gently at different depths.',
   category: 'overlays',
-  tags: ['3d', 'cards', 'notification'],
+  tags: ['3d', 'cards', 'notification', 'float', 'overlay'],
   theme: 'light',
   source: 'packages/compositions/src/scenes/overlays/floating-cards.tsx',
   durationInFrames: 150,

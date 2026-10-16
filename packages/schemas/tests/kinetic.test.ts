@@ -12,13 +12,14 @@ describe('kinetic type clips', () => {
     'outline-marquee',
     'letter-flip',
   ];
+  const TYPE_CATEGORIES: readonly string[] = ['kinetic-type', 'text-reveals', 'hand-drawn'];
 
-  it('ships every kinetic clip as dark typography with a backdrop toggle and live grain', () => {
+  it('ships every kinetic clip as dark type with a backdrop toggle and live grain', () => {
     for (const id of KINETIC_IDS) {
       const meta = getClipMeta(id);
-      expect(meta.category).toBe('typography');
+      expect(TYPE_CATEGORIES).toContain(meta.category);
       expect(meta.theme).toBe('dark');
-      expect(meta.tags).toContain('kinetic');
+      expect(meta.tags).toContain('text');
       const defaults = getClipDefaults(id) as {
         look: { showBackdrop: boolean; liveGrain: boolean };
       };

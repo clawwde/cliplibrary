@@ -80,7 +80,7 @@ export const reliefBackdropMeta: ClipMeta = {
   description:
     'A clay wall carved with nested rounded squares; the camera pushes in and swings around its side.',
   category: 'backgrounds',
-  tags: ['3d', 'minimal'],
+  tags: ['3d', 'backdrop', 'camera-move', 'minimal'],
   theme: 'light',
   source: 'packages/compositions/src/scenes/backgrounds/relief-backdrop.tsx',
   durationInFrames: 240,
