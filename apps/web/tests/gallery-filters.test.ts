@@ -6,7 +6,6 @@ import {
   filterClips,
   formatDuration,
   hasActiveFilters,
-  matchesQuery,
   parseFilters,
   serializeFilters,
 } from '../src/lib/gallery-filters';
@@ -35,17 +34,37 @@ describe('gallery filters', () => {
     expect(parsed.category).toBe('all');
     expect(parsed.tags).toEqual(['3d']);
     expect(parsed.theme).toBe('all');
-    expect(parsed.sort).toBe('category');
+    expect(parsed.sort).toBe('relevance');
   });
 
-  it('matches every search token across title, description, category and tags', () => {
-    const wall = CLIP_REGISTRY.find((meta) => meta.id === 'phone-wall');
-    expect(wall).toBeDefined();
-    if (wall !== undefined) {
-      expect(matchesQuery(wall, 'PHONE grid')).toBe(true);
-      expect(matchesQuery(wall, '3d multi-phone layouts')).toBe(true);
-      expect(matchesQuery(wall, 'phone chart')).toBe(false);
-    }
+  const search = (query: string) => ids(filterClips(items, { ...DEFAULT_FILTERS, query }));
+
+  it('requires every search token across title, tags, category and description', () => {
+    expect(search('PHONE grid')).toEqual(['phone-wall']);
+    expect(search('3d multi-phone layouts')).toContain('phone-wall');
+    expect(search('phone chart')).toEqual([]);
+  });
+
+  it('forgives typos, completes prefixes and knows category synonyms', () => {
+    expect(search('typewritter')).toEqual(['typewriter']);
+    expect(search('notifcation')).toEqual(['floating-cards']);
+    expect(search('scrol')[0]).toBe('phone-scroll');
+    expect(search('hand drawn')).toEqual(['handwritten-note', 'scribble-caption', 'doodle-arrows']);
+    const phones = CLIP_REGISTRY.filter((meta) => meta.tags.includes('phone')).map(
+      (meta) => meta.id,
+    );
+    expect(search('iphone').sort()).toEqual([...phones].sort());
+  });
+
+  it('ranks title matches above tag and description matches', () => {
+    expect(search('flip')).toEqual(['letter-flip', 'app-icon-reveal']);
+    expect(search('counter')[0]).toBe('number-counter');
+  });
+
+  it('orders by category when there is no search to rank by', () => {
+    const order = filterClips(items, DEFAULT_FILTERS).map((item) => item.meta.category);
+    const categories = [...new Set(order)];
+    expect(order).toEqual(categories.flatMap((category) => order.filter((c) => c === category)));
   });
 
   it('filters by category, every selected tag and theme together', () => {

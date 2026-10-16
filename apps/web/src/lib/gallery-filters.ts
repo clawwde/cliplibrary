@@ -3,14 +3,17 @@ import {
   CLIP_TAGS,
   CLIP_THEMES,
   type ClipCategory,
+  type ClipId,
   type ClipMeta,
   type ClipTag,
   type ClipTheme,
+  categoryKeywords,
   categoryLabel,
 } from '@cliplibrary/schemas';
+import MiniSearch from 'minisearch';
 
 export const SORT_OPTIONS = [
-  { id: 'category', label: 'Category' },
+  { id: 'relevance', label: 'Best match' },
   { id: 'name-asc', label: 'Name, A to Z' },
   { id: 'name-desc', label: 'Name, Z to A' },
   { id: 'shortest', label: 'Shortest first' },
@@ -32,7 +35,7 @@ export const DEFAULT_FILTERS: GalleryFilters = {
   category: 'all',
   tags: [],
   theme: 'all',
-  sort: 'category',
+  sort: 'relevance',
 };
 
 const SORT_IDS: readonly string[] = SORT_OPTIONS.map((option) => option.id);
@@ -86,44 +89,109 @@ export const hasActiveFilters = (filters: GalleryFilters): boolean =>
   filters.tags.length > 0 ||
   filters.theme !== 'all';
 
-const haystack = (meta: ClipMeta): string =>
-  [meta.title, meta.description, meta.id, categoryLabel(meta.category), ...meta.tags]
-    .join(' ')
-    .toLowerCase();
+interface SearchDocument {
+  id: ClipId;
+  title: string;
+  tags: string;
+  category: string;
+  keywords: string;
+  theme: string;
+  description: string;
+}
 
-export const matchesQuery = (meta: ClipMeta, query: string): boolean => {
-  const tokens = query
-    .toLowerCase()
-    .split(/\s+/)
-    .filter((token) => token.length > 0);
-  const text = haystack(meta);
-  return tokens.every((token) => text.includes(token));
+const toSearchDocument = (meta: ClipMeta): SearchDocument => ({
+  id: meta.id,
+  title: meta.title,
+  tags: meta.tags.join(' '),
+  category: categoryLabel(meta.category),
+  keywords: [meta.category, ...categoryKeywords(meta.category)].join(' '),
+  theme: meta.theme,
+  description: meta.description,
+});
+
+const SEARCH_FIELDS = ['title', 'tags', 'category', 'keywords', 'theme', 'description'];
+
+const FUZZY_MIN_LENGTH = 6;
+
+const indexes = new WeakMap<readonly { meta: ClipMeta }[], MiniSearch<SearchDocument>>();
+
+const indexFor = (items: readonly { meta: ClipMeta }[]): MiniSearch<SearchDocument> => {
+  const cached = indexes.get(items);
+  if (cached !== undefined) {
+    return cached;
+  }
+  const index = new MiniSearch<SearchDocument>({
+    fields: SEARCH_FIELDS,
+    searchOptions: {
+      boost: { title: 4, tags: 2.5, category: 2, keywords: 1.5, theme: 1, description: 1 },
+      prefix: true,
+      fuzzy: (term) => (term.length >= FUZZY_MIN_LENGTH ? 0.2 : false),
+      combineWith: 'AND',
+    },
+  });
+  index.addAll(items.map((item) => toSearchDocument(item.meta)));
+  indexes.set(items, index);
+  return index;
+};
+
+type SearchScores = ReadonlyMap<ClipId, number> | null;
+
+const searchScores = (items: readonly { meta: ClipMeta }[], query: string): SearchScores => {
+  if (query.trim().length === 0) {
+    return null;
+  }
+  return new Map(
+    indexFor(items)
+      .search(query)
+      .map((result) => [result.id as ClipId, result.score]),
+  );
 };
 
 type Facet = 'category' | 'tags' | 'theme';
 
-const matches = (meta: ClipMeta, filters: GalleryFilters, ignore?: Facet): boolean =>
-  matchesQuery(meta, filters.query) &&
+const matches = (
+  meta: ClipMeta,
+  filters: GalleryFilters,
+  scores: SearchScores,
+  ignore?: Facet,
+): boolean =>
+  (scores === null || scores.has(meta.id)) &&
   (ignore === 'category' || filters.category === 'all' || meta.category === filters.category) &&
   (ignore === 'tags' || filters.tags.every((tag) => meta.tags.includes(tag))) &&
   (ignore === 'theme' || filters.theme === 'all' || meta.theme === filters.theme);
 
-const COMPARATORS: Record<SortId, (left: ClipMeta, right: ClipMeta) => number> = {
-  category: (left, right) =>
-    CATEGORY_IDS.indexOf(left.category) - CATEGORY_IDS.indexOf(right.category),
+type Comparator = (left: ClipMeta, right: ClipMeta) => number;
+
+const byCategory: Comparator = (left, right) =>
+  CATEGORY_IDS.indexOf(left.category) - CATEGORY_IDS.indexOf(right.category);
+
+const COMPARATORS: Record<Exclude<SortId, 'relevance'>, Comparator> = {
   'name-asc': (left, right) => left.title.localeCompare(right.title),
   'name-desc': (left, right) => right.title.localeCompare(left.title),
   shortest: (left, right) => left.durationInFrames / left.fps - right.durationInFrames / right.fps,
   longest: (left, right) => right.durationInFrames / right.fps - left.durationInFrames / left.fps,
 };
 
+const comparator = (sort: SortId, scores: SearchScores): Comparator => {
+  if (sort !== 'relevance') {
+    return COMPARATORS[sort];
+  }
+  if (scores === null) {
+    return byCategory;
+  }
+  return (left, right) => (scores.get(right.id) ?? 0) - (scores.get(left.id) ?? 0);
+};
+
 export const filterClips = <Item extends { meta: ClipMeta }>(
   items: readonly Item[],
   filters: GalleryFilters,
-): Item[] =>
-  items
-    .filter((item) => matches(item.meta, filters))
-    .sort((left, right) => COMPARATORS[filters.sort](left.meta, right.meta));
+): Item[] => {
+  const scores = searchScores(items, filters.query);
+  const compare = comparator(filters.sort, scores);
+  return items
+    .filter((item) => matches(item.meta, filters, scores))
+    .sort((left, right) => compare(left.meta, right.meta));
+};
 
 export const facetCounts = <Key extends string>(
   items: readonly { meta: ClipMeta }[],
@@ -131,9 +199,10 @@ export const facetCounts = <Key extends string>(
   facet: Facet,
   keysOf: (meta: ClipMeta) => readonly Key[],
 ): Map<Key, number> => {
+  const scores = searchScores(items, filters.query);
   const counts = new Map<Key, number>();
   for (const item of items) {
-    if (matches(item.meta, filters, facet)) {
+    if (matches(item.meta, filters, scores, facet)) {
       for (const key of keysOf(item.meta)) {
         counts.set(key, (counts.get(key) ?? 0) + 1);
       }

@@ -110,7 +110,7 @@ export const FilterBar = ({
             type="search"
             value={query}
             onChange={(event) => onQueryChange(event.target.value)}
-            placeholder="Search clips, tags or categories"
+            placeholder="Search by name, motion or tag: phone, typing, logo"
             aria-label="Search clips"
             className="h-9 pr-16 pl-9 [&::-webkit-search-cancel-button]:hidden"
           />
