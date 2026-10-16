@@ -1,9 +1,8 @@
 import { smooth, tween } from './timing';
 
-export const SWAP_FRAMES = 44;
+const SWAP_FRAMES = 44;
 
-export const beatStart = (beat: number, beatLength: number): number =>
-  beat * beatLength - SWAP_FRAMES / 2;
+const beatStart = (beat: number, beatLength: number): number => beat * beatLength - SWAP_FRAMES / 2;
 
 export interface BeatState {
   beat: number;

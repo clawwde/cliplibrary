@@ -1,7 +1,6 @@
 import { describe, expect, it } from 'bun:test';
 import { z } from 'zod';
 import {
-  APP_PROMO_SEQUENCE,
   brandRevealSchema,
   CLIP_CATEGORY_IDS,
   CLIP_DEFAULTS,
@@ -13,14 +12,12 @@ import {
   CLIP_THEMES,
   type ClipId,
   categoryLabel,
-  DOODLE_PROMO_SEQUENCE,
   EASING_IDS,
   floatingCardsSchema,
   getClipDefaults,
   getClipMeta,
   getClipSchema,
   HEX_COLOR,
-  headlineRevealSchema,
   isClipId,
   phoneFanSchema,
   phoneSpinInSchema,
@@ -119,12 +116,6 @@ describe('clip schema constraints', () => {
     expect(floatingCardsSchema.safeParse({ ...base, cards: [base.cards[0]] }).success).toBe(true);
   });
 
-  it('keeps headline-reveal text sizes inside the slider range', () => {
-    const base = CLIP_DEFAULTS['headline-reveal'];
-    expect(headlineRevealSchema.safeParse({ ...base, size: 20 }).success).toBe(false);
-    expect(headlineRevealSchema.safeParse({ ...base, size: 120 }).success).toBe(true);
-  });
-
   it('strips unknown properties from a parsed clip object', () => {
     const base = CLIP_DEFAULTS['phone-spin-in'];
     const result = CLIP_SCHEMAS['phone-spin-in'].safeParse({ ...base, surprise: true });
@@ -191,13 +182,12 @@ describe('pluggable module architecture', () => {
 
   it('places the clips in their intended categories', () => {
     const categoryOf = (id: ClipId) => getClipMeta(id).category;
-    expect(categoryOf('headline-reveal')).toBe('typography');
+    expect(categoryOf('typewriter')).toBe('typography');
     expect(categoryOf('phone-spin-in')).toBe('devices');
     expect(categoryOf('floating-cards')).toBe('overlays');
     expect(categoryOf('brand-reveal')).toBe('brand');
-    expect(categoryOf('studio-backdrop')).toBe('backgrounds');
+    expect(categoryOf('relief-backdrop')).toBe('backgrounds');
     expect(categoryOf('scene-transition')).toBe('transitions');
-    expect(categoryOf('app-promo')).toBe('sequences');
   });
 });
 
@@ -252,7 +242,6 @@ describe('video media control', () => {
 
 describe('promo clips', () => {
   const PROMO_IDS: ClipId[] = [
-    'app-promo',
     'phone-spin-in',
     'phone-turnaround',
     'phone-fan',
@@ -261,16 +250,11 @@ describe('promo clips', () => {
     'phone-wall',
     'phone-pair',
     'floating-cards',
-    'headline-reveal',
-    'feature-callouts',
-    'detail-list',
     'brand-reveal',
     'cta-end-card',
-    'studio-backdrop',
     'scene-transition',
     'doodle-arrows',
     'handwritten-note',
-    'doodle-promo',
     'relief-backdrop',
     'app-icon-reveal',
     'phone-pedestal',
@@ -283,7 +267,6 @@ describe('promo clips', () => {
     'echo-stack',
     'outline-marquee',
     'letter-flip',
-    'scooter-promo',
   ];
 
   it('validates every promo default against its schema', () => {
@@ -301,12 +284,6 @@ describe('promo clips', () => {
     expect(
       schema.safeParse({ ...defaults, phone: { ...defaults.phone, finish: 'gold' } }).success,
     ).toBe(false);
-  });
-
-  it('caps the detail list at six entries', () => {
-    const defaults = getClipDefaults('detail-list');
-    const items = ['a', 'b', 'c', 'd', 'e', 'f', 'g'];
-    expect(getClipSchema('detail-list').safeParse({ ...defaults, items }).success).toBe(false);
   });
 
   it('bounds the doodle arrows and rejects unknown shapes', () => {
@@ -329,45 +306,6 @@ describe('promo clips', () => {
     expect(
       schema.safeParse({ ...defaults, look: { ...defaults.look, paper: 'dotted' } }).success,
     ).toBe(false);
-  });
-
-  it('builds every doodle promo layer from props its clip schema accepts', () => {
-    for (const entry of DOODLE_PROMO_SEQUENCE.entries) {
-      expect(getClipSchema(entry.clipId).safeParse(entry.props).success).toBe(true);
-      expect(DOODLE_PROMO_SEQUENCE.tracks).toContain(entry.track);
-    }
-  });
-
-  it('overlaps consecutive doodle promo devices so beats crossfade', () => {
-    const devices = DOODLE_PROMO_SEQUENCE.entries.filter((entry) => entry.track === 'Devices');
-    for (let index = 1; index < devices.length; index++) {
-      const previous = devices[index - 1];
-      const current = devices[index];
-      if (previous && current) {
-        const overlap = previous.from + previous.durationInFrames - current.from;
-        expect(overlap).toBeGreaterThanOrEqual(12);
-        expect(overlap).toBeLessThanOrEqual(24);
-      }
-    }
-  });
-
-  it('builds every app promo layer from props its clip schema accepts', () => {
-    for (const entry of APP_PROMO_SEQUENCE.entries) {
-      const result = getClipSchema(entry.clipId).safeParse(entry.props);
-      expect(result.success).toBe(true);
-    }
-  });
-
-  it('keeps phone swap and its feature callouts on the same beats', () => {
-    const swap = APP_PROMO_SEQUENCE.entries.find((entry) => entry.clipId === 'phone-swap');
-    const callouts = APP_PROMO_SEQUENCE.entries.find(
-      (entry) => entry.clipId === 'feature-callouts',
-    );
-    expect(swap).toBeDefined();
-    expect(callouts).toBeDefined();
-    const end = (item: { from: number; durationInFrames: number } | undefined) =>
-      (item?.from ?? 0) + (item?.durationInFrames ?? 0);
-    expect(end(swap)).toBe(end(callouts));
   });
 });
 

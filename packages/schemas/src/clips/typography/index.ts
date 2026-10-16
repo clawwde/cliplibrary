@@ -1,22 +1,10 @@
 import type { ClipModule } from '../../registry';
-import { detailListDefaults, detailListMeta, detailListSchema } from './detail-list';
 import { echoStackDefaults, echoStackMeta, echoStackSchema } from './echo-stack';
-import {
-  featureCalloutsDefaults,
-  featureCalloutsMeta,
-  featureCalloutsSchema,
-} from './feature-callouts';
-import { glowRevealDefaults, glowRevealMeta, glowRevealSchema } from './glow-reveal';
 import {
   handwrittenNoteDefaults,
   handwrittenNoteMeta,
   handwrittenNoteSchema,
 } from './handwritten-note';
-import {
-  headlineRevealDefaults,
-  headlineRevealMeta,
-  headlineRevealSchema,
-} from './headline-reveal';
 import { letterFlipDefaults, letterFlipMeta, letterFlipSchema } from './letter-flip';
 import { numberCounterDefaults, numberCounterMeta, numberCounterSchema } from './number-counter';
 import {
@@ -34,24 +22,6 @@ import { wordBuildDefaults, wordBuildMeta, wordBuildSchema } from './word-build'
 import { wordPunchDefaults, wordPunchMeta, wordPunchSchema } from './word-punch';
 
 export const typographyClips: ClipModule[] = [
-  {
-    id: 'detail-list',
-    schema: detailListSchema,
-    defaults: detailListDefaults,
-    meta: detailListMeta,
-  },
-  {
-    id: 'feature-callouts',
-    schema: featureCalloutsSchema,
-    defaults: featureCalloutsDefaults,
-    meta: featureCalloutsMeta,
-  },
-  {
-    id: 'headline-reveal',
-    schema: headlineRevealSchema,
-    defaults: headlineRevealDefaults,
-    meta: headlineRevealMeta,
-  },
   {
     id: 'handwritten-note',
     schema: handwrittenNoteSchema,
@@ -90,11 +60,5 @@ export const typographyClips: ClipModule[] = [
     schema: letterFlipSchema,
     defaults: letterFlipDefaults,
     meta: letterFlipMeta,
-  },
-  {
-    id: 'glow-reveal',
-    schema: glowRevealSchema,
-    defaults: glowRevealDefaults,
-    meta: glowRevealMeta,
   },
 ];

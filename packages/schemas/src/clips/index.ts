@@ -5,7 +5,6 @@ import { backgroundsClips } from './backgrounds';
 import { brandClips } from './brand';
 import { devicesClips } from './devices';
 import { overlaysClips } from './overlays';
-import { sequencesClips } from './sequences';
 import { transitionsClips } from './transitions';
 import { typographyClips } from './typography';
 
@@ -16,7 +15,6 @@ export const CLIP_MODULES: ClipModule[] = [
   ...brandClips,
   ...backgroundsClips,
   ...transitionsClips,
-  ...sequencesClips,
 ];
 
 export const CLIP_IDS: readonly ClipId[] = CLIP_MODULES.map((module) => module.id);

@@ -16,7 +16,7 @@ export type SceneTransitionProps = z.infer<typeof sceneTransitionSchema>;
 
 export const sceneTransitionDefaults: SceneTransitionProps = {
   kind: 'iris',
-  color: '#0b0b0c',
+  color: '#2f5bff',
   easing: 'easeInOut',
 };
 

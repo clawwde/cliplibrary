@@ -134,33 +134,6 @@ export const FadeIn = ({ children, start, end, delay = 0, distance = 18, style }
   );
 };
 
-export const Eyebrow = ({
-  text,
-  color,
-  accent,
-}: {
-  text: string;
-  color: string;
-  accent: string;
-}) => (
-  <div
-    style={{
-      display: 'flex',
-      alignItems: 'center',
-      gap: 16,
-      fontFamily: bodyFont,
-      fontSize: 19,
-      fontWeight: 500,
-      letterSpacing: '0.22em',
-      textTransform: 'uppercase',
-      color,
-    }}
-  >
-    <span style={{ width: 28, height: 2, borderRadius: 1, background: accent }} />
-    {text}
-  </div>
-);
-
 export const BodyCopy = ({
   text,
   color,

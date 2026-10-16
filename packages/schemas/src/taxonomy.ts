@@ -5,7 +5,6 @@ export const CLIP_CATEGORIES = [
   { id: 'brand', label: 'Brand & CTA' },
   { id: 'backgrounds', label: 'Backgrounds' },
   { id: 'transitions', label: 'Transitions' },
-  { id: 'sequences', label: 'Sequences' },
 ] as const;
 
 export type ClipCategory = (typeof CLIP_CATEGORIES)[number]['id'];
