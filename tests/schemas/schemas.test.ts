@@ -278,6 +278,7 @@ describe('promo clips', () => {
     'printer-pages',
     'helicopter-unveil',
     'word-picker',
+    'menu-stack',
     'heading-list',
   ];
 
