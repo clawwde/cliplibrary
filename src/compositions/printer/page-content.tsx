@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { continueRender, delayRender, staticFile } from 'remotion';
 import type { PageFont, PrintedPage } from '@/schemas';
 import { bodyFont, pageFonts } from '../promo/fonts';
+import { PageDesignArt } from './page-designs';
 
 const ADVANCE: Record<PageFont, number> = {
   condensed: 0.5,
@@ -154,8 +155,20 @@ const PageImage = ({ page, pageWidth, pageHeight, uid }: PagePart & { uid: strin
   );
 };
 
-export const PageContent = ({ page, pageWidth, pageHeight, uid }: PagePart & { uid: string }) => (
-  <g>
+export const PageContent = ({
+  page,
+  pageWidth,
+  pageHeight,
+  uid,
+  seed,
+}: PagePart & { uid: string; seed: string }) => (
+  <g clipPath={`url(#${uid}-page-clip)`}>
+    <defs>
+      <clipPath id={`${uid}-page-clip`}>
+        <rect x={-pageWidth / 2} y={0} width={pageWidth} height={pageHeight} />
+      </clipPath>
+    </defs>
+    <PageDesignArt page={page} width={pageWidth} height={pageHeight} seed={seed} />
     {page.content === 'text' ? null : (
       <PageImage page={page} pageWidth={pageWidth} pageHeight={pageHeight} uid={uid} />
     )}

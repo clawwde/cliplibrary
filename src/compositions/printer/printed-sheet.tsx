@@ -12,12 +12,14 @@ export const PrintedSheet = ({
   paper,
   geometry,
   uid,
+  seed,
 }: {
   page: PrintedPage;
   pose: PagePose;
   paper: PrinterPagesProps['paper'];
   geometry: PrinterGeometry;
   uid: string;
+  seed: string;
 }) => {
   const { pageWidth, pageHeight, across, along } = geometry;
   const lift = 1 - pose.landed;
@@ -53,7 +55,13 @@ export const PrintedSheet = ({
           filter={`url(#${uid}-shadow)`}
         />
         <rect x={left} y={0} width={pageWidth} height={pageHeight} fill={paper.color} />
-        <PageContent page={page} pageWidth={pageWidth} pageHeight={pageHeight} uid={uid} />
+        <PageContent
+          page={page}
+          pageWidth={pageWidth}
+          pageHeight={pageHeight}
+          uid={uid}
+          seed={seed}
+        />
         <rect
           x={left}
           y={0}

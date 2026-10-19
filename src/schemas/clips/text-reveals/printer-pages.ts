@@ -20,9 +20,17 @@ export type PageFont = (typeof PAGE_FONTS)[number];
 
 export const IMAGE_FITS = ['cover', 'contain'] as const;
 
+export const PAGE_DESIGNS = ['none', 'frame', 'burst', 'circle', 'confetti', 'halftone'] as const;
+
+export type PageDesign = (typeof PAGE_DESIGNS)[number];
+
 export const printedPageSchema = z.object({
   text: zMultiline(),
   content: z.enum(PAGE_CONTENTS),
+  design: z.enum(PAGE_DESIGNS),
+  accent: zColor(),
+  secondary: zColor(),
+  designScale: zSlider({ min: 0.4, max: 1.8, step: 0.01 }),
   image: zImage(),
   font: z.enum(PAGE_FONTS),
   size: zSlider({ min: 20, max: 320 }),
@@ -80,6 +88,10 @@ export type PrinterPagesProps = z.infer<typeof printerPagesSchema>;
 const word = (text: string, overrides: Partial<PrintedPage> = {}): PrintedPage => ({
   text,
   content: 'text',
+  design: 'none',
+  accent: '#ffd23f',
+  secondary: '#ff5a36',
+  designScale: 1,
   image: '',
   font: 'condensed',
   size: 92,
@@ -109,11 +121,29 @@ export const printerPagesDefaults: PrinterPagesProps = {
       textY: 0.36,
       caption: 'LEARN MORE',
       captionY: 0.6,
+      design: 'frame',
+      accent: '#b9b9bc',
+      secondary: '#8d8d90',
     }),
-    word('SOMETHING'),
-    word('EXCITING'),
-    word('IS'),
-    word('COMING'),
+    word('SOMETHING', { design: 'halftone', accent: '#2f5bff', secondary: '#ff5a36' }),
+    word('EXCITING', { size: 104, weight: 600, design: 'burst' }),
+    word('IS', {
+      size: 150,
+      weight: 600,
+      ink: '#ffffff',
+      design: 'circle',
+      accent: '#ff5a36',
+      secondary: '#2f5bff',
+    }),
+    word('COMING', {
+      size: 112,
+      weight: 600,
+      caption: 'STAY TUNED',
+      captionY: 0.55,
+      design: 'confetti',
+      accent: '#2f5bff',
+      secondary: '#ff5a36',
+    }),
   ],
   timing: { delay: 6, interval: 40, ejectFrames: 30 },
   paper: { color: '#f7f7f5', width: 760, scatter: 0.6, shadow: 0.55, motionBlur: 0.6 },

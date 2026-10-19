@@ -70,6 +70,7 @@ const PrinterPages = ({
                     paper={paper}
                     geometry={geometry}
                     uid={`${uid}-page-${index}`}
+                    seed={`printer-page-${index}`}
                   />
                 ) : null;
               })}
