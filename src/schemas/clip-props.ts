@@ -1,3 +1,4 @@
+import type { CrumpledPaperRevealProps } from './clips/ad-reveals/crumpled-paper-reveal';
 import type { HelicopterUnveilProps } from './clips/ad-reveals/helicopter-unveil';
 import type { ProblemStrikeoutProps } from './clips/ad-reveals/problem-strikeout';
 import type { SpillRevealProps } from './clips/ad-reveals/spill-reveal';
@@ -91,6 +92,7 @@ export interface ClipPropsMap {
   'helicopter-unveil': HelicopterUnveilProps;
   'problem-strikeout': ProblemStrikeoutProps;
   'spill-reveal': SpillRevealProps;
+  'crumpled-paper-reveal': CrumpledPaperRevealProps;
   'scene-transition': SceneTransitionProps;
 }
 

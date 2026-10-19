@@ -283,6 +283,7 @@ describe('promo clips', () => {
     'helicopter-unveil',
     'problem-strikeout',
     'spill-reveal',
+    'crumpled-paper-reveal',
     'word-picker',
     'pill-fan',
     'menu-stack',
