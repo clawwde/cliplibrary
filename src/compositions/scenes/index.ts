@@ -1,4 +1,5 @@
 import type { SceneModule } from '../scene-module';
+import { adRevealsScenes } from './ad-reveals';
 import { backgroundsScenes } from './backgrounds';
 import { brandScenes } from './brand';
 import { handDrawnScenes } from './hand-drawn';
@@ -19,6 +20,7 @@ export const CLIP_SCENES: SceneModule[] = [
   ...screenDemosScenes,
   ...overlaysScenes,
   ...brandScenes,
+  ...adRevealsScenes,
   ...backgroundsScenes,
   ...transitionsScenes,
 ];
