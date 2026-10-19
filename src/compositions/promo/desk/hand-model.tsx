@@ -72,7 +72,7 @@ const skinMaterial = (
   return material;
 };
 
-export type HandScene = ReturnType<typeof useHandScene>;
+type HandScene = ReturnType<typeof useHandScene>;
 
 export const useHandScene = () => {
   const gltf = useLoader(GLTFLoader, HAND_URL);
