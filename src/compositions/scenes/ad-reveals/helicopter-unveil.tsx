@@ -13,11 +13,16 @@ import { TransitionFrame } from '../../promo/transition-frame';
 import type { SceneModule } from '../../scene-module';
 import { Billboard } from '../../unveil/billboard';
 import { Cloth, Rod } from '../../unveil/cloth';
+import { clothRun } from '../../unveil/cloth-sim';
 import { cameraShot, helicopterPose, hookAt } from '../../unveil/flight';
 import { Ground } from '../../unveil/ground';
 import { Helicopter } from '../../unveil/helicopter';
 import { drawPoster, POSTER_ASPECT, usePosterFonts } from '../../unveil/poster-art';
-import { Sky } from '../../unveil/sky';
+import { Roadside } from '../../unveil/roadside';
+import { Clouds } from '../../unveil/sky';
+import { Skyline } from '../../unveil/skyline';
+import { Traffic } from '../../unveil/traffic';
+import { Trees } from '../../unveil/trees';
 import { UnveilStage } from '../../unveil/unveil-stage';
 
 const GONE_AFTER = 150;
@@ -48,6 +53,10 @@ const HelicopterUnveil = ({
   const frame = useCurrentFrame() * motion.speed;
   const { width, height, durationInFrames } = useVideoConfig();
   const art = usePosterArt(poster);
+  const run = useMemo(
+    () => clothRun(cloth, timing, timing.liftStart + GONE_AFTER),
+    [cloth, timing],
+  );
   const customUrl = poster.image.length > 0 ? resolveCustom(poster.image) : undefined;
   const shot = cameraShot(frame, durationInFrames, camera);
   const pose = helicopterPose(frame, timing);
@@ -68,7 +77,7 @@ const HelicopterUnveil = ({
   );
   return (
     <TransitionFrame motion={motion}>
-      <AbsoluteFill style={{ backgroundColor: sky.horizon, overflow: 'hidden' }}>
+      <AbsoluteFill style={{ backgroundColor: sky.haze, overflow: 'hidden' }}>
         <AbsoluteFill
           style={{
             filter: blur > 0 ? `blur(${blur}px) brightness(${1 - fade * outro.dim})` : undefined,
@@ -76,8 +85,12 @@ const HelicopterUnveil = ({
           }}
         >
           <UnveilStage shot={shot} fov={camera.fieldOfView} sky={sky}>
-            <Sky sky={sky} frame={frame} />
-            <Ground ground={ground} haze={sky.haze} />
+            <Clouds sky={sky} frame={frame} />
+            <Ground ground={ground} />
+            <Trees tone={ground.trees} />
+            <Skyline tint={ground.skyline} />
+            {ground.showRoad ? <Roadside /> : null}
+            {ground.showRoad && ground.traffic ? <Traffic frame={frame} /> : null}
             <group rotation={[0, camera.boardAngle, 0]}>
               <Billboard
                 posterMap={art.texture}
@@ -87,12 +100,7 @@ const HelicopterUnveil = ({
               />
               {airborne ? (
                 <>
-                  <Cloth
-                    frame={frame}
-                    cloth={cloth}
-                    timing={timing}
-                    cableColor={helicopter.cables}
-                  />
+                  <Cloth frame={frame} run={run} cloth={cloth} cableColor={helicopter.cables} />
                   <Rod
                     from={hookAt(frame, timing)}
                     to={pose.position}

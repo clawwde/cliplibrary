@@ -10,26 +10,32 @@ export const BOARD = {
 } as const;
 
 export const CLOTH = {
-  width: BOARD.width + 0.5,
-  height: BOARD.height + 0.9,
-  lift: 0.75,
-  cable: 7.5,
+  width: BOARD.width + 2,
+  height: BOARD.height + 0.6,
   columns: 44,
   rows: 60,
 } as const;
 
+export const RIG = {
+  barDrop: 4,
+  drop: 3.4,
+  span: BOARD.width + 0.4,
+} as const;
+
 const SLING = 2.4;
+
+export const ROTOR_HEIGHT = SLING + 2.2;
 
 const boardTop = BOARD.centerY + BOARD.height / 2;
 
-const HOVER: Vec3 = [0, boardTop + 0.25 + CLOTH.cable, CLOTH.lift];
+const HOVER: Vec3 = [0, boardTop + 0.3 + RIG.barDrop + RIG.drop, 1.6];
 
 const smoothstep = (value: number): number => {
   const t = Math.min(1, Math.max(0, value));
   return t * t * (3 - 2 * t);
 };
 
-export const ramp = (frame: number, start: number, length: number): number =>
+const ramp = (frame: number, start: number, length: number): number =>
   smoothstep((frame - start) / Math.max(1, length));
 
 const rampedDistance = (time: number, speed: number, rampFrames: number): number => {
@@ -42,7 +48,7 @@ const rampedDistance = (time: number, speed: number, rampFrames: number): number
   return speed * (time - rampFrames / 2);
 };
 
-export const TENSION_FRAMES = 30;
+const TENSION_FRAMES = 30;
 
 export const hookAt = (frame: number, timing: UnveilTiming): Vec3 => {
   const tension = ramp(frame, timing.liftStart - TENSION_FRAMES, TENSION_FRAMES + 24) * 0.7;
@@ -52,12 +58,12 @@ export const hookAt = (frame: number, timing: UnveilTiming): Vec3 => {
     (1 - ramp(frame, timing.liftStart - TENSION_FRAMES, TENSION_FRAMES));
   const sway = Math.sin(frame / 37 + 1.2) * 0.18;
   const time = frame - timing.liftStart;
-  const climb = rampedDistance(time, 0.85 * (96 / timing.climb), timing.climb * 0.45);
-  const drift = rampedDistance(time - 8, 0.7 * (96 / timing.climb), timing.climb * 0.7);
+  const climb = rampedDistance(time, 0.6 * (96 / timing.climb), timing.climb * 0.6);
+  const drift = rampedDistance(time - 6, 0.62 * (96 / timing.climb), timing.climb * 0.8);
   return [HOVER[0] + sway + drift, HOVER[1] + tension + bob + climb, HOVER[2] - drift * 0.12];
 };
 
-export const hookVelocity = (frame: number, timing: UnveilTiming): Vec3 => {
+const hookVelocity = (frame: number, timing: UnveilTiming): Vec3 => {
   const ahead = hookAt(frame + 0.5, timing);
   const behind = hookAt(frame - 0.5, timing);
   return [ahead[0] - behind[0], ahead[1] - behind[1], ahead[2] - behind[2]];
