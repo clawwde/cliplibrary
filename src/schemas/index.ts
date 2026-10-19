@@ -5,6 +5,7 @@ export * from './clips/backgrounds/relief-backdrop';
 export * from './clips/brand/app-icon-reveal';
 export * from './clips/brand/brand-reveal';
 export * from './clips/brand/cta-end-card';
+export * from './clips/desk-scenes/laptop-wipe-reveal';
 export * from './clips/hand-drawn/doodle-arrows';
 export * from './clips/hand-drawn/handwritten-note';
 export * from './clips/hand-drawn/scribble-caption';

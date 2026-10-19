@@ -254,6 +254,7 @@ describe('promo clips', () => {
     'phone-swap',
     'phone-scroll',
     'message-arise',
+    'laptop-wipe-reveal',
     'phone-wall',
     'phone-pair',
     'floating-cards',

@@ -29,6 +29,7 @@ const BINARY_EXTENSIONS = new Set([
   'gz',
   'tgz',
   'wasm',
+  'glb',
 ]);
 
 const KEBAB_SEGMENT = /^[a-z0-9]+(?:-[a-z0-9]+)*(?:\.[a-z0-9]+(?:-[a-z0-9]+)*)*$/;
