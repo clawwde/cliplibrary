@@ -10,10 +10,14 @@ import { loadFont as loadPlayfairDisplay } from '@remotion/google-fonts/Playfair
 import { loadFont as loadPoppins } from '@remotion/google-fonts/Poppins';
 import type { HandFont, PageFont } from '@/schemas';
 
-export const displayFont = loadInterTight('normal', {
+const interTight = loadInterTight('normal', {
   weights: ['300', '500', '600', '700'],
   subsets: ['latin'],
-}).fontFamily;
+});
+
+export const displayFont = interTight.fontFamily;
+
+export const displayFontReady = interTight.waitUntilDone;
 
 const inter = loadInter('normal', {
   weights: ['400', '500', '600', '700'],
