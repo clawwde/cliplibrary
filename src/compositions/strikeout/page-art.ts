@@ -24,7 +24,7 @@ export interface StrikePath {
   points: { x: number; y: number }[];
 }
 
-export const problemList = (problems: string): string[] =>
+const problemList = (problems: string): string[] =>
   problems
     .split('\n')
     .map((line) => line.trim().toUpperCase())

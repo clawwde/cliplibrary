@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import type { ProblemStrikeoutProps } from '@/schemas';
-import { settle, smooth, track, tween } from '../promo/timing';
+import { smooth, track, tween } from '../promo/timing';
 import { PAGE, PAGE_CANVAS, pointOnStrike, type StrikePath } from './page-art';
 
 export const NOTEBOOK_TOP = 0.072;
@@ -10,19 +10,44 @@ type NotebookLook = ProblemStrikeoutProps['notebook'];
 
 const ENTER_FRAMES = 18;
 const EXIT_FRAMES = 22;
-const FOLLOW_SAMPLES = 6;
-const FOLLOW_LAG = 10;
+const FOLLOW_SAMPLES = 17;
+const FOLLOW_REACH = 20;
+const TRAVEL_PIXELS = 600;
 
 const OFF_PAGE = { x: PAGE_CANVAS.width * 1.45, y: PAGE_CANVAS.height * 1.15 };
 
-export const strikeAt = (timing: Timing, index: number): number =>
-  timing.strikeStart + index * (timing.strikeFrames + timing.travelFrames);
+type Point = { x: number; y: number };
 
-export const strikeProgress = (timing: Timing, index: number, frame: number): number =>
-  tween(frame, [strikeAt(timing, index), strikeAt(timing, index) + timing.strikeFrames], [0, 1]);
+export interface StrikeWindow {
+  start: number;
+  end: number;
+}
 
-export const pullbackStart = (timing: Timing, count: number): number =>
-  strikeAt(timing, Math.max(0, count - 1)) + timing.strikeFrames + 4;
+const first = (path: StrikePath | undefined): Point => path?.points[0] ?? OFF_PAGE;
+const last = (path: StrikePath | undefined): Point => path?.points.at(-1) ?? OFF_PAGE;
+
+const gap = (a: Point, b: Point): number => Math.hypot(b.x - a.x, b.y - a.y);
+
+export const strikeSchedule = (paths: StrikePath[], timing: Timing): StrikeWindow[] => {
+  let cursor = timing.strikeStart;
+  return paths.map((path, index) => {
+    if (index > 0) {
+      const reach = gap(last(paths[index - 1]), first(path)) / TRAVEL_PIXELS;
+      cursor += timing.travelFrames * Math.min(2, Math.max(1, reach));
+    }
+    const window = { start: cursor, end: cursor + timing.strikeFrames };
+    cursor = window.end;
+    return window;
+  });
+};
+
+export const strikeProgress = (schedule: StrikeWindow[], index: number, frame: number): number => {
+  const window = schedule[index];
+  return window === undefined ? 0 : tween(frame, [window.start, window.end], [0, 1], (t) => t);
+};
+
+const pullbackStart = (schedule: StrikeWindow[], timing: Timing): number =>
+  (schedule.at(-1)?.end ?? timing.strikeStart) + 4;
 
 export const notebookMatrix = (notebook: NotebookLook): THREE.Matrix4 =>
   new THREE.Matrix4()
@@ -41,67 +66,120 @@ export const canvasToWorld = (
   ).applyMatrix4(notebookMatrix(notebook));
 
 export interface PencilState {
-  tip: { x: number; y: number };
+  tip: Point;
   height: number;
   sweep: number;
 }
 
-const mixPoint = (a: { x: number; y: number }, b: { x: number; y: number }, t: number) => ({
-  x: a.x + (b.x - a.x) * t,
-  y: a.y + (b.y - a.y) * t,
-});
+const strokeVelocity = (path: StrikePath | undefined, frames: number, atEnd: boolean): Point => {
+  const points = path?.points ?? [];
+  const a = (atEnd ? points.at(-2) : points[0]) ?? OFF_PAGE;
+  const b = (atEnd ? points.at(-1) : points[1]) ?? OFF_PAGE;
+  const scale = (points.length - 1) / frames;
+  return { x: (b.x - a.x) * scale, y: (b.y - a.y) * scale };
+};
 
-const first = (path: StrikePath | undefined) => path?.points[0] ?? OFF_PAGE;
-const last = (path: StrikePath | undefined) => path?.points.at(-1) ?? OFF_PAGE;
+const hermite = (from: Point, to: Point, out: Point, into: Point, frames: number, t: number) => {
+  const reach = gap(from, to);
+  const limit = (velocity: Point) => {
+    const length = Math.hypot(velocity.x, velocity.y) * frames;
+    const scale = length > 0 ? frames * Math.min(1, (reach * 0.8) / length) : 0;
+    return { x: velocity.x * scale, y: velocity.y * scale };
+  };
+  const m0 = limit(out);
+  const m1 = limit(into);
+  const t2 = t * t;
+  const t3 = t2 * t;
+  const h00 = 2 * t3 - 3 * t2 + 1;
+  const h10 = t3 - 2 * t2 + t;
+  const h01 = -2 * t3 + 3 * t2;
+  const h11 = t3 - t2;
+  return {
+    x: h00 * from.x + h10 * m0.x + h01 * to.x + h11 * m1.x,
+    y: h00 * from.y + h10 * m0.y + h01 * to.y + h11 * m1.y,
+  };
+};
+
+const REST: Point = { x: 0, y: 0 };
 
 export const pencilState = (
   paths: StrikePath[],
+  schedule: StrikeWindow[],
   timing: Timing,
   lift: number,
   frame: number,
 ): PencilState => {
-  const count = paths.length;
-  if (count === 0 || frame < timing.strikeStart) {
-    const t = tween(frame, [timing.strikeStart - ENTER_FRAMES, timing.strikeStart], [0, 1], settle);
+  const strokeFrames = timing.strikeFrames;
+  const opening = schedule[0];
+  if (opening === undefined || frame < opening.start) {
+    const begin = (opening?.start ?? timing.strikeStart) - ENTER_FRAMES;
+    const t = tween(frame, [begin, begin + ENTER_FRAMES], [0, 1], (value) => value);
     return {
-      tip: mixPoint(OFF_PAGE, first(paths[0]), t),
-      height: lift * 4 * (1 - t) + lift * 0.4 * Math.sin(Math.PI * t),
-      sweep: 0,
+      tip: hermite(
+        OFF_PAGE,
+        first(paths[0]),
+        REST,
+        strokeVelocity(paths[0], strokeFrames, false),
+        ENTER_FRAMES,
+        t,
+      ),
+      height: lift * 4 * (1 - t) ** 2 + lift * 0.5 * Math.sin(Math.PI * t),
+      sweep: -0.5 * t,
     };
   }
-  for (let index = 0; index < count; index++) {
-    const start = strikeAt(timing, index);
-    const end = start + timing.strikeFrames;
+  for (let index = 0; index < schedule.length; index++) {
+    const window = schedule[index];
     const path = paths[index];
-    if (frame <= end && path !== undefined) {
-      const progress = strikeProgress(timing, index, frame);
+    if (window === undefined || path === undefined) {
+      continue;
+    }
+    if (frame <= window.end) {
+      const progress = strikeProgress(schedule, index, frame);
       return { tip: pointOnStrike(path, progress), height: 0, sweep: progress - 0.5 };
     }
-    const next = paths[index + 1];
-    if (next !== undefined && frame < strikeAt(timing, index + 1)) {
-      const t = tween(frame, [end, strikeAt(timing, index + 1)], [0, 1], smooth);
+    const next = schedule[index + 1];
+    if (next !== undefined && frame < next.start) {
+      const frames = next.start - window.end;
+      const t = (frame - window.end) / frames;
       return {
-        tip: mixPoint(last(path), first(next), t),
+        tip: hermite(
+          last(path),
+          first(paths[index + 1]),
+          strokeVelocity(path, strokeFrames, true),
+          strokeVelocity(paths[index + 1], strokeFrames, false),
+          frames,
+          t,
+        ),
         height: lift * Math.sin(Math.PI * t),
         sweep: 0.5 - t,
       };
     }
   }
-  const leave = pullbackStart(timing, count) - 2;
-  const t = tween(frame, [leave, leave + EXIT_FRAMES], [0, 1], smooth);
+  const leave = schedule.at(-1)?.end ?? frame;
+  const t = tween(frame, [leave, leave + EXIT_FRAMES], [0, 1], (value) => value);
   return {
-    tip: mixPoint(last(paths.at(-1)), OFF_PAGE, t),
-    height: lift * 5 * t,
+    tip: hermite(
+      last(paths.at(-1)),
+      OFF_PAGE,
+      strokeVelocity(paths.at(-1), strokeFrames, true),
+      REST,
+      EXIT_FRAMES,
+      t,
+    ),
+    height: lift * (Math.sin(Math.PI * Math.min(t, 0.5)) + 4 * t * t),
     sweep: 0.5 - t * 0.5,
   };
 };
 
-export const pencilWorld = (
+type Choreographed = Pick<ProblemStrikeoutProps, 'timing' | 'notebook' | 'pencil'>;
+
+const pencilWorld = (
   paths: StrikePath[],
-  props: Pick<ProblemStrikeoutProps, 'timing' | 'notebook' | 'pencil'>,
+  schedule: StrikeWindow[],
+  props: Choreographed,
   frame: number,
 ): THREE.Vector3 => {
-  const state = pencilState(paths, props.timing, props.pencil.lift, frame);
+  const state = pencilState(paths, schedule, props.timing, props.pencil.lift, frame);
   return canvasToWorld(props.notebook, state.tip, state.height);
 };
 
@@ -113,37 +191,50 @@ export interface CameraShot {
 
 export const cameraShot = (
   paths: StrikePath[],
-  props: Pick<ProblemStrikeoutProps, 'timing' | 'notebook' | 'pencil' | 'camera'>,
+  schedule: StrikeWindow[],
+  props: Choreographed & Pick<ProblemStrikeoutProps, 'camera'>,
   frame: number,
 ): CameraShot => {
   const { timing, camera } = props;
-  const pull = pullbackStart(timing, paths.length);
+  const pull = pullbackStart(schedule, timing);
+  const opening = schedule[0]?.start ?? timing.strikeStart;
   const center = canvasToWorld(
     props.notebook,
     { x: PAGE_CANVAS.width * 0.5, y: PAGE_CANVAS.height * 0.52 },
     0,
   );
   const followed = new THREE.Vector3();
+  let weights = 0;
   for (let sample = 0; sample < FOLLOW_SAMPLES; sample++) {
-    const at = Math.max(timing.strikeStart, frame - (sample * FOLLOW_LAG) / FOLLOW_SAMPLES);
-    followed.add(pencilWorld(paths, props, Math.min(at, pull)));
+    const offset = (sample / (FOLLOW_SAMPLES - 1) - 0.5) * 2 * FOLLOW_REACH;
+    const weight = 1 - Math.abs(offset) / (FOLLOW_REACH + 1);
+    const at = Math.min(pull, Math.max(opening, frame + offset));
+    followed.addScaledVector(pencilWorld(paths, schedule, props, at), weight);
+    weights += weight;
   }
-  followed.divideScalar(FOLLOW_SAMPLES).setY(NOTEBOOK_TOP);
+  followed.divideScalar(weights).setY(NOTEBOOK_TOP);
   const following =
     camera.follow *
-    tween(frame, [timing.strikeStart - 10, timing.strikeStart + 8], [0.4, 1]) *
+    tween(frame, [opening - 14, opening + 10], [0.4, 1]) *
     tween(frame, [pull, pull + timing.pullbackFrames], [1, 0], smooth);
   const lead = new THREE.Vector3(Math.cos(camera.azimuth), 0, -Math.sin(camera.azimuth));
   const target = center.clone().lerp(followed.addScaledVector(lead, camera.lead), following);
-  const distance = track(frame, [
-    [0, camera.openDistance],
-    [timing.strikeStart + 10, camera.closeDistance],
-    [pull, camera.closeDistance * 1.04],
-    [pull + timing.pullbackFrames, camera.wideDistance],
-  ]);
+  const settled = pull + timing.pullbackFrames;
+  const distance =
+    track(frame, [
+      [0, camera.openDistance],
+      [opening + 12, camera.closeDistance],
+      [pull, camera.closeDistance * 1.04],
+      [settled, camera.wideDistance],
+    ]) -
+    tween(
+      frame,
+      [settled - 8, Math.max(settled, timing.cutFrame)],
+      [0, camera.wideDistance * 0.05],
+      (t) => t,
+    );
   const azimuth = camera.azimuth + frame * 0.0006;
-  const elevation =
-    camera.elevation + tween(frame, [pull, pull + timing.pullbackFrames], [0, 0.12]);
+  const elevation = camera.elevation + tween(frame, [pull, settled], [0, 0.12]);
   const eye = target
     .clone()
     .add(
@@ -153,6 +244,6 @@ export const cameraShot = (
         Math.cos(azimuth) * Math.cos(elevation),
       ).multiplyScalar(distance),
     );
-  const tip = pencilWorld(paths, props, frame);
+  const tip = pencilWorld(paths, schedule, props, frame);
   return { eye, target, focus: center.clone().lerp(tip.setY(NOTEBOOK_TOP), following) };
 };

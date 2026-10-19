@@ -4,7 +4,7 @@ import type { ProblemStrikeoutProps } from '@/schemas';
 import { useCanvasFont, useCanvasTexture } from '../promo/desk/canvas-texture';
 import { handFontReady, handFonts } from '../promo/fonts';
 import { memo } from '../promo/phone-geometry';
-import { NOTEBOOK_TOP, notebookMatrix, strikeProgress } from './choreography';
+import { NOTEBOOK_TOP, notebookMatrix, type StrikeWindow, strikeProgress } from './choreography';
 import {
   drawPageBase,
   drawStrike,
@@ -20,7 +20,7 @@ const COIL_RADIUS = 0.047;
 const COIL_TUBE = 0.0062;
 const HOLE_Z = -PAGE.depth / 2 + (46 / PAGE_CANVAS.height) * PAGE.depth;
 
-type Look = Pick<ProblemStrikeoutProps, 'page' | 'notebook' | 'timing'>;
+type Look = Pick<ProblemStrikeoutProps, 'page' | 'notebook'>;
 
 const pageGeometry = (curl: number) =>
   memo(`strikeout-page:${curl}`, () => {
@@ -64,14 +64,14 @@ const PageSurface = ({
   coils,
   curl,
   frame,
-  timing,
+  schedule,
 }: {
   page: Look['page'];
   paths: StrikePath[];
   coils: number;
   curl: number;
   frame: number;
-  timing: Look['timing'];
+  schedule: StrikeWindow[];
 }) => {
   const font = handFonts[page.font];
   useCanvasFont(`700 ${page.size}px "${font}"`, () => handFontReady(page.font));
@@ -85,7 +85,7 @@ const PageSurface = ({
     }
     return canvas;
   }, [page, coils, font]);
-  const progress = paths.map((_, index) => strikeProgress(timing, index, frame));
+  const progress = paths.map((_, index) => strikeProgress(schedule, index, frame));
   const texture = useCanvasTexture(
     PAGE_CANVAS.width,
     PAGE_CANVAS.height,
@@ -139,10 +139,10 @@ const Coils = ({ coils, color }: { coils: number; color: string }) => {
 export const Notebook = ({
   page,
   notebook,
-  timing,
+  schedule,
   paths,
   frame,
-}: Look & { paths: StrikePath[]; frame: number }) => {
+}: Look & { schedule: StrikeWindow[]; paths: StrikePath[]; frame: number }) => {
   const edge = useMemo(() => edgeTexture(notebook.pageEdge), [notebook.pageEdge]);
   const blockHeight = BLOCK_TOP - COVER;
   return (
@@ -161,7 +161,7 @@ export const Notebook = ({
         coils={notebook.coils}
         curl={notebook.curl}
         frame={frame}
-        timing={timing}
+        schedule={schedule}
       />
       <Coils coils={notebook.coils} color={notebook.coil} />
     </group>

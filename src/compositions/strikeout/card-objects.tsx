@@ -17,7 +17,7 @@ const CAMERA_DISTANCE = 24;
 const FIELD_OF_VIEW = 20;
 const PIECE = 1.25;
 
-export const pixelsPerUnit = (height: number): number =>
+const pixelsPerUnit = (height: number): number =>
   height / (2 * CAMERA_DISTANCE * Math.tan(THREE.MathUtils.degToRad(FIELD_OF_VIEW / 2)));
 
 const CardCamera = () => {
@@ -134,10 +134,10 @@ const Chart = ({ card, frame, y }: { card: Card; frame: number; y: number }) => 
   const heights = [0.42, 0.72, 1.05, 1.5];
   const shown = tween(frame, [0, 10], [0, 1], smooth);
   const draw = tween(frame, [8, 30], [0, 1], smooth);
-  const head = tween(frame, [26, 36], [0, 1], settle);
+  const head = tween(frame, [8, 16], [0, 1], smooth);
   tube.setDrawRange(0, Math.round(draw * ARROW_SEGMENTS) * ARROW_RADIAL * 6);
-  const tip = curve.getPointAt(1);
-  const tangent = curve.getTangentAt(1);
+  const tip = curve.getPointAt(Math.max(0.02, draw));
+  const tangent = curve.getTangentAt(Math.max(0.02, draw));
   const headRotation = new THREE.Quaternion().setFromUnitVectors(
     new THREE.Vector3(0, 1, 0),
     tangent,

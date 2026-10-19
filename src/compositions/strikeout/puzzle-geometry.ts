@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { memo } from '../promo/phone-geometry';
 
-export type Edge = -1 | 0 | 1;
+type Edge = -1 | 0 | 1;
 
 export interface PieceEdges {
   top: Edge;
@@ -46,7 +46,7 @@ const edgePoints = (from: Point, to: Point, edge: Edge): Point[] => {
   ];
 };
 
-export const pieceShape = (size: number, edges: PieceEdges): THREE.Shape => {
+const pieceShape = (size: number, edges: PieceEdges): THREE.Shape => {
   const half = size / 2;
   const corners: Point[] = [
     [-half, -half],
