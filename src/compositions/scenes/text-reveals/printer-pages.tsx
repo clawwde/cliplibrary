@@ -29,7 +29,7 @@ const cameraTransform = (
   return `translate(${x.toFixed(3)} ${y.toFixed(3)}) rotate(${angle.toFixed(4)}) scale(${zoom.toFixed(5)}) translate(0 ${-focus})`;
 };
 
-export const PrinterPages = ({
+const PrinterPages = ({
   pages,
   timing,
   paper,

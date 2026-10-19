@@ -30,7 +30,7 @@ const scatterFor = (index: number) => ({
   turn: (random(`printer-page-turn-${index}`) - 0.5) * 2 * MAX_TURN,
 });
 
-export const pageStart = (timing: PrinterPagesProps['timing'], index: number): number =>
+const pageStart = (timing: PrinterPagesProps['timing'], index: number): number =>
   timing.delay + index * timing.interval;
 
 export const pagePose = (
