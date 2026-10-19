@@ -1,3 +1,4 @@
+import { loadFont as loadBodoniModa } from '@remotion/google-fonts/BodoniModa';
 import { loadFont as loadCaveatBrush } from '@remotion/google-fonts/CaveatBrush';
 import { loadFont as loadInter } from '@remotion/google-fonts/Inter';
 import { loadFont as loadInterTight } from '@remotion/google-fonts/InterTight';
@@ -65,9 +66,11 @@ const playfair = loadPlayfairDisplay('normal', {
   subsets: ['latin'],
 });
 
-export const serifFont = playfair.fontFamily;
+const bodoni = loadBodoniModa('normal', { weights: ['400', '500'], subsets: ['latin'] });
 
-export const serifFontReady = playfair.waitUntilDone;
+export const didoneFont = bodoni.fontFamily;
+
+export const didoneFontReady = bodoni.waitUntilDone;
 
 export const pageFonts: Record<PageFont, string> = {
   condensed: loadOswald('normal', {

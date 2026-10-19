@@ -38,6 +38,11 @@ const FLAT_RADIUS = 60;
 const WRAP_LIMIT = Math.PI * 0.93;
 const UNFOLD_LAG = 0.7;
 const BALL_WRAP = 1.6;
+const EDGE_CURL = 3;
+const EDGE_BAND = 0.32;
+const LEFTOVER = 6.5;
+const GEOMETRY_SHARE = 0.5;
+const WAVE = 1.3;
 
 const patterns = new Map<string, CrumplePattern>();
 
@@ -51,15 +56,15 @@ const patternFor = (shape: CrumpleShape): CrumplePattern => {
   const span = Math.max(shape.width, shape.height);
   const creases = Array.from({ length: Math.round(shape.creases) }, () => {
     const angle = random() * Math.PI;
-    const big = random() < 0.1;
+    const long = random() < 0.45;
     return {
       x: (random() - 0.5) * shape.width * 1.1,
       y: (random() - 0.5) * shape.height * 1.1,
       dx: Math.cos(angle),
       dy: Math.sin(angle),
-      half: span * (big ? 0.25 + random() * 0.3 : 0.04 + random() * 0.1),
-      reach: span * (big ? 0.03 + random() * 0.03 : 0.02 + random() * 0.03),
-      depth: (random() < 0.5 ? -1 : 1) * (0.4 + random() * 0.6) * (big ? 1.4 : 1),
+      half: span * (long ? 0.12 + random() * 0.22 : 0.04 + random() * 0.07),
+      reach: span * (long ? 0.035 + random() * 0.045 : 0.015 + random() * 0.025),
+      depth: (random() < 0.5 ? -1 : 1) * (0.45 + random() * 0.55),
     };
   });
   const lumps = Array.from({ length: 9 }, (_unused, index) => ({
@@ -73,26 +78,32 @@ const patternFor = (shape: CrumpleShape): CrumplePattern => {
   return pattern;
 };
 
-const smoothstep = (edge0: number, edge1: number, value: number): number => {
+export const smoothstep = (edge0: number, edge1: number, value: number): number => {
   const t = Math.min(1, Math.max(0, (value - edge0) / (edge1 - edge0)));
   return t * t * (3 - 2 * t);
+};
+
+const creaseAt = (crease: Crease, x: number, y: number): number => {
+  const rx = x - crease.x;
+  const ry = y - crease.y;
+  const across = Math.abs(rx * crease.dy - ry * crease.dx);
+  if (across >= crease.reach) {
+    return 0;
+  }
+  const along = Math.abs(rx * crease.dx + ry * crease.dy) / crease.half;
+  const fade = 1 - smoothstep(0.6, 1, along);
+  return fade <= 0 ? 0 : crease.depth * crease.reach * (1 - across / crease.reach) * fade;
+};
+
+const edgeBoost = (shape: CrumpleShape, x: number, y: number, opened: number): number => {
+  const inset = Math.min(shape.width / 2 - Math.abs(x), shape.height / 2 - Math.abs(y));
+  return 1 + EDGE_CURL * opened * (1 - smoothstep(0, EDGE_BAND, inset));
 };
 
 const creaseField = (creases: Crease[], x: number, y: number): number => {
   let sum = 0;
   for (const crease of creases) {
-    const rx = x - crease.x;
-    const ry = y - crease.y;
-    const across = Math.abs(rx * crease.dy - ry * crease.dx);
-    if (across >= crease.reach) {
-      continue;
-    }
-    const along = Math.abs(rx * crease.dx + ry * crease.dy) / crease.half;
-    const fade = 1 - smoothstep(0.55, 1, along);
-    if (fade <= 0) {
-      continue;
-    }
-    sum += crease.depth * crease.reach * (1 - across / crease.reach) * fade;
+    sum += creaseAt(crease, x, y);
   }
   return sum;
 };
@@ -118,11 +129,12 @@ export const crumplePoint = (
   x: number,
   y: number,
   target: THREE.Vector3,
+  withRelief = true,
 ): THREE.Vector3 => {
   const pattern = patternFor(shape);
   const corner = Math.hypot(shape.width, shape.height) / 2;
   const flatDistance = Math.hypot(x, y);
-  const creases = creaseField(pattern.creases, x, y);
+  const creases = withRelief ? creaseField(pattern.creases, x, y) : 0;
   const angle = Math.atan2(y, x);
   const ragged =
     1 + 0.32 * Math.sin(angle * 3 + shape.seed) + 0.18 * Math.sin(angle * 5 - shape.seed * 1.7);
@@ -147,21 +159,31 @@ export const crumplePoint = (
     Math.cos(theta),
   );
   const balled = 1 - opened;
-  const depth =
-    shape.creaseDepth *
-    (balled * 6 * Math.sqrt(squeeze) + shape.leftoverWrinkles * 6.5 * (0.35 + 0.65 * opened));
+  const depth = reliefDepth(shape, opened, squeeze);
   const lump =
     shape.ballRadius * shape.lumps * 0.45 * lumpField(pattern.lumps, sphereDirection) * balled;
-  const relief = creases * depth;
-  const limit = shape.ballRadius * 0.16 + opened * 10;
-  const surface = radius + lump + Math.max(-limit, Math.min(limit, relief));
+  const relief =
+    creases * depth * (balled + opened * GEOMETRY_SHARE) * edgeBoost(shape, x, y, opened);
+  const limit = shape.ballRadius * 0.16 + opened * 0.4;
+  const wave =
+    opened *
+    shape.creaseDepth *
+    WAVE *
+    (Math.sin(1.9 * x + shape.seed) * Math.cos(1.4 * y - shape.seed * 0.7) +
+      0.5 * Math.sin(3.1 * y + 2.3 * x + shape.seed));
+  const surface = radius + lump + wave + Math.max(-limit, Math.min(limit, relief));
   const ballLift = shape.ballRadius * (1 - smoothstep(0, 1, state.unfold));
   return target
     .copy(sphereDirection)
     .multiplyScalar(surface)
-    .setZ(sphereDirection.z * surface - radius + ballLift)
+    .setZ(radius - sphereDirection.z * surface - ballLift)
     .multiplyScalar(state.scale);
 };
+
+const reliefDepth = (shape: CrumpleShape, opened: number, squeeze = 1.4): number =>
+  shape.creaseDepth *
+  ((1 - opened) * 6 * Math.sqrt(squeeze) +
+    shape.leftoverWrinkles * LEFTOVER * (0.35 + 0.65 * opened));
 
 export const SEGMENTS_X = 120;
 export const SEGMENTS_Y = 166;
@@ -178,15 +200,17 @@ export const deformSheet = (
   }
   const array = position.array as Float32Array;
   const point = new THREE.Vector3();
-  for (let index = 0; index < position.count; index++) {
-    const x = rest[index * 3] ?? 0;
-    const y = rest[index * 3 + 1] ?? 0;
-    crumplePoint(shape, state, x, y, point);
-    array[index * 3] = point.x;
-    array[index * 3 + 1] = point.y;
-    array[index * 3 + 2] = point.z;
-  }
-  position.needsUpdate = true;
+  const place = (withRelief: boolean) => {
+    for (let index = 0; index < position.count; index++) {
+      crumplePoint(shape, state, rest[index * 3] ?? 0, rest[index * 3 + 1] ?? 0, point, withRelief);
+      array[index * 3] = point.x;
+      array[index * 3 + 1] = point.y;
+      array[index * 3 + 2] = point.z;
+    }
+    position.needsUpdate = true;
+  };
+  place(false);
   geometry.computeVertexNormals();
+  place(true);
   geometry.computeBoundingSphere();
 };
