@@ -62,13 +62,14 @@ export const fbm = (x: number, y: number, seed = 1, octaves = 4): number => {
   let value = 0;
   let amplitude = 0.5;
   let total = 0;
-  let px = x;
-  let py = y;
+  let px = x * 0.87 - y * 0.5;
+  let py = x * 0.5 + y * 0.87;
   for (let octave = 0; octave < octaves; octave++) {
     value += valueNoise(px, py, seed + octave * 17) * amplitude;
     total += amplitude;
-    px = px * 2.03 + 11.7;
-    py = py * 2.03 + 5.3;
+    const nextX = (px * 0.8 - py * 0.6) * 2.03 + 11.7;
+    py = (px * 0.6 + py * 0.8) * 2.03 + 5.3;
+    px = nextX;
     amplitude *= 0.5;
   }
   return value / total;
@@ -94,7 +95,7 @@ export const puddleDistance = (shape: PuddleShape, x: number, z: number): number
   const ahead = along - shape.length * shape.lead;
   const reach = ahead > 0 ? shape.length * (1 - shape.lead) : shape.length * shape.lead;
   const base = Math.hypot(ahead / reach, across / shape.width);
-  const warp = (fbm(x * 1.6, z * 1.6, 7) - 0.5) * 0.9 + (fbm(x * 5.5, z * 5.5, 13) - 0.5) * 0.3;
+  const warp = (fbm(x * 1.6, z * 1.6, 7) - 0.5) * 0.9 + (fbm(x * 4, z * 4, 13) - 0.5) * 0.12;
   const toOrigin = Math.min(1, Math.hypot(dx, dz) / 0.25);
   return Math.max(0, base * (0.42 + 0.58 * toOrigin) + warp * shape.ragged * toOrigin);
 };

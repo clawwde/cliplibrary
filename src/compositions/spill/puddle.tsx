@@ -66,7 +66,7 @@ uniform float uAlpha;
 uniform float uSize;
 float spillDepth(vec2 uv) {
   float distanceToFront = uReach - texture2D(uField, uv).r;
-  return smoothstep(0.0, 0.12, distanceToFront);
+  return smoothstep(0.0, 0.2, distanceToFront);
 }`,
       )
       .replace(

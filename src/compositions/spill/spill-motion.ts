@@ -13,7 +13,7 @@ const FALLEN = Math.PI / 2 - CUP_SIDE_ANGLE;
 const RELEASE = 0.42;
 const TIP_POWER = 2.4;
 const BOUNCE_FRAMES = 12;
-const EXIT_FRAMES = 36;
+const EXIT_FRAMES = 48;
 const CONTACT_GAP = 0.07;
 
 export interface SpillMotion {
@@ -232,7 +232,7 @@ export const spillMotion = (
     puddle,
     reach,
     drop: tween(frame, [timing.dropStart, timing.dropStart + timing.dropFrames], [0, 1], (t) => t),
-    soak: tween(frame, [marks.soakStart, marks.soakStart + timing.soakFrames], [0, 1.08], settle),
+    soak: tween(frame, [marks.soakStart, marks.soakStart + timing.soakFrames], [0, 1.08], smooth),
     camera,
     focus: [
       THREE.MathUtils.lerp(props.cup.x - 0.3, props.napkin.x, move),

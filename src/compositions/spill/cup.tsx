@@ -17,7 +17,7 @@ export const cupRadiusAt = (height: number): number =>
 
 export const CUP_SIDE_ANGLE = Math.atan((CUP.topRadius - CUP.bottomRadius) / CUP.height);
 
-const LABEL = { width: 2048, height: 512 } as const;
+const LABEL = { width: 1024, height: 256 } as const;
 
 type CupLook = SpillRevealProps['cup'];
 
@@ -26,8 +26,8 @@ const drawLabel = (context: CanvasRenderingContext2D, look: CupLook, mirror: boo
   context.fillStyle = look.color;
   context.fillRect(0, 0, width, height);
   context.fillStyle = look.band;
-  context.fillRect(0, height - 26, width, 26);
-  context.fillRect(0, 0, width, 14);
+  context.fillRect(0, height - 13, width, 13);
+  context.fillRect(0, 0, width, 7);
   const radius = height * 0.3;
   for (const center of [0.25, 0.75]) {
     const x = center * width;
@@ -47,11 +47,11 @@ const drawLabel = (context: CanvasRenderingContext2D, look: CupLook, mirror: boo
     context.fillRect(-radius * 0.42, radius * 0.42, radius * 0.84, radius * 0.06);
     context.restore();
   }
-  for (let fleck = 0; fleck < 1400; fleck++) {
+  for (let fleck = 0; fleck < 700; fleck++) {
     const x = (Math.sin(fleck * 12.9898) * 43758.5453) % 1;
     const y = (Math.sin(fleck * 78.233) * 12543.123) % 1;
     context.fillStyle = `rgba(0,0,0,${0.025 + (fleck % 5) * 0.006})`;
-    context.fillRect(Math.abs(x) * width, Math.abs(y) * height, 2, 2);
+    context.fillRect(Math.abs(x) * width, Math.abs(y) * height, 1, 1);
   }
 };
 

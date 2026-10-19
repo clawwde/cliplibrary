@@ -9,8 +9,8 @@ import { drawMessage, MESSAGE_CANVAS } from './message';
 
 const GRID = 72;
 const FIELD_SIZE = 256;
-const WET_EDGE = 0.05;
-const FRONT_WIDTH = 0.12;
+const WET_EDGE = 0.09;
+const FRONT_WIDTH = 0.18;
 
 type NapkinLook = SpillRevealProps['napkin'];
 type MessageLook = SpillRevealProps['message'];
@@ -200,9 +200,9 @@ export const Napkin = ({ look, message, mirror, puddle, edgeZ, pose }: NapkinPro
   const fall = 1 - pose.drop;
   const settle = THREE.MathUtils.smoothstep(pose.drop, 0.72, 1);
   const rigid = new THREE.Matrix4().compose(
-    new THREE.Vector3(look.x + fall * 0.9, 0.03 + fall * fall * 2.8, look.z - fall * 0.7),
+    new THREE.Vector3(look.x - fall * 0.6, 0.03 + fall * fall * 2.8, look.z - fall * 0.5),
     new THREE.Quaternion().setFromEuler(
-      new THREE.Euler(fall * 0.55, look.turn + fall * 0.7, -fall * 0.3, 'YXZ'),
+      new THREE.Euler(fall * 0.3, look.turn + fall * 0.5, -fall * 0.18, 'YXZ'),
     ),
     new THREE.Vector3(1, 1, 1),
   );
@@ -223,7 +223,7 @@ export const Napkin = ({ look, message, mirror, puddle, edgeZ, pose }: NapkinPro
       arrivals[index] ?? 0,
       (arrivals[index] ?? 0) + 0.12,
     );
-    const rest = restShape(look, lx, lz) * (1 - wet * 0.8) + drape(z, edgeZ);
+    const rest = Math.max(0.012, restShape(look, lx, lz) * (1 - wet * 0.6)) + drape(z, edgeZ);
     position.setXYZ(
       index,
       THREE.MathUtils.lerp(point.x, x, settle),

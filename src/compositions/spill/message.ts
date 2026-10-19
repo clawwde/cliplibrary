@@ -1,8 +1,8 @@
 import type { SpillRevealProps } from '@/schemas';
 
-export const MESSAGE_CANVAS = 2048;
+export const MESSAGE_CANVAS = 1024;
 
-const SPECKS = 5200;
+const SPECKS = 1300;
 
 const speck = (index: number, salt: number): number => {
   const value = Math.sin(index * 12.9898 + salt * 78.233) * 43758.5453;

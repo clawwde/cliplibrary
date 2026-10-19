@@ -3,7 +3,7 @@ import * as THREE from 'three';
 import type { SpillRevealProps } from '@/schemas';
 import { tiledFbm, tiledNoise } from './field';
 
-const WOOD_SIZE = 2048;
+const WOOD_SIZE = 1024;
 const WOOD_REPEAT = 2;
 const TABLE_DEPTH = 0.32;
 const DRAWER_DEPTH = 1.1;
