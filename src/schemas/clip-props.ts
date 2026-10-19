@@ -11,6 +11,8 @@ import type { EchoStackProps } from './clips/kinetic-type/echo-stack';
 import type { OutlineMarqueeProps } from './clips/kinetic-type/outline-marquee';
 import type { WordBuildProps } from './clips/kinetic-type/word-build';
 import type { WordPunchProps } from './clips/kinetic-type/word-punch';
+import type { HeadingListProps } from './clips/list-pickers/heading-list';
+import type { WordPickerProps } from './clips/list-pickers/word-picker';
 import type { FilmDustProps } from './clips/overlays/film-dust';
 import type { FloatingCardsProps } from './clips/overlays/floating-cards';
 import type { PhoneFanProps } from './clips/phone-layouts/phone-fan';
@@ -30,6 +32,8 @@ import type { TypewriterProps } from './clips/text-reveals/typewriter';
 import type { SceneTransitionProps } from './clips/transitions/scene-transition';
 
 export interface ClipPropsMap {
+  'word-picker': WordPickerProps;
+  'heading-list': HeadingListProps;
   'phone-flat-lay': PhoneFlatLayProps;
   'phone-pedestal': PhonePedestalProps;
   'app-icon-reveal': AppIconRevealProps;

@@ -2,13 +2,16 @@ import { loadFont as loadCaveatBrush } from '@remotion/google-fonts/CaveatBrush'
 import { loadFont as loadInter } from '@remotion/google-fonts/Inter';
 import { loadFont as loadInterTight } from '@remotion/google-fonts/InterTight';
 import { loadFont as loadKalam } from '@remotion/google-fonts/Kalam';
+import { loadFont as loadLexend } from '@remotion/google-fonts/Lexend';
 import { loadFont as loadOnest } from '@remotion/google-fonts/Onest';
 import { loadFont as loadOswald } from '@remotion/google-fonts/Oswald';
 import { loadFont as loadPermanentMarker } from '@remotion/google-fonts/PermanentMarker';
 import { loadFont as loadPinyonScript } from '@remotion/google-fonts/PinyonScript';
 import { loadFont as loadPlayfairDisplay } from '@remotion/google-fonts/PlayfairDisplay';
 import { loadFont as loadPoppins } from '@remotion/google-fonts/Poppins';
-import type { HandFont, PageFont } from '@/schemas';
+import { loadFont as loadQuicksand } from '@remotion/google-fonts/Quicksand';
+import { loadFont as loadSora } from '@remotion/google-fonts/Sora';
+import type { HandFont, PageFont, PickerFont } from '@/schemas';
 
 const interTight = loadInterTight('normal', {
   weights: ['300', '500', '600', '700'],
@@ -68,4 +71,23 @@ export const pageFonts: Record<PageFont, string> = {
     subsets: ['latin'],
   }).fontFamily,
   sans: displayFont,
+};
+
+const sora = loadSora('normal', { weights: ['400', '500', '600', '700'], subsets: ['latin'] });
+
+const lexend = loadLexend('normal', {
+  weights: ['300', '400', '500', '600', '700'],
+  subsets: ['latin'],
+});
+
+const quicksand = loadQuicksand('normal', {
+  weights: ['300', '400', '500', '600', '700'],
+  subsets: ['latin'],
+});
+
+export const pickerFonts: Record<PickerFont, string> = {
+  inter: bodyFont,
+  sora: sora.fontFamily,
+  lexend: lexend.fontFamily,
+  quicksand: quicksand.fontFamily,
 };
