@@ -107,6 +107,24 @@ const hash = (x: number, y: number): number => {
   return value - Math.floor(value);
 };
 
+const drawCrease = (context: CanvasRenderingContext2D, vertical: boolean): void => {
+  const { width, height } = CLOTH_CANVAS;
+  const along = vertical ? width : height;
+  const gradient = vertical
+    ? context.createLinearGradient(along / 2 - 14, 0, along / 2 + 14, 0)
+    : context.createLinearGradient(0, along / 2 - 14, 0, along / 2 + 14);
+  gradient.addColorStop(0, 'rgba(255,255,255,0)');
+  gradient.addColorStop(0.42, 'rgba(255,255,255,0.35)');
+  gradient.addColorStop(0.55, 'rgba(110,100,90,0.16)');
+  gradient.addColorStop(1, 'rgba(110,100,90,0)');
+  context.fillStyle = gradient;
+  if (vertical) {
+    context.fillRect(along / 2 - 14, 0, 28, height);
+  } else {
+    context.fillRect(0, along / 2 - 14, width, 28);
+  }
+};
+
 export const drawClothWeave = (context: CanvasRenderingContext2D, paper: string): void => {
   const { width, height } = CLOTH_CANVAS;
   context.fillStyle = paper;
@@ -137,6 +155,8 @@ export const drawClothWeave = (context: CanvasRenderingContext2D, paper: string)
     context.lineTo(x + Math.cos(angle) * length, y + Math.sin(angle) * length);
     context.stroke();
   }
+  drawCrease(context, true);
+  drawCrease(context, false);
 };
 
 export interface ClothNote {

@@ -2,7 +2,7 @@ import * as THREE from 'three';
 
 export const FINGERS = ['index', 'middle', 'ring', 'pinky'] as const;
 
-type Finger = (typeof FINGERS)[number];
+export type Finger = (typeof FINGERS)[number];
 
 export interface HandPose {
   curl: Record<Finger, number>;

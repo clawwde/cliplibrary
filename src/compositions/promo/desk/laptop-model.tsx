@@ -2,6 +2,7 @@ import type { ReactNode } from 'react';
 import { useLayoutEffect, useMemo, useRef } from 'react';
 import * as THREE from 'three';
 import { RoundedBoxGeometry } from 'three/examples/jsm/geometries/RoundedBoxGeometry.js';
+import { RectAreaLightUniformsLib } from 'three/examples/jsm/lights/RectAreaLightUniformsLib.js';
 import { bodyFont, bodyFontReady } from '../fonts';
 import { useCanvasFont, useCanvasTexture } from './canvas-texture';
 import { drawKeyLegends, KEY_CANVAS } from './desk-textures';
@@ -141,9 +142,13 @@ const Keyboard = ({ look }: { look: LaptopLook }) => {
 export interface LaptopModelProps {
   look: LaptopLook;
   screen: ReactNode;
+  glow: number;
+  glowColor: string;
 }
 
-export const LaptopModel = ({ look, screen }: LaptopModelProps) => {
+RectAreaLightUniformsLib.init();
+
+export const LaptopModel = ({ look, screen, glow, glowColor }: LaptopModelProps) => {
   const body = bodyMaterial(look.body, look.roughness);
   const hingeZ = -LAPTOP.depth / 2 + 0.04;
   return (
@@ -208,6 +213,16 @@ export const LaptopModel = ({ look, screen }: LaptopModelProps) => {
             ]}
           >
             {screen}
+            {glow > 0 ? (
+              <rectAreaLight
+                width={LAPTOP.screenWidth}
+                height={LAPTOP.screenHeight}
+                intensity={glow}
+                color={glowColor}
+                position={[0, 0, 0.02]}
+                rotation={[0, Math.PI, 0]}
+              />
+            ) : null}
           </group>
         </group>
       </group>

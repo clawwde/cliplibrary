@@ -1,5 +1,6 @@
+import { CameraMotionBlur } from '@remotion/motion-blur';
 import { useMemo } from 'react';
-import { Composition, useCurrentFrame } from 'remotion';
+import { Composition, getRemotionEnvironment, useCurrentFrame } from 'remotion';
 import * as THREE from 'three';
 import {
   type LaptopWipeRevealProps,
@@ -8,11 +9,10 @@ import {
   laptopWipeRevealSchema,
 } from '@/schemas';
 import { useCanvasFont, useCanvasTexture } from '../../promo/desk/canvas-texture';
-import { Cloth } from '../../promo/desk/cloth';
 import { cameraPosition, DeskRoom, DeskStage } from '../../promo/desk/desk-stage';
 import { drawScreen, SCREEN_CANVAS } from '../../promo/desk/desk-textures';
-import { HandModel } from '../../promo/desk/hand-model';
-import { mixPose } from '../../promo/desk/hand-rig';
+import { type Finger, mixPose } from '../../promo/desk/hand-rig';
+import { HeldTowel } from '../../promo/desk/held-towel';
 import { LAPTOP } from '../../promo/desk/laptop-geometry';
 import { LaptopModel } from '../../promo/desk/laptop-model';
 import { LensOverlay } from '../../promo/desk/lens';
@@ -72,16 +72,41 @@ const Screen = ({
   );
 };
 
-const LaptopWipeReveal = (props: LaptopWipeRevealProps) => {
-  const { screen, wipe, timing, cloth, hand, arm, hold, laptop, room, camera, light } = props;
+const FINGER_REST: Record<Finger, number> = { index: 0.02, middle: 0.06, ring: 0.11, pinky: 0.17 };
+
+const FINGER_PHASE: Record<Finger, number> = { index: 0, middle: 1.7, ring: 3.1, pinky: 4.4 };
+
+const livelyCurl = (
+  base: number,
+  finger: Finger,
+  frame: number,
+  hand: LaptopWipeRevealProps['hand'],
+): number => {
+  const phase = FINGER_PHASE[finger];
+  const life = Math.sin(frame / 11 + phase) * 0.5 + Math.sin(frame / 7.3 + phase * 1.7) * 0.5;
+  return base + FINGER_REST[finger] * hand.fingerVariety + life * 0.04 * hand.fingerLife;
+};
+
+const fingerCurls = (
+  base: Record<Finger, number>,
+  frame: number,
+  hand: LaptopWipeRevealProps['hand'],
+): Record<Finger, number> => ({
+  index: livelyCurl(base.index, 'index', frame, hand),
+  middle: livelyCurl(base.middle, 'middle', frame, hand),
+  ring: livelyCurl(base.ring, 'ring', frame, hand),
+  pinky: livelyCurl(base.pinky, 'pinky', frame, hand),
+});
+
+const DeskScene = ({ blurred, ...props }: LaptopWipeRevealProps & { blurred: boolean }) => {
+  const { screen, wipe, timing, cloth, hand, arm, hold, laptop, room, camera, light, lens } = props;
   const frame = useCurrentFrame() * props.motion.speed;
   const eye = new THREE.Vector3(...cameraPosition(camera, frame));
   const laptopTransform = new THREE.Matrix4()
     .makeTranslation(laptop.x, 0, 0)
     .multiply(new THREE.Matrix4().makeRotationY(laptop.turn));
   const localEye = eye.clone().applyMatrix4(laptopTransform.clone().invert());
-  const motion = choreograph({
-    frame,
+  const choreography = {
     timing: timing satisfies WipeTiming,
     path: wipe,
     hold: { ...hold, x: hold.x - laptop.x },
@@ -89,14 +114,20 @@ const LaptopWipeReveal = (props: LaptopWipeRevealProps) => {
     camera: localEye,
     contactGap: hand.contactGap + 0.02,
     enterFrom: new THREE.Vector3(hand.enterX, hand.enterY, hand.enterZ),
-  });
+  };
+  const motion = choreograph({ ...choreography, frame });
+  const settled = choreograph({ ...choreography, frame: timing.turnStart + timing.turnFrames });
+  const settledFingers = 1 - THREE.MathUtils.smoothstep(motion.turn, 0, 0.35);
   const wipePose = {
-    curl: {
-      index: hand.wipeCurl,
-      middle: hand.wipeCurl,
-      ring: hand.wipeCurl,
-      pinky: hand.wipeCurl,
-    },
+    curl: fingerCurls(
+      { index: hand.wipeCurl, middle: hand.wipeCurl, ring: hand.wipeCurl, pinky: hand.wipeCurl },
+      frame,
+      {
+        ...hand,
+        fingerVariety: hand.fingerVariety * settledFingers,
+        fingerLife: hand.fingerLife * settledFingers,
+      },
+    ),
     spread: hand.spread,
     thumbCurl: 0.1,
     thumbReach: -0.2,
@@ -116,55 +147,81 @@ const LaptopWipeReveal = (props: LaptopWipeRevealProps) => {
     wristBend: hand.holdWristBend,
     wristTwist: hand.wristTwist,
   };
-  const pose = mixPose(wipePose, holdPose, motion.turn);
+  const grip = THREE.MathUtils.smoothstep(motion.turn, 0.45, 1);
+  const pose = {
+    ...mixPose(wipePose, holdPose, motion.turn),
+    thumbCurl: THREE.MathUtils.lerp(wipePose.thumbCurl, holdPose.thumbCurl, grip),
+    thumbReach: THREE.MathUtils.lerp(wipePose.thumbReach, holdPose.thumbReach, grip),
+  };
+  const focus = motion.palm.position.clone().applyMatrix4(laptopTransform);
+  return (
+    <DeskStage
+      camera={camera}
+      light={light}
+      frame={frame}
+      lens={room.show ? lens : null}
+      blurred={blurred}
+      focus={[focus.x, focus.y, focus.z]}
+    >
+      {room.show ? (
+        <DeskRoom
+          wall={room.wall}
+          desk={room.desk}
+          deskRoughness={room.deskRoughness}
+          wallDistance={room.wallDistance}
+        />
+      ) : null}
+      {room.show && room.showPlant ? (
+        <group position={[room.plantX, 0, room.plantZ]} scale={room.plantScale}>
+          <Plant look={room} frame={frame} />
+        </group>
+      ) : null}
+      <group matrixAutoUpdate={false} matrix={laptopTransform}>
+        <LaptopModel
+          look={laptop}
+          glow={lens.screenGlow * screen.brightness}
+          glowColor={screen.background}
+          screen={
+            <Screen
+              screen={screen}
+              wipe={wipe}
+              cloth={cloth}
+              progress={motion.wipe}
+              reveal={motion.reveal}
+            />
+          }
+        />
+        <HeldTowel
+          palm={motion.palm}
+          pose={pose}
+          holdPalm={settled.palm}
+          holdPose={holdPose}
+          skin={hand.skin}
+          roughness={hand.roughness}
+          detail={hand.detail}
+          arm={arm}
+          cloth={cloth.show ? cloth : null}
+          press={motion.press}
+          held={motion.turn}
+          gap={hand.contactGap * 0.5}
+        />
+      </group>
+    </DeskStage>
+  );
+};
+
+const LaptopWipeReveal = (props: LaptopWipeRevealProps) => {
+  const { lens, camera } = props;
+  const blurred = getRemotionEnvironment().isRendering && lens.motionBlur > 1;
   return (
     <PromoLayer look={props.look} motion={props.motion}>
-      <DeskStage camera={camera} light={light} frame={frame}>
-        {room.show ? (
-          <DeskRoom
-            wall={room.wall}
-            desk={room.desk}
-            deskRoughness={room.deskRoughness}
-            wallDistance={room.wallDistance}
-          />
-        ) : null}
-        {room.show && room.showPlant ? (
-          <group position={[room.plantX, 0, room.plantZ]} scale={room.plantScale}>
-            <Plant look={room} frame={frame} />
-          </group>
-        ) : null}
-        <group matrixAutoUpdate={false} matrix={laptopTransform}>
-          <LaptopModel
-            look={laptop}
-            screen={
-              <Screen
-                screen={screen}
-                wipe={wipe}
-                cloth={cloth}
-                progress={motion.wipe}
-                reveal={motion.reveal}
-              />
-            }
-          />
-          <HandModel
-            palm={motion.palm}
-            pose={pose}
-            skin={hand.skin}
-            roughness={hand.roughness}
-            detail={hand.detail}
-            arm={arm}
-          />
-          {cloth.show ? (
-            <Cloth
-              palm={motion.palm}
-              look={cloth}
-              press={motion.press}
-              held={motion.turn}
-              gap={hand.contactGap * 0.5}
-            />
-          ) : null}
-        </group>
-      </DeskStage>
+      {blurred ? (
+        <CameraMotionBlur samples={lens.motionBlur} shutterAngle={lens.shutterAngle}>
+          <DeskScene {...props} blurred />
+        </CameraMotionBlur>
+      ) : (
+        <DeskScene {...props} blurred={false} />
+      )}
       <LensOverlay grain={camera.grain} vignette={camera.vignette} />
     </PromoLayer>
   );
