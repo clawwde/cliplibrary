@@ -8,11 +8,14 @@ export interface PaperPrint {
   size: number;
   tilt: number;
   indent: number;
+  centerX: number;
   centerY: number;
   fiber: number;
 }
 
 export const PRINT_WIDTH = 1500;
+
+const CONDENSE = 0.8;
 
 export const printHeight = (width: number, height: number): number =>
   Math.round((PRINT_WIDTH * height) / width);
@@ -47,22 +50,19 @@ export const drawPaperPrint = (
   context.fillRect(0, 0, PRINT_WIDTH, height);
   drawFibers(context, height, print.fiber);
   const lines = print.headline.split('\n');
-  const lineHeight = print.size * 0.92;
+  const lineHeight = print.size * 0.86;
   context.save();
-  context.translate(PRINT_WIDTH / 2, height * print.centerY);
+  context.translate(PRINT_WIDTH * print.centerX, height * print.centerY);
   context.rotate(print.tilt);
+  context.scale(CONDENSE, 1);
   context.fillStyle = print.ink;
   context.textBaseline = 'middle';
   context.font = `400 ${print.size}px "${serif}"`;
   const widest = Math.max(...lines.map((line) => context.measureText(line).width));
-  const shift = PRINT_WIDTH * 0.18 * print.indent;
-  const left = -(widest + shift * (lines.length - 1)) / 2;
+  const shift = widest * print.indent;
+  const left = -(widest + shift * (lines.length - 1) * 0.5) / 2;
   lines.forEach((line, index) => {
-    context.fillText(
-      line,
-      left + shift * index * 1.6,
-      (index - (lines.length - 1) / 2) * lineHeight,
-    );
+    context.fillText(line, left + shift * index, (index - (lines.length - 1) / 2) * lineHeight);
   });
   context.restore();
   if (print.footer.length > 0) {

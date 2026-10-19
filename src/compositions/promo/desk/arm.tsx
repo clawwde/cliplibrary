@@ -11,6 +11,7 @@ export interface ArmLook {
   knit: number;
   band: boolean;
   bandColor: string;
+  bandMetal?: number;
 }
 
 const RINGS = 40;
@@ -108,21 +109,23 @@ const BAND_LENGTH = 0.032;
 
 const bandMaterials = new Map<string, THREE.MeshPhysicalMaterial>();
 
-const bandMaterial = (color: string) => {
-  const hit = bandMaterials.get(color);
+const bandMaterial = (color: string, metal = 0) => {
+  const key = `${color}:${metal}`;
+  const hit = bandMaterials.get(key);
   if (hit !== undefined) {
     return hit;
   }
   const material = new THREE.MeshPhysicalMaterial({
     color,
-    roughness: 0.55,
-    sheen: 0.6,
+    metalness: metal,
+    roughness: 0.55 - metal * 0.3,
+    sheen: 0.6 * (1 - metal),
     sheenRoughness: 0.5,
     clearcoat: 0.2,
     clearcoatRoughness: 0.5,
     side: THREE.DoubleSide,
   });
-  bandMaterials.set(color, material);
+  bandMaterials.set(key, material);
   return material;
 };
 
@@ -210,7 +213,7 @@ export const Arm = ({
             folds: 0,
             cuff: 0,
           })}
-          material={bandMaterial(look.bandColor)}
+          material={bandMaterial(look.bandColor, look.bandMetal)}
           castShadow
           receiveShadow
         />

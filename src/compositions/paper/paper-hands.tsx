@@ -8,21 +8,35 @@ export interface HandsLook {
   skin: string;
   roughness: number;
   detail: number;
+  rubX: number;
+  rubY: number;
   rubSpeed: number;
   rubReach: number;
+  clap: number;
   gripCurl: number;
   thumbCurl: number;
-  fingerLean: number;
   watch: boolean;
   watchColor: string;
 }
 
-export interface HandBlend {
-  rub: number;
-  hold: number;
-  ballRadius: number;
-  grip: PalmFrame;
+export interface HandAim {
+  position: THREE.Vector3;
+  normal: THREE.Vector3;
+  fingers: THREE.Vector3;
 }
+
+export interface HandCue {
+  clap: number;
+  ball: number;
+  pull: number;
+  settle: number;
+  ballCenter: THREE.Vector3;
+  ballRadius: number;
+  pullGrip: HandAim;
+  holdGrip: HandAim;
+}
+
+type HandSide = 'top' | 'bottom';
 
 const ARM: ArmLook = {
   style: 'bare',
@@ -35,16 +49,29 @@ const ARM: ArmLook = {
 };
 
 const FOREARM = 2.6;
-const ELBOW_BIAS = new THREE.Vector3(0.25, -0.9, 0.7);
+const PALM_GAP = 0.08;
+const DRIFT = 0.006;
+const ELBOW_BIAS: Record<HandSide, THREE.Vector3> = {
+  top: new THREE.Vector3(1.5, 0.45, 0.55),
+  bottom: new THREE.Vector3(1.5, -0.55, 0.55),
+};
+const MIRRORED: Record<HandSide, boolean> = { top: false, bottom: true };
 
-const elbowFor = (palm: PalmFrame): THREE.Vector3 =>
-  new THREE.Vector3(0, 1, 0)
-    .applyQuaternion(palm.quaternion)
-    .negate()
-    .add(ELBOW_BIAS)
-    .normalize()
-    .multiplyScalar(FOREARM)
-    .add(palm.position);
+const aim = (position: THREE.Vector3, normal: THREE.Vector3, fingers: THREE.Vector3): HandAim => ({
+  position,
+  normal: normal.normalize(),
+  fingers: fingers.normalize(),
+});
+
+const mirror = (vector: THREE.Vector3) => new THREE.Vector3(-vector.x, vector.y, vector.z);
+
+const toPalm = (target: HandAim, mirrored: boolean): PalmFrame =>
+  mirrored
+    ? {
+        position: mirror(target.position),
+        quaternion: palmBasis(mirror(target.normal), mirror(target.fingers)),
+      }
+    : { position: target.position.clone(), quaternion: palmBasis(target.normal, target.fingers) };
 
 const pose = (curl: number, thumbCurl: number, thumbReach: number, spread: number): HandPose => ({
   curl: { index: curl * 0.85, middle: curl, ring: curl * 1.08, pinky: curl * 1.18 },
@@ -55,138 +82,140 @@ const pose = (curl: number, thumbCurl: number, thumbReach: number, spread: numbe
   wristTwist: 0,
 });
 
-const framed = (position: THREE.Vector3, normal: THREE.Vector3, fingers: THREE.Vector3) => ({
-  position,
-  quaternion: palmBasis(normal, fingers),
-});
-
-const rubFrame = (frame: number, look: HandsLook, side: number, rubbing: number): PalmFrame => {
-  const fingers = new THREE.Vector3(-0.15, 0.8, -0.55).normalize();
+const rubAim = (frame: number, look: HandsLook, cue: HandCue, side: HandSide): HandAim => {
+  const center = new THREE.Vector3(look.rubX, look.rubY, 0.25);
   const phase = (frame / look.rubSpeed) * Math.PI * 2;
-  const stroke = Math.sin(phase) * side * look.rubReach * rubbing;
-  const sweep = new THREE.Vector3(
-    look.rubReach * 0.45 * (1 + Math.cos(phase)) * rubbing,
-    Math.cos(frame / 19) * 0.12,
-    0,
-  );
-  return framed(
-    new THREE.Vector3(0.14, -0.75, 0.35).add(sweep).addScaledVector(fingers, stroke),
-    new THREE.Vector3(-1, 0, 0.12),
-    fingers,
-  );
-};
-
-const ballFrame = (frame: number, ballRadius: number, side: number): PalmFrame => {
-  const sway = Math.sin(frame / 13 + side * 1.3) * 0.06;
-  return framed(
-    new THREE.Vector3(ballRadius * 0.75 + 0.1 + sway * 0.4, -0.3 + sway, 0.05 - sway * 0.5),
-    new THREE.Vector3(-0.85, 0.45, 0.1),
-    new THREE.Vector3(-0.35, 0.55, -0.75),
+  const stroke = Math.sin(phase) * look.rubReach * (1 - cue.clap) * (1 - cue.ball);
+  const open = cue.clap * look.clap;
+  if (side === 'top') {
+    return aim(
+      center
+        .clone()
+        .add(new THREE.Vector3(stroke + open * 0.12 - frame * DRIFT, PALM_GAP + open, 0.05)),
+      new THREE.Vector3(0, -1, 0.15 + open * 0.2),
+      new THREE.Vector3(-1, open * 0.4, 0.3),
+    );
+  }
+  return aim(
+    center.clone().add(new THREE.Vector3(frame * DRIFT * 0.6 - stroke, -PALM_GAP - open * 0.3, 0)),
+    new THREE.Vector3(0, 1, 0.15),
+    new THREE.Vector3(-1, -open * 0.12, 0.3),
   );
 };
 
-const blendFrames = (from: PalmFrame, to: PalmFrame, amount: number): PalmFrame => ({
+const ballAim = (frame: number, cue: HandCue, side: HandSide): HandAim => {
+  const sign = side === 'top' ? 1 : -1;
+  const sway = Math.sin(frame / 11 + sign) * 0.04;
+  const radius = cue.ballRadius;
+  return aim(
+    cue.ballCenter
+      .clone()
+      .add(new THREE.Vector3(radius * 0.45 + sway, sign * (radius + PALM_GAP * 0.6), 0.12)),
+    new THREE.Vector3(-0.25, -sign, -0.25),
+    new THREE.Vector3(-0.9, -sign * 0.35, 0.15),
+  );
+};
+
+const blendPalms = (from: PalmFrame, to: PalmFrame, amount: number): PalmFrame => ({
   position: from.position.clone().lerp(to.position, amount),
   quaternion: from.quaternion.clone().slerp(to.quaternion, amount),
 });
 
+const blendAims = (from: HandAim, to: HandAim, amount: number): HandAim => ({
+  position: from.position.clone().lerp(to.position, amount),
+  normal: from.normal.clone().lerp(to.normal, amount).normalize(),
+  fingers: from.fingers.clone().lerp(to.fingers, amount).normalize(),
+});
+
+const RUB_POSE = pose(0.04, 0.1, 0.05, 0.02);
+const BALL_POSE = pose(0.7, 0.6, 0.5, 0.15);
+const PULL_POSE = pose(0.4, 0.85, 0.55, 0.12);
+
+const handPlacement = (frame: number, look: HandsLook, cue: HandCue, side: HandSide) => {
+  const mirrored = MIRRORED[side];
+  const chain = (rubbing: number) => {
+    const rub = rubAim(rubbing === 1 ? frame : 0, look, { ...cue, clap: cue.clap * rubbing }, side);
+    const stages = [rub, ballAim(frame * rubbing, cue, side), cue.pullGrip, cue.holdGrip];
+    const weights = [cue.ball, cue.pull, cue.settle];
+    let palm = toPalm(rub, mirrored);
+    let steady = rub;
+    stages.slice(1).forEach((stage, index) => {
+      palm = blendPalms(palm, toPalm(stage, mirrored), weights[index] ?? 0);
+      steady = blendAims(steady, stage, weights[index] ?? 0);
+    });
+    return { palm, steady };
+  };
+  const { palm } = chain(1);
+  const { steady } = chain(0);
+  const elbow = steady.fingers
+    .clone()
+    .negate()
+    .add(ELBOW_BIAS[side])
+    .normalize()
+    .multiplyScalar(FOREARM)
+    .add(steady.position);
+  const holdPose = pose(look.gripCurl, look.thumbCurl, 0.55, 0.25);
+  const handPose = mixPose(
+    mixPose(mixPose(RUB_POSE, BALL_POSE, cue.ball), PULL_POSE, cue.pull),
+    holdPose,
+    cue.settle,
+  );
+  return { palm, handPose, elbow: mirrored ? mirror(elbow) : elbow, mirrored };
+};
+
 const Hand = ({
-  palm,
-  handPose,
-  elbow,
+  frame,
   look,
-  arm,
+  cue,
+  side,
 }: {
-  palm: PalmFrame;
-  handPose: HandPose;
-  elbow: THREE.Vector3;
+  frame: number;
   look: HandsLook;
-  arm: ArmLook;
+  cue: HandCue;
+  side: HandSide;
 }) => {
   const hand = useHandScene();
-  applyHandPose(hand.rig, handPose);
-  return (
+  const placement = handPlacement(frame, look, cue, side);
+  applyHandPose(hand.rig, placement.handPose);
+  const arm =
+    side === 'bottom'
+      ? { ...ARM, band: look.watch, bandColor: look.watchColor, bandMetal: 0.6 }
+      : ARM;
+  const model = (
     <HandModel
       hand={hand}
-      palm={palm}
+      palm={placement.palm}
       skin={look.skin}
       roughness={look.roughness}
       detail={look.detail}
       arm={arm}
-      elbow={elbow}
+      elbow={placement.elbow}
     />
   );
+  return placement.mirrored ? <group scale={[-1, 1, 1]}>{model}</group> : model;
 };
 
-const handPlacement = (
-  frame: number,
-  look: HandsLook,
-  blend: HandBlend,
-  side: number,
-): { palm: PalmFrame; handPose: HandPose; elbow: THREE.Vector3 } => {
-  const ball = ballFrame(frame, blend.ballRadius, side);
-  const place = (rubbing: number) =>
-    blendFrames(
-      blendFrames(rubFrame(frame, look, side, rubbing), ball, 1 - blend.rub),
-      blend.grip,
-      blend.hold,
-    );
-  const palm = place(1);
-  const rubPose = pose(0.08, 0.15, 0.1, 0.05);
-  const ballPose = pose(0.7, 0.55, 0.45, 0.2);
-  const holdPose = pose(look.gripCurl, look.thumbCurl, 0.55, 0.35);
-  return {
-    palm,
-    elbow: elbowFor(place(0)),
-    handPose: mixPose(mixPose(rubPose, ballPose, 1 - blend.rub), holdPose, blend.hold),
-  };
-};
-
-export const holdFrame = (
+export const sheetGrip = (
   anchor: THREE.Vector3,
   normal: THREE.Vector3,
-  up: THREE.Vector3,
-  look: HandsLook,
+  fingers: THREE.Vector3,
   depth: number,
-): PalmFrame => {
-  const fingers = up
-    .clone()
-    .add(new THREE.Vector3(-look.fingerLean, 0, 0))
-    .normalize();
-  return framed(anchor.clone().addScaledVector(normal, -depth), normal, fingers);
-};
+): HandAim =>
+  aim(anchor.clone().addScaledVector(normal, depth), normal.clone().negate(), fingers.clone());
 
 export const PaperHands = ({
   frame,
   look,
-  right,
-  left,
+  top,
+  bottom,
 }: {
   frame: number;
   look: HandsLook;
-  right: HandBlend;
-  left: HandBlend;
-}) => {
-  const rightHand = handPlacement(frame, look, right, 1);
-  const leftHand = handPlacement(frame, look, left, -1);
-  return (
-    <>
-      <Hand
-        palm={rightHand.palm}
-        handPose={rightHand.handPose}
-        elbow={rightHand.elbow}
-        look={look}
-        arm={ARM}
-      />
-      <group scale={[-1, 1, 1]}>
-        <Hand
-          palm={leftHand.palm}
-          handPose={leftHand.handPose}
-          elbow={leftHand.elbow}
-          look={look}
-          arm={{ ...ARM, band: look.watch, bandColor: look.watchColor }}
-        />
-      </group>
-    </>
-  );
-};
+  top: HandCue;
+  bottom: HandCue;
+}) => (
+  <>
+    <Hand frame={frame} look={look} cue={top} side="top" />
+    <Hand frame={frame} look={look} cue={bottom} side="bottom" />
+  </>
+);
