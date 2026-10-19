@@ -10,6 +10,7 @@ export * from './clips/brand/cta-end-card';
 export * from './clips/desk-scenes/laptop-wipe-reveal';
 export * from './clips/hand-drawn/chalk-badge';
 export * from './clips/hand-drawn/chalk-badge-grid';
+export * from './clips/hand-drawn/chalk-badges-reel';
 export * from './clips/hand-drawn/chalk-title';
 export * from './clips/hand-drawn/doodle-arrows';
 export * from './clips/hand-drawn/handwritten-note';

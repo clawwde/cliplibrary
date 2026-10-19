@@ -8,6 +8,7 @@ import type { CtaEndCardProps } from './clips/brand/cta-end-card';
 import type { LaptopWipeRevealProps } from './clips/desk-scenes/laptop-wipe-reveal';
 import type { ChalkBadgeProps } from './clips/hand-drawn/chalk-badge';
 import type { ChalkBadgeGridProps } from './clips/hand-drawn/chalk-badge-grid';
+import type { ChalkBadgesReelProps } from './clips/hand-drawn/chalk-badges-reel';
 import type { ChalkTitleProps } from './clips/hand-drawn/chalk-title';
 import type { DoodleArrowsProps } from './clips/hand-drawn/doodle-arrows';
 import type { HandwrittenNoteProps } from './clips/hand-drawn/handwritten-note';
@@ -91,6 +92,7 @@ export interface ClipPropsMap {
   'chalk-badge': ChalkBadgeProps;
   'chalk-badge-grid': ChalkBadgeGridProps;
   'chalk-title': ChalkTitleProps;
+  'chalk-badges-reel': ChalkBadgesReelProps;
   'chunky-type-stack': ChunkyTypeStackProps;
   'film-dust': FilmDustProps;
   'brand-reveal': BrandRevealProps;

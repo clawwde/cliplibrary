@@ -5,6 +5,11 @@ import {
   chalkBadgeGridMeta,
   chalkBadgeGridSchema,
 } from './chalk-badge-grid';
+import {
+  chalkBadgesReelDefaults,
+  chalkBadgesReelMeta,
+  chalkBadgesReelSchema,
+} from './chalk-badges-reel';
 import { chalkTitleDefaults, chalkTitleMeta, chalkTitleSchema } from './chalk-title';
 import { doodleArrowsDefaults, doodleArrowsMeta, doodleArrowsSchema } from './doodle-arrows';
 import {
@@ -54,5 +59,11 @@ export const handDrawnClips: ClipModule[] = [
     schema: chalkTitleSchema,
     defaults: chalkTitleDefaults,
     meta: chalkTitleMeta,
+  },
+  {
+    id: 'chalk-badges-reel',
+    schema: chalkBadgesReelSchema,
+    defaults: chalkBadgesReelDefaults,
+    meta: chalkBadgesReelMeta,
   },
 ];

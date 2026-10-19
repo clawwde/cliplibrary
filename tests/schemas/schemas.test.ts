@@ -296,6 +296,7 @@ describe('promo clips', () => {
     'chalk-badge',
     'chalk-badge-grid',
     'chalk-title',
+    'chalk-badges-reel',
     'chunky-type-stack',
   ];
 

@@ -56,6 +56,7 @@ describe('gallery filters', () => {
       'scribble-caption',
       'chalk-badge-grid',
       'doodle-arrows',
+      'chalk-badges-reel',
     ]);
     const phones = CLIP_REGISTRY.filter((meta) => meta.tags.includes('phone')).map(
       (meta) => meta.id,
