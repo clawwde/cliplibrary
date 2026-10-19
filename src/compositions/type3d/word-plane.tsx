@@ -5,7 +5,7 @@ import { useWordTexture, type WordArt } from './word-art';
 
 const SEGMENTS = 48;
 
-const bentPlane = (width: number, height: number, bend: number): THREE.PlaneGeometry => {
+export const bentPlane = (width: number, height: number, bend: number): THREE.PlaneGeometry => {
   const geometry = new THREE.PlaneGeometry(width, height, SEGMENTS, 1);
   if (Math.abs(bend) < 1e-4) {
     return geometry;

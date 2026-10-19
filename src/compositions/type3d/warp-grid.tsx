@@ -1,5 +1,25 @@
 import { useMemo } from 'react';
 import * as THREE from 'three';
+import { setUniform, srgbVector } from './post-shader';
+
+const flatMaterial = () =>
+  new THREE.ShaderMaterial({
+    uniforms: { color: { value: new THREE.Vector3() }, opacity: { value: 1 } },
+    vertexShader: `void main() { gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }`,
+    fragmentShader: `uniform vec3 color; uniform float opacity; void main() { gl_FragColor = vec4(color * opacity, opacity); }`,
+    transparent: true,
+    depthWrite: false,
+    side: THREE.DoubleSide,
+    blending: THREE.CustomBlending,
+    blendSrc: THREE.OneFactor,
+    blendDst: THREE.OneMinusSrcAlphaFactor,
+    blendSrcAlpha: THREE.OneFactor,
+    blendDstAlpha: THREE.OneMinusSrcAlphaFactor,
+    stencilWrite: true,
+    stencilRef: 1,
+    stencilFunc: THREE.NotEqualStencilFunc,
+    stencilZPass: THREE.ReplaceStencilOp,
+  });
 
 const SAMPLES = 72;
 
@@ -75,23 +95,11 @@ export const WarpGrid = ({
     () => gridGeometry({ width, height, spacing, bulge, lineWidth }),
     [width, height, spacing, bulge, lineWidth],
   );
+  const material = useMemo(() => flatMaterial(), []);
+  setUniform(material, 'color', srgbVector(color));
+  setUniform(material, 'opacity', opacity);
   if (opacity <= 0) {
     return null;
   }
-  return (
-    <mesh geometry={geometry} position={[0, 0, z]} renderOrder={-10}>
-      <meshBasicMaterial
-        color={color}
-        transparent
-        opacity={opacity}
-        toneMapped={false}
-        depthWrite={false}
-        side={THREE.DoubleSide}
-        stencilWrite
-        stencilRef={1}
-        stencilFunc={THREE.NotEqualStencilFunc}
-        stencilZPass={THREE.ReplaceStencilOp}
-      />
-    </mesh>
-  );
+  return <mesh geometry={geometry} material={material} position={[0, 0, z]} renderOrder={-10} />;
 };

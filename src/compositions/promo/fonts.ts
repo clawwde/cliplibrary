@@ -2,6 +2,7 @@ import { loadFont as loadCaveatBrush } from '@remotion/google-fonts/CaveatBrush'
 import { loadFont as loadInter } from '@remotion/google-fonts/Inter';
 import { loadFont as loadInterTight } from '@remotion/google-fonts/InterTight';
 import { loadFont as loadKalam } from '@remotion/google-fonts/Kalam';
+import { loadFont as loadMontserrat } from '@remotion/google-fonts/Montserrat';
 import { loadFont as loadOnest } from '@remotion/google-fonts/Onest';
 import { loadFont as loadOswald } from '@remotion/google-fonts/Oswald';
 import { loadFont as loadPermanentMarker } from '@remotion/google-fonts/PermanentMarker';
@@ -51,7 +52,16 @@ const onest = loadOnest('normal', {
 
 export const kineticFont = onest.fontFamily;
 
-export const kineticFontReady = onest.waitUntilDone;
+const montserrat = loadMontserrat('normal', {
+  weights: ['500', '600', '700', '800', '900'],
+  subsets: ['latin'],
+});
+
+export const typeFaces = {
+  montserrat: { family: montserrat.fontFamily, ready: montserrat.waitUntilDone },
+  onest: { family: onest.fontFamily, ready: onest.waitUntilDone },
+  poppins: { family: poppins.fontFamily, ready: poppins.waitUntilDone },
+} as const;
 
 export const pageFonts: Record<PageFont, string> = {
   condensed: loadOswald('normal', {

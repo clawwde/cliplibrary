@@ -3,6 +3,7 @@ import { ThreeCanvas } from '@remotion/three';
 import type { ReactNode } from 'react';
 import { getRemotionEnvironment, useVideoConfig } from 'remotion';
 import type * as THREE from 'three';
+import { useAnimator } from './frame-composer';
 
 export type Vec3 = [number, number, number];
 
@@ -13,8 +14,10 @@ export interface TypeCamera {
   roll?: number;
 }
 
-const TypeCameraRig = ({ position, target, fov, roll = 0 }: TypeCamera) => {
-  const camera = useThree((state) => state.camera) as THREE.PerspectiveCamera;
+const aimCamera = (
+  camera: THREE.PerspectiveCamera,
+  { position, target, fov, roll = 0 }: TypeCamera,
+) => {
   camera.position.set(...position);
   camera.fov = fov;
   camera.near = 0.5;
@@ -22,10 +25,29 @@ const TypeCameraRig = ({ position, target, fov, roll = 0 }: TypeCamera) => {
   camera.up.set(Math.sin(roll), Math.cos(roll), 0);
   camera.updateProjectionMatrix();
   camera.lookAt(...target);
+};
+
+const TypeCameraRig = (shot: TypeCamera) => {
+  const camera = useThree((state) => state.camera) as THREE.PerspectiveCamera;
+  aimCamera(camera, shot);
   return null;
 };
 
-export const TypeCanvas = ({ camera, children }: { camera: TypeCamera; children: ReactNode }) => {
+export const CameraShot = ({ shot }: { shot: (time: number) => TypeCamera }) => {
+  const camera = useThree((state) => state.camera) as THREE.PerspectiveCamera;
+  useAnimator((time) => aimCamera(camera, shot(time)));
+  return null;
+};
+
+export const TypeCanvas = ({
+  camera,
+  fov = camera?.fov ?? 30,
+  children,
+}: {
+  camera?: TypeCamera;
+  fov?: number;
+  children: ReactNode;
+}) => {
   const { width, height } = useVideoConfig();
   const pixelRatio = getRemotionEnvironment().isRendering ? 2 : 1;
   return (
@@ -34,10 +56,10 @@ export const TypeCanvas = ({ camera, children }: { camera: TypeCamera; children:
       height={height}
       dpr={pixelRatio}
       gl={{ antialias: true, alpha: true, stencil: true, preserveDrawingBuffer: true }}
-      camera={{ fov: camera.fov, position: camera.position }}
+      camera={{ fov, position: camera?.position ?? [0, 0, 12] }}
       style={{ position: 'absolute', inset: 0 }}
     >
-      <TypeCameraRig {...camera} />
+      {camera === undefined ? null : <TypeCameraRig {...camera} />}
       {children}
     </ThreeCanvas>
   );

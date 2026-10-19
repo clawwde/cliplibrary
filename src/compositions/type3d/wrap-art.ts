@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import * as THREE from 'three';
-import { configureTexture, FONT_PX, fontOf, textMetrics, useKineticWeight } from './word-art';
+import { configureTexture, FONT_PX, fontOf, textMetrics, useTypeFace } from './word-art';
 
 const SPHERE_WIDTH = 4096;
 const SPHERE_HEIGHT = 2048;
@@ -29,7 +29,7 @@ const paintGlobe = (words: GlobeWord[], weight: number, arc: number, band: numbe
   const scale = Math.min(bandPixels / (ascent + descent), arcPixels / widest);
   const size = FONT_PX * scale;
   words.forEach((word, index) => {
-    context.font = fontOf(weight, size);
+    context.font = fontOf(weight, undefined, size);
     context.fillStyle = word.color;
     const center = (0.25 + index / words.length) * SPHERE_WIDTH;
     const baseline = SPHERE_HEIGHT / 2 + ((ascent - descent) / 2) * scale;
@@ -46,7 +46,7 @@ export const useGlobeTexture = (
   arc: number,
   band: number,
 ): THREE.CanvasTexture => {
-  useKineticWeight(weight);
+  useTypeFace(weight);
   const key = JSON.stringify({ words, weight, arc, band });
   return useMemo(() => {
     const parsed = JSON.parse(key) as { words: GlobeWord[] };
@@ -74,7 +74,7 @@ const paintRing = (text: string, color: string, weight: number, aspect: number) 
   const patternWidth = measure(pattern) * scale;
   const repeats = Math.max(1, Math.round(canvas.width / patternWidth));
   const stretch = canvas.width / (repeats * patternWidth);
-  context.font = fontOf(weight, FONT_PX * scale);
+  context.font = fontOf(weight, undefined, FONT_PX * scale);
   context.fillStyle = color;
   context.textBaseline = 'alphabetic';
   context.setTransform(stretch, 0, 0, 1, 0, 0);
@@ -91,7 +91,7 @@ export const useRingTexture = (
   weight: number,
   aspect: number,
 ): THREE.CanvasTexture => {
-  useKineticWeight(weight);
+  useTypeFace(weight);
   const roundedAspect = Math.round(aspect * 10) / 10;
   return useMemo(() => {
     const texture = configureTexture(

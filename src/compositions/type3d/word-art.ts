@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 import * as THREE from 'three';
-import { kineticFont, kineticFontReady } from '../promo/fonts';
+import type { TypeFace } from '@/schemas';
+import { typeFaces } from '../promo/fonts';
 
 export const FONT_PX = 200;
 
@@ -10,6 +11,7 @@ export interface WordArt {
   text: string;
   color: string;
   weight: number;
+  face?: TypeFace;
   shape?: WordShape;
   fill?: string;
   stroke?: string;
@@ -23,26 +25,28 @@ export interface WordTexture {
   frameY: number;
 }
 
-const loadedWeights = new Set<number>();
-const pendingWeights = new Map<number, Promise<void>>();
+const loadedFonts = new Set<string>();
+const pendingFonts = new Map<string, Promise<void>>();
 
-export const useKineticWeight = (weight: number): void => {
-  if (loadedWeights.has(weight)) {
+export const fontOf = (weight: number, face: TypeFace = 'montserrat', px = FONT_PX) =>
+  `${weight} ${px}px "${typeFaces[face].family}"`;
+
+export const useTypeFace = (weight: number, face: TypeFace = 'montserrat'): void => {
+  const key = `${face}:${weight}`;
+  if (loadedFonts.has(key)) {
     return;
   }
   const pending =
-    pendingWeights.get(weight) ??
-    kineticFontReady()
-      .then(() => document.fonts.load(`${weight} ${FONT_PX}px "${kineticFont}"`))
+    pendingFonts.get(key) ??
+    typeFaces[face]
+      .ready()
+      .then(() => document.fonts.load(fontOf(weight, face)))
       .then(() => {
-        loadedWeights.add(weight);
+        loadedFonts.add(key);
       });
-  pendingWeights.set(weight, pending);
+  pendingFonts.set(key, pending);
   throw pending;
 };
-
-export const fontOf = (weight: number, px = FONT_PX) => `${weight} ${px}px "${kineticFont}"`;
-
 let sharedContext: CanvasRenderingContext2D | null = null;
 
 const measureContext = (): CanvasRenderingContext2D => {
@@ -53,9 +57,9 @@ const measureContext = (): CanvasRenderingContext2D => {
   return sharedContext;
 };
 
-export const textMetrics = (weight: number) => {
+export const textMetrics = (weight: number, face: TypeFace = 'montserrat') => {
   const context = measureContext();
-  context.font = fontOf(weight);
+  context.font = fontOf(weight, face);
   const ascent = context.measureText('H').actualBoundingBoxAscent;
   const descent = context.measureText('gy').actualBoundingBoxDescent;
   return { ascent, descent, measure: (text: string) => context.measureText(text).width };
@@ -117,7 +121,7 @@ const drawGlyph = (
 
 const measureWord = (art: WordArt) => {
   const shape = art.shape ?? 'none';
-  const { ascent, descent, measure } = textMetrics(art.weight);
+  const { ascent, descent, measure } = textMetrics(art.weight, art.face);
   const isGlyph = art.text === ARROW || art.text === SPARK;
   const textWidth = isGlyph ? FONT_PX * 0.7 : measure(art.text);
   const boxHeight = shape === 'none' ? ascent + descent : FONT_PX * 1.32;
@@ -169,7 +173,7 @@ const paintWord = (art: WordArt): Omit<WordTexture, 'texture'> & { canvas: HTMLC
         context.stroke();
       }
     }
-    context.font = fontOf(art.weight);
+    context.font = fontOf(art.weight, art.face);
     context.textAlign = 'center';
     context.textBaseline = 'alphabetic';
     context.fillStyle = art.color;
@@ -191,7 +195,7 @@ const paintWord = (art: WordArt): Omit<WordTexture, 'texture'> & { canvas: HTMLC
 };
 
 export const useWordTexture = (art: WordArt): WordTexture => {
-  useKineticWeight(art.weight);
+  useTypeFace(art.weight, art.face);
   const key = JSON.stringify(art);
   return useMemo(() => {
     const painted = paintWord(JSON.parse(key) as WordArt);
@@ -205,7 +209,7 @@ export const useWordTexture = (art: WordArt): WordTexture => {
 };
 
 export const wordAspect = (art: WordArt): number => {
-  useKineticWeight(art.weight);
+  useTypeFace(art.weight, art.face);
   const { contentWidth, contentHeight } = measureWord(art);
   return contentWidth / contentHeight;
 };
