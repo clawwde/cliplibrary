@@ -1,10 +1,10 @@
 import { CameraMotionBlur } from '@remotion/motion-blur';
-import { useMemo } from 'react';
-import { AbsoluteFill, getRemotionEnvironment, useCurrentFrame } from 'remotion';
+import { useEffect, useMemo, useState } from 'react';
+import { AbsoluteFill, getRemotionEnvironment, useCurrentFrame, useDelayRender } from 'remotion';
 import type { ProblemStrikeoutProps } from '@/schemas';
 import { DeskStage } from '../promo/desk/desk-stage';
 import { LensOverlay } from '../promo/desk/lens';
-import { handFonts } from '../promo/fonts';
+import { handFontReady, handFonts } from '../promo/fonts';
 import { cameraShot, canvasToWorld, pencilState, strikeSchedule } from './choreography';
 import { DeskMat } from './desk-mat';
 import { Notebook } from './notebook';
@@ -12,16 +12,43 @@ import { layoutProblems, strikePath } from './page-art';
 import { Pencil, pencilAxis } from './pencil';
 import { WritingHand } from './writing-hand';
 
-const useStrikePaths = (page: ProblemStrikeoutProps['page']) =>
-  useMemo(() => {
+const useHandFontLoaded = (page: ProblemStrikeoutProps['page']): boolean => {
+  const [loaded, setLoaded] = useState(false);
+  const { delayRender, continueRender } = useDelayRender();
+  useEffect(() => {
+    const handle = delayRender('Loading the handwriting font');
+    let active = true;
+    handFontReady(page.font)
+      .then(() => document.fonts.load(`700 ${page.size}px "${handFonts[page.font]}"`))
+      .then(() => {
+        if (active) {
+          setLoaded(true);
+        }
+        continueRender(handle);
+      })
+      .catch(() => {
+        continueRender(handle);
+      });
+    return () => {
+      active = false;
+      continueRender(handle);
+    };
+  }, [page.font, page.size, delayRender, continueRender]);
+  return loaded;
+};
+
+const useStrikePaths = (page: ProblemStrikeoutProps['page']) => {
+  const loaded = useHandFontLoaded(page);
+  return useMemo(() => {
     const context = document.createElement('canvas').getContext('2d');
-    if (context === null) {
+    if (context === null || !loaded) {
       return [];
     }
     return layoutProblems(context, page, handFonts[page.font]).map((problem, index) =>
       strikePath(problem, page, index),
     );
-  }, [page]);
+  }, [page, loaded]);
+};
 
 const Desk = ({ blurred, ...props }: ProblemStrikeoutProps & { blurred: boolean }) => {
   const { page, notebook, pencil, timing, desk, camera, light, lens } = props;
