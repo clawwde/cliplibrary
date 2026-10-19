@@ -13,7 +13,10 @@ import type { WordBuildProps } from './clips/kinetic-type/word-build';
 import type { WordPunchProps } from './clips/kinetic-type/word-punch';
 import type { HeadingListProps } from './clips/list-pickers/heading-list';
 import type { MenuStackProps } from './clips/list-pickers/menu-stack';
+import type { PillFanProps } from './clips/list-pickers/pill-fan';
+import type { SkillWheelProps } from './clips/list-pickers/skill-wheel';
 import type { WordPickerProps } from './clips/list-pickers/word-picker';
+import type { YearDialProps } from './clips/list-pickers/year-dial';
 import type { FilmDustProps } from './clips/overlays/film-dust';
 import type { FloatingCardsProps } from './clips/overlays/floating-cards';
 import type { PhoneFanProps } from './clips/phone-layouts/phone-fan';
@@ -34,8 +37,11 @@ import type { SceneTransitionProps } from './clips/transitions/scene-transition'
 
 export interface ClipPropsMap {
   'word-picker': WordPickerProps;
+  'pill-fan': PillFanProps;
   'menu-stack': MenuStackProps;
   'heading-list': HeadingListProps;
+  'year-dial': YearDialProps;
+  'skill-wheel': SkillWheelProps;
   'phone-flat-lay': PhoneFlatLayProps;
   'phone-pedestal': PhonePedestalProps;
   'app-icon-reveal': AppIconRevealProps;

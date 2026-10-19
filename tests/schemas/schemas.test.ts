@@ -278,8 +278,11 @@ describe('promo clips', () => {
     'printer-pages',
     'helicopter-unveil',
     'word-picker',
+    'pill-fan',
     'menu-stack',
     'heading-list',
+    'year-dial',
+    'skill-wheel',
   ];
 
   it('validates every promo default against its schema', () => {
