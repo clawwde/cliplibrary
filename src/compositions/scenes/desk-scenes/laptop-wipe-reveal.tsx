@@ -99,7 +99,7 @@ const fingerCurls = (
   pinky: livelyCurl(base.pinky, 'pinky', frame, hand),
 });
 
-const DeskScene = (props: LaptopWipeRevealProps) => {
+const DeskScene = ({ blurred, ...props }: LaptopWipeRevealProps & { blurred: boolean }) => {
   const { screen, wipe, timing, cloth, hand, arm, hold, laptop, room, camera, light, lens } = props;
   const frame = useCurrentFrame() * props.motion.speed;
   const eye = new THREE.Vector3(...cameraPosition(camera, frame));
@@ -117,11 +117,16 @@ const DeskScene = (props: LaptopWipeRevealProps) => {
     contactGap: hand.contactGap + 0.02,
     enterFrom: new THREE.Vector3(hand.enterX, hand.enterY, hand.enterZ),
   });
+  const settledFingers = 1 - THREE.MathUtils.smoothstep(motion.turn, 0, 0.35);
   const wipePose = {
     curl: fingerCurls(
       { index: hand.wipeCurl, middle: hand.wipeCurl, ring: hand.wipeCurl, pinky: hand.wipeCurl },
       frame,
-      hand,
+      {
+        ...hand,
+        fingerVariety: hand.fingerVariety * settledFingers,
+        fingerLife: hand.fingerLife * settledFingers,
+      },
     ),
     spread: hand.spread,
     thumbCurl: 0.1,
@@ -150,6 +155,7 @@ const DeskScene = (props: LaptopWipeRevealProps) => {
       light={light}
       frame={frame}
       lens={room.show ? lens : null}
+      blurred={blurred}
       focus={[focus.x, focus.y, focus.z]}
     >
       {room.show ? (
@@ -209,10 +215,10 @@ const LaptopWipeReveal = (props: LaptopWipeRevealProps) => {
     <PromoLayer look={props.look} motion={props.motion}>
       {blurred ? (
         <CameraMotionBlur samples={lens.motionBlur} shutterAngle={lens.shutterAngle}>
-          <DeskScene {...props} />
+          <DeskScene {...props} blurred />
         </CameraMotionBlur>
       ) : (
-        <DeskScene {...props} />
+        <DeskScene {...props} blurred={false} />
       )}
       <LensOverlay grain={camera.grain} vignette={camera.vignette} />
     </PromoLayer>

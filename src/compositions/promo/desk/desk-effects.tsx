@@ -41,7 +41,15 @@ const ComposerPrimer = () => {
   return null;
 };
 
-export const DeskEffects = ({ lens, focus }: { lens: DeskLens; focus: Vec3 }) => {
+export const DeskEffects = ({
+  lens,
+  focus,
+  multisampling,
+}: {
+  lens: DeskLens;
+  focus: Vec3;
+  multisampling: number;
+}) => {
   const effects: ReactElement[] = [];
   if (lens.ambientOcclusion > 0) {
     effects.push(
@@ -81,7 +89,7 @@ export const DeskEffects = ({ lens, focus }: { lens: DeskLens; focus: Vec3 }) =>
   effects.push(<ToneMapping key="tone" mode={ToneMappingMode.NEUTRAL} />);
   return (
     <>
-      <EffectComposer multisampling={8}>{effects}</EffectComposer>
+      <EffectComposer multisampling={multisampling}>{effects}</EffectComposer>
       <ComposerPrimer />
     </>
   );

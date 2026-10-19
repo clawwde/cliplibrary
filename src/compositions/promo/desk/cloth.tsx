@@ -128,7 +128,7 @@ export const Cloth = ({ palm, look, press, held, gap }: ClothProps) => {
       look.creases *
       (0.6 - press * 0.45) *
       (Math.exp(-((y / CREASE_WIDTH) ** 2)) * 0.03 - Math.exp(-((x / CREASE_WIDTH) ** 2)) * 0.022);
-    position.setZ(index, shape + crumple + fold - held * HELD_CLEARANCE);
+    position.setZ(index, shape + crumple + fold - Math.min(1, held * 1.8) * HELD_CLEARANCE);
   }
   position.needsUpdate = true;
   geometry.computeVertexNormals();

@@ -93,13 +93,22 @@ export interface DeskStageProps {
   light: DeskLight;
   frame: number;
   lens: DeskLens | null;
+  blurred: boolean;
   focus: Vec3;
   children: ReactNode;
 }
 
-export const DeskStage = ({ camera, light, frame, lens, focus, children }: DeskStageProps) => {
+export const DeskStage = ({
+  camera,
+  light,
+  frame,
+  lens,
+  focus,
+  children,
+  blurred,
+}: DeskStageProps) => {
   const { width, height } = useVideoConfig();
-  const pixelRatio = getRemotionEnvironment().isRendering ? 2 : 1;
+  const pixelRatio = getRemotionEnvironment().isRendering && !blurred ? 2 : 1;
   return (
     <ThreeCanvas
       width={width}
@@ -132,7 +141,9 @@ export const DeskStage = ({ camera, light, frame, lens, focus, children }: DeskS
       <directionalLight position={[6, 4, 5]} intensity={light.key * 0.25} color="#e8eeff" />
       <Room reflections={light.reflections} />
       {children}
-      {lens === null ? null : <DeskEffects lens={lens} focus={focus} />}
+      {lens === null ? null : (
+        <DeskEffects lens={lens} focus={focus} multisampling={blurred ? 4 : 8} />
+      )}
     </ThreeCanvas>
   );
 };
