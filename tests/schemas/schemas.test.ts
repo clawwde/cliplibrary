@@ -285,6 +285,7 @@ describe('promo clips', () => {
     'mind-map',
     'color-pills',
     'skill-wheel',
+    'product-cards',
   ];
 
   it('validates every promo default against its schema', () => {

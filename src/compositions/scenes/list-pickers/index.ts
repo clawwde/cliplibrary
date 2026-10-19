@@ -4,6 +4,7 @@ import { headingListScene } from './heading-list';
 import { menuStackScene } from './menu-stack';
 import { mindMapScene } from './mind-map';
 import { pillFanScene } from './pill-fan';
+import { productCardsScene } from './product-cards';
 import { skillWheelScene } from './skill-wheel';
 import { wordPickerScene } from './word-picker';
 import { yearDialScene } from './year-dial';
@@ -17,4 +18,5 @@ export const listPickersScenes: SceneModule[] = [
   mindMapScene,
   colorPillsScene,
   skillWheelScene,
+  productCardsScene,
 ];

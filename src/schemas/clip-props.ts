@@ -16,6 +16,7 @@ import type { HeadingListProps } from './clips/list-pickers/heading-list';
 import type { MenuStackProps } from './clips/list-pickers/menu-stack';
 import type { MindMapProps } from './clips/list-pickers/mind-map';
 import type { PillFanProps } from './clips/list-pickers/pill-fan';
+import type { ProductCardsProps } from './clips/list-pickers/product-cards';
 import type { SkillWheelProps } from './clips/list-pickers/skill-wheel';
 import type { WordPickerProps } from './clips/list-pickers/word-picker';
 import type { YearDialProps } from './clips/list-pickers/year-dial';
@@ -46,6 +47,7 @@ export interface ClipPropsMap {
   'mind-map': MindMapProps;
   'color-pills': ColorPillsProps;
   'skill-wheel': SkillWheelProps;
+  'product-cards': ProductCardsProps;
   'phone-flat-lay': PhoneFlatLayProps;
   'phone-pedestal': PhonePedestalProps;
   'app-icon-reveal': AppIconRevealProps;

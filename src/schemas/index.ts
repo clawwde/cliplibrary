@@ -18,6 +18,7 @@ export * from './clips/list-pickers/heading-list';
 export * from './clips/list-pickers/menu-stack';
 export * from './clips/list-pickers/mind-map';
 export * from './clips/list-pickers/pill-fan';
+export * from './clips/list-pickers/product-cards';
 export * from './clips/list-pickers/skill-wheel';
 export * from './clips/list-pickers/word-picker';
 export * from './clips/list-pickers/year-dial';

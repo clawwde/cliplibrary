@@ -4,6 +4,7 @@ import { headingListDefaults, headingListMeta, headingListSchema } from './headi
 import { menuStackDefaults, menuStackMeta, menuStackSchema } from './menu-stack';
 import { mindMapDefaults, mindMapMeta, mindMapSchema } from './mind-map';
 import { pillFanDefaults, pillFanMeta, pillFanSchema } from './pill-fan';
+import { productCardsDefaults, productCardsMeta, productCardsSchema } from './product-cards';
 import { skillWheelDefaults, skillWheelMeta, skillWheelSchema } from './skill-wheel';
 import { wordPickerDefaults, wordPickerMeta, wordPickerSchema } from './word-picker';
 import { yearDialDefaults, yearDialMeta, yearDialSchema } from './year-dial';
@@ -56,5 +57,11 @@ export const listPickersClips: ClipModule[] = [
     schema: skillWheelSchema,
     defaults: skillWheelDefaults,
     meta: skillWheelMeta,
+  },
+  {
+    id: 'product-cards',
+    schema: productCardsSchema,
+    defaults: productCardsDefaults,
+    meta: productCardsMeta,
   },
 ];
