@@ -4,6 +4,11 @@ import {
   helicopterUnveilMeta,
   helicopterUnveilSchema,
 } from './helicopter-unveil';
+import {
+  problemStrikeoutDefaults,
+  problemStrikeoutMeta,
+  problemStrikeoutSchema,
+} from './problem-strikeout';
 import { spillRevealDefaults, spillRevealMeta, spillRevealSchema } from './spill-reveal';
 
 export const adRevealsClips: ClipModule[] = [
@@ -12,6 +17,12 @@ export const adRevealsClips: ClipModule[] = [
     schema: helicopterUnveilSchema,
     defaults: helicopterUnveilDefaults,
     meta: helicopterUnveilMeta,
+  },
+  {
+    id: 'problem-strikeout',
+    schema: problemStrikeoutSchema,
+    defaults: problemStrikeoutDefaults,
+    meta: problemStrikeoutMeta,
   },
   {
     id: 'spill-reveal',
