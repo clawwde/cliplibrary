@@ -4,6 +4,7 @@ import type { Project } from '@/project';
 import {
   BROWSER_RENDER_OPTIONS,
   DEFAULT_RENDER_OPTIONS,
+  outputExtension,
   type RenderOptions,
 } from './render-options';
 import { renderProject } from './render-project';
@@ -18,6 +19,12 @@ const GALLERY_PREVIEW_OPTIONS: RenderOptions = {
 const FIRST_FRAME_WIDTH = 48;
 
 const firstFrameFileName = (name: string): string => `${name}.first-frame.jpg`;
+
+export const galleryPreviewFileNames = (name: string): string[] => [
+  `${name}.${outputExtension(GALLERY_PREVIEW_OPTIONS.codec)}`,
+  `${name}.jpg`,
+  firstFrameFileName(name),
+];
 
 const renderFirstFrame = async (project: Project, output: string): Promise<void> => {
   const serveUrl = await getServeUrl();
