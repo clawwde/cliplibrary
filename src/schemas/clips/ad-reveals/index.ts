@@ -4,6 +4,7 @@ import {
   helicopterUnveilMeta,
   helicopterUnveilSchema,
 } from './helicopter-unveil';
+import { spillRevealDefaults, spillRevealMeta, spillRevealSchema } from './spill-reveal';
 
 export const adRevealsClips: ClipModule[] = [
   {
@@ -11,5 +12,11 @@ export const adRevealsClips: ClipModule[] = [
     schema: helicopterUnveilSchema,
     defaults: helicopterUnveilDefaults,
     meta: helicopterUnveilMeta,
+  },
+  {
+    id: 'spill-reveal',
+    schema: spillRevealSchema,
+    defaults: spillRevealDefaults,
+    meta: spillRevealMeta,
   },
 ];

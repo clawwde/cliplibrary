@@ -1,4 +1,5 @@
 import type { HelicopterUnveilProps } from './clips/ad-reveals/helicopter-unveil';
+import type { SpillRevealProps } from './clips/ad-reveals/spill-reveal';
 import type { ReliefBackdropProps } from './clips/backgrounds/relief-backdrop';
 import type { AppIconRevealProps } from './clips/brand/app-icon-reveal';
 import type { BrandRevealProps } from './clips/brand/brand-reveal';
@@ -8,8 +9,12 @@ import type { DoodleArrowsProps } from './clips/hand-drawn/doodle-arrows';
 import type { HandwrittenNoteProps } from './clips/hand-drawn/handwritten-note';
 import type { ScribbleCaptionProps } from './clips/hand-drawn/scribble-caption';
 import type { EchoStackProps } from './clips/kinetic-type/echo-stack';
+import type { GridStackProps } from './clips/kinetic-type/grid-stack';
+import type { LensOrbitProps } from './clips/kinetic-type/lens-orbit';
 import type { OutlineMarqueeProps } from './clips/kinetic-type/outline-marquee';
+import type { StickerStackProps } from './clips/kinetic-type/sticker-stack';
 import type { WordBuildProps } from './clips/kinetic-type/word-build';
+import type { WordFieldProps } from './clips/kinetic-type/word-field';
 import type { WordPunchProps } from './clips/kinetic-type/word-punch';
 import type { ColorPillsProps } from './clips/list-pickers/color-pills';
 import type { HeadingListProps } from './clips/list-pickers/heading-list';
@@ -60,6 +65,10 @@ export interface ClipPropsMap {
   'word-punch': WordPunchProps;
   'scribble-caption': ScribbleCaptionProps;
   'echo-stack': EchoStackProps;
+  'grid-stack': GridStackProps;
+  'sticker-stack': StickerStackProps;
+  'word-field': WordFieldProps;
+  'lens-orbit': LensOrbitProps;
   'outline-marquee': OutlineMarqueeProps;
   'letter-flip': LetterFlipProps;
   'handwritten-note': HandwrittenNoteProps;
@@ -79,6 +88,7 @@ export interface ClipPropsMap {
   'cta-end-card': CtaEndCardProps;
   'relief-backdrop': ReliefBackdropProps;
   'helicopter-unveil': HelicopterUnveilProps;
+  'spill-reveal': SpillRevealProps;
   'scene-transition': SceneTransitionProps;
 }
 
