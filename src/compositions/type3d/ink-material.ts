@@ -3,11 +3,13 @@ import * as THREE from 'three';
 
 const VERTEX = `
 varying vec2 vUv;
-varying float vFacing;
+varying vec3 vNormal;
+varying vec3 vView;
 void main() {
   vUv = uv;
   vec4 viewPosition = modelViewMatrix * vec4(position, 1.0);
-  vFacing = abs(dot(normalize(normalMatrix * normal), normalize(-viewPosition.xyz)));
+  vNormal = normalMatrix * normal;
+  vView = -viewPosition.xyz;
   gl_Position = projectionMatrix * viewPosition;
 }
 `;
@@ -21,10 +23,12 @@ uniform float slotWeights[MAX_SLOTS];
 uniform int slotCount;
 uniform float slotOffset;
 varying vec2 vUv;
-varying float vFacing;
+varying vec3 vNormal;
+varying vec3 vView;
 void main() {
   vec4 texel = texture2D(map, vUv);
-  float edge = mix(1.0, smoothstep(0.08, 0.5, vFacing), edgeFade);
+  float facing = abs(dot(normalize(vNormal), normalize(vView)));
+  float edge = mix(1.0, smoothstep(0.3, 0.82, facing), edgeFade);
   float slot = 1.0;
   if (slotCount > 0) {
     int index = int(floor(fract(vUv.x - slotOffset) * float(slotCount)));

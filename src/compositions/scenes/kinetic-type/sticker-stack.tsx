@@ -109,10 +109,10 @@ const layoutStickers = (props: StickerStackProps): Sticker[] => {
     });
     const used = items.reduce((sum, item) => sum + item.width, 0);
     const gap = Math.min(
-      props.size * 1.5,
+      props.size * 0.55,
       Math.max(0, (props.width - used) / Math.max(1, items.length)),
     );
-    const shift = (rowIndex % 2 === 0 ? -1 : 1) * gap * 0.25 * props.jitter;
+    const shift = (rowIndex % 2 === 0 ? -1 : 1) * props.size * 0.4 * props.jitter;
     let x = -(used + gap * items.length) / 2 + gap / 2 + shift;
     return items.map((item) => {
       const center = x + item.width / 2 + (random() - 0.5) * gap * props.jitter;
