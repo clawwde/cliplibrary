@@ -58,7 +58,7 @@ export const UnveilStage = ({
     <ThreeCanvas
       width={width}
       height={height}
-      shadows="soft"
+      shadows="percentage"
       dpr={pixelRatio}
       gl={{ antialias: true, preserveDrawingBuffer: true }}
       camera={{ fov, position: shot.position }}
