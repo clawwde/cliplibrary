@@ -1,5 +1,6 @@
 export * from './clip-props';
 export * from './clips';
+export * from './clips/ad-reveals/crumpled-paper-reveal';
 export * from './clips/ad-reveals/helicopter-unveil';
 export * from './clips/ad-reveals/problem-strikeout';
 export * from './clips/ad-reveals/spill-reveal';

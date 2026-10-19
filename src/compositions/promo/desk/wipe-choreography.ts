@@ -73,7 +73,7 @@ export interface PalmFrame {
   quaternion: THREE.Quaternion;
 }
 
-const palmBasis = (normal: THREE.Vector3, fingers: THREE.Vector3): THREE.Quaternion => {
+export const palmBasis = (normal: THREE.Vector3, fingers: THREE.Vector3): THREE.Quaternion => {
   const n = normal.clone().normalize();
   const f = fingers
     .clone()

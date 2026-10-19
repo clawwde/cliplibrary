@@ -1,5 +1,10 @@
 import type { ClipModule } from '../../registry';
 import {
+  crumpledPaperRevealDefaults,
+  crumpledPaperRevealMeta,
+  crumpledPaperRevealSchema,
+} from './crumpled-paper-reveal';
+import {
   helicopterUnveilDefaults,
   helicopterUnveilMeta,
   helicopterUnveilSchema,
@@ -29,5 +34,11 @@ export const adRevealsClips: ClipModule[] = [
     schema: spillRevealSchema,
     defaults: spillRevealDefaults,
     meta: spillRevealMeta,
+  },
+  {
+    id: 'crumpled-paper-reveal',
+    schema: crumpledPaperRevealSchema,
+    defaults: crumpledPaperRevealDefaults,
+    meta: crumpledPaperRevealMeta,
   },
 ];

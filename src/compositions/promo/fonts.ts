@@ -1,3 +1,4 @@
+import { loadFont as loadBodoniModa } from '@remotion/google-fonts/BodoniModa';
 import { loadFont as loadCaveatBrush } from '@remotion/google-fonts/CaveatBrush';
 import { loadFont as loadInter } from '@remotion/google-fonts/Inter';
 import { loadFont as loadInterTight } from '@remotion/google-fonts/InterTight';
@@ -60,16 +61,24 @@ export const kineticFont = loadOnest('normal', {
   subsets: ['latin'],
 }).fontFamily;
 
+const playfair = loadPlayfairDisplay('normal', {
+  weights: ['400', '500', '600', '700'],
+  subsets: ['latin'],
+});
+
+const bodoni = loadBodoniModa('normal', { weights: ['400', '500'], subsets: ['latin'] });
+
+export const didoneFont = bodoni.fontFamily;
+
+export const didoneFontReady = bodoni.waitUntilDone;
+
 export const pageFonts: Record<PageFont, string> = {
   condensed: loadOswald('normal', {
     weights: ['300', '400', '500', '600', '700'],
     subsets: ['latin'],
   }).fontFamily,
   script: loadPinyonScript('normal', { weights: ['400'], subsets: ['latin'] }).fontFamily,
-  serif: loadPlayfairDisplay('normal', {
-    weights: ['400', '500', '600', '700'],
-    subsets: ['latin'],
-  }).fontFamily,
+  serif: playfair.fontFamily,
   sans: displayFont,
 };
 
