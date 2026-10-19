@@ -1,8 +1,10 @@
 import type { SceneModule } from '../../scene-module';
 import { echoStackScene } from './echo-stack';
 import { gridStackScene } from './grid-stack';
+import { lensOrbitScene } from './lens-orbit';
 import { outlineMarqueeScene } from './outline-marquee';
 import { wordBuildScene } from './word-build';
+import { wordFieldScene } from './word-field';
 import { wordPunchScene } from './word-punch';
 
 export const kineticTypeScenes: SceneModule[] = [
@@ -11,4 +13,6 @@ export const kineticTypeScenes: SceneModule[] = [
   outlineMarqueeScene,
   echoStackScene,
   gridStackScene,
+  lensOrbitScene,
+  wordFieldScene,
 ];

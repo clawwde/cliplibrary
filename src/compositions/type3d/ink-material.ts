@@ -3,9 +3,12 @@ import * as THREE from 'three';
 
 const VERTEX = `
 varying vec2 vUv;
+varying float vFacing;
 void main() {
   vUv = uv;
-  gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+  vec4 viewPosition = modelViewMatrix * vec4(position, 1.0);
+  vFacing = abs(dot(normalize(normalMatrix * normal), normalize(-viewPosition.xyz)));
+  gl_Position = projectionMatrix * viewPosition;
 }
 `;
 
@@ -13,19 +16,38 @@ const FRAGMENT = `
 uniform sampler2D map;
 uniform float opacity;
 uniform float dim;
+uniform float edgeFade;
+uniform float slotWeights[MAX_SLOTS];
+uniform int slotCount;
+uniform float slotOffset;
 varying vec2 vUv;
+varying float vFacing;
 void main() {
   vec4 texel = texture2D(map, vUv);
-  gl_FragColor = vec4(texel.rgb * dim, texel.a) * opacity;
+  float edge = mix(1.0, smoothstep(0.08, 0.5, vFacing), edgeFade);
+  float slot = 1.0;
+  if (slotCount > 0) {
+    int index = int(floor(fract(vUv.x - slotOffset) * float(slotCount)));
+    slot = slotWeights[clamp(index, 0, MAX_SLOTS - 1)];
+  }
+  gl_FragColor = vec4(texel.rgb * dim, texel.a) * opacity * edge * slot;
 }
 `;
 
-const createInkMaterial = (
-  map: THREE.Texture,
-  side: THREE.Side = THREE.FrontSide,
-): THREE.ShaderMaterial =>
+const MAX_SLOTS = 12;
+
+const createInkMaterial = (map: THREE.Texture, side: THREE.Side): THREE.ShaderMaterial =>
   new THREE.ShaderMaterial({
-    uniforms: { map: { value: map }, opacity: { value: 1 }, dim: { value: 1 } },
+    uniforms: {
+      map: { value: map },
+      opacity: { value: 1 },
+      dim: { value: 1 },
+      edgeFade: { value: 0 },
+      slotWeights: { value: new Array<number>(MAX_SLOTS).fill(1) },
+      slotCount: { value: 0 },
+      slotOffset: { value: 0 },
+    },
+    defines: { MAX_SLOTS },
     vertexShader: VERTEX,
     fragmentShader: FRAGMENT,
     transparent: true,
@@ -41,12 +63,30 @@ const createInkMaterial = (
 export const useInkMaterial = (
   map: THREE.Texture,
   opacity: number,
-  side: THREE.Side = THREE.FrontSide,
-  dim = 1,
+  {
+    side = THREE.FrontSide,
+    dim = 1,
+    edgeFade = 0,
+    slots = [],
+    slotOffset = 0,
+  }: {
+    side?: THREE.Side;
+    dim?: number;
+    edgeFade?: number;
+    slots?: number[];
+    slotOffset?: number;
+  } = {},
 ): THREE.ShaderMaterial => {
   const material = useMemo(() => createInkMaterial(map, side), [map, side]);
-  const uniforms = material.uniforms as { opacity: { value: number }; dim: { value: number } };
+  const uniforms = material.uniforms as Record<
+    'opacity' | 'dim' | 'edgeFade' | 'slotCount' | 'slotOffset',
+    { value: number }
+  > & { slotWeights: { value: number[] } };
   uniforms.opacity.value = opacity;
   uniforms.dim.value = dim;
+  uniforms.edgeFade.value = edgeFade;
+  uniforms.slotCount.value = Math.min(MAX_SLOTS, slots.length);
+  uniforms.slotOffset.value = slotOffset;
+  uniforms.slotWeights.value = Array.from({ length: MAX_SLOTS }, (_, index) => slots[index] ?? 1);
   return material;
 };

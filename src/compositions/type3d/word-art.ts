@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 import * as THREE from 'three';
 import { kineticFont, kineticFontReady } from '../promo/fonts';
 
-const FONT_PX = 200;
+export const FONT_PX = 200;
 
 type WordShape = 'none' | 'pill' | 'circle';
 
@@ -26,7 +26,7 @@ export interface WordTexture {
 const loadedWeights = new Set<number>();
 const pendingWeights = new Map<number, Promise<void>>();
 
-const useKineticWeight = (weight: number): void => {
+export const useKineticWeight = (weight: number): void => {
   if (loadedWeights.has(weight)) {
     return;
   }
@@ -41,7 +41,7 @@ const useKineticWeight = (weight: number): void => {
   throw pending;
 };
 
-const fontOf = (weight: number, px = FONT_PX) => `${weight} ${px}px "${kineticFont}"`;
+export const fontOf = (weight: number, px = FONT_PX) => `${weight} ${px}px "${kineticFont}"`;
 
 let sharedContext: CanvasRenderingContext2D | null = null;
 
@@ -53,7 +53,7 @@ const measureContext = (): CanvasRenderingContext2D => {
   return sharedContext;
 };
 
-const textMetrics = (weight: number) => {
+export const textMetrics = (weight: number) => {
   const context = measureContext();
   context.font = fontOf(weight);
   const ascent = context.measureText('H').actualBoundingBoxAscent;
@@ -61,7 +61,7 @@ const textMetrics = (weight: number) => {
   return { ascent, descent, measure: (text: string) => context.measureText(text).width };
 };
 
-const configureTexture = <T extends THREE.Texture>(texture: T): T => {
+export const configureTexture = <T extends THREE.Texture>(texture: T): T => {
   texture.colorSpace = THREE.NoColorSpace;
   texture.anisotropy = 16;
   texture.generateMipmaps = true;
