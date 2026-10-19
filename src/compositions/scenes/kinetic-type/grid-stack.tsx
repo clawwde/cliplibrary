@@ -13,7 +13,7 @@ const RISE = 2.8;
 const SINK = 5;
 const LIFT = 2.2;
 const PUSH = 4.5;
-const EXIT_STAGGER = 2;
+const EXIT_STAGGER = 1;
 
 interface StackWord {
   text: string;

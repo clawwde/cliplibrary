@@ -50,7 +50,7 @@ export const gridStackDefaults: GridStackProps = {
   delay: 4,
   beatFrames: 60,
   enterFrames: 22,
-  exitFrames: 14,
+  exitFrames: 16,
   stagger: 5,
   trail: 0.45,
   grid: warpGrid(),
