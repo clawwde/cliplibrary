@@ -4,7 +4,7 @@ import { $ } from 'bun';
 const MAX_FILE_BYTES = 2 * 1024 * 1024;
 const MAX_SOURCE_LINES = 400;
 
-const SIZE_EXEMPT_PREFIXES = ['apps/web/public/'];
+const SIZE_EXEMPT_PREFIXES = ['public/'];
 
 const BINARY_EXTENSIONS = new Set([
   'png',

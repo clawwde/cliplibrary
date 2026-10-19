@@ -21,7 +21,6 @@ exclude = [
 exclude_path = [
   "node_modules",
   ".next",
-  ".turbo",
   "dist",
   "build",
   "coverage",
