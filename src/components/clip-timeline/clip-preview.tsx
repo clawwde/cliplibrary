@@ -17,6 +17,9 @@ const DEVICES = [
 
 type DeviceKey = (typeof DEVICES)[number]['key'];
 
+const frameWidth = (maxWidth: number | null, aspect: number): string =>
+  `min(100%, ${maxWidth === null ? '' : `${maxWidth}px, `}${aspect * 100}cqh)`;
+
 const Composition = ProjectComposition as ComponentType<Record<string, unknown>>;
 
 interface ClipPreviewProps {
@@ -76,10 +79,13 @@ export const ClipPreview = ({
           })}
         </div>
       </div>
-      <div className="flex min-h-0 flex-1 items-center justify-center overflow-auto p-6">
+      <div
+        className="flex min-h-0 flex-1 items-center justify-center overflow-hidden p-6"
+        style={{ containerType: 'size' }}
+      >
         <div
-          className="w-full overflow-hidden rounded-xl bg-black shadow-xl"
-          style={{ maxWidth: active?.maxWidth ?? undefined }}
+          className="overflow-hidden rounded-xl bg-black shadow-xl"
+          style={{ width: frameWidth(active.maxWidth, project.width / project.height) }}
         >
           <Player
             ref={playerRef}
