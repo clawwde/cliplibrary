@@ -60,13 +60,17 @@ const framed = (position: THREE.Vector3, normal: THREE.Vector3, fingers: THREE.V
   quaternion: palmBasis(normal, fingers),
 });
 
-const rubFrame = (frame: number, look: HandsLook, side: number): PalmFrame => {
+const rubFrame = (frame: number, look: HandsLook, side: number, rubbing: number): PalmFrame => {
   const fingers = new THREE.Vector3(-0.15, 0.8, -0.55).normalize();
   const phase = (frame / look.rubSpeed) * Math.PI * 2;
-  const stroke = Math.sin(phase) * side * look.rubReach;
-  const circle = Math.cos(phase) * look.rubReach * 0.45;
+  const stroke = Math.sin(phase) * side * look.rubReach * rubbing;
+  const sweep = new THREE.Vector3(
+    look.rubReach * 0.45 * (1 + Math.cos(phase)) * rubbing,
+    Math.cos(frame / 19) * 0.12,
+    0,
+  );
   return framed(
-    new THREE.Vector3(0.14, -0.75, 0.35 + circle).addScaledVector(fingers, stroke),
+    new THREE.Vector3(0.14, -0.75, 0.35).add(sweep).addScaledVector(fingers, stroke),
     new THREE.Vector3(-1, 0, 0.12),
     fingers,
   );
@@ -89,11 +93,13 @@ const blendFrames = (from: PalmFrame, to: PalmFrame, amount: number): PalmFrame 
 const Hand = ({
   palm,
   handPose,
+  elbow,
   look,
   arm,
 }: {
   palm: PalmFrame;
   handPose: HandPose;
+  elbow: THREE.Vector3;
   look: HandsLook;
   arm: ArmLook;
 }) => {
@@ -107,7 +113,7 @@ const Hand = ({
       roughness={look.roughness}
       detail={look.detail}
       arm={arm}
-      elbow={elbowFor(palm)}
+      elbow={elbow}
     />
   );
 };
@@ -117,16 +123,21 @@ const handPlacement = (
   look: HandsLook,
   blend: HandBlend,
   side: number,
-): { palm: PalmFrame; handPose: HandPose } => {
-  const rub = rubFrame(frame, look, side);
+): { palm: PalmFrame; handPose: HandPose; elbow: THREE.Vector3 } => {
   const ball = ballFrame(frame, blend.ballRadius, side);
-  const early = blendFrames(rub, ball, 1 - blend.rub);
-  const palm = blendFrames(early, blend.grip, blend.hold);
+  const place = (rubbing: number) =>
+    blendFrames(
+      blendFrames(rubFrame(frame, look, side, rubbing), ball, 1 - blend.rub),
+      blend.grip,
+      blend.hold,
+    );
+  const palm = place(1);
   const rubPose = pose(0.08, 0.15, 0.1, 0.05);
   const ballPose = pose(0.7, 0.55, 0.45, 0.2);
   const holdPose = pose(look.gripCurl, look.thumbCurl, 0.55, 0.35);
   return {
     palm,
+    elbow: elbowFor(place(0)),
     handPose: mixPose(mixPose(rubPose, ballPose, 1 - blend.rub), holdPose, blend.hold),
   };
 };
@@ -160,11 +171,18 @@ export const PaperHands = ({
   const leftHand = handPlacement(frame, look, left, -1);
   return (
     <>
-      <Hand palm={rightHand.palm} handPose={rightHand.handPose} look={look} arm={ARM} />
+      <Hand
+        palm={rightHand.palm}
+        handPose={rightHand.handPose}
+        elbow={rightHand.elbow}
+        look={look}
+        arm={ARM}
+      />
       <group scale={[-1, 1, 1]}>
         <Hand
           palm={leftHand.palm}
           handPose={leftHand.handPose}
+          elbow={leftHand.elbow}
           look={look}
           arm={{ ...ARM, band: look.watch, bandColor: look.watchColor }}
         />
