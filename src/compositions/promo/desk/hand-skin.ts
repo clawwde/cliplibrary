@@ -9,13 +9,18 @@ export interface NailSpec {
 }
 
 export const FINGER_NAILS: Record<'index' | 'middle' | 'ring' | 'pinky', NailSpec> = {
-  index: { width: 0.0108, length: 0.0105, lift: 0.0064, center: -0.0082 },
-  middle: { width: 0.0112, length: 0.011, lift: 0.0064, center: -0.0086 },
-  ring: { width: 0.0102, length: 0.0102, lift: 0.0059, center: -0.0082 },
-  pinky: { width: 0.0092, length: 0.0092, lift: 0.0055, center: -0.008 },
+  index: { width: 0.0108, length: 0.0105, lift: 0.006, center: -0.0082 },
+  middle: { width: 0.0112, length: 0.011, lift: 0.006, center: -0.0086 },
+  ring: { width: 0.0102, length: 0.0102, lift: 0.0055, center: -0.0082 },
+  pinky: { width: 0.0092, length: 0.0092, lift: 0.0051, center: -0.008 },
 };
 
-export const THUMB_NAIL: NailSpec = { width: 0.0135, length: 0.0125, lift: 0.006, center: -0.0105 };
+export const THUMB_NAIL: NailSpec = {
+  width: 0.0135,
+  length: 0.0125,
+  lift: 0.0056,
+  center: -0.0105,
+};
 
 export const nailGeometry = (spec: NailSpec) =>
   memo(`nail:${JSON.stringify(spec)}`, () => {
@@ -157,7 +162,7 @@ vec3 skinR1 = cross(skinDy, normal);
 vec3 skinR2 = cross(normal, skinDx);
 float skinDet = dot(skinDx, skinR1);
 vec3 skinGrad = sign(skinDet) * (dFdx(skinHeight) * skinR1 + dFdy(skinHeight) * skinR2);
-normal = normalize(abs(skinDet) * normal - skinGrad * 0.008 * uSkinDetail);`,
+normal = normalize(abs(skinDet) * normal - skinGrad * 0.004 * uSkinDetail);`,
       );
   };
   material.customProgramCacheKey = () => `skin-detail-${detail}-${skinned}`;

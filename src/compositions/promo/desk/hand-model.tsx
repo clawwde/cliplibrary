@@ -13,11 +13,26 @@ import {
   paintSkin,
   THUMB_NAIL,
 } from './hand-skin';
+import { subdivideSkinned } from './subdivide';
 import type { PalmFrame } from './wipe-choreography';
 
 const HAND_URL = new URL('./assets/hand-right.glb', import.meta.url).href;
 
 const HAND_UNITS = 10;
+
+const SUBDIVISIONS = 2;
+
+const smoothed = new WeakMap<THREE.BufferGeometry, THREE.BufferGeometry>();
+
+const smoothGeometry = (mesh: THREE.SkinnedMesh): THREE.BufferGeometry => {
+  const hit = smoothed.get(mesh.geometry);
+  if (hit !== undefined) {
+    return hit;
+  }
+  const geometry = subdivideSkinned(mesh.geometry, mesh.skeleton.bones.length, SUBDIVISIONS);
+  smoothed.set(mesh.geometry, geometry);
+  return geometry;
+};
 
 const PALM_CENTER = new THREE.Vector3(0.0058, -0.004, 0.016);
 
@@ -70,6 +85,7 @@ const useHandScene = () => {
     if (skinned === undefined) {
       throw new Error('Hand model has no skinned mesh');
     }
+    skinned.geometry = smoothGeometry(skinned);
     skinned.frustumCulled = false;
     skinned.castShadow = true;
     skinned.receiveShadow = true;
