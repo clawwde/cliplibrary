@@ -1,12 +1,12 @@
-import { useMemo, useRef } from 'react';
+import { type ReactNode, useMemo, useRef } from 'react';
 import type * as THREE from 'three';
+import { bentPlane } from './bent-plane';
 import { useAnimator } from './frame-composer';
 import { useInkMaterial } from './ink-material';
 import { setUniform } from './post-shader';
 import type { Vec3 } from './type-canvas';
 import type { WordArt } from './word-art';
 import { useWordTexture } from './word-art';
-import { bentPlane } from './word-plane';
 
 export interface Pose {
   position: Vec3;
@@ -49,4 +49,25 @@ export const AnimatedWord = ({
     setUniform(material, 'opacity', state.opacity);
   });
   return <mesh ref={mesh} geometry={geometry} material={material} renderOrder={renderOrder} />;
+};
+
+export const AnimatedGroup = ({
+  pose,
+  children,
+}: {
+  pose: (time: number) => Omit<Pose, 'opacity'>;
+  children: ReactNode;
+}) => {
+  const group = useRef<THREE.Group>(null);
+  useAnimator((time) => {
+    const target = group.current;
+    if (target === null) {
+      return;
+    }
+    const state = pose(time);
+    target.position.set(...state.position);
+    target.rotation.set(...state.rotation);
+    target.scale.setScalar(state.scale);
+  });
+  return <group ref={group}>{children}</group>;
 };

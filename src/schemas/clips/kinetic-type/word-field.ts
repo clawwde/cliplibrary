@@ -2,11 +2,20 @@ import { z } from 'zod';
 import { zMultiline, zSlider } from '../../control';
 import { defaultMotion, lookSchema, motionSchema, promoMeta } from '../../promo-common';
 import type { ClipMeta } from '../../registry';
-import { HEAVY_WEIGHT, pastelLook, typeCamera, typeCameraSchema } from '../../type3d-common';
+import {
+  HEAVY_WEIGHT,
+  peachLook,
+  TYPE_FACES,
+  typeCamera,
+  typeCameraSchema,
+  typeLens,
+  typeLensSchema,
+} from '../../type3d-common';
 
 export const wordFieldSchema = z.object({
   words: zMultiline(),
   highlight: z.string(),
+  face: z.enum(TYPE_FACES),
   weight: zSlider(HEAVY_WEIGHT),
   columns: zSlider({ min: 2, max: 10 }),
   rows: zSlider({ min: 2, max: 12 }),
@@ -24,7 +33,9 @@ export const wordFieldSchema = z.object({
   riseFrames: zSlider({ min: 8, max: 60 }),
   rise: zSlider({ min: 0, max: 4, step: 0.05 }),
   float: zSlider({ min: 0, max: 0.6, step: 0.01 }),
+  slide: zSlider({ min: 0, max: 8, step: 0.05 }),
   camera: typeCameraSchema,
+  lens: typeLensSchema,
   look: lookSchema,
   motion: motionSchema,
 });
@@ -51,6 +62,7 @@ export const wordFieldDefaults: WordFieldProps = {
     'Wave',
   ].join('\n'),
   highlight: 'Pulse Bloom Wave',
+  face: 'montserrat',
   weight: 700,
   columns: 5,
   rows: 7,
@@ -68,8 +80,19 @@ export const wordFieldDefaults: WordFieldProps = {
   riseFrames: 30,
   rise: 1.4,
   float: 0.16,
+  slide: 2.4,
   camera: typeCamera({ drift: 0.7 }),
-  look: { ...pastelLook(), backgroundEdge: '#cdbff5', spotlight: 0.75 },
+  lens: typeLens({
+    distortion: 0.12,
+    fringe: 0.002,
+    shift: 0.6,
+    shutter: 1,
+    samples: 8,
+    glow: 0.85,
+    glowX: 0.9,
+    glowY: 0.12,
+  }),
+  look: peachLook(),
   motion: defaultMotion({ exit: 'fade', exitFrames: 16 }),
 };
 

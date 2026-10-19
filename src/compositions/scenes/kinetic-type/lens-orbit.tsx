@@ -1,130 +1,186 @@
-import { useMemo } from 'react';
-import { Composition, useCurrentFrame } from 'remotion';
+import { useMemo, useRef } from 'react';
+import { Composition, Easing, useCurrentFrame } from 'remotion';
 import * as THREE from 'three';
 import { type LensOrbitProps, lensOrbitDefaults, lensOrbitMeta, lensOrbitSchema } from '@/schemas';
 import { PromoLayer } from '../../promo/promo-layer';
-import { settle, smooth, TAU, tween } from '../../promo/timing';
+import { settle, smooth, tween } from '../../promo/timing';
 import { highlightSet, normalize, wordsOf } from '../../promo/words';
 import type { SceneModule } from '../../scene-module';
-import { useGlassMaterial } from '../../type3d/glass-material';
+import { FrameComposer, useAnimator } from '../../type3d/frame-composer';
 import { useInkMaterial } from '../../type3d/ink-material';
-import { driftCamera, TypeCanvas } from '../../type3d/type-canvas';
-import { type GlobeWord, useGlobeTexture, useRingTexture } from '../../type3d/wrap-art';
+import { faceTurn, spherePatch } from '../../type3d/sphere-patch';
+import { CameraShot, driftCamera, TypeCanvas } from '../../type3d/type-canvas';
+import { useWordTexture, type WordArt } from '../../type3d/word-art';
+
+const tumble = Easing.bezier(0.5, 0, 0.25, 1);
 
 const deg = (value: number) => (value / 180) * Math.PI;
 
-const turnIndex = (
-  frame: number,
-  count: number,
-  first: number,
-  holdFrames: number,
-  turnFrames: number,
-): number => {
-  let index = 0;
-  for (let word = 1; word < count; word++) {
-    const at = first + holdFrames * word + turnFrames * (word - 1);
-    index += tween(frame, [at, at + turnFrames], [0, 1], smooth);
-  }
-  return index;
-};
+const FACE_SPOTS: [number, number, number][] = [
+  [0, 0, 0],
+  [90, 0, 6],
+  [0, 90, -8],
+  [270, 0, 10],
+  [0, -90, -6],
+  [180, 0, 8],
+];
 
-const Globe = ({
-  words,
+const SATELLITE_SPOTS: [number, number][] = [
+  [-0.32, 1.05],
+  [0.36, -1.05],
+];
+
+const spot = (index: number) => FACE_SPOTS[index % FACE_SPOTS.length] ?? [0, 0, 0];
+
+const directionOf = (yaw: number, pitch: number) =>
+  new THREE.Vector3(
+    Math.sin(deg(yaw)) * Math.cos(deg(pitch)),
+    Math.sin(deg(pitch)),
+    Math.cos(deg(yaw)) * Math.cos(deg(pitch)),
+  );
+
+const PatchWord = ({
+  art,
   props,
-  spin,
-  index,
-  opacity,
+  scale,
+  turn,
 }: {
-  words: GlobeWord[];
+  art: WordArt;
   props: LensOrbitProps;
-  spin: number;
-  index: number;
-  opacity: number;
+  scale: number;
+  turn: THREE.Quaternion;
 }) => {
-  const count = Math.max(1, words.length);
-  const slots = words.map((_, word) => {
-    const away = Math.abs(((((word - index) % count) + count + count / 2) % count) - count / 2);
-    return 1 - props.edgeFade * tween(away, [0.3, 0.85], [0, 1], smooth);
-  });
-  const map = useGlobeTexture(words, props.weight, props.wordArc, props.wordBand);
-  const glass = useGlassMaterial(props.glass, opacity);
-  const ink = useInkMaterial(map, opacity, {
-    edgeFade: props.edgeFade,
-    slots,
-    slotOffset: 0.25 - 0.5 / count,
-  });
-  const sphere = useMemo(() => new THREE.SphereGeometry(1, 128, 64), []);
-  return (
-    <group rotation={[0, spin, 0]} scale={props.radius}>
-      <mesh geometry={sphere} material={glass} renderOrder={1} />
-      <mesh geometry={sphere} material={ink} renderOrder={2} scale={1.004} />
-    </group>
+  const { texture, aspect, frameX, frameY } = useWordTexture(art);
+  const material = useInkMaterial(texture, 1, { edgeFade: props.edgeFade });
+  const height = deg(props.wordHeight) * scale;
+  const width = Math.min(height * aspect, deg(props.maxArc) * scale);
+  const fitted = width / aspect;
+  const geometry = useMemo(
+    () => spherePatch(props.radius, width * frameX, fitted * frameY),
+    [props.radius, width, fitted, frameX, frameY],
   );
+  return <mesh geometry={geometry} material={material} quaternion={turn} />;
 };
 
-const Ring = ({
-  ring,
-  weight,
-  frame,
-  opacity,
-}: {
-  ring: LensOrbitProps['ring'];
-  weight: number;
-  frame: number;
-  opacity: number;
-}) => {
-  const aspect = (TAU * ring.radius) / ring.height;
-  const map = useRingTexture(ring.text, ring.color, Math.min(weight, 700), aspect);
-  const front = useInkMaterial(map, opacity);
-  const back = useInkMaterial(map, opacity * ring.backOpacity, { side: THREE.BackSide });
-  const band = useMemo(
-    () => new THREE.CylinderGeometry(ring.radius, ring.radius, ring.height, 160, 1, true),
-    [ring.radius, ring.height],
-  );
+const useFaces = (props: LensOrbitProps) => {
+  const accented = highlightSet(props.highlight);
+  const color = (word: string) =>
+    accented.has(normalize(word)) ? props.look.accent : props.look.ink;
+  const words = props.words
+    .split('\n')
+    .map((word) => word.trim())
+    .filter((word) => word.length > 0);
+  const satellites = wordsOf(props.satellites);
+  return words.map((text, index) => {
+    const [yaw, pitch, roll] = spot(index);
+    const turn = faceTurn(directionOf(yaw, pitch), deg(roll));
+    return {
+      text,
+      color: color(text),
+      turn,
+      front: turn.clone().invert(),
+      moons: SATELLITE_SPOTS.map(([across, up], moon) => {
+        const height = deg(props.wordHeight);
+        const local = faceTurn(
+          new THREE.Vector3(Math.sin(across), Math.sin(up * height), 1),
+          deg(moon === 0 ? -8 : 8),
+        );
+        const word =
+          satellites[(index * SATELLITE_SPOTS.length + moon) % Math.max(1, satellites.length)] ??
+          '';
+        return {
+          text: word,
+          turn: turn.clone().multiply(local),
+          color: moon === 0 ? props.look.ink : props.look.accent,
+        };
+      }),
+    };
+  });
+};
+
+const Globe = ({ props, frame }: { props: LensOrbitProps; frame: number }) => {
+  const faces = useFaces(props);
+  const group = useRef<THREE.Group>(null);
+  const spinAxis = useMemo(() => new THREE.Vector3(0.6, 1, 0.2).normalize(), []);
+  useAnimator((time) => {
+    const target = group.current;
+    const first = faces[0];
+    if (target === null || first === undefined) {
+      return;
+    }
+    const intro = tween(time, [props.delay, props.delay + props.introFrames], [0, 1], settle);
+    const orientation = new THREE.Quaternion()
+      .setFromAxisAngle(spinAxis, (1 - intro) * 2.4)
+      .multiply(first.front);
+    const firstHold = props.delay + props.introFrames;
+    faces.forEach((face, index) => {
+      if (index === 0) {
+        return;
+      }
+      const at = firstHold + index * props.holdFrames + (index - 1) * props.turnFrames;
+      const turn = tween(time, [at, at + props.turnFrames], [0, 1], tumble);
+      const previous = faces[index - 1];
+      if (turn > 0 && previous !== undefined) {
+        orientation.copy(previous.front).slerp(face.front, turn);
+      }
+    });
+    const wobble = new THREE.Euler(
+      Math.sin(time / 21) * props.wobble,
+      Math.cos(time / 27) * props.wobble,
+      Math.sin(time / 33) * props.wobble * 0.5,
+    );
+    target.quaternion.setFromEuler(wobble).multiply(orientation);
+    target.scale.setScalar(0.35 + 0.65 * intro);
+  });
+  const reveal = tween(frame, [props.delay, props.delay + props.introFrames * 0.5], [0, 1], smooth);
   return (
-    <group rotation={[deg(ring.tiltX), 0, deg(ring.tiltZ)]}>
-      <group rotation={[0, deg(frame * ring.speed), 0]}>
-        <mesh geometry={band} material={back} renderOrder={0} />
-        <mesh geometry={band} material={front} renderOrder={3} />
-      </group>
+    <group ref={group} visible={reveal > 0.002}>
+      {faces.map((face, index) => (
+        <group key={`${index}:${face.text}`}>
+          <PatchWord
+            art={{ text: face.text, color: face.color, weight: props.weight, face: props.face }}
+            props={props}
+            scale={1}
+            turn={face.turn}
+          />
+          {face.moons.map((moon, moonIndex) =>
+            moon.text === '' ? null : (
+              <PatchWord
+                key={`${moonIndex}:${moon.text}`}
+                art={{ text: moon.text, color: moon.color, weight: props.weight, face: props.face }}
+                props={props}
+                scale={props.satelliteScale}
+                turn={moon.turn}
+              />
+            ),
+          )}
+        </group>
+      ))}
     </group>
   );
 };
 
 export const LensOrbit = (props: LensOrbitProps) => {
-  const { look, motion, camera, delay, enterFrames, holdFrames, turnFrames, wobble } = props;
+  const { look, motion, camera } = props;
   const frame = useCurrentFrame() * motion.speed;
-  const accented = highlightSet(props.highlight);
-  const words = wordsOf(props.words.replace(/\n/g, ' ')).map((text) => ({
-    text,
-    color: accented.has(normalize(text)) ? look.accent : look.ink,
-  }));
-  const count = Math.max(1, words.length);
-  const arrive = tween(frame, [delay, delay + enterFrames], [0, 1], settle);
-  const reveal = tween(frame, [delay, delay + enterFrames * 0.55], [0, 1], smooth);
-  const index = turnIndex(frame, count, delay + enterFrames, holdFrames, turnFrames);
-  const spin = -(index / count) * TAU + (1 - arrive) * 1.1;
-  const ringIn = tween(frame, [delay + 8, delay + enterFrames + 12], [0, 1], settle);
-  const tilt = Math.sin(frame / 38) * wobble * 0.5;
   return (
-    <PromoLayer look={look} motion={motion}>
-      <TypeCanvas camera={driftCamera(frame, camera.distance, camera.fieldOfView, camera.drift)}>
-        <group
-          rotation={[tilt, 0, Math.cos(frame / 52) * wobble * 0.35]}
-          scale={0.6 + 0.4 * arrive}
+    <PromoLayer look={{ ...look, showBackdrop: false }} motion={motion}>
+      <TypeCanvas fov={camera.fieldOfView}>
+        <FrameComposer
+          frame={frame}
+          lens={props.lens}
+          backdrop={{
+            show: look.showBackdrop,
+            inner: look.background,
+            outer: look.backgroundEdge,
+            glow: look.accent,
+          }}
         >
-          <Globe words={words} props={props} spin={spin} index={index} opacity={reveal} />
-        </group>
-        {props.ring.show ? (
-          <group scale={0.82 + 0.18 * ringIn}>
-            <Ring
-              ring={props.ring}
-              weight={props.weight}
-              frame={frame - delay}
-              opacity={tween(frame, [delay + 8, delay + enterFrames], [0, 1], smooth)}
-            />
-          </group>
-        ) : null}
+          <CameraShot
+            shot={(time) => driftCamera(time, camera.distance, camera.fieldOfView, camera.drift)}
+          />
+          <Globe props={props} frame={frame} />
+        </FrameComposer>
       </TypeCanvas>
     </PromoLayer>
   );

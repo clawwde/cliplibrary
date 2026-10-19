@@ -3,7 +3,7 @@ import * as THREE from 'three';
 import type { TypeFace } from '@/schemas';
 import { typeFaces } from '../promo/fonts';
 
-export const FONT_PX = 200;
+const FONT_PX = 200;
 
 type WordShape = 'none' | 'pill' | 'circle';
 
@@ -28,10 +28,10 @@ export interface WordTexture {
 const loadedFonts = new Set<string>();
 const pendingFonts = new Map<string, Promise<void>>();
 
-export const fontOf = (weight: number, face: TypeFace = 'montserrat', px = FONT_PX) =>
+const fontOf = (weight: number, face: TypeFace = 'montserrat', px = FONT_PX) =>
   `${weight} ${px}px "${typeFaces[face].family}"`;
 
-export const useTypeFace = (weight: number, face: TypeFace = 'montserrat'): void => {
+const useTypeFace = (weight: number, face: TypeFace = 'montserrat'): void => {
   const key = `${face}:${weight}`;
   if (loadedFonts.has(key)) {
     return;
@@ -57,7 +57,7 @@ const measureContext = (): CanvasRenderingContext2D => {
   return sharedContext;
 };
 
-export const textMetrics = (weight: number, face: TypeFace = 'montserrat') => {
+const textMetrics = (weight: number, face: TypeFace = 'montserrat') => {
   const context = measureContext();
   context.font = fontOf(weight, face);
   const ascent = context.measureText('H').actualBoundingBoxAscent;
@@ -65,7 +65,7 @@ export const textMetrics = (weight: number, face: TypeFace = 'montserrat') => {
   return { ascent, descent, measure: (text: string) => context.measureText(text).width };
 };
 
-export const configureTexture = <T extends THREE.Texture>(texture: T): T => {
+const configureTexture = <T extends THREE.Texture>(texture: T): T => {
   texture.colorSpace = THREE.NoColorSpace;
   texture.anisotropy = 16;
   texture.generateMipmaps = true;

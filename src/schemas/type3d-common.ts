@@ -110,3 +110,27 @@ export const warmPaperLook = (accent = '#f0435a', showBackdrop = true): PromoLoo
   ink: '#141216',
   muted: '#8a8790',
 });
+
+export const cocoaLook = (accent = '#ff8a6b', showBackdrop = true): PromoLook => ({
+  ...inkLook(accent, showBackdrop),
+  background: '#1e1517',
+  backgroundEdge: '#060405',
+  ink: '#fff6f1',
+  muted: '#a3918c',
+});
+
+export const peachLook = (accent = '#f0435a', showBackdrop = true): PromoLook => ({
+  ...pastelLook(accent, showBackdrop),
+  background: '#fff8f4',
+  backgroundEdge: '#f7d7c8',
+  ink: '#16121a',
+  muted: '#8d7f80',
+});
+
+export const emberLook = (accent = '#f0435a', showBackdrop = true): PromoLook => ({
+  ...inkLook(accent, showBackdrop),
+  background: '#121013',
+  backgroundEdge: '#050405',
+  ink: '#ffffff',
+  muted: '#8f878c',
+});
