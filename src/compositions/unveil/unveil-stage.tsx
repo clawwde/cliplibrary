@@ -1,43 +1,45 @@
-import { Environment, Lightformer } from '@react-three/drei';
+import { Environment } from '@react-three/drei';
 import { useThree } from '@react-three/fiber';
 import { ThreeCanvas } from '@remotion/three';
 import type { ReactNode } from 'react';
 import { getRemotionEnvironment, useVideoConfig } from 'remotion';
-import type * as THREE from 'three';
+import * as THREE from 'three';
 import type { UnveilSky } from '@/schemas';
 import type { CameraShot } from './flight';
+import { SkyDome, SUN } from './sky';
+import { VisibleSky } from './sky-gradient';
 
-const CameraRig = ({ shot, fov }: { shot: CameraShot; fov: number }) => {
+const SUN_DISTANCE = 140;
+
+const CameraRig = ({
+  shot,
+  fov,
+  exposure,
+}: {
+  shot: CameraShot;
+  fov: number;
+  exposure: number;
+}) => {
   const camera = useThree((state) => state.camera) as THREE.PerspectiveCamera;
+  const renderer = useThree((state) => state.gl);
+  renderer.toneMapping = THREE.ACESFilmicToneMapping;
+  renderer.toneMappingExposure = exposure;
   camera.position.set(...shot.position);
   camera.fov = fov;
   camera.near = 1;
-  camera.far = 2000;
+  camera.far = 4000;
   camera.updateProjectionMatrix();
   camera.lookAt(...shot.target);
   return null;
 };
 
-const Daylight = ({ sky }: { sky: UnveilSky }) => (
-  <Environment resolution={256} frames={1}>
-    <color attach="background" args={[sky.horizon]} />
-    <Lightformer
-      form="rect"
-      intensity={1.6}
-      color={sky.zenith}
-      position={[0, 20, 0]}
-      rotation={[Math.PI / 2, 0, 0]}
-      scale={[60, 60, 1]}
-    />
-    <Lightformer form="circle" intensity={6} position={[30, 40, 40]} scale={8} />
-    <Lightformer
-      form="rect"
-      intensity={0.5}
-      color="#6d7f5a"
-      position={[0, -20, 0]}
-      rotation={[-Math.PI / 2, 0, 0]}
-      scale={[60, 60, 1]}
-    />
+const SkyLight = ({ sky }: { sky: UnveilSky }) => (
+  <Environment resolution={256} frames={1} environmentIntensity={0.38}>
+    <SkyDome sky={sky} />
+    <mesh position={[0, -40, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+      <planeGeometry args={[4000, 4000]} />
+      <meshBasicMaterial color="#47533a" />
+    </mesh>
   </Environment>
 );
 
@@ -54,35 +56,38 @@ export const UnveilStage = ({
 }) => {
   const { width, height } = useVideoConfig();
   const pixelRatio = getRemotionEnvironment().isRendering ? 2 : 1;
+  const sun = new THREE.Vector3(...SUN).normalize().multiplyScalar(SUN_DISTANCE);
   return (
     <ThreeCanvas
       width={width}
       height={height}
-      shadows="percentage"
+      shadows="variance"
       dpr={pixelRatio}
       gl={{ antialias: true, preserveDrawingBuffer: true }}
       camera={{ fov, position: shot.position }}
       style={{ position: 'absolute', inset: 0 }}
     >
-      <CameraRig shot={shot} fov={fov} />
-      <fog attach="fog" args={[sky.haze, 160, 1100]} />
-      <hemisphereLight args={[sky.horizon, '#5d6b4c', 0.85]} />
+      <CameraRig shot={shot} fov={fov} exposure={sky.exposure} />
+      <fogExp2 attach="fog" args={[sky.haze, 0.0021]} />
+      <VisibleSky sky={sky} />
+      <SkyLight sky={sky} />
       <directionalLight
-        position={[45, 70, 55]}
+        position={[sun.x, sun.y, sun.z]}
         intensity={sky.sun}
-        color="#fff4e2"
+        color="#fff1dc"
         castShadow
-        shadow-mapSize={[2048, 2048]}
-        shadow-bias={-0.0006}
-        shadow-normalBias={0.04}
-        shadow-camera-left={-30}
-        shadow-camera-right={30}
-        shadow-camera-top={40}
-        shadow-camera-bottom={-25}
-        shadow-camera-near={1}
-        shadow-camera-far={220}
+        shadow-mapSize={[4096, 4096]}
+        shadow-radius={5}
+        shadow-blurSamples={16}
+        shadow-bias={-0.0004}
+        shadow-normalBias={0.03}
+        shadow-camera-left={-45}
+        shadow-camera-right={45}
+        shadow-camera-top={60}
+        shadow-camera-bottom={-40}
+        shadow-camera-near={20}
+        shadow-camera-far={320}
       />
-      <Daylight sky={sky} />
       {children}
     </ThreeCanvas>
   );

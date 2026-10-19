@@ -18,7 +18,11 @@ import { cameraShot, helicopterPose, hookAt } from '../../unveil/flight';
 import { Ground } from '../../unveil/ground';
 import { Helicopter } from '../../unveil/helicopter';
 import { drawPoster, POSTER_ASPECT, usePosterFonts } from '../../unveil/poster-art';
-import { Sky } from '../../unveil/sky';
+import { Roadside } from '../../unveil/roadside';
+import { Clouds } from '../../unveil/sky';
+import { Skyline } from '../../unveil/skyline';
+import { Traffic } from '../../unveil/traffic';
+import { Trees } from '../../unveil/trees';
 import { UnveilStage } from '../../unveil/unveil-stage';
 
 const GONE_AFTER = 150;
@@ -73,7 +77,7 @@ const HelicopterUnveil = ({
   );
   return (
     <TransitionFrame motion={motion}>
-      <AbsoluteFill style={{ backgroundColor: sky.horizon, overflow: 'hidden' }}>
+      <AbsoluteFill style={{ backgroundColor: sky.haze, overflow: 'hidden' }}>
         <AbsoluteFill
           style={{
             filter: blur > 0 ? `blur(${blur}px) brightness(${1 - fade * outro.dim})` : undefined,
@@ -81,8 +85,12 @@ const HelicopterUnveil = ({
           }}
         >
           <UnveilStage shot={shot} fov={camera.fieldOfView} sky={sky}>
-            <Sky sky={sky} frame={frame} />
-            <Ground ground={ground} haze={sky.haze} />
+            <Clouds sky={sky} frame={frame} />
+            <Ground ground={ground} />
+            <Trees tone={ground.trees} />
+            <Skyline tint={ground.skyline} />
+            {ground.showRoad ? <Roadside /> : null}
+            {ground.showRoad && ground.traffic ? <Traffic frame={frame} /> : null}
             <group rotation={[0, camera.boardAngle, 0]}>
               <Billboard
                 posterMap={art.texture}

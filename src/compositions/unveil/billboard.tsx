@@ -23,13 +23,7 @@ const Beam = ({ position, size, color }: { position: Vec3; size: Vec3; color: st
 const PosterFace = ({ map }: { map: THREE.Texture }) => (
   <mesh position={[0, BOARD.centerY, 0.02]} receiveShadow>
     <planeGeometry args={[BOARD.width, BOARD.height]} />
-    <meshStandardMaterial
-      map={map}
-      emissiveMap={map}
-      emissive="#ffffff"
-      emissiveIntensity={0.28}
-      roughness={0.85}
-    />
+    <meshStandardMaterial map={map} roughness={0.85} />
   </mesh>
 );
 
