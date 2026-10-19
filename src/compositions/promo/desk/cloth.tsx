@@ -4,7 +4,8 @@ import type { HandFont } from '@/schemas';
 import { handFontReady, handFonts } from '../fonts';
 import { useCanvasFont, useCanvasTexture } from './canvas-texture';
 import { CLOTH_CANVAS, drawClothNote, drawClothWeave } from './desk-textures';
-import { type Capsule, resolveContact } from './towel-contact';
+import { LAPTOP } from './laptop-geometry';
+import { type Capsule, resolveContact, restOnFloor } from './towel-contact';
 import type { PalmFrame } from './wipe-choreography';
 
 export interface ClothLook {
@@ -35,6 +36,14 @@ const HELD_CLEARANCE = 0.09;
 const CREASE_WIDTH = 0.045;
 const CONTACT_CLEARANCE = 0.014;
 const DRAPE_PASSES = 3;
+const FLOOR_CLEARANCE = 0.012;
+
+const laptopFloor = {
+  height: (x: number, z: number) =>
+    Math.abs(x) < LAPTOP.width / 2 && Math.abs(z) < LAPTOP.depth / 2
+      ? LAPTOP.baseThickness + LAPTOP.keyHeight + FLOOR_CLEARANCE
+      : FLOOR_CLEARANCE,
+};
 
 const WAVES = Array.from({ length: 7 }, (_unused, index) => {
   const angle = index * 2.39996;
@@ -145,6 +154,7 @@ export const Cloth = ({ palm, look, press, held, gap, shiftX, capsules }: ClothP
     drape: DRAPE_PASSES,
     strength: THREE.MathUtils.smoothstep(held, 0.05, 0.4),
   });
+  restOnFloor(position as THREE.BufferAttribute, placement, laptopFloor);
   position.needsUpdate = true;
   geometry.computeVertexNormals();
   return (

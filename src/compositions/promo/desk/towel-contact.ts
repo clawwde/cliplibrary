@@ -159,3 +159,25 @@ export const resolveContact = (input: ContactInput): void => {
     position.setZ(index, position.getZ(index) + (towardCamera + awayFromCamera) * input.strength);
   }
 };
+
+export interface TowelFloor {
+  height: (x: number, z: number) => number;
+}
+
+export const restOnFloor = (
+  position: THREE.BufferAttribute,
+  placement: THREE.Matrix4,
+  floor: TowelFloor,
+): void => {
+  const inverse = placement.clone().invert();
+  const point = new THREE.Vector3();
+  for (let index = 0; index < position.count; index++) {
+    point.fromBufferAttribute(position, index).applyMatrix4(placement);
+    const height = floor.height(point.x, point.z);
+    if (point.y < height) {
+      point.y = height;
+      point.applyMatrix4(inverse);
+      position.setXYZ(index, point.x, point.y, point.z);
+    }
+  }
+};
