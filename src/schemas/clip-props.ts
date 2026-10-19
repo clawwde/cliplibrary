@@ -10,6 +10,7 @@ import type { EchoStackProps } from './clips/kinetic-type/echo-stack';
 import type { GridStackProps } from './clips/kinetic-type/grid-stack';
 import type { LensOrbitProps } from './clips/kinetic-type/lens-orbit';
 import type { OutlineMarqueeProps } from './clips/kinetic-type/outline-marquee';
+import type { StickerStackProps } from './clips/kinetic-type/sticker-stack';
 import type { WordBuildProps } from './clips/kinetic-type/word-build';
 import type { WordFieldProps } from './clips/kinetic-type/word-field';
 import type { WordPunchProps } from './clips/kinetic-type/word-punch';
@@ -43,6 +44,7 @@ export interface ClipPropsMap {
   'scribble-caption': ScribbleCaptionProps;
   'echo-stack': EchoStackProps;
   'grid-stack': GridStackProps;
+  'sticker-stack': StickerStackProps;
   'word-field': WordFieldProps;
   'lens-orbit': LensOrbitProps;
   'outline-marquee': OutlineMarqueeProps;

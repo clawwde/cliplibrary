@@ -15,6 +15,7 @@ export { EchoStack } from './scenes/kinetic-type/echo-stack';
 export { GridStack } from './scenes/kinetic-type/grid-stack';
 export { LensOrbit } from './scenes/kinetic-type/lens-orbit';
 export { OutlineMarquee } from './scenes/kinetic-type/outline-marquee';
+export { StickerStack } from './scenes/kinetic-type/sticker-stack';
 export { WordBuild } from './scenes/kinetic-type/word-build';
 export { WordField } from './scenes/kinetic-type/word-field';
 export { WordPunch } from './scenes/kinetic-type/word-punch';

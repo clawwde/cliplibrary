@@ -279,6 +279,7 @@ describe('promo clips', () => {
     'grid-stack',
     'lens-orbit',
     'word-field',
+    'sticker-stack',
   ];
 
   it('validates every promo default against its schema', () => {
