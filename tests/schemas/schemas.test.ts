@@ -193,6 +193,7 @@ describe('pluggable module architecture', () => {
     expect(categoryOf('brand-reveal')).toBe('brand');
     expect(categoryOf('relief-backdrop')).toBe('backgrounds');
     expect(categoryOf('scene-transition')).toBe('transitions');
+    expect(categoryOf('helicopter-unveil')).toBe('ad-reveals');
   });
 });
 
@@ -274,6 +275,7 @@ describe('promo clips', () => {
     'outline-marquee',
     'letter-flip',
     'printer-pages',
+    'helicopter-unveil',
   ];
 
   it('validates every promo default against its schema', () => {

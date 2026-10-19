@@ -59,7 +59,8 @@ const TALL_SCREENS = new Set<PromoScreenId>(['feed']);
 
 const ABSOLUTE = /^(https?:|data:|blob:|\/)/;
 
-const resolveCustom = (value: string): string => (ABSOLUTE.test(value) ? value : staticFile(value));
+export const resolveCustom = (value: string): string =>
+  ABSOLUTE.test(value) ? value : staticFile(value);
 
 export const screenUrl = (phone: PromoPhone): string =>
   phone.customScreen.length > 0 ? resolveCustom(phone.customScreen) : url(SCREENS[phone.screen]);

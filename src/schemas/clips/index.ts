@@ -1,6 +1,7 @@
 import type { z } from 'zod';
 import type { ClipId, ClipPropsMap } from '../clip-props';
 import type { ClipMeta, ClipModule } from '../registry';
+import { adRevealsClips } from './ad-reveals';
 import { backgroundsClips } from './backgrounds';
 import { brandClips } from './brand';
 import { handDrawnClips } from './hand-drawn';
@@ -21,6 +22,7 @@ export const CLIP_MODULES: ClipModule[] = [
   ...screenDemosClips,
   ...overlaysClips,
   ...brandClips,
+  ...adRevealsClips,
   ...backgroundsClips,
   ...transitionsClips,
 ];
