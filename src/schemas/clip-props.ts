@@ -1,5 +1,4 @@
 import type { HelicopterUnveilProps } from './clips/ad-reveals/helicopter-unveil';
-import type { ProblemStrikeoutProps } from './clips/ad-reveals/problem-strikeout';
 import type { ReliefBackdropProps } from './clips/backgrounds/relief-backdrop';
 import type { AppIconRevealProps } from './clips/brand/app-icon-reveal';
 import type { BrandRevealProps } from './clips/brand/brand-reveal';
@@ -80,7 +79,6 @@ export interface ClipPropsMap {
   'cta-end-card': CtaEndCardProps;
   'relief-backdrop': ReliefBackdropProps;
   'helicopter-unveil': HelicopterUnveilProps;
-  'problem-strikeout': ProblemStrikeoutProps;
   'scene-transition': SceneTransitionProps;
 }
 

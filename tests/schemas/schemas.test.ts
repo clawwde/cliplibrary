@@ -277,7 +277,6 @@ describe('promo clips', () => {
     'letter-flip',
     'printer-pages',
     'helicopter-unveil',
-    'problem-strikeout',
     'word-picker',
     'pill-fan',
     'menu-stack',
