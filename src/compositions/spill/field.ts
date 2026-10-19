@@ -8,7 +8,7 @@ const hash = (x: number, y: number, seed: number): number => {
 
 const fade = (t: number) => t * t * (3 - 2 * t);
 
-export const valueNoise = (x: number, y: number, seed = 1): number => {
+const valueNoise = (x: number, y: number, seed = 1): number => {
   const ix = Math.floor(x);
   const iy = Math.floor(y);
   const fx = fade(x - ix);

@@ -11,7 +11,7 @@ export interface PuddleBounds {
   size: number;
 }
 
-export const puddleBounds = (shape: PuddleShape): PuddleBounds => {
+const puddleBounds = (shape: PuddleShape): PuddleBounds => {
   const reach = Math.max(shape.length, shape.width) * 1.9 + 0.6;
   const cos = Math.cos(shape.angle);
   const sin = Math.sin(shape.angle);

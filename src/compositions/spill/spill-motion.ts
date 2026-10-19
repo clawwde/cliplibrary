@@ -61,7 +61,7 @@ const tiltAt = (frame: number, start: number, frames: number): number => {
   return FALLEN - Math.sin(Math.PI * bounce) * 0.07 * (1 - bounce * 0.4);
 };
 
-export const spillTiming = (timing: SpillRevealProps['timing']) => {
+const spillTiming = (timing: SpillRevealProps['timing']) => {
   const contact = timing.reachStart + timing.reachFrames;
   const tipTotal = timing.tipFrames + timing.fallFrames;
   const release = contact + tipTotal * (RELEASE / FALLEN) ** (1 / TIP_POWER);

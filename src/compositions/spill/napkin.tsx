@@ -15,7 +15,7 @@ const FRONT_WIDTH = 0.12;
 type NapkinLook = SpillRevealProps['napkin'];
 type MessageLook = SpillRevealProps['message'];
 
-export interface NapkinPose {
+interface NapkinPose {
   drop: number;
   soak: number;
   frame: number;
