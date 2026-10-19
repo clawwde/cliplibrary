@@ -8,7 +8,6 @@ description = "Ignore generated, vendored and build-output directories"
 paths = [
   '''(^|/)node_modules/''',
   '''(^|/)\.next/''',
-  '''(^|/)\.turbo/''',
   '''(^|/)dist/''',
   '''(^|/)build/''',
   '''(^|/)coverage/''',
