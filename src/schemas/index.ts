@@ -13,6 +13,7 @@ export * from './clips/kinetic-type/echo-stack';
 export * from './clips/kinetic-type/outline-marquee';
 export * from './clips/kinetic-type/word-build';
 export * from './clips/kinetic-type/word-punch';
+export * from './clips/list-pickers/color-pills';
 export * from './clips/list-pickers/heading-list';
 export * from './clips/list-pickers/menu-stack';
 export * from './clips/list-pickers/mind-map';

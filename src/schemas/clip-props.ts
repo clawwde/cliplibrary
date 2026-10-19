@@ -11,6 +11,7 @@ import type { EchoStackProps } from './clips/kinetic-type/echo-stack';
 import type { OutlineMarqueeProps } from './clips/kinetic-type/outline-marquee';
 import type { WordBuildProps } from './clips/kinetic-type/word-build';
 import type { WordPunchProps } from './clips/kinetic-type/word-punch';
+import type { ColorPillsProps } from './clips/list-pickers/color-pills';
 import type { HeadingListProps } from './clips/list-pickers/heading-list';
 import type { MenuStackProps } from './clips/list-pickers/menu-stack';
 import type { MindMapProps } from './clips/list-pickers/mind-map';
@@ -43,6 +44,7 @@ export interface ClipPropsMap {
   'heading-list': HeadingListProps;
   'year-dial': YearDialProps;
   'mind-map': MindMapProps;
+  'color-pills': ColorPillsProps;
   'skill-wheel': SkillWheelProps;
   'phone-flat-lay': PhoneFlatLayProps;
   'phone-pedestal': PhonePedestalProps;

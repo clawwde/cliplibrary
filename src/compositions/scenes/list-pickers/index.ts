@@ -1,4 +1,5 @@
 import type { SceneModule } from '../../scene-module';
+import { colorPillsScene } from './color-pills';
 import { headingListScene } from './heading-list';
 import { menuStackScene } from './menu-stack';
 import { mindMapScene } from './mind-map';
@@ -14,5 +15,6 @@ export const listPickersScenes: SceneModule[] = [
   headingListScene,
   yearDialScene,
   mindMapScene,
+  colorPillsScene,
   skillWheelScene,
 ];

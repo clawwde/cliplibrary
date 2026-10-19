@@ -1,4 +1,5 @@
 import type { ClipModule } from '../../registry';
+import { colorPillsDefaults, colorPillsMeta, colorPillsSchema } from './color-pills';
 import { headingListDefaults, headingListMeta, headingListSchema } from './heading-list';
 import { menuStackDefaults, menuStackMeta, menuStackSchema } from './menu-stack';
 import { mindMapDefaults, mindMapMeta, mindMapSchema } from './mind-map';
@@ -43,6 +44,12 @@ export const listPickersClips: ClipModule[] = [
     schema: mindMapSchema,
     defaults: mindMapDefaults,
     meta: mindMapMeta,
+  },
+  {
+    id: 'color-pills',
+    schema: colorPillsSchema,
+    defaults: colorPillsDefaults,
+    meta: colorPillsMeta,
   },
   {
     id: 'skill-wheel',
