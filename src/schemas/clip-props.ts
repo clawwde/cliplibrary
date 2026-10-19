@@ -1,4 +1,5 @@
 import type { HelicopterUnveilProps } from './clips/ad-reveals/helicopter-unveil';
+import type { SpillRevealProps } from './clips/ad-reveals/spill-reveal';
 import type { ReliefBackdropProps } from './clips/backgrounds/relief-backdrop';
 import type { AppIconRevealProps } from './clips/brand/app-icon-reveal';
 import type { BrandRevealProps } from './clips/brand/brand-reveal';
@@ -87,6 +88,7 @@ export interface ClipPropsMap {
   'cta-end-card': CtaEndCardProps;
   'relief-backdrop': ReliefBackdropProps;
   'helicopter-unveil': HelicopterUnveilProps;
+  'spill-reveal': SpillRevealProps;
   'scene-transition': SceneTransitionProps;
 }
 
