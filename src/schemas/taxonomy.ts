@@ -32,6 +32,11 @@ export const CLIP_CATEGORIES = [
     keywords: [...PHONE_KEYWORDS, 'ui', 'walkthrough', 'demo', 'screens', 'feed'],
   },
   {
+    id: 'desk-scenes',
+    label: 'Desk & Laptop',
+    keywords: ['laptop', 'computer', 'notebook', 'desk', 'workspace', 'hands', 'live action'],
+  },
+  {
     id: 'overlays',
     label: 'Overlays',
     keywords: ['layer', 'effect', 'ui', 'popup', 'vintage'],
@@ -96,6 +101,8 @@ export const CLIP_TAGS = [
   'draw',
   '3d',
   'phone',
+  'laptop',
+  'hand',
   'multi-phone',
   'screen',
   'spin',

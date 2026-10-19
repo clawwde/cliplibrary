@@ -3,6 +3,7 @@ import type { ReliefBackdropProps } from './clips/backgrounds/relief-backdrop';
 import type { AppIconRevealProps } from './clips/brand/app-icon-reveal';
 import type { BrandRevealProps } from './clips/brand/brand-reveal';
 import type { CtaEndCardProps } from './clips/brand/cta-end-card';
+import type { LaptopWipeRevealProps } from './clips/desk-scenes/laptop-wipe-reveal';
 import type { DoodleArrowsProps } from './clips/hand-drawn/doodle-arrows';
 import type { HandwrittenNoteProps } from './clips/hand-drawn/handwritten-note';
 import type { ScribbleCaptionProps } from './clips/hand-drawn/scribble-caption';
@@ -48,6 +49,7 @@ export interface ClipPropsMap {
   'phone-spin-in': PhoneSpinInProps;
   'phone-swap': PhoneSwapProps;
   'message-arise': MessageAriseProps;
+  'laptop-wipe-reveal': LaptopWipeRevealProps;
   'phone-turnaround': PhoneTurnaroundProps;
   'phone-wall': PhoneWallProps;
   'floating-cards': FloatingCardsProps;
