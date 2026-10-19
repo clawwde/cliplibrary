@@ -113,7 +113,7 @@ export const lookSchema = z.object({
   spotlight: zSlider({ min: 0, max: 1, step: 0.01 }),
   paper: z.enum(PAPER_PATTERNS),
   paperLine: zColor(),
-  paperSpacing: zSlider({ min: 20, max: 120 }),
+  paperSpacing: zSlider({ min: 20, max: 200 }),
   paperMargin: z.boolean(),
 });
 

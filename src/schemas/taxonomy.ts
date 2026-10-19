@@ -150,6 +150,8 @@ export const CLIP_TAGS = [
   'list',
   'picker',
   'wheel',
+  'badge',
+  'chalkboard',
 ] as const;
 
 export type ClipTag = (typeof CLIP_TAGS)[number];

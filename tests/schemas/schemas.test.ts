@@ -294,6 +294,11 @@ describe('promo clips', () => {
     'skill-wheel',
     'product-cards',
     'list-pickers-reel',
+    'chalk-badge',
+    'chalk-badge-grid',
+    'chalk-title',
+    'chalk-badges-reel',
+    'chunky-type-stack',
   ];
 
   it('validates every promo default against its schema', () => {

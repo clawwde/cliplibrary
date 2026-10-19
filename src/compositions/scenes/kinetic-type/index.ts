@@ -1,4 +1,5 @@
 import type { SceneModule } from '../../scene-module';
+import { chunkyTypeStackScene } from './chunky-type-stack';
 import { echoStackScene } from './echo-stack';
 import { gridStackScene } from './grid-stack';
 import { lensOrbitScene } from './lens-orbit';
@@ -17,4 +18,5 @@ export const kineticTypeScenes: SceneModule[] = [
   lensOrbitScene,
   wordFieldScene,
   stickerStackScene,
+  chunkyTypeStackScene,
 ];

@@ -1,4 +1,9 @@
 import type { ClipModule } from '../../registry';
+import {
+  chunkyTypeStackDefaults,
+  chunkyTypeStackMeta,
+  chunkyTypeStackSchema,
+} from './chunky-type-stack';
 import { echoStackDefaults, echoStackMeta, echoStackSchema } from './echo-stack';
 import { gridStackDefaults, gridStackMeta, gridStackSchema } from './grid-stack';
 import { lensOrbitDefaults, lensOrbitMeta, lensOrbitSchema } from './lens-orbit';
@@ -30,5 +35,11 @@ export const kineticTypeClips: ClipModule[] = [
     schema: stickerStackSchema,
     defaults: stickerStackDefaults,
     meta: stickerStackMeta,
+  },
+  {
+    id: 'chunky-type-stack',
+    schema: chunkyTypeStackSchema,
+    defaults: chunkyTypeStackDefaults,
+    meta: chunkyTypeStackMeta,
   },
 ];

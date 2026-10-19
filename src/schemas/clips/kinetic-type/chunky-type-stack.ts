@@ -1,0 +1,90 @@
+import { z } from 'zod';
+import { chalkboardLook, chalkSchema, connectorChalk } from '../../connector-common';
+import { zColor, zSlider } from '../../control';
+import { defaultMotion, lookSchema, motionSchema, promoMeta } from '../../promo-common';
+import type { ClipMeta } from '../../registry';
+
+export const chunkyLineSchema = z.object({
+  text: z.string(),
+  size: zSlider({ min: 40, max: 320 }),
+  offset: zSlider({ min: -600, max: 600 }),
+});
+
+export type ChunkyLine = z.infer<typeof chunkyLineSchema>;
+
+export const chunkyTypeStackSchema = z.object({
+  lines: z.array(chunkyLineSchema).min(1).max(8),
+  color: zColor(),
+  lineGap: zSlider({ min: -0.3, max: 0.6, step: 0.01 }),
+  jitter: zSlider({ min: 0, max: 1, step: 0.01 }),
+  seed: zSlider({ min: 1, max: 999 }),
+  delay: zSlider({ min: 0, max: 120 }),
+  letterFrames: zSlider({ min: 0.25, max: 6, step: 0.05 }),
+  popFrames: zSlider({ min: 2, max: 30 }),
+  bar: z.object({
+    show: z.boolean(),
+    line: zSlider({ min: 0, max: 7 }),
+    width: zSlider({ min: 5, max: 100 }),
+    height: zSlider({ min: 4, max: 60 }),
+    color: zColor(),
+    frames: zSlider({ min: 4, max: 60 }),
+  }),
+  exitAt: zSlider({ min: 20, max: 600 }),
+  exitFrames: zSlider({ min: 4, max: 40 }),
+  lineStagger: zSlider({ min: 0, max: 20 }),
+  burst: z.object({
+    text: z.string(),
+    size: zSlider({ min: 200, max: 2000 }),
+    color: zColor(),
+    frames: zSlider({ min: 6, max: 60 }),
+  }),
+  endTag: z.string(),
+  endTagSize: zSlider({ min: 16, max: 160 }),
+  endTagColor: zColor(),
+  chalk: chalkSchema,
+  look: lookSchema,
+  motion: motionSchema,
+});
+
+export type ChunkyTypeStackProps = z.infer<typeof chunkyTypeStackSchema>;
+
+export const chunkyTypeStackDefaults: ChunkyTypeStackProps = {
+  lines: [
+    { text: 'LITTLE WORDS', size: 178, offset: -46 },
+    { text: 'BIG LINKS', size: 250, offset: 28 },
+    { text: 'DRAWN BY HAND', size: 146, offset: -20 },
+    { text: 'READY TO DROP IN.', size: 112, offset: 80 },
+  ],
+  color: '#f6f0e2',
+  lineGap: 0.04,
+  jitter: 0.6,
+  seed: 12,
+  delay: 6,
+  letterFrames: 1.6,
+  popFrames: 8,
+  bar: { show: true, line: 3, width: 36, height: 22, color: '#f6f0e2', frames: 16 },
+  exitAt: 132,
+  exitFrames: 10,
+  lineStagger: 4,
+  burst: { text: '&', size: 1100, color: '#f6f0e2', frames: 20 },
+  endTag: 'CLIPLIBRARY',
+  endTagSize: 54,
+  endTagColor: '#f6f0e2',
+  chalk: connectorChalk({ roughness: 2.5, dryness: 0.04, shadow: 0.4 }),
+  look: chalkboardLook(),
+  motion: defaultMotion({ exit: 'none', exitFrames: 0, float: 0 }),
+};
+
+export const chunkyTypeStackMeta: ClipMeta = {
+  ...promoMeta,
+  id: 'chunky-type-stack',
+  title: 'Chunky Type Stack',
+  description:
+    'Chunky hand-cut letters pop in one by one into a staggered headline stack, then a giant glyph punches through to an end tag.',
+  category: 'kinetic-type',
+  tags: ['kinetic', 'headline', 'stack', 'typing', 'zoom'],
+  theme: 'dark',
+  source: 'src/compositions/scenes/kinetic-type/chunky-type-stack.tsx',
+  durationInFrames: 232,
+  posterFrame: 130,
+};
