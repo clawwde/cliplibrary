@@ -49,7 +49,14 @@ describe('gallery filters', () => {
     expect(search('typewritter')).toEqual(['typewriter']);
     expect(search('notifcation')).toEqual(['floating-cards', 'message-arise']);
     expect(search('scrol')[0]).toBe('phone-scroll');
-    expect(search('hand drawn')).toEqual(['handwritten-note', 'scribble-caption', 'doodle-arrows']);
+    expect(search('hand drawn')).toEqual([
+      'handwritten-note',
+      'chalk-badge',
+      'chalk-title',
+      'scribble-caption',
+      'chalk-badge-grid',
+      'doodle-arrows',
+    ]);
     const phones = CLIP_REGISTRY.filter((meta) => meta.tags.includes('phone')).map(
       (meta) => meta.id,
     );

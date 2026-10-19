@@ -1,4 +1,11 @@
 import type { ClipModule } from '../../registry';
+import { chalkBadgeDefaults, chalkBadgeMeta, chalkBadgeSchema } from './chalk-badge';
+import {
+  chalkBadgeGridDefaults,
+  chalkBadgeGridMeta,
+  chalkBadgeGridSchema,
+} from './chalk-badge-grid';
+import { chalkTitleDefaults, chalkTitleMeta, chalkTitleSchema } from './chalk-title';
 import { doodleArrowsDefaults, doodleArrowsMeta, doodleArrowsSchema } from './doodle-arrows';
 import {
   handwrittenNoteDefaults,
@@ -29,5 +36,23 @@ export const handDrawnClips: ClipModule[] = [
     schema: doodleArrowsSchema,
     defaults: doodleArrowsDefaults,
     meta: doodleArrowsMeta,
+  },
+  {
+    id: 'chalk-badge',
+    schema: chalkBadgeSchema,
+    defaults: chalkBadgeDefaults,
+    meta: chalkBadgeMeta,
+  },
+  {
+    id: 'chalk-badge-grid',
+    schema: chalkBadgeGridSchema,
+    defaults: chalkBadgeGridDefaults,
+    meta: chalkBadgeGridMeta,
+  },
+  {
+    id: 'chalk-title',
+    schema: chalkTitleSchema,
+    defaults: chalkTitleDefaults,
+    meta: chalkTitleMeta,
   },
 ];
