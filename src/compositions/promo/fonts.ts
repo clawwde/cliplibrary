@@ -60,16 +60,22 @@ export const kineticFont = loadOnest('normal', {
   subsets: ['latin'],
 }).fontFamily;
 
+const playfair = loadPlayfairDisplay('normal', {
+  weights: ['400', '500', '600', '700'],
+  subsets: ['latin'],
+});
+
+export const serifFont = playfair.fontFamily;
+
+export const serifFontReady = playfair.waitUntilDone;
+
 export const pageFonts: Record<PageFont, string> = {
   condensed: loadOswald('normal', {
     weights: ['300', '400', '500', '600', '700'],
     subsets: ['latin'],
   }).fontFamily,
   script: loadPinyonScript('normal', { weights: ['400'], subsets: ['latin'] }).fontFamily,
-  serif: loadPlayfairDisplay('normal', {
-    weights: ['400', '500', '600', '700'],
-    subsets: ['latin'],
-  }).fontFamily,
+  serif: playfair.fontFamily,
   sans: displayFont,
 };
 
