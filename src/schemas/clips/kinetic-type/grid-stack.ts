@@ -78,6 +78,6 @@ export const gridStackMeta: ClipMeta = {
   tags: ['kinetic', 'headline', 'stack', '3d', 'grid'],
   theme: 'light',
   source: 'src/compositions/scenes/kinetic-type/grid-stack.tsx',
-  durationInFrames: 264,
+  durationInFrames: 250,
   posterFrame: 175,
 };

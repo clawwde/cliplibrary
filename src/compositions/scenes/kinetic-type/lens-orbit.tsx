@@ -8,6 +8,7 @@ import { highlightSet, normalize, wordsOf } from '../../promo/words';
 import type { SceneModule } from '../../scene-module';
 import { FrameComposer, useAnimator } from '../../type3d/frame-composer';
 import { useInkMaterial } from '../../type3d/ink-material';
+import { setUniform } from '../../type3d/post-shader';
 import { faceTurn, spherePatch } from '../../type3d/sphere-patch';
 import { CameraShot, driftCamera, TypeCanvas } from '../../type3d/type-canvas';
 import { useWordTexture, type WordArt } from '../../type3d/word-art';
@@ -44,14 +45,28 @@ const PatchWord = ({
   props,
   scale,
   turn,
+  direction,
+  orientationAt,
 }: {
   art: WordArt;
   props: LensOrbitProps;
   scale: number;
   turn: THREE.Quaternion;
+  direction: THREE.Vector3;
+  orientationAt: (time: number) => THREE.Quaternion;
 }) => {
   const { texture, aspect, frameX, frameY } = useWordTexture(art);
   const material = useInkMaterial(texture, 1, { edgeFade: props.edgeFade });
+  useAnimator((time) => {
+    const facing = direction.clone().applyQuaternion(orientationAt(time)).z;
+    const reveal = tween(
+      time,
+      [props.delay, props.delay + props.introFrames * 0.5],
+      [0, 1],
+      smooth,
+    );
+    setUniform(material, 'opacity', reveal * tween(facing, [0.55, 0.92], [0, 1], smooth));
+  });
   const height = deg(props.wordHeight) * scale;
   const width = Math.min(height * aspect, deg(props.maxArc) * scale);
   const fitted = width / aspect;
@@ -73,9 +88,11 @@ const useFaces = (props: LensOrbitProps) => {
   const satellites = wordsOf(props.satellites);
   return words.map((text, index) => {
     const [yaw, pitch, roll] = spot(index);
-    const turn = faceTurn(directionOf(yaw, pitch), deg(roll));
+    const direction = directionOf(yaw, pitch);
+    const turn = faceTurn(direction, deg(roll));
     return {
       text,
+      direction,
       color: color(text),
       turn,
       front: turn.clone().invert(),
@@ -98,15 +115,14 @@ const useFaces = (props: LensOrbitProps) => {
   });
 };
 
-const Globe = ({ props, frame }: { props: LensOrbitProps; frame: number }) => {
+const Globe = ({ props }: { props: LensOrbitProps }) => {
   const faces = useFaces(props);
   const group = useRef<THREE.Group>(null);
   const spinAxis = useMemo(() => new THREE.Vector3(0.6, 1, 0.2).normalize(), []);
-  useAnimator((time) => {
-    const target = group.current;
+  const orientationAt = (time: number): THREE.Quaternion => {
     const first = faces[0];
-    if (target === null || first === undefined) {
-      return;
+    if (first === undefined) {
+      return new THREE.Quaternion();
     }
     const intro = tween(time, [props.delay, props.delay + props.introFrames], [0, 1], settle);
     const orientation = new THREE.Quaternion()
@@ -114,13 +130,13 @@ const Globe = ({ props, frame }: { props: LensOrbitProps; frame: number }) => {
       .multiply(first.front);
     const firstHold = props.delay + props.introFrames;
     faces.forEach((face, index) => {
-      if (index === 0) {
+      const previous = faces[index - 1];
+      if (previous === undefined) {
         return;
       }
       const at = firstHold + index * props.holdFrames + (index - 1) * props.turnFrames;
       const turn = tween(time, [at, at + props.turnFrames], [0, 1], tumble);
-      const previous = faces[index - 1];
-      if (turn > 0 && previous !== undefined) {
+      if (turn > 0) {
         orientation.copy(previous.front).slerp(face.front, turn);
       }
     });
@@ -129,12 +145,20 @@ const Globe = ({ props, frame }: { props: LensOrbitProps; frame: number }) => {
       Math.cos(time / 27) * props.wobble,
       Math.sin(time / 33) * props.wobble * 0.5,
     );
-    target.quaternion.setFromEuler(wobble).multiply(orientation);
-    target.scale.setScalar(0.35 + 0.65 * intro);
+    return new THREE.Quaternion().setFromEuler(wobble).multiply(orientation);
+  };
+  useAnimator((time) => {
+    const target = group.current;
+    if (target === null) {
+      return;
+    }
+    target.quaternion.copy(orientationAt(time));
+    target.scale.setScalar(
+      0.35 + 0.65 * tween(time, [props.delay, props.delay + props.introFrames], [0, 1], settle),
+    );
   });
-  const reveal = tween(frame, [props.delay, props.delay + props.introFrames * 0.5], [0, 1], smooth);
   return (
-    <group ref={group} visible={reveal > 0.002}>
+    <group ref={group}>
       {faces.map((face, index) => (
         <group key={`${index}:${face.text}`}>
           <PatchWord
@@ -142,6 +166,8 @@ const Globe = ({ props, frame }: { props: LensOrbitProps; frame: number }) => {
             props={props}
             scale={1}
             turn={face.turn}
+            direction={face.direction}
+            orientationAt={orientationAt}
           />
           {face.moons.map((moon, moonIndex) =>
             moon.text === '' ? null : (
@@ -151,6 +177,8 @@ const Globe = ({ props, frame }: { props: LensOrbitProps; frame: number }) => {
                 props={props}
                 scale={props.satelliteScale}
                 turn={moon.turn}
+                direction={face.direction}
+                orientationAt={orientationAt}
               />
             ),
           )}
@@ -179,7 +207,7 @@ export const LensOrbit = (props: LensOrbitProps) => {
           <CameraShot
             shot={(time) => driftCamera(time, camera.distance, camera.fieldOfView, camera.drift)}
           />
-          <Globe props={props} frame={frame} />
+          <Globe props={props} />
         </FrameComposer>
       </TypeCanvas>
     </PromoLayer>

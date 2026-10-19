@@ -24,7 +24,7 @@ export const typeCamera = (overrides: Partial<TypeCameraSettings> = {}): TypeCam
 });
 
 export const typeLensSchema = z.object({
-  samples: zSlider({ min: 1, max: 16 }),
+  samples: zSlider({ min: 1, max: 32 }),
   shutter: zSlider({ min: 0, max: 2, step: 0.05 }),
   distortion: zSlider({ min: 0, max: 1.5, step: 0.01 }),
   fringe: zSlider({ min: 0, max: 0.03, step: 0.0005 }),

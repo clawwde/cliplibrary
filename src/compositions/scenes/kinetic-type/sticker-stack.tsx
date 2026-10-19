@@ -125,7 +125,24 @@ const chaseTarget = (time: number, stickers: Sticker[], props: StickerStackProps
       y += (sticker.y - previous.y) * follow;
     }
   });
-  return [x - Math.cos(heading) * props.lead, y - Math.sin(heading) * props.lead, 0];
+  const lastStart = props.delay + (stickers.length - 1) * props.stagger;
+  const tail = stickers.slice(-6);
+  const centerX = tail.reduce((sum, sticker) => sum + sticker.x, 0) / Math.max(1, tail.length);
+  const centerY = tail.reduce((sum, sticker) => sum + sticker.y, 0) / Math.max(1, tail.length);
+  const gather = tween(time, [lastStart, lastStart + props.chase + 10], [0, 1], smooth);
+  const creep = Math.max(0, time - lastStart) * 0.012;
+  const chaseX = x - Math.cos(heading) * props.lead;
+  const chaseY = y - Math.sin(heading) * props.lead;
+  return [
+    chaseX + (centerX - chaseX) * gather + Math.cos(heading) * creep,
+    chaseY + (centerY - chaseY) * gather + Math.sin(heading) * creep,
+    0,
+  ];
+};
+
+const endGather = (time: number, stickers: Sticker[], props: StickerStackProps): number => {
+  const lastStart = props.delay + (stickers.length - 1) * props.stagger;
+  return tween(time, [lastStart, lastStart + props.chase + 10], [0, 1], smooth);
 };
 
 const popEase = (overshoot: number) => Easing.out(Easing.back(overshoot));
@@ -180,7 +197,7 @@ export const StickerStack = (props: StickerStackProps) => {
             shot={(time) =>
               driftCamera(
                 time,
-                camera.distance,
+                camera.distance * (1 + 0.28 * endGather(time, stickers, props)),
                 camera.fieldOfView,
                 camera.drift,
                 chaseTarget(time, stickers, props),

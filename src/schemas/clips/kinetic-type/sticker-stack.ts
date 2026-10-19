@@ -102,6 +102,6 @@ export const stickerStackMeta: ClipMeta = {
   tags: ['kinetic', 'text', 'drop', 'stack', 'camera-move'],
   theme: 'dark',
   source: 'src/compositions/scenes/kinetic-type/sticker-stack.tsx',
-  durationInFrames: 168,
-  posterFrame: 130,
+  durationInFrames: 156,
+  posterFrame: 135,
 };
