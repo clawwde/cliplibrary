@@ -25,10 +25,10 @@ const paintGlobe = (words: GlobeWord[], weight: number, arc: number, band: numbe
   const arcPixels = (SPHERE_WIDTH * Math.min(arc, 360 / words.length - 6)) / 360;
   context.textAlign = 'center';
   context.textBaseline = 'alphabetic';
+  const widest = Math.max(1, ...words.map((word) => measure(word.text)));
+  const scale = Math.min(bandPixels / (ascent + descent), arcPixels / widest);
+  const size = FONT_PX * scale;
   words.forEach((word, index) => {
-    const natural = measure(word.text);
-    const scale = Math.min(bandPixels / (ascent + descent), arcPixels / Math.max(1, natural));
-    const size = FONT_PX * scale;
     context.font = fontOf(weight, size);
     context.fillStyle = word.color;
     const center = (0.25 + index / words.length) * SPHERE_WIDTH;

@@ -62,8 +62,8 @@ const Stack = (props: GridStackProps & { frame: number }) => {
       {beats.map((words, beat) => {
         const start = delay + beat * beatFrames;
         const isLast = beat === beats.length - 1;
-        const leaveAt = start + beatFrames - exitFrames - (words.length - 1) * EXIT_STAGGER - 2;
-        if (frame < start - 1 || (!isLast && frame > start + beatFrames)) {
+        const leaveAt = start + beatFrames - exitFrames - (words.length - 1) * EXIT_STAGGER + 4;
+        if (frame < start - 1 || (!isLast && frame > start + beatFrames + 8)) {
           return null;
         }
         const side = beat % 2 === 0 ? 1 : -1;
@@ -83,7 +83,7 @@ const Stack = (props: GridStackProps & { frame: number }) => {
               : tween(at, [leaveStart, leaveStart + exitFrames], [0, 1], accelerate);
             const fadeOut = isLast
               ? 0
-              : tween(at, [leaveStart, leaveStart + exitFrames * 0.8], [0, 1], smooth);
+              : tween(at, [leaveStart + exitFrames * 0.5, leaveStart + exitFrames], [0, 1], smooth);
             return {
               position: [
                 0,

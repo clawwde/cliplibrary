@@ -48,7 +48,7 @@ export const lensOrbitDefaults: LensOrbitProps = {
   radius: 2.25,
   wordArc: 118,
   wordBand: 46,
-  edgeFade: 0.85,
+  edgeFade: 1,
   delay: 2,
   enterFrames: 34,
   holdFrames: 22,

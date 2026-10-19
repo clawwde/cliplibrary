@@ -108,9 +108,12 @@ const layoutStickers = (props: StickerStackProps): Sticker[] => {
       return { art, height, width: height * wordAspect(art) };
     });
     const used = items.reduce((sum, item) => sum + item.width, 0);
-    const gap = Math.max(0, (props.width - used) / Math.max(1, items.length));
+    const gap = Math.min(
+      props.size * 1.5,
+      Math.max(0, (props.width - used) / Math.max(1, items.length)),
+    );
     const shift = (rowIndex % 2 === 0 ? -1 : 1) * gap * 0.25 * props.jitter;
-    let x = -props.width / 2 + gap / 2 + shift;
+    let x = -(used + gap * items.length) / 2 + gap / 2 + shift;
     return items.map((item) => {
       const center = x + item.width / 2 + (random() - 0.5) * gap * props.jitter;
       x += item.width + gap;
@@ -167,7 +170,7 @@ export const StickerStack = (props: StickerStackProps) => {
   const { durationInFrames } = useVideoConfig();
   const rows = stickerRows(props.stickers).length;
   const middle = -((rows - 1) * props.rowPitch) / 2;
-  const travel = tween(frame, [0, durationInFrames], [0.5, -0.5], smooth) * props.pan;
+  const travel = tween(frame, [0, durationInFrames * 0.85], [0.5, 0], smooth) * props.pan;
   return (
     <PromoLayer look={look} motion={motion}>
       <TypeCanvas

@@ -175,7 +175,11 @@ const paintWord = (art: WordArt): Omit<WordTexture, 'texture'> & { canvas: HTMLC
     context.fillStyle = art.color;
     context.strokeStyle = art.color;
     const middle = top + contentHeight / 2;
-    const baseline = middle + (ascent - descent) / 2 + (shape === 'none' ? 0 : descent * 0.18);
+    const glyph = context.measureText(art.text);
+    const baseline =
+      shape === 'circle'
+        ? middle + (glyph.actualBoundingBoxAscent - glyph.actualBoundingBoxDescent) / 2
+        : middle + (ascent - descent) / 2 + (shape === 'none' ? 0 : descent * 0.18);
     drawGlyph(context, art.text, left + contentWidth / 2, baseline, middle, FONT_PX);
   }
   return {
