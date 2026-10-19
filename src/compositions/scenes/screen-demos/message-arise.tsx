@@ -56,7 +56,7 @@ const Eyebrow = ({ text, color, accent }: { text: string; color: string; accent:
   </div>
 );
 
-export const MessageArise = ({
+const MessageArise = ({
   messages,
   card,
   stack,
