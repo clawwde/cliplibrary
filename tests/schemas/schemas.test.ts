@@ -254,6 +254,7 @@ describe('promo clips', () => {
     'phone-swap',
     'phone-scroll',
     'message-arise',
+    'laptop-wipe-reveal',
     'phone-wall',
     'phone-pair',
     'floating-cards',
@@ -280,6 +281,16 @@ describe('promo clips', () => {
     'lens-orbit',
     'word-field',
     'sticker-stack',
+    'word-picker',
+    'pill-fan',
+    'menu-stack',
+    'heading-list',
+    'year-dial',
+    'mind-map',
+    'color-pills',
+    'skill-wheel',
+    'product-cards',
+    'list-pickers-reel',
   ];
 
   it('validates every promo default against its schema', () => {

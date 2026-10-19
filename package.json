@@ -31,8 +31,10 @@
   "dependencies": {
     "@react-three/drei": "10.7.9",
     "@react-three/fiber": "9.8.1",
+    "@react-three/postprocessing": "3.2.0",
     "@remotion/bundler": "4.0.534",
     "@remotion/google-fonts": "4.0.534",
+    "@remotion/motion-blur": "4.0.534",
     "@remotion/player": "4.0.534",
     "@remotion/renderer": "4.0.534",
     "@remotion/three": "4.0.534",
@@ -42,6 +44,7 @@
     "lucide-react": "0.550.0",
     "minisearch": "7.2.0",
     "next": "16.4.0",
+    "postprocessing": "6.39.5",
     "radix-ui": "1.8.1",
     "react": "19.3.0",
     "react-dom": "19.3.0",

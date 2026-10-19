@@ -4,8 +4,10 @@ import type { ClipMeta, ClipModule } from '../registry';
 import { adRevealsClips } from './ad-reveals';
 import { backgroundsClips } from './backgrounds';
 import { brandClips } from './brand';
+import { deskScenesClips } from './desk-scenes';
 import { handDrawnClips } from './hand-drawn';
 import { kineticTypeClips } from './kinetic-type';
+import { listPickersClips } from './list-pickers';
 import { overlaysClips } from './overlays';
 import { phoneLayoutsClips } from './phone-layouts';
 import { phoneRevealsClips } from './phone-reveals';
@@ -20,7 +22,9 @@ export const CLIP_MODULES: ClipModule[] = [
   ...phoneRevealsClips,
   ...phoneLayoutsClips,
   ...screenDemosClips,
+  ...deskScenesClips,
   ...overlaysClips,
+  ...listPickersClips,
   ...brandClips,
   ...adRevealsClips,
   ...backgroundsClips,
