@@ -131,7 +131,27 @@ const widen = ([x, y]: [number, number], amount: number, along: number): [number
   y + (BARE_FAR[1] - BARE_NEAR[1]) * along + amount,
 ];
 
-export const Arm = ({ look, skin }: { look: ArmLook; skin: THREE.Material }) => {
+const FORWARD = new THREE.Vector3(0, 0, 1);
+
+export const forearmAim = (wrist: THREE.Matrix4, elbow: THREE.Vector3): THREE.Matrix4 => {
+  const local = elbow.clone().applyMatrix4(wrist.clone().invert());
+  if (local.lengthSq() < 1e-12) {
+    return new THREE.Matrix4();
+  }
+  return new THREE.Matrix4().makeRotationFromQuaternion(
+    new THREE.Quaternion().setFromUnitVectors(FORWARD, local.normalize()),
+  );
+};
+
+export const Arm = ({
+  look,
+  skin,
+  forearm,
+}: {
+  look: ArmLook;
+  skin: THREE.Material;
+  forearm: THREE.Matrix4;
+}) => {
   const fabric = useMemo(
     () =>
       new THREE.MeshPhysicalMaterial({
@@ -150,19 +170,36 @@ export const Arm = ({ look, skin }: { look: ArmLook; skin: THREE.Material }) => 
   const bandEnd = (BAND_START + BAND_LENGTH) / look.length;
   return (
     <group position={[0.001, 0, 0]}>
-      <mesh
-        geometry={tube({
-          start: 0.006,
-          length: look.length,
-          near: BARE_NEAR,
-          far: BARE_FAR,
-          folds: 0,
-          cuff: 0,
-        })}
-        material={skin}
-        castShadow
-        receiveShadow
-      />
+      <group matrixAutoUpdate={false} matrix={forearm}>
+        <mesh
+          geometry={tube({
+            start: 0.006,
+            length: look.length,
+            near: BARE_NEAR,
+            far: BARE_FAR,
+            folds: 0,
+            cuff: 0,
+          })}
+          material={skin}
+          castShadow
+          receiveShadow
+        />
+        {look.style === 'sleeve' ? (
+          <mesh
+            geometry={tube({
+              start: 0.05,
+              length: look.length,
+              near: widen(BARE_NEAR, 0.004 + look.looseness * 0.008, 0.15),
+              far: widen(BARE_FAR, 0.01 + look.looseness * 0.016, 1),
+              folds: 0.035 * (0.5 + look.looseness),
+              cuff: 0.06,
+            })}
+            material={fabric}
+            castShadow
+            receiveShadow
+          />
+        ) : null}
+      </group>
       {look.band ? (
         <mesh
           geometry={tube({
@@ -174,21 +211,6 @@ export const Arm = ({ look, skin }: { look: ArmLook; skin: THREE.Material }) => 
             cuff: 0,
           })}
           material={bandMaterial(look.bandColor)}
-          castShadow
-          receiveShadow
-        />
-      ) : null}
-      {look.style === 'sleeve' ? (
-        <mesh
-          geometry={tube({
-            start: 0.05,
-            length: look.length,
-            near: widen(BARE_NEAR, 0.004 + look.looseness * 0.008, 0.15),
-            far: widen(BARE_FAR, 0.01 + look.looseness * 0.016, 1),
-            folds: 0.035 * (0.5 + look.looseness),
-            cuff: 0.06,
-          })}
-          material={fabric}
           castShadow
           receiveShadow
         />

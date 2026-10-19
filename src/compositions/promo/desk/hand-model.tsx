@@ -3,7 +3,7 @@ import { useMemo } from 'react';
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { clone } from 'three/examples/jsm/utils/SkeletonUtils.js';
-import { Arm, type ArmLook } from './arm';
+import { Arm, type ArmLook, forearmAim } from './arm';
 import { buildHandRig, FINGERS } from './hand-rig';
 import {
   applySkinDetail,
@@ -110,9 +110,10 @@ export interface HandModelProps {
   roughness: number;
   detail: number;
   arm: ArmLook;
+  elbow: THREE.Vector3;
 }
 
-export const HandModel = ({ hand, palm, skin, roughness, detail, arm }: HandModelProps) => {
+export const HandModel = ({ hand, palm, skin, roughness, detail, arm, elbow }: HandModelProps) => {
   const { scene, skinned, rig } = hand;
   skinned.material = skinMaterial(skin, roughness, true, detail);
   const placement = palmToWorld(palm);
@@ -121,7 +122,11 @@ export const HandModel = ({ hand, palm, skin, roughness, detail, arm }: HandMode
     <group matrixAutoUpdate={false} matrix={placement}>
       <primitive object={scene} />
       <group matrixAutoUpdate={false} matrix={wrist}>
-        <Arm look={arm} skin={skinMaterial(skin, roughness, false, detail)} />
+        <Arm
+          look={arm}
+          skin={skinMaterial(skin, roughness, false, detail)}
+          forearm={forearmAim(wrist, elbow.clone().applyMatrix4(placement.clone().invert()))}
+        />
       </group>
       {FINGERS.map((finger) => {
         const spec = FINGER_NAILS[finger];

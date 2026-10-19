@@ -91,6 +91,9 @@ export const laptopWipeRevealSchema = z.object({
     knit: unit(0.02, 0.0005),
     band: z.boolean(),
     bandColor: zColor(),
+    elbowX: zSlider({ min: -6, max: 6, step: 0.05 }),
+    elbowY: zSlider({ min: 0, max: 4, step: 0.05 }),
+    elbowZ: zSlider({ min: -2, max: 8, step: 0.05 }),
   }),
   hold: z.object({
     x: zSlider({ min: -3, max: 3, step: 0.01 }),
@@ -250,6 +253,9 @@ export const laptopWipeRevealDefaults: LaptopWipeRevealProps = {
     knit: 0.004,
     band: true,
     bandColor: '#2a2b30',
+    elbowX: 1.3,
+    elbowY: 0.9,
+    elbowZ: 4.4,
   },
   hold: { x: 0.55, y: 0.25, z: 0.45, roll: 0.22, lean: 0.1, lift: 1.2, sway: 1 },
   laptop: {

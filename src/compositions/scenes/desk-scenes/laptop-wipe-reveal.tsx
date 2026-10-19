@@ -204,6 +204,7 @@ const DeskScene = ({ blurred, ...props }: LaptopWipeRevealProps & { blurred: boo
           press={motion.press}
           held={motion.turn}
           gap={hand.contactGap * 0.5}
+          elbow={new THREE.Vector3(arm.elbowX, arm.elbowY, arm.elbowZ)}
         />
       </group>
     </DeskStage>
