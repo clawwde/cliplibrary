@@ -273,6 +273,7 @@ describe('promo clips', () => {
     'echo-stack',
     'outline-marquee',
     'letter-flip',
+    'printer-pages',
   ];
 
   it('validates every promo default against its schema', () => {

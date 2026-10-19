@@ -107,6 +107,7 @@ export const CLIP_TAGS = [
   'wipe',
   'cover',
   'minimal',
+  'paper',
 ] as const;
 
 export type ClipTag = (typeof CLIP_TAGS)[number];
