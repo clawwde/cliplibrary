@@ -1,6 +1,11 @@
 import type { ClipModule } from '../../registry';
 import { colorPillsDefaults, colorPillsMeta, colorPillsSchema } from './color-pills';
 import { headingListDefaults, headingListMeta, headingListSchema } from './heading-list';
+import {
+  listPickersReelDefaults,
+  listPickersReelMeta,
+  listPickersReelSchema,
+} from './list-pickers-reel';
 import { menuStackDefaults, menuStackMeta, menuStackSchema } from './menu-stack';
 import { mindMapDefaults, mindMapMeta, mindMapSchema } from './mind-map';
 import { pillFanDefaults, pillFanMeta, pillFanSchema } from './pill-fan';
@@ -63,5 +68,11 @@ export const listPickersClips: ClipModule[] = [
     schema: productCardsSchema,
     defaults: productCardsDefaults,
     meta: productCardsMeta,
+  },
+  {
+    id: 'list-pickers-reel',
+    schema: listPickersReelSchema,
+    defaults: listPickersReelDefaults,
+    meta: listPickersReelMeta,
   },
 ];
