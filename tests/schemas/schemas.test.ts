@@ -276,6 +276,7 @@ describe('promo clips', () => {
     'letter-flip',
     'printer-pages',
     'helicopter-unveil',
+    'grid-stack',
   ];
 
   it('validates every promo default against its schema', () => {

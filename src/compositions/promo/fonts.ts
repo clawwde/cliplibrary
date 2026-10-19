@@ -44,10 +44,14 @@ export const roundedFont = poppins.fontFamily;
 
 export const roundedFontReady = poppins.waitUntilDone;
 
-export const kineticFont = loadOnest('normal', {
+const onest = loadOnest('normal', {
   weights: ['300', '500', '600', '700', '800'],
   subsets: ['latin'],
-}).fontFamily;
+});
+
+export const kineticFont = onest.fontFamily;
+
+export const kineticFontReady = onest.waitUntilDone;
 
 export const pageFonts: Record<PageFont, string> = {
   condensed: loadOswald('normal', {

@@ -1,5 +1,6 @@
 import type { ClipModule } from '../../registry';
 import { echoStackDefaults, echoStackMeta, echoStackSchema } from './echo-stack';
+import { gridStackDefaults, gridStackMeta, gridStackSchema } from './grid-stack';
 import {
   outlineMarqueeDefaults,
   outlineMarqueeMeta,
@@ -18,4 +19,5 @@ export const kineticTypeClips: ClipModule[] = [
     meta: outlineMarqueeMeta,
   },
   { id: 'echo-stack', schema: echoStackSchema, defaults: echoStackDefaults, meta: echoStackMeta },
+  { id: 'grid-stack', schema: gridStackSchema, defaults: gridStackDefaults, meta: gridStackMeta },
 ];

@@ -12,6 +12,7 @@ export { DoodleArrows } from './scenes/hand-drawn/doodle-arrows';
 export { HandwrittenNote } from './scenes/hand-drawn/handwritten-note';
 export { ScribbleCaption } from './scenes/hand-drawn/scribble-caption';
 export { EchoStack } from './scenes/kinetic-type/echo-stack';
+export { GridStack } from './scenes/kinetic-type/grid-stack';
 export { OutlineMarquee } from './scenes/kinetic-type/outline-marquee';
 export { WordBuild } from './scenes/kinetic-type/word-build';
 export { WordPunch } from './scenes/kinetic-type/word-punch';

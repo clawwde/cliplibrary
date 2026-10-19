@@ -7,6 +7,7 @@ import type { DoodleArrowsProps } from './clips/hand-drawn/doodle-arrows';
 import type { HandwrittenNoteProps } from './clips/hand-drawn/handwritten-note';
 import type { ScribbleCaptionProps } from './clips/hand-drawn/scribble-caption';
 import type { EchoStackProps } from './clips/kinetic-type/echo-stack';
+import type { GridStackProps } from './clips/kinetic-type/grid-stack';
 import type { OutlineMarqueeProps } from './clips/kinetic-type/outline-marquee';
 import type { WordBuildProps } from './clips/kinetic-type/word-build';
 import type { WordPunchProps } from './clips/kinetic-type/word-punch';
@@ -39,6 +40,7 @@ export interface ClipPropsMap {
   'word-punch': WordPunchProps;
   'scribble-caption': ScribbleCaptionProps;
   'echo-stack': EchoStackProps;
+  'grid-stack': GridStackProps;
   'outline-marquee': OutlineMarqueeProps;
   'letter-flip': LetterFlipProps;
   'handwritten-note': HandwrittenNoteProps;
