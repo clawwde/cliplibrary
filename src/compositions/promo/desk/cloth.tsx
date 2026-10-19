@@ -20,6 +20,7 @@ interface ClothLook {
   holdOffsetY: number;
   holdOffsetX: number;
   wrinkles: number;
+  creases: number;
   curl: number;
   droop: number;
   bend: number;
@@ -30,6 +31,7 @@ const SEGMENTS = 44;
 const PALM_RADIUS = 0.4;
 const FINGER_REACH = 0.85;
 const HELD_CLEARANCE = 0.09;
+const CREASE_WIDTH = 0.045;
 
 const WAVES = Array.from({ length: 7 }, (_unused, index) => {
   const angle = index * 2.39996;
@@ -121,8 +123,12 @@ export const Cloth = ({ palm, look, press, held, gap }: ClothProps) => {
       look.bend * beyondHand ** 2 * 0.3 + look.droop * Math.max(0, py - fingerTop) ** 2 * 0.9;
     const looseLift = 0.12 + outside * 0.35;
     const shape = (pressedLift * press + looseLift * (1 - press)) * (1 - held) + heldShape * held;
-    const crumple = wrinkle(px, py) * look.wrinkles * (0.012 + outside * 0.05) * (1 - press * 0.6);
-    position.setZ(index, shape + crumple - held * HELD_CLEARANCE);
+    const crumple = wrinkle(px, py) * look.wrinkles * (0.018 + outside * 0.05) * (1 - press * 0.6);
+    const fold =
+      look.creases *
+      (0.6 - press * 0.45) *
+      (Math.exp(-((y / CREASE_WIDTH) ** 2)) * 0.03 - Math.exp(-((x / CREASE_WIDTH) ** 2)) * 0.022);
+    position.setZ(index, shape + crumple + fold - held * HELD_CLEARANCE);
   }
   position.needsUpdate = true;
   geometry.computeVertexNormals();

@@ -5,6 +5,7 @@ import type { ReactNode } from 'react';
 import { getRemotionEnvironment, useVideoConfig } from 'remotion';
 import type * as THREE from 'three';
 import type { Vec3 } from '../stage';
+import { DeskEffects, type DeskLens } from './desk-effects';
 
 export interface DeskCamera {
   x: number;
@@ -91,10 +92,12 @@ export interface DeskStageProps {
   camera: DeskCamera;
   light: DeskLight;
   frame: number;
+  lens: DeskLens | null;
+  focus: Vec3;
   children: ReactNode;
 }
 
-export const DeskStage = ({ camera, light, frame, children }: DeskStageProps) => {
+export const DeskStage = ({ camera, light, frame, lens, focus, children }: DeskStageProps) => {
   const { width, height } = useVideoConfig();
   const pixelRatio = getRemotionEnvironment().isRendering ? 2 : 1;
   return (
@@ -103,7 +106,7 @@ export const DeskStage = ({ camera, light, frame, children }: DeskStageProps) =>
       height={height}
       shadows="variance"
       dpr={pixelRatio}
-      gl={{ antialias: true, alpha: true, preserveDrawingBuffer: true }}
+      gl={{ antialias: true, alpha: lens === null, preserveDrawingBuffer: true }}
       camera={{ fov: camera.fieldOfView, position: cameraPosition(camera, frame) }}
       style={{ position: 'absolute', inset: 0 }}
     >
@@ -129,6 +132,7 @@ export const DeskStage = ({ camera, light, frame, children }: DeskStageProps) =>
       <directionalLight position={[6, 4, 5]} intensity={light.key * 0.25} color="#e8eeff" />
       <Room reflections={light.reflections} />
       {children}
+      {lens === null ? null : <DeskEffects lens={lens} focus={focus} />}
     </ThreeCanvas>
   );
 };

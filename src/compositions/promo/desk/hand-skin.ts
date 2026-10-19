@@ -153,6 +153,13 @@ diffuseColor.rgb = mix(diffuseColor.rgb, diffuseColor.rgb * vec3(1.03, 0.95, 0.9
 roughnessFactor *= mix(1.0, 0.82 + skinNoise(vSkinPosition * 700.0) * 0.36, uSkinDetail);`,
       )
       .replace(
+        '#include <emissivemap_fragment>',
+        `#include <emissivemap_fragment>
+float skinFacing = clamp(dot(normal, normalize(vViewPosition)), 0.0, 1.0);
+float skinRim = pow(1.0 - skinFacing, 2.5);
+totalEmissiveRadiance += vec3(0.62, 0.16, 0.08) * skinRim * uSkinDetail * 0.22 * diffuseColor.rgb;`,
+      )
+      .replace(
         '#include <normal_fragment_maps>',
         `#include <normal_fragment_maps>
 float skinHeight = skinNoise(vSkinPosition * 1400.0) * 0.55 + skinNoise(vSkinPosition * 420.0) * 0.45;
