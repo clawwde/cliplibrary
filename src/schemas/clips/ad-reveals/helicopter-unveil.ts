@@ -34,6 +34,7 @@ export type UnveilCloth = z.infer<typeof unveilClothSchema>;
 export const unveilHelicopterSchema = z.object({
   body: zColor(),
   trim: zColor(),
+  stripe: zColor(),
   glass: zColor(),
   scale: zSlider({ min: 0.5, max: 1.6, step: 0.01 }),
   rotorSpeed: zSlider({ min: 0, max: 2, step: 0.05 }),
@@ -140,7 +141,8 @@ export const helicopterUnveilDefaults: HelicopterUnveilProps = {
   helicopter: {
     body: '#f2f3f5',
     trim: '#1c2433',
-    glass: '#1d2a3c',
+    stripe: '#c8202a',
+    glass: '#16202c',
     scale: 1,
     rotorSpeed: 1,
     cables: '#2b2d31',
