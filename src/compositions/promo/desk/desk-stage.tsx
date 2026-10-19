@@ -95,6 +95,7 @@ export interface DeskStageProps {
   lens: DeskLens | null;
   blurred: boolean;
   focus: Vec3;
+  supersample?: boolean;
   children: ReactNode;
 }
 
@@ -106,9 +107,10 @@ export const DeskStage = ({
   focus,
   children,
   blurred,
+  supersample = true,
 }: DeskStageProps) => {
   const { width, height } = useVideoConfig();
-  const pixelRatio = getRemotionEnvironment().isRendering && !blurred ? 2 : 1;
+  const pixelRatio = getRemotionEnvironment().isRendering && !blurred && supersample ? 2 : 1;
   return (
     <ThreeCanvas
       width={width}

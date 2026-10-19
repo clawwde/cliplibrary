@@ -262,7 +262,7 @@ export const spillRevealDefaults: SpillRevealProps = {
     focusRange: 3.5,
     bloom: 0.2,
     contrast: 0.06,
-    motionBlur: 3,
+    motionBlur: 0,
     shutterAngle: 180,
     screenGlow: 0,
   },

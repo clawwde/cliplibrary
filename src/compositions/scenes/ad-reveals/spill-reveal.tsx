@@ -52,6 +52,7 @@ const SpillScene = ({ blurred, ...props }: SpillRevealProps & { blurred: boolean
         lens={props.lens}
         blurred={blurred}
         focus={motion.focus}
+        supersample={false}
       >
         <SpillTable look={props.table} />
         <Puddle
