@@ -47,7 +47,7 @@ describe('gallery filters', () => {
 
   it('forgives typos, completes prefixes and knows category synonyms', () => {
     expect(search('typewritter')).toEqual(['typewriter']);
-    expect(search('notifcation')).toEqual(['floating-cards']);
+    expect(search('notifcation')).toEqual(['floating-cards', 'message-arise']);
     expect(search('scrol')[0]).toBe('phone-scroll');
     expect(search('hand drawn')).toEqual(['handwritten-note', 'scribble-caption', 'doodle-arrows']);
     const phones = CLIP_REGISTRY.filter((meta) => meta.tags.includes('phone')).map(

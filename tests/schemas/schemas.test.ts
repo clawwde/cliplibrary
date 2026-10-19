@@ -252,6 +252,7 @@ describe('promo clips', () => {
     'phone-fan',
     'phone-swap',
     'phone-scroll',
+    'message-arise',
     'phone-wall',
     'phone-pair',
     'floating-cards',

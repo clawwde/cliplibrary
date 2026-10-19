@@ -12,10 +12,14 @@ export const displayFont = loadInterTight('normal', {
   subsets: ['latin'],
 }).fontFamily;
 
-export const bodyFont = loadInter('normal', {
+const inter = loadInter('normal', {
   weights: ['400', '500', '600', '700'],
   subsets: ['latin'],
-}).fontFamily;
+});
+
+export const bodyFont = inter.fontFamily;
+
+export const bodyFontReady = inter.waitUntilDone;
 
 export const handFonts: Record<HandFont, string> = {
   'caveat-brush': loadCaveatBrush('normal', { weights: ['400'], subsets: ['latin'] }).fontFamily,
