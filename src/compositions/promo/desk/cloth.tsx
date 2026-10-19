@@ -18,6 +18,7 @@ interface ClothLook {
   offsetX: number;
   offsetY: number;
   holdOffsetY: number;
+  holdOffsetX: number;
   wrinkles: number;
   curl: number;
   droop: number;
@@ -104,12 +105,13 @@ export const Cloth = ({ palm, look, press, held, gap }: ClothProps) => {
     (context) => drawClothWeave(context, look.paper),
     look.paper,
   );
+  const offsetX = look.offsetX + look.holdOffsetX * held;
   const offsetY = look.offsetY + look.holdOffsetY * held;
   const position = geometry.getAttribute('position');
   for (let index = 0; index < position.count; index++) {
     const x = flat[index * 3] ?? 0;
     const y = flat[index * 3 + 1] ?? 0;
-    const px = x + look.offsetX;
+    const px = x + offsetX;
     const py = y + offsetY;
     const outside = footprintDistance(px, py);
     const pressedLift = look.curl * Math.min(1, outside / 0.7) ** 2 * 0.22;
@@ -125,7 +127,7 @@ export const Cloth = ({ palm, look, press, held, gap }: ClothProps) => {
   position.needsUpdate = true;
   geometry.computeVertexNormals();
   return (
-    <group matrixAutoUpdate={false} matrix={clothPlacement(palm, look.offsetX, offsetY, gap)}>
+    <group matrixAutoUpdate={false} matrix={clothPlacement(palm, offsetX, offsetY, gap)}>
       <mesh geometry={geometry} castShadow receiveShadow>
         <meshPhysicalMaterial
           map={weave}

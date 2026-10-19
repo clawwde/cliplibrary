@@ -28,9 +28,13 @@ const ASPECT = LAPTOP.screenWidth / LAPTOP.screenHeight;
 const Screen = ({
   screen,
   wipe,
+  cloth,
   progress,
   reveal,
-}: Pick<LaptopWipeRevealProps, 'screen' | 'wipe'> & { progress: number; reveal: number }) => {
+}: Pick<LaptopWipeRevealProps, 'screen' | 'wipe' | 'cloth'> & {
+  progress: number;
+  reveal: number;
+}) => {
   useCanvasFont(`600 ${screen.size}px "${displayFont}"`, displayFontReady);
   const content = useCanvasTexture(
     SCREEN_CANVAS.width,
@@ -39,7 +43,15 @@ const Screen = ({
     JSON.stringify(screen),
   );
   const wipeMaterial = useMemo(() => createWipeMaterial(content), [content]);
-  const points = useMemo(() => shaderPoints(wipe, ASPECT), [wipe]);
+  const points = useMemo(
+    () =>
+      shaderPoints(
+        wipe,
+        ASPECT,
+        new THREE.Vector2(cloth.offsetX, cloth.offsetY).divideScalar(LAPTOP.screenHeight),
+      ),
+    [wipe, cloth.offsetX, cloth.offsetY],
+  );
   updateWipeMaterial(wipeMaterial, {
     cover: screen.cover,
     smudge: screen.smudge,
@@ -125,7 +137,13 @@ const LaptopWipeReveal = (props: LaptopWipeRevealProps) => {
           <LaptopModel
             look={laptop}
             screen={
-              <Screen screen={screen} wipe={wipe} progress={motion.wipe} reveal={motion.reveal} />
+              <Screen
+                screen={screen}
+                wipe={wipe}
+                cloth={cloth}
+                progress={motion.wipe}
+                reveal={motion.reveal}
+              />
             }
           />
           <HandModel

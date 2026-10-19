@@ -51,10 +51,14 @@ const wipePoint = (path: WipePath, progress: number): THREE.Vector2 =>
 const wipeProgress = (frame: number, timing: WipeTiming): number =>
   tween(frame, [timing.wipeStart, timing.wipeStart + timing.wipeFrames], [0, 1], glide);
 
-export const shaderPoints = (path: WipePath, aspect: number): THREE.Vector2[] =>
+export const shaderPoints = (
+  path: WipePath,
+  aspect: number,
+  offset: THREE.Vector2,
+): THREE.Vector2[] =>
   Array.from({ length: WIPE_POINTS }, (_unused, index) => {
     const point = wipePoint(path, index / (WIPE_POINTS - 1));
-    return new THREE.Vector2(point.x * aspect, point.y);
+    return new THREE.Vector2(point.x * aspect + offset.x, point.y + offset.y);
   });
 
 const screenToWorld = (lid: THREE.Matrix4, point: THREE.Vector2, lift: number) =>
