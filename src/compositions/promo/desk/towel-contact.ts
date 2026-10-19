@@ -20,7 +20,12 @@ const ARM_RADIUS = 0.034;
 
 const jointOf = (matrix: THREE.Matrix4) => new THREE.Vector3().setFromMatrixPosition(matrix);
 
-export const handCapsules = (rig: HandRig, toTarget: THREE.Matrix4, units: number): Capsule[] => {
+export const handCapsules = (
+  rig: HandRig,
+  toTarget: THREE.Matrix4,
+  units: number,
+  elbow: THREE.Vector3,
+): Capsule[] => {
   const capsules: Capsule[] = [];
   const add = (a: THREE.Vector3, b: THREE.Vector3, radius: number, thumb: boolean) => {
     capsules.push({
@@ -48,8 +53,8 @@ export const handCapsules = (rig: HandRig, toTarget: THREE.Matrix4, units: numbe
       add(joint, next, THUMB_RADII[index] ?? 0.01, true);
     }
   });
-  const elbow = new THREE.Vector3(0, 0, ARM_REACH).applyMatrix4(rig.wrist.bone.matrix);
-  add(wrist, elbow, ARM_RADIUS, false);
+  const forearm = elbow.clone().sub(wrist).normalize().multiplyScalar(ARM_REACH).add(wrist);
+  add(wrist, forearm, ARM_RADIUS, false);
   return capsules;
 };
 

@@ -1,3 +1,4 @@
+import type * as THREE from 'three';
 import type { ArmLook } from './arm';
 import { Cloth, type ClothLook, clothPlacement } from './cloth';
 import { HAND_UNITS, HandModel, palmToWorld, useHandScene } from './hand-model';
@@ -20,6 +21,7 @@ export interface HeldTowelProps {
   press: number;
   held: number;
   gap: number;
+  elbow: THREE.Vector3;
 }
 
 export const HeldTowel = ({
@@ -35,6 +37,7 @@ export const HeldTowel = ({
   press,
   held,
   gap,
+  elbow,
 }: HeldTowelProps) => {
   const hand = useHandScene();
   let shiftX = 0;
@@ -46,15 +49,18 @@ export const HeldTowel = ({
       cloth.offsetY + cloth.holdOffsetY,
       gap,
     );
-    const toCloth = holdPlacement.clone().invert().multiply(palmToWorld(holdPalm));
+    const holdHand = palmToWorld(holdPalm);
+    const toCloth = holdPlacement.clone().invert().multiply(holdHand);
+    const holdElbow = elbow.clone().applyMatrix4(holdHand.clone().invert());
     shiftX = thumbEdgeShift(
-      handCapsules(hand.rig, toCloth, HAND_UNITS),
+      handCapsules(hand.rig, toCloth, HAND_UNITS, holdElbow),
       cloth.size / 2,
       EDGE_MARGIN,
     );
   }
   applyHandPose(hand.rig, pose);
   const handPlacement = palmToWorld(palm);
+  const handElbow = elbow.clone().applyMatrix4(handPlacement.clone().invert());
   return (
     <>
       <HandModel
@@ -64,6 +70,7 @@ export const HeldTowel = ({
         roughness={roughness}
         detail={detail}
         arm={arm}
+        elbow={elbow}
       />
       {cloth === null ? null : (
         <Cloth
@@ -74,7 +81,12 @@ export const HeldTowel = ({
           gap={gap}
           shiftX={shiftX}
           capsules={(placement) =>
-            handCapsules(hand.rig, placement.clone().invert().multiply(handPlacement), HAND_UNITS)
+            handCapsules(
+              hand.rig,
+              placement.clone().invert().multiply(handPlacement),
+              HAND_UNITS,
+              handElbow,
+            )
           }
         />
       )}
