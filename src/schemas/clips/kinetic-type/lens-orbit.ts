@@ -51,8 +51,8 @@ export const lensOrbitDefaults: LensOrbitProps = {
   edgeFade: 0.85,
   delay: 2,
   enterFrames: 34,
-  holdFrames: 24,
-  turnFrames: 26,
+  holdFrames: 22,
+  turnFrames: 30,
   wobble: 0.12,
   glass: { body: '#24222f', rim: '#8b74ff', rimStrength: 0.9, highlight: 0.35 },
   ring: {
