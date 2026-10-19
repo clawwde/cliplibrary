@@ -12,6 +12,7 @@ import type { ChalkTitleProps } from './clips/hand-drawn/chalk-title';
 import type { DoodleArrowsProps } from './clips/hand-drawn/doodle-arrows';
 import type { HandwrittenNoteProps } from './clips/hand-drawn/handwritten-note';
 import type { ScribbleCaptionProps } from './clips/hand-drawn/scribble-caption';
+import type { ChunkyTypeStackProps } from './clips/kinetic-type/chunky-type-stack';
 import type { EchoStackProps } from './clips/kinetic-type/echo-stack';
 import type { GridStackProps } from './clips/kinetic-type/grid-stack';
 import type { LensOrbitProps } from './clips/kinetic-type/lens-orbit';
@@ -90,6 +91,7 @@ export interface ClipPropsMap {
   'chalk-badge': ChalkBadgeProps;
   'chalk-badge-grid': ChalkBadgeGridProps;
   'chalk-title': ChalkTitleProps;
+  'chunky-type-stack': ChunkyTypeStackProps;
   'film-dust': FilmDustProps;
   'brand-reveal': BrandRevealProps;
   'cta-end-card': CtaEndCardProps;

@@ -14,6 +14,7 @@ export * from './clips/hand-drawn/chalk-title';
 export * from './clips/hand-drawn/doodle-arrows';
 export * from './clips/hand-drawn/handwritten-note';
 export * from './clips/hand-drawn/scribble-caption';
+export * from './clips/kinetic-type/chunky-type-stack';
 export * from './clips/kinetic-type/echo-stack';
 export * from './clips/kinetic-type/grid-stack';
 export * from './clips/kinetic-type/lens-orbit';
