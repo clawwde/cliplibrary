@@ -9,11 +9,10 @@ import {
   laptopWipeRevealSchema,
 } from '@/schemas';
 import { useCanvasFont, useCanvasTexture } from '../../promo/desk/canvas-texture';
-import { Cloth } from '../../promo/desk/cloth';
 import { cameraPosition, DeskRoom, DeskStage } from '../../promo/desk/desk-stage';
 import { drawScreen, SCREEN_CANVAS } from '../../promo/desk/desk-textures';
-import { HandModel } from '../../promo/desk/hand-model';
 import { type Finger, mixPose } from '../../promo/desk/hand-rig';
+import { HeldTowel } from '../../promo/desk/held-towel';
 import { LAPTOP } from '../../promo/desk/laptop-geometry';
 import { LaptopModel } from '../../promo/desk/laptop-model';
 import { LensOverlay } from '../../promo/desk/lens';
@@ -107,8 +106,7 @@ const DeskScene = ({ blurred, ...props }: LaptopWipeRevealProps & { blurred: boo
     .makeTranslation(laptop.x, 0, 0)
     .multiply(new THREE.Matrix4().makeRotationY(laptop.turn));
   const localEye = eye.clone().applyMatrix4(laptopTransform.clone().invert());
-  const motion = choreograph({
-    frame,
+  const choreography = {
     timing: timing satisfies WipeTiming,
     path: wipe,
     hold: { ...hold, x: hold.x - laptop.x },
@@ -116,7 +114,9 @@ const DeskScene = ({ blurred, ...props }: LaptopWipeRevealProps & { blurred: boo
     camera: localEye,
     contactGap: hand.contactGap + 0.02,
     enterFrom: new THREE.Vector3(hand.enterX, hand.enterY, hand.enterZ),
-  });
+  };
+  const motion = choreograph({ ...choreography, frame });
+  const settled = choreograph({ ...choreography, frame: timing.turnStart + timing.turnFrames });
   const settledFingers = 1 - THREE.MathUtils.smoothstep(motion.turn, 0, 0.35);
   const wipePose = {
     curl: fingerCurls(
@@ -147,7 +147,12 @@ const DeskScene = ({ blurred, ...props }: LaptopWipeRevealProps & { blurred: boo
     wristBend: hand.holdWristBend,
     wristTwist: hand.wristTwist,
   };
-  const pose = mixPose(wipePose, holdPose, motion.turn);
+  const grip = THREE.MathUtils.smoothstep(motion.turn, 0.45, 1);
+  const pose = {
+    ...mixPose(wipePose, holdPose, motion.turn),
+    thumbCurl: THREE.MathUtils.lerp(wipePose.thumbCurl, holdPose.thumbCurl, grip),
+    thumbReach: THREE.MathUtils.lerp(wipePose.thumbReach, holdPose.thumbReach, grip),
+  };
   const focus = motion.palm.position.clone().applyMatrix4(laptopTransform);
   return (
     <DeskStage
@@ -186,23 +191,20 @@ const DeskScene = ({ blurred, ...props }: LaptopWipeRevealProps & { blurred: boo
             />
           }
         />
-        <HandModel
+        <HeldTowel
           palm={motion.palm}
           pose={pose}
+          holdPalm={settled.palm}
+          holdPose={holdPose}
           skin={hand.skin}
           roughness={hand.roughness}
           detail={hand.detail}
           arm={arm}
+          cloth={cloth.show ? cloth : null}
+          press={motion.press}
+          held={motion.turn}
+          gap={hand.contactGap * 0.5}
         />
-        {cloth.show ? (
-          <Cloth
-            palm={motion.palm}
-            look={cloth}
-            press={motion.press}
-            held={motion.turn}
-            gap={hand.contactGap * 0.5}
-          />
-        ) : null}
       </group>
     </DeskStage>
   );

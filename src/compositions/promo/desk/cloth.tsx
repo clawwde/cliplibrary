@@ -4,9 +4,10 @@ import type { HandFont } from '@/schemas';
 import { handFontReady, handFonts } from '../fonts';
 import { useCanvasFont, useCanvasTexture } from './canvas-texture';
 import { CLOTH_CANVAS, drawClothNote, drawClothWeave } from './desk-textures';
+import { type Capsule, resolveContact } from './towel-contact';
 import type { PalmFrame } from './wipe-choreography';
 
-interface ClothLook {
+export interface ClothLook {
   size: number;
   paper: string;
   ink: string;
@@ -32,6 +33,8 @@ const PALM_RADIUS = 0.4;
 const FINGER_REACH = 0.85;
 const HELD_CLEARANCE = 0.09;
 const CREASE_WIDTH = 0.045;
+const CONTACT_CLEARANCE = 0.014;
+const DRAPE_PASSES = 3;
 
 const WAVES = Array.from({ length: 7 }, (_unused, index) => {
   const angle = index * 2.39996;
@@ -55,7 +58,7 @@ const footprintDistance = (x: number, y: number): number => {
   return Math.max(0, Math.hypot(x, y - clamped) - PALM_RADIUS);
 };
 
-const clothPlacement = (
+export const clothPlacement = (
   palm: PalmFrame,
   offsetX: number,
   offsetY: number,
@@ -72,9 +75,11 @@ export interface ClothProps {
   press: number;
   held: number;
   gap: number;
+  shiftX: number;
+  capsules: (placement: THREE.Matrix4) => Capsule[];
 }
 
-export const Cloth = ({ palm, look, press, held, gap }: ClothProps) => {
+export const Cloth = ({ palm, look, press, held, gap, shiftX, capsules }: ClothProps) => {
   useCanvasFont(`64px "${handFonts[look.font]}"`, () => handFontReady(look.font));
   const geometry = useMemo(
     () => new THREE.PlaneGeometry(look.size, look.size, SEGMENTS, SEGMENTS),
@@ -107,7 +112,8 @@ export const Cloth = ({ palm, look, press, held, gap }: ClothProps) => {
     (context) => drawClothWeave(context, look.paper),
     look.paper,
   );
-  const offsetX = look.offsetX + look.holdOffsetX * held;
+  const offsetX =
+    look.offsetX + (look.holdOffsetX + shiftX) * THREE.MathUtils.smoothstep(held, 0, 0.55);
   const offsetY = look.offsetY + look.holdOffsetY * held;
   const position = geometry.getAttribute('position');
   for (let index = 0; index < position.count; index++) {
@@ -130,10 +136,19 @@ export const Cloth = ({ palm, look, press, held, gap }: ClothProps) => {
       (Math.exp(-((y / CREASE_WIDTH) ** 2)) * 0.03 - Math.exp(-((x / CREASE_WIDTH) ** 2)) * 0.022);
     position.setZ(index, shape + crumple + fold - Math.min(1, held * 1.8) * HELD_CLEARANCE);
   }
+  const placement = clothPlacement(palm, offsetX, offsetY, gap);
+  resolveContact({
+    position: position as THREE.BufferAttribute,
+    side: SEGMENTS + 1,
+    capsules: capsules(placement),
+    clearance: CONTACT_CLEARANCE,
+    drape: DRAPE_PASSES,
+    strength: THREE.MathUtils.smoothstep(held, 0.05, 0.4),
+  });
   position.needsUpdate = true;
   geometry.computeVertexNormals();
   return (
-    <group matrixAutoUpdate={false} matrix={clothPlacement(palm, offsetX, offsetY, gap)}>
+    <group matrixAutoUpdate={false} matrix={placement}>
       <mesh geometry={geometry} castShadow receiveShadow>
         <meshPhysicalMaterial
           map={weave}

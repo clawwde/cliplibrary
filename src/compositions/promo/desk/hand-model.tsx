@@ -4,7 +4,7 @@ import * as THREE from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { clone } from 'three/examples/jsm/utils/SkeletonUtils.js';
 import { Arm, type ArmLook } from './arm';
-import { applyHandPose, buildHandRig, FINGERS, type HandPose } from './hand-rig';
+import { buildHandRig, FINGERS } from './hand-rig';
 import {
   applySkinDetail,
   FINGER_NAILS,
@@ -18,7 +18,7 @@ import type { PalmFrame } from './wipe-choreography';
 
 const HAND_URL = new URL('./assets/hand-right.glb', import.meta.url).href;
 
-const HAND_UNITS = 10;
+export const HAND_UNITS = 10;
 
 const SUBDIVISIONS = 2;
 
@@ -72,7 +72,9 @@ const skinMaterial = (
   return material;
 };
 
-const useHandScene = () => {
+export type HandScene = ReturnType<typeof useHandScene>;
+
+export const useHandScene = () => {
   const gltf = useLoader(GLTFLoader, HAND_URL);
   return useMemo(() => {
     const scene = clone(gltf.scene);
@@ -94,7 +96,7 @@ const useHandScene = () => {
   }, [gltf]);
 };
 
-const palmToWorld = (palm: PalmFrame): THREE.Matrix4 =>
+export const palmToWorld = (palm: PalmFrame): THREE.Matrix4 =>
   new THREE.Matrix4()
     .compose(palm.position, palm.quaternion, new THREE.Vector3(1, 1, 1))
     .multiply(MODEL_TO_PALM)
@@ -102,18 +104,17 @@ const palmToWorld = (palm: PalmFrame): THREE.Matrix4 =>
     .multiply(new THREE.Matrix4().makeTranslation(-PALM_CENTER.x, -PALM_CENTER.y, -PALM_CENTER.z));
 
 export interface HandModelProps {
+  hand: HandScene;
   palm: PalmFrame;
-  pose: HandPose;
   skin: string;
   roughness: number;
   detail: number;
   arm: ArmLook;
 }
 
-export const HandModel = ({ palm, pose, skin, roughness, detail, arm }: HandModelProps) => {
-  const { scene, skinned, rig } = useHandScene();
+export const HandModel = ({ hand, palm, skin, roughness, detail, arm }: HandModelProps) => {
+  const { scene, skinned, rig } = hand;
   skinned.material = skinMaterial(skin, roughness, true, detail);
-  applyHandPose(rig, pose);
   const placement = palmToWorld(palm);
   const wrist = rig.wrist.bone.matrix.clone();
   return (
