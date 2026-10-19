@@ -1,9 +1,0 @@
-{
-  "extends": "@cliplibrary/tsconfig/react-library.json",
-  "compilerOptions": {
-    "types": [],
-    "rootDir": "src"
-  },
-  "include": ["src/**/*.ts", "src/**/*.tsx"],
-  "exclude": ["node_modules"]
-}

@@ -1,37 +1,14 @@
 {
   "$schema": "https://unpkg.com/knip@6/schema.json",
-  "workspaces": {
-    ".": {
-      "entry": ["scripts/*.ts"],
-      "project": ["scripts/**/*.ts"]
-    },
-    "apps/web": {
-      "playwright": false,
-      "entry": ["playwright.config.ts", "e2e/**/*.spec.ts"],
-      "project": ["src/**/*.{ts,tsx}", "tests/**/*.{ts,tsx}", "e2e/**/*.ts"],
-      "ignore": ["src/components/ui/**"],
-      "ignoreDependencies": ["tw-animate-css", "tailwindcss"]
-    },
-    "apps/render": {
-      "entry": ["tests/**/*.test.ts"],
-      "project": ["src/**/*.ts", "tests/**/*.ts"],
-      "ignoreDependencies": ["@cliplibrary/compositions"]
-    },
-    "packages/schemas": {
-      "entry": ["tests/**/*.test.ts"],
-      "project": ["src/**/*.ts", "tests/**/*.ts"]
-    },
-    "packages/project": {
-      "entry": ["tests/**/*.test.ts"],
-      "project": ["src/**/*.ts", "tests/**/*.ts"]
-    },
-    "packages/core": {
-      "entry": ["tests/**/*.test.ts"],
-      "project": ["src/**/*.ts", "tests/**/*.ts"]
-    },
-    "packages/compositions": {
-      "entry": ["tests/**/*.test.{ts,tsx}"],
-      "project": ["src/**/*.{ts,tsx}", "tests/**/*.{ts,tsx}"]
-    }
-  }
+  "playwright": false,
+  "entry": [
+    "scripts/*.ts",
+    "src/{schemas,project,core,compositions}/index.ts",
+    "src/compositions/entry.ts",
+    "playwright.config.ts",
+    "e2e/**/*.spec.ts"
+  ],
+  "project": ["src/**/*.{ts,tsx}", "tests/**/*.{ts,tsx}", "e2e/**/*.ts", "scripts/**/*.ts"],
+  "ignore": ["src/components/ui/**"],
+  "ignoreDependencies": ["tw-animate-css", "tailwindcss"]
 }

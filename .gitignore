@@ -1,6 +1,5 @@
 node_modules
 .next
-.turbo
 dist
 build
 coverage
@@ -17,11 +16,11 @@ playwright-report
 test-results
 .playwright
 
-apps/web/public/exports/*
-!apps/web/public/exports/.gitkeep
+public/exports/*
+!public/exports/.gitkeep
 
-apps/web/public/uploads/*
-!apps/web/public/uploads/.gitkeep
+public/uploads/*
+!public/uploads/.gitkeep
 
 /exports/
 

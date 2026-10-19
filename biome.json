@@ -8,7 +8,6 @@
       "!**/*.svg",
       "!**/node_modules",
       "!**/.next",
-      "!**/.turbo",
       "!**/dist",
       "!**/build",
       "!**/coverage",
@@ -326,15 +325,15 @@
       "linter": { "rules": { "complexity": { "noImportantStyles": "off" } } }
     },
     {
-      "includes": ["packages/compositions/**"],
+      "includes": ["src/compositions/**"],
       "linter": { "rules": { "suspicious": { "noArrayIndexKey": "off" } } }
     },
     {
-      "includes": ["apps/render/**"],
+      "includes": ["src/render/**"],
       "linter": { "rules": { "performance": { "noAwaitInLoops": "off" } } }
     },
     {
-      "includes": ["apps/web/**"],
+      "includes": ["src/app/**", "src/components/**", "src/lib/**", "tests/**", "e2e/**"],
       "linter": {
         "rules": {
           "suspicious": { "noArrayIndexKey": "off" },
@@ -343,7 +342,7 @@
       }
     },
     {
-      "includes": ["apps/web/src/components/ui/**"],
+      "includes": ["src/components/ui/**"],
       "linter": {
         "rules": {
           "style": {
@@ -357,7 +356,7 @@
       }
     },
     {
-      "includes": ["apps/web/next.config.ts", "apps/web/playwright.config.ts", "**/*.config.ts"],
+      "includes": ["**/*.config.ts"],
       "linter": { "rules": { "style": { "noProcessEnv": "off" } } }
     },
     {

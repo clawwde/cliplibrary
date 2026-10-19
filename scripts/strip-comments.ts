@@ -88,28 +88,32 @@ const stripFrom = (source: string, disallowed: CommentRange[]): string => {
     .join('\n');
 };
 
+const isScannable = (file: string): boolean =>
+  !(file.includes('node_modules') || file.endsWith('.gen.ts') || file.endsWith('.d.ts'));
+
 const scanGlob = async (pattern: string): Promise<string[]> => {
   const glob = new Glob(pattern);
   const files: string[] = [];
   for await (const file of glob.scan({ dot: false })) {
-    if (!(file.includes('node_modules') || file.endsWith('.gen.ts') || file.endsWith('.d.ts'))) {
-      files.push(file);
-    }
+    files.push(file);
   }
   return files;
 };
 
+const DEFAULT_PATTERNS = ['*.ts', '{src,tests,e2e,scripts}/**/*.{ts,tsx}'];
+
 const resolveFiles = async (args: string[]): Promise<string[]> => {
   const explicit = args.filter((arg) => !arg.startsWith('--'));
-  if (explicit.length === 0) {
-    return scanGlob('{apps,packages,scripts}/**/*.{ts,tsx}');
-  }
   const resolved = await Promise.all(
-    explicit.map((entry) =>
-      statSync(entry).isDirectory() ? scanGlob(`${entry}/**/*.{ts,tsx}`) : Promise.resolve([entry]),
-    ),
+    explicit.length === 0
+      ? DEFAULT_PATTERNS.map(scanGlob)
+      : explicit.map((entry) =>
+          statSync(entry).isDirectory()
+            ? scanGlob(`${entry}/**/*.{ts,tsx}`)
+            : Promise.resolve([entry]),
+        ),
   );
-  return resolved.flat();
+  return resolved.flat().filter(isScannable);
 };
 
 const main = async (): Promise<void> => {

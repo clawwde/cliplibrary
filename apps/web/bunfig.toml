@@ -1,5 +1,0 @@
-[test]
-root = "tests"
-preload = ["./tests-preload.ts"]
-coverageSkipTestFiles = true
-coverageThreshold = { line = 0.78, function = 0.7 }

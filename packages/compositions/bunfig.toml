@@ -1,4 +1,0 @@
-[test]
-coverageSkipTestFiles = true
-coveragePathIgnorePatterns = ["../schemas/**"]
-coverageThreshold = { line = 0.9, function = 0.9 }
