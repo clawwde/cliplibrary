@@ -82,7 +82,7 @@ const ShapeView = ({
         d={part.d}
         fill={color}
         clipPath={`url(#${id})`}
-        opacity={1 - smoothstep(0.6, 1, gone)}
+        opacity={1 - smoothstep(0.45, 0.88, gone)}
       />
     </g>
   );

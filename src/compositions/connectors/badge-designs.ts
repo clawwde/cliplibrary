@@ -90,10 +90,11 @@ const tornEdge = (x: number, direction: number): Knot[] =>
 const tape = (): BadgePart[] => [
   shape(polygon([...tornEdge(-208, -1), ...tornEdge(208, 1).reverse()]), [0, 0.48], {
     reveal: 'unroll',
+    out: [0.45, 1],
     span: [-222, 222],
     rotate: -3,
   }),
-  word('bold', 120, [0.28, 0.9], { y: -2, rotate: -3, tracking: 0.03 }),
+  word('bold', 120, [0.28, 0.9], { y: -2, rotate: -3, tracking: 0.03, out: [0, 0.45] }),
   stroke(
     [
       [-70, 104],
@@ -335,6 +336,7 @@ const arrowSign = (): BadgePart[] => [
     [0, 0.5],
     {
       reveal: 'unroll',
+      out: [0.45, 1],
       span: [-214, 214],
       rotate: -3,
     },
@@ -353,7 +355,7 @@ const arrowSign = (): BadgePart[] => [
     0.5,
     -3,
   ),
-  word('bold', 112, [0.3, 0.94], { x: -22, y: -2, rotate: -3, tracking: 0.05 }),
+  word('bold', 112, [0.3, 0.94], { x: -22, y: -2, rotate: -3, tracking: 0.05, out: [0, 0.45] }),
 ];
 
 const popLines = (): BadgePart[] => [
