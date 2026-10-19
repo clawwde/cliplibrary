@@ -17,6 +17,7 @@ interface ClothLook {
   bleed: number;
   offsetX: number;
   offsetY: number;
+  holdOffsetY: number;
   wrinkles: number;
   curl: number;
   droop: number;
@@ -51,11 +52,16 @@ const footprintDistance = (x: number, y: number): number => {
   return Math.max(0, Math.hypot(x, y - clamped) - PALM_RADIUS);
 };
 
-const clothPlacement = (palm: PalmFrame, look: ClothLook, gap: number): THREE.Matrix4 =>
+const clothPlacement = (
+  palm: PalmFrame,
+  offsetX: number,
+  offsetY: number,
+  gap: number,
+): THREE.Matrix4 =>
   new THREE.Matrix4()
     .compose(palm.position, palm.quaternion, new THREE.Vector3(1, 1, 1))
     .multiply(new THREE.Matrix4().makeRotationY(Math.PI))
-    .multiply(new THREE.Matrix4().makeTranslation(look.offsetX, look.offsetY, -gap));
+    .multiply(new THREE.Matrix4().makeTranslation(offsetX, offsetY, -gap));
 
 export interface ClothProps {
   palm: PalmFrame;
@@ -98,12 +104,13 @@ export const Cloth = ({ palm, look, press, held, gap }: ClothProps) => {
     (context) => drawClothWeave(context, look.paper),
     look.paper,
   );
+  const offsetY = look.offsetY + look.holdOffsetY * held;
   const position = geometry.getAttribute('position');
   for (let index = 0; index < position.count; index++) {
     const x = flat[index * 3] ?? 0;
     const y = flat[index * 3 + 1] ?? 0;
     const px = x + look.offsetX;
-    const py = y + look.offsetY;
+    const py = y + offsetY;
     const outside = footprintDistance(px, py);
     const pressedLift = look.curl * Math.min(1, outside / 0.7) ** 2 * 0.22;
     const fingerTop = FINGER_REACH + PALM_RADIUS * 0.6;
@@ -118,7 +125,7 @@ export const Cloth = ({ palm, look, press, held, gap }: ClothProps) => {
   position.needsUpdate = true;
   geometry.computeVertexNormals();
   return (
-    <group matrixAutoUpdate={false} matrix={clothPlacement(palm, look, gap)}>
+    <group matrixAutoUpdate={false} matrix={clothPlacement(palm, look.offsetX, offsetY, gap)}>
       <mesh geometry={geometry} castShadow receiveShadow>
         <meshPhysicalMaterial
           map={weave}

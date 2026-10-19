@@ -1,5 +1,6 @@
+import { Easing } from 'remotion';
 import * as THREE from 'three';
-import { glide, settle, smooth, tween } from '../timing';
+import { glide, smooth, tween } from '../timing';
 import { LAPTOP, SCREEN_FACE } from './laptop-geometry';
 import { WIPE_POINTS } from './wipe-material';
 
@@ -31,6 +32,8 @@ interface HoldPlacement {
   sway: number;
   lift: number;
 }
+
+const ARRIVE = Easing.bezier(0.33, 0, 0.25, 1);
 
 const HINGE_Z = -LAPTOP.depth / 2 + 0.04;
 
@@ -143,7 +146,7 @@ export const choreograph = (input: ChoreographyInput): Choreography => {
   const { frame, timing } = input;
   const wipe = wipeProgress(frame, timing);
   const wiping = wipeFrame(input, wipe);
-  const enter = tween(frame, [0, timing.enterFrames], [0, 1], settle);
+  const enter = tween(frame, [0, timing.enterFrames], [0, 1], ARRIVE);
   const turn = tween(
     frame,
     [timing.turnStart, timing.turnStart + timing.turnFrames],

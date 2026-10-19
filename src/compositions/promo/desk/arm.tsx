@@ -103,8 +103,8 @@ const knitTexture = (() => {
 
 const BARE_NEAR: [number, number] = [0.0262, 0.0194];
 const BARE_FAR: [number, number] = [0.036, 0.031];
-const BAND_START = 0.016;
-const BAND_LENGTH = 0.016;
+const BAND_START = -0.018;
+const BAND_LENGTH = 0.032;
 
 const bandMaterials = new Map<string, THREE.MeshPhysicalMaterial>();
 
@@ -168,8 +168,8 @@ export const Arm = ({ look, skin }: { look: ArmLook; skin: THREE.Material }) => 
           geometry={tube({
             start: BAND_START,
             length: BAND_LENGTH,
-            near: widen(BARE_NEAR, 0.0016, bandAt),
-            far: widen(BARE_NEAR, 0.0016, bandEnd),
+            near: widen(BARE_NEAR, 0.0026, bandAt),
+            far: widen(BARE_NEAR, 0.0022, bandEnd),
             folds: 0,
             cuff: 0,
           })}
