@@ -281,6 +281,7 @@ describe('promo clips', () => {
     'pill-fan',
     'menu-stack',
     'heading-list',
+    'year-dial',
     'skill-wheel',
   ];
 

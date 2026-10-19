@@ -4,6 +4,7 @@ import { menuStackDefaults, menuStackMeta, menuStackSchema } from './menu-stack'
 import { pillFanDefaults, pillFanMeta, pillFanSchema } from './pill-fan';
 import { skillWheelDefaults, skillWheelMeta, skillWheelSchema } from './skill-wheel';
 import { wordPickerDefaults, wordPickerMeta, wordPickerSchema } from './word-picker';
+import { yearDialDefaults, yearDialMeta, yearDialSchema } from './year-dial';
 
 export const listPickersClips: ClipModule[] = [
   {
@@ -29,6 +30,12 @@ export const listPickersClips: ClipModule[] = [
     schema: headingListSchema,
     defaults: headingListDefaults,
     meta: headingListMeta,
+  },
+  {
+    id: 'year-dial',
+    schema: yearDialSchema,
+    defaults: yearDialDefaults,
+    meta: yearDialMeta,
   },
   {
     id: 'skill-wheel',

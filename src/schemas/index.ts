@@ -18,6 +18,7 @@ export * from './clips/list-pickers/menu-stack';
 export * from './clips/list-pickers/pill-fan';
 export * from './clips/list-pickers/skill-wheel';
 export * from './clips/list-pickers/word-picker';
+export * from './clips/list-pickers/year-dial';
 export * from './clips/overlays/film-dust';
 export * from './clips/overlays/floating-cards';
 export * from './clips/phone-layouts/phone-fan';
