@@ -13,6 +13,7 @@ import { TransitionFrame } from '../../promo/transition-frame';
 import type { SceneModule } from '../../scene-module';
 import { Billboard } from '../../unveil/billboard';
 import { Cloth, Rod } from '../../unveil/cloth';
+import { clothRun } from '../../unveil/cloth-sim';
 import { cameraShot, helicopterPose, hookAt } from '../../unveil/flight';
 import { Ground } from '../../unveil/ground';
 import { Helicopter } from '../../unveil/helicopter';
@@ -48,6 +49,10 @@ const HelicopterUnveil = ({
   const frame = useCurrentFrame() * motion.speed;
   const { width, height, durationInFrames } = useVideoConfig();
   const art = usePosterArt(poster);
+  const run = useMemo(
+    () => clothRun(cloth, timing, timing.liftStart + GONE_AFTER),
+    [cloth, timing],
+  );
   const customUrl = poster.image.length > 0 ? resolveCustom(poster.image) : undefined;
   const shot = cameraShot(frame, durationInFrames, camera);
   const pose = helicopterPose(frame, timing);
@@ -87,12 +92,7 @@ const HelicopterUnveil = ({
               />
               {airborne ? (
                 <>
-                  <Cloth
-                    frame={frame}
-                    cloth={cloth}
-                    timing={timing}
-                    cableColor={helicopter.cables}
-                  />
+                  <Cloth frame={frame} run={run} cloth={cloth} cableColor={helicopter.cables} />
                   <Rod
                     from={hookAt(frame, timing)}
                     to={pose.position}

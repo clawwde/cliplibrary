@@ -1,8 +1,8 @@
 import { useMemo } from 'react';
 import * as THREE from 'three';
-import type { UnveilCloth, UnveilTiming } from '@/schemas';
-import { CABLE_COLUMNS, clothPoint, fillCloth } from './cloth-shape';
-import { CLOTH, hookAt, type Vec3 } from './flight';
+import type { UnveilCloth } from '@/schemas';
+import { ATTACH_COLUMNS, attachPoint, barPoint, type ClothRun, clothFrame } from './cloth-sim';
+import { CLOTH, type Vec3 } from './flight';
 
 const UP = new THREE.Vector3(0, 1, 0);
 
@@ -36,45 +36,55 @@ const useClothGeometry = (): THREE.PlaneGeometry =>
 
 export const Cloth = ({
   frame,
+  run,
   cloth,
-  timing,
   cableColor,
 }: {
   frame: number;
+  run: ClothRun;
   cloth: UnveilCloth;
-  timing: UnveilTiming;
   cableColor: string;
 }) => {
   const geometry = useClothGeometry();
   const sheenColor = useMemo(
-    () => new THREE.Color(cloth.color).lerp(new THREE.Color('#ffffff'), 0.35),
+    () => new THREE.Color(cloth.color).lerp(new THREE.Color('#ffd9d0'), 0.18),
     [cloth.color],
   );
   const attribute = geometry.getAttribute('position') as THREE.BufferAttribute;
   const positions = attribute.array as Float32Array;
-  fillCloth(positions, frame, cloth, timing);
+  clothFrame(run, frame, positions);
   attribute.needsUpdate = true;
   geometry.computeVertexNormals();
   geometry.computeBoundingSphere();
-  const hook = hookAt(frame, timing);
+  const hook = run.hooks[Math.max(0, Math.min(run.hooks.length - 1, Math.round(frame)))] ?? [
+    0, 0, 0,
+  ];
   return (
     <group>
       <mesh geometry={geometry} castShadow frustumCulled={false}>
         <meshPhysicalMaterial
           color={cloth.color}
-          roughness={0.78}
+          roughness={0.82}
           sheen={cloth.sheen}
-          sheenRoughness={0.45}
+          sheenRoughness={0.35}
           sheenColor={sheenColor}
           side={THREE.DoubleSide}
         />
       </mesh>
-      {CABLE_COLUMNS.map((u) => (
+      <Rod
+        from={barPoint(hook, ATTACH_COLUMNS[0])}
+        to={barPoint(hook, ATTACH_COLUMNS[3])}
+        radius={0.09}
+        color={cableColor}
+      />
+      <Rod from={hook} to={barPoint(hook, ATTACH_COLUMNS[0])} radius={0.04} color={cableColor} />
+      <Rod from={hook} to={barPoint(hook, ATTACH_COLUMNS[3])} radius={0.04} color={cableColor} />
+      {ATTACH_COLUMNS.map((column) => (
         <Rod
-          key={u}
-          from={hook}
-          to={clothPoint(positions, u, 0)}
-          radius={0.045}
+          key={column}
+          from={barPoint(hook, column)}
+          to={attachPoint(positions, column)}
+          radius={0.035}
           color={cableColor}
         />
       ))}

@@ -21,7 +21,11 @@ export type BillboardPoster = z.infer<typeof billboardPosterSchema>;
 export const unveilClothSchema = z.object({
   color: zColor(),
   sheen: zSlider({ min: 0, max: 1, step: 0.01 }),
-  ripple: zSlider({ min: 0, max: 2, step: 0.05 }),
+  weight: zSlider({ min: 0.05, max: 0.6, step: 0.01 }),
+  softness: zSlider({ min: 0, max: 1, step: 0.01 }),
+  wind: zSlider({ min: 0, max: 12, step: 0.1 }),
+  gusts: zSlider({ min: 0, max: 1.5, step: 0.01 }),
+  downwash: zSlider({ min: 0, max: 30, step: 0.5 }),
   flutter: zSlider({ min: 0, max: 2, step: 0.05 }),
 });
 
@@ -119,9 +123,13 @@ export const helicopterUnveilDefaults: HelicopterUnveilProps = {
     accentSoft: '#fde3a7',
   },
   cloth: {
-    color: '#d81f26',
-    sheen: 0.3,
-    ripple: 1,
+    color: '#c4141d',
+    sheen: 0.35,
+    weight: 0.13,
+    softness: 0.75,
+    wind: 3.5,
+    gusts: 0.65,
+    downwash: 14,
     flutter: 1,
   },
   helicopter: {
