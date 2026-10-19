@@ -3,25 +3,25 @@ import { type BadgePart, dot, polygon, ray, shape, sparkle, stroke, word } from 
 import { ellipseKnots, type Knot, loop } from './brush';
 
 const scriptSwash = (): BadgePart[] => [
-  word('script', 150, [0.04, 0.62], { y: -22, rotate: -4, reveal: 'wipe' }),
+  word('script', 150, [0.04, 0.62], { x: -36, y: -22, rotate: -4, reveal: 'wipe' }),
   stroke(
     [
-      [-178, 64],
-      [-90, 54],
-      [0, 60],
-      [92, 50],
-      [160, 38],
-      [200, 12],
-      [186, -8],
-      [166, 12],
-      [184, 44],
-      [232, 58],
-      [266, 54],
+      [-214, 64],
+      [-126, 54],
+      [-36, 60],
+      [56, 50],
+      [124, 38],
+      [164, 12],
+      [150, -8],
+      [130, 12],
+      [148, 44],
+      [196, 58],
+      [230, 54],
     ],
     [0.3, 0.95],
   ),
-  shape(sparkle(214, -92, 28), [0.6, 0.94], { origin: [214, -92], spin: 90 }),
-  shape(sparkle(252, -52, 14), [0.68, 1], { origin: [252, -52], spin: 90 }),
+  shape(sparkle(178, -92, 28), [0.6, 0.94], { origin: [178, -92], spin: 90 }),
+  shape(sparkle(216, -52, 14), [0.68, 1], { origin: [216, -52], spin: 90 }),
 ];
 
 const ruledCaps = (): BadgePart[] => [
@@ -96,9 +96,9 @@ const tape = (): BadgePart[] => [
   word('bold', 120, [0.28, 0.9], { y: -2, rotate: -3, tracking: 0.03 }),
   stroke(
     [
-      [36, 104],
-      [118, 98],
-      [196, 104],
+      [-70, 104],
+      [0, 99],
+      [70, 104],
     ],
     [0.62, 1],
     'line',
@@ -167,19 +167,26 @@ const ribbonTail = (side: number): string =>
   ]);
 
 const ribbon = (): BadgePart[] => [
-  shape(ribbonTail(-1), [0, 0.32], { tone: 'shade', origin: [-160, 30], spin: -14 }),
-  shape(ribbonTail(1), [0.06, 0.38], { tone: 'shade', origin: [160, 30], spin: 14 }),
+  shape(ribbonTail(-1), [0.3, 0.62], {
+    tone: 'shade',
+    origin: [-150, 40],
+    spin: -10,
+    out: [0.15, 0.55],
+  }),
+  shape(ribbonTail(1), [0.36, 0.68], {
+    tone: 'shade',
+    origin: [150, 40],
+    spin: 10,
+    out: [0.15, 0.55],
+  }),
   shape(
     polygon([
       [-170, 48],
       [-132, 72],
       [-132, 46],
     ]),
-    [0.2, 0.4],
-    {
-      tone: 'deep',
-      origin: [-150, 56],
-    },
+    [0.3, 0.62],
+    { tone: 'deep', origin: [-150, 40], spin: -10, out: [0.15, 0.55] },
   ),
   shape(
     polygon([
@@ -187,37 +194,41 @@ const ribbon = (): BadgePart[] => [
       [132, 72],
       [132, 46],
     ]),
-    [0.24, 0.44],
-    {
-      tone: 'deep',
-      origin: [150, 56],
-    },
+    [0.36, 0.68],
+    { tone: 'deep', origin: [150, 40], spin: 10, out: [0.15, 0.55] },
   ),
-  shape('M -172 -54 Q 0 -70 172 -54 L 172 48 Q 0 32 -172 48 Z', [0.08, 0.56], {
+  shape('M -172 -54 Q 0 -70 172 -54 L 172 48 Q 0 32 -172 48 Z', [0, 0.46], {
     reveal: 'grow',
     span: [-180, 180],
+    out: [0.4, 1],
   }),
-  stroke(
-    [
-      [-160, -46],
-      [0, -58],
-      [160, -46],
-    ],
-    [0.42, 0.86],
-    'line',
-    0.42,
-  ),
-  stroke(
-    [
-      [-160, 38],
-      [0, 26],
-      [160, 38],
-    ],
-    [0.5, 0.94],
-    'line',
-    0.42,
-  ),
-  word('serif', 88, [0.36, 0.96], { y: -8, tracking: 0.06 }),
+  {
+    ...stroke(
+      [
+        [-160, -46],
+        [0, -58],
+        [160, -46],
+      ],
+      [0.42, 0.86],
+      'line',
+      0.42,
+    ),
+    out: [0, 0.4],
+  },
+  {
+    ...stroke(
+      [
+        [-160, 38],
+        [0, 26],
+        [160, 38],
+      ],
+      [0.5, 0.94],
+      'line',
+      0.42,
+    ),
+    out: [0, 0.4],
+  },
+  word('serif', 88, [0.36, 0.96], { y: -8, tracking: 0.06, out: [0, 0.45] }),
 ];
 
 const burstPath = (): string =>
@@ -230,9 +241,12 @@ const burstPath = (): string =>
   );
 
 const starburst = (): BadgePart[] => [
-  shape(burstPath(), [0, 0.5], { spin: -30 }),
-  stroke(loop(ellipseKnots(106, 106, 10, 5, 0.03)), [0.3, 0.8], 'text', 0.38),
-  word('chunky', 132, [0.34, 0.92], { y: 8, rotate: -6, tracking: 0.02 }),
+  shape(burstPath(), [0, 0.5], { spin: -30, out: [0.38, 1] }),
+  {
+    ...stroke(loop(ellipseKnots(106, 106, 10, 5, 0.03)), [0.3, 0.8], 'text', 0.38),
+    out: [0, 0.42],
+  },
+  word('chunky', 132, [0.34, 0.92], { y: 8, rotate: -6, tracking: 0.02, out: [0, 0.42] }),
   stroke(
     [
       [-188, -118],
@@ -248,6 +262,24 @@ const starburst = (): BadgePart[] => [
       [-176, -106],
     ],
     [0.74, 0.96],
+    'line',
+    0.7,
+  ),
+  stroke(
+    [
+      [188, 118],
+      [158, 150],
+    ],
+    [0.7, 0.9],
+    'line',
+    0.7,
+  ),
+  stroke(
+    [
+      [214, 84],
+      [176, 106],
+    ],
+    [0.78, 1],
     'line',
     0.7,
   ),

@@ -75,7 +75,7 @@ export const BrushStroke = ({
   const d = brushOutline(part, (index, count) =>
     brushWidth(width, seed, tail + ((head - tail) * index) / Math.max(1, count - 1)),
   );
-  return <path d={d} fill={color} />;
+  return <path d={d} fill={color} opacity={Math.min(1, (head - tail) / 0.12)} />;
 };
 
 export const ChalkFilter = ({

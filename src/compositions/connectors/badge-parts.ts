@@ -12,6 +12,7 @@ export interface StrokePart {
   width: number;
   tone: Tone;
   at: Window;
+  out?: Window;
   rotate?: number;
 }
 
@@ -21,6 +22,7 @@ export interface ShapePart {
   tone: Tone;
   at: Window;
   reveal: 'pop' | 'unroll' | 'grow';
+  out?: Window;
   origin: Knot;
   span?: readonly [number, number];
   spin?: number;
@@ -36,6 +38,7 @@ export interface WordPart {
   tone: Tone;
   at: Window;
   reveal: 'wipe' | 'pop';
+  out?: Window;
   rotate?: number;
   tracking?: number;
   angle?: number;

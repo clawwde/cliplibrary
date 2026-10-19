@@ -40,9 +40,10 @@ export const Caption = ({
       }}
     >
       {letters.map((letter, index) => {
-        const visible = index < typed && letters.length - 1 - index >= deleted;
+        const shown = Math.min(1, Math.max(0, (typed - index) / 3));
+        const kept = Math.min(1, Math.max(0, (letters.length - 1 - index - deleted) / 3 + 1));
         return (
-          <span key={`${index.toString()}${letter}`} style={{ opacity: visible ? 1 : 0 }}>
+          <span key={`${index.toString()}${letter}`} style={{ opacity: shown * kept }}>
             {letter}
           </span>
         );

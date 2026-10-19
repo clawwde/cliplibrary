@@ -14,6 +14,7 @@ import type { SceneModule } from '../../scene-module';
 
 const FILTER_ID = 'chunky-stack-ink';
 const overshoot = Easing.out(Easing.back(1.9));
+const LETTER_EXIT_STAGGER = 0.5;
 
 const clamp01 = (value: number): number => Math.min(1, Math.max(0, value));
 
@@ -80,10 +81,12 @@ export const ChunkyTypeStack = ({
     }),
   );
   const typedEnd = delay + cursor * letterFrames + popFrames * 0.5;
-  const exitEnd = exitAt + (lines.length - 1) * lineStagger + exitFrames;
-  const burstStart = exitEnd - exitFrames * 0.5;
+  const longest = Math.max(...lines.map((line) => line.text.length));
+  const exitEnd =
+    exitAt + (lines.length - 1) * lineStagger + (longest - 1) * LETTER_EXIT_STAGGER + exitFrames;
+  const burstStart = exitEnd - 2;
   const burstProgress = clamp01((frame - burstStart) / burst.frames);
-  const tagStart = burstStart + burst.frames * 0.7;
+  const tagStart = burstStart + burst.frames * 0.95;
   return (
     <ChalkLayer look={look} motion={motion} chalk={chalk} filterId={FILTER_ID}>
       <div
@@ -125,7 +128,7 @@ export const ChunkyTypeStack = ({
                   key={`${index.toString()}${letter}`}
                   letter={letter}
                   pop={clamp01((frame - delay - order * letterFrames) / popFrames)}
-                  gone={clamp01((frame - exitStart - index * 0.5) / exitFrames)}
+                  gone={clamp01((frame - exitStart - index * LETTER_EXIT_STAGGER) / exitFrames)}
                   tilt={signedHash(seed, order) * 6 * jitter}
                   lift={signedHash(seed + 1, order) * 0.05 * jitter}
                   grow={1 + signedHash(seed + 2, order) * 0.07 * jitter}
@@ -141,6 +144,7 @@ export const ChunkyTypeStack = ({
                     height: bar.height,
                     background: bar.color,
                     transformOrigin: '0% 50%',
+                    opacity: Math.min(1, barGrow * 5) * Math.min(1, (1 - barGone) * 5),
                     transform: `scaleX(${(barGrow * (1 - barGone)).toFixed(4)})`,
                   }}
                 />
@@ -162,8 +166,8 @@ export const ChunkyTypeStack = ({
             lineHeight: 1,
             color: burst.color,
             opacity:
-              Math.min(1, burstProgress * 6) * (1 - smooth(clamp01((burstProgress - 0.55) / 0.45))),
-            transform: `rotate(${(-10 + 14 * burstProgress).toFixed(2)}deg) scale(${(0.04 * 60 ** burstProgress).toFixed(4)})`,
+              Math.min(1, burstProgress * 5) * (1 - smooth(clamp01((burstProgress - 0.62) / 0.38))),
+            transform: `rotate(${(-10 + 14 * burstProgress).toFixed(2)}deg) scale(${(0.06 + 3.4 * burstProgress ** 2.2).toFixed(4)})`,
           }}
         >
           {burst.text}

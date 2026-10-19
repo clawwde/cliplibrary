@@ -51,7 +51,7 @@ export const chalkBadgesReelDefaults: ChalkBadgesReelProps = {
     show: true,
     lines: chunkyTypeStackDefaults.lines,
     endTag: chunkyTypeStackDefaults.endTag,
-    frames: 222,
+    frames: 232,
   },
   overlap: 6,
   chalk: connectorChalk(),
@@ -69,6 +69,6 @@ export const chalkBadgesReelMeta: ClipMeta = {
   tags: ['badge', 'chalkboard', 'grid', 'handwriting', 'kinetic'],
   theme: 'dark',
   source: 'src/compositions/scenes/hand-drawn/chalk-badges-reel.tsx',
-  durationInFrames: 1326,
+  durationInFrames: 1336,
   posterFrame: 210,
 };

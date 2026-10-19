@@ -1,5 +1,6 @@
 import { Easing } from 'remotion';
 import type { ConnectorBadge, ConnectorChalk } from '@/schemas';
+import { smoothstep } from '../promo/ink-geometry';
 import { glide, smooth } from '../promo/timing';
 import { BADGE_DESIGNS } from './badge-designs';
 import type { BadgePart, ShapePart, Tone, Window, WordPart } from './badge-parts';
@@ -68,13 +69,21 @@ const ShapeView = ({
   const clip =
     part.reveal === 'unroll'
       ? { x: left + width * close, w: width * (open - close) }
-      : { x: left + (width * (1 - open)) / 2, w: width * open * (1 - close) };
+      : {
+          x: left + (width * (1 - open * (1 - close))) / 2,
+          w: width * open * (1 - close),
+        };
   return (
     <g transform={`rotate(${rotate})`}>
       <clipPath id={id}>
         <rect x={clip.x} y={-BADGE_HEIGHT} width={Math.max(0, clip.w)} height={BADGE_HEIGHT * 2} />
       </clipPath>
-      <path d={part.d} fill={color} clipPath={`url(#${id})`} />
+      <path
+        d={part.d}
+        fill={color}
+        clipPath={`url(#${id})`}
+        opacity={1 - smoothstep(0.6, 1, gone)}
+      />
     </g>
   );
 };
@@ -188,7 +197,7 @@ const PartView = ({
   id: string;
 }) => {
   const shown = within(draw, part.at);
-  const gone = within(erase, eraseWindow(index, count));
+  const gone = within(erase, part.out ?? eraseWindow(count - 1 - index, count));
   const color = toneColor(badge, part.tone);
   if (part.kind === 'stroke') {
     return (
@@ -255,7 +264,7 @@ const BadgeArt = ({
             text={badge.word}
             color={toneColor(badge, part.tone)}
             shown={within(draw, part.at)}
-            gone={within(erase, eraseWindow(index, parts.length))}
+            gone={within(erase, part.out ?? eraseWindow(parts.length - 1 - index, parts.length))}
           />
         ) : null,
       )}
