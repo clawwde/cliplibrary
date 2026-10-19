@@ -5,6 +5,7 @@ import { brandScenes } from './brand';
 import { deskScenesScenes } from './desk-scenes';
 import { handDrawnScenes } from './hand-drawn';
 import { kineticTypeScenes } from './kinetic-type';
+import { listPickersScenes } from './list-pickers';
 import { overlaysScenes } from './overlays';
 import { phoneLayoutsScenes } from './phone-layouts';
 import { phoneRevealsScenes } from './phone-reveals';
@@ -21,6 +22,7 @@ export const CLIP_SCENES: SceneModule[] = [
   ...screenDemosScenes,
   ...deskScenesScenes,
   ...overlaysScenes,
+  ...listPickersScenes,
   ...brandScenes,
   ...adRevealsScenes,
   ...backgroundsScenes,

@@ -42,6 +42,21 @@ export const CLIP_CATEGORIES = [
     keywords: ['layer', 'effect', 'ui', 'popup', 'vintage'],
   },
   {
+    id: 'list-pickers',
+    label: 'Lists & Pickers',
+    keywords: [
+      'list',
+      'menu',
+      'picker',
+      'selector',
+      'wheel',
+      'carousel',
+      'options',
+      'ui',
+      'scroll',
+    ],
+  },
+  {
     id: 'brand',
     label: 'Logo & End Cards',
     keywords: ['brand', 'branding', 'intro', 'outro', 'ending', 'call to action', 'wordmark'],
@@ -132,6 +147,8 @@ export const CLIP_TAGS = [
   'paper',
   'billboard',
   'cloth',
+  'list',
+  'picker',
 ] as const;
 
 export type ClipTag = (typeof CLIP_TAGS)[number];
