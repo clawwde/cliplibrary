@@ -102,7 +102,7 @@ const knitTexture = (() => {
 })();
 
 const BARE_NEAR: [number, number] = [0.0262, 0.0194];
-const BARE_FAR: [number, number] = [0.036, 0.031];
+const BARE_FAR: [number, number] = [0.043, 0.038];
 const BAND_START = -0.018;
 const BAND_LENGTH = 0.032;
 
