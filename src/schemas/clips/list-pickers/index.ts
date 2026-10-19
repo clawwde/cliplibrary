@@ -2,6 +2,7 @@ import type { ClipModule } from '../../registry';
 import { headingListDefaults, headingListMeta, headingListSchema } from './heading-list';
 import { menuStackDefaults, menuStackMeta, menuStackSchema } from './menu-stack';
 import { pillFanDefaults, pillFanMeta, pillFanSchema } from './pill-fan';
+import { skillWheelDefaults, skillWheelMeta, skillWheelSchema } from './skill-wheel';
 import { wordPickerDefaults, wordPickerMeta, wordPickerSchema } from './word-picker';
 
 export const listPickersClips: ClipModule[] = [
@@ -28,5 +29,11 @@ export const listPickersClips: ClipModule[] = [
     schema: headingListSchema,
     defaults: headingListDefaults,
     meta: headingListMeta,
+  },
+  {
+    id: 'skill-wheel',
+    schema: skillWheelSchema,
+    defaults: skillWheelDefaults,
+    meta: skillWheelMeta,
   },
 ];

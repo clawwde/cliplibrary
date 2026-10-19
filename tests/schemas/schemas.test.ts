@@ -281,6 +281,7 @@ describe('promo clips', () => {
     'pill-fan',
     'menu-stack',
     'heading-list',
+    'skill-wheel',
   ];
 
   it('validates every promo default against its schema', () => {
