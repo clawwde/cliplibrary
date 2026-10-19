@@ -103,6 +103,20 @@ export const palmToWorld = (palm: PalmFrame): THREE.Matrix4 =>
     .multiply(new THREE.Matrix4().makeScale(HAND_UNITS, HAND_UNITS, HAND_UNITS))
     .multiply(new THREE.Matrix4().makeTranslation(-PALM_CENTER.x, -PALM_CENTER.y, -PALM_CENTER.z));
 
+export const palmFromModel = (modelToWorld: THREE.Matrix4): PalmFrame => {
+  const local = new THREE.Matrix4()
+    .multiply(MODEL_TO_PALM)
+    .multiply(new THREE.Matrix4().makeScale(HAND_UNITS, HAND_UNITS, HAND_UNITS))
+    .multiply(new THREE.Matrix4().makeTranslation(-PALM_CENTER.x, -PALM_CENTER.y, -PALM_CENTER.z));
+  const position = new THREE.Vector3();
+  const quaternion = new THREE.Quaternion();
+  modelToWorld
+    .clone()
+    .multiply(local.invert())
+    .decompose(position, quaternion, new THREE.Vector3());
+  return { position, quaternion };
+};
+
 export interface HandModelProps {
   hand: HandScene;
   palm: PalmFrame;
