@@ -1,6 +1,7 @@
 import type { ClipModule } from '../../registry';
 import { letterFlipDefaults, letterFlipMeta, letterFlipSchema } from './letter-flip';
 import { numberCounterDefaults, numberCounterMeta, numberCounterSchema } from './number-counter';
+import { printerPagesDefaults, printerPagesMeta, printerPagesSchema } from './printer-pages';
 import { typewriterDefaults, typewriterMeta, typewriterSchema } from './typewriter';
 
 export const textRevealsClips: ClipModule[] = [
@@ -21,5 +22,11 @@ export const textRevealsClips: ClipModule[] = [
     schema: numberCounterSchema,
     defaults: numberCounterDefaults,
     meta: numberCounterMeta,
+  },
+  {
+    id: 'printer-pages',
+    schema: printerPagesSchema,
+    defaults: printerPagesDefaults,
+    meta: printerPagesMeta,
   },
 ];

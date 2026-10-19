@@ -24,6 +24,7 @@ export * from './clips/screen-demos/phone-scroll';
 export * from './clips/screen-demos/phone-swap';
 export * from './clips/text-reveals/letter-flip';
 export * from './clips/text-reveals/number-counter';
+export * from './clips/text-reveals/printer-pages';
 export * from './clips/text-reveals/typewriter';
 export * from './clips/transitions/scene-transition';
 export * from './control';
