@@ -248,6 +248,10 @@ describe('video media control', () => {
 
 describe('promo clips', () => {
   const PROMO_IDS: ClipId[] = [
+    'grid-stack',
+    'lens-orbit',
+    'word-field',
+    'sticker-stack',
     'phone-spin-in',
     'phone-turnaround',
     'phone-fan',
