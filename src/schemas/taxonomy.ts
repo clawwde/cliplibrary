@@ -47,6 +47,21 @@ export const CLIP_CATEGORIES = [
     keywords: ['background', 'bg', 'scene', 'set', 'clay', 'wall'],
   },
   {
+    id: 'ad-reveals',
+    label: 'Ad Reveals',
+    keywords: [
+      'billboard',
+      'poster',
+      'hoarding',
+      'outdoor',
+      'advertising',
+      'unveil',
+      'launch',
+      'helicopter',
+      'banner',
+    ],
+  },
+  {
     id: 'transitions',
     label: 'Transitions',
     keywords: ['transition', 'cut', 'bridge', 'cover', 'between'],
@@ -108,6 +123,8 @@ export const CLIP_TAGS = [
   'cover',
   'minimal',
   'paper',
+  'billboard',
+  'cloth',
 ] as const;
 
 export type ClipTag = (typeof CLIP_TAGS)[number];

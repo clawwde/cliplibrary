@@ -1,5 +1,6 @@
 export * from './clip-props';
 export * from './clips';
+export * from './clips/ad-reveals/helicopter-unveil';
 export * from './clips/backgrounds/relief-backdrop';
 export * from './clips/brand/app-icon-reveal';
 export * from './clips/brand/brand-reveal';
