@@ -202,7 +202,7 @@ export const spillRevealDefaults: SpillRevealProps = {
     spreadFrames: 60,
     dropStart: 112,
     dropFrames: 34,
-    soakDelay: 6,
+    soakDelay: 0,
     soakFrames: 120,
     moveStart: 96,
     moveFrames: 110,

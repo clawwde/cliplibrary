@@ -212,10 +212,10 @@ export const Napkin = ({ look, message, mirror, puddle, edgeZ, pose }: NapkinPro
     const lx = grid.local[index * 2] ?? 0;
     const lz = grid.local[index * 2 + 1] ?? 0;
     const flutter =
-      (Math.sin(lx * 2.3 + pose.frame * 0.33) * 0.11 +
-        Math.sin(lz * 2.9 + pose.frame * 0.27) * 0.08) *
+      (Math.sin(lx * 2.1 + pose.frame * 0.3) * 0.2 +
+        Math.sin(lz * 2.6 + pose.frame * 0.24 + 1.3) * 0.14) *
         fall +
-      (lx * lx + lz * lz) * 0.05 * fall;
+      (lx * lx + lz * lz) * 0.09 * fall;
     point.set(lx, flutter, lz).applyMatrix4(rigid);
     const [x, z] = localToWorld(look, lx, lz);
     const wet = THREE.MathUtils.smoothstep(
