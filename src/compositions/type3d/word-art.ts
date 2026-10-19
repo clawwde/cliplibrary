@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import * as THREE from 'three';
 import type { TypeFace } from '@/schemas';
-import { typeFaces } from '../promo/fonts';
+import { typeFaces } from './type-faces';
 
 const FONT_PX = 200;
 
