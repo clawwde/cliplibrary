@@ -28,12 +28,20 @@ export const bodyFont = inter.fontFamily;
 
 export const bodyFontReady = inter.waitUntilDone;
 
+const handFontLoads = {
+  'caveat-brush': loadCaveatBrush('normal', { weights: ['400'], subsets: ['latin'] }),
+  'permanent-marker': loadPermanentMarker('normal', { weights: ['400'], subsets: ['latin'] }),
+  kalam: loadKalam('normal', { weights: ['700'], subsets: ['latin'] }),
+} satisfies Record<HandFont, { fontFamily: string; waitUntilDone: () => Promise<unknown> }>;
+
 export const handFonts: Record<HandFont, string> = {
-  'caveat-brush': loadCaveatBrush('normal', { weights: ['400'], subsets: ['latin'] }).fontFamily,
-  'permanent-marker': loadPermanentMarker('normal', { weights: ['400'], subsets: ['latin'] })
-    .fontFamily,
-  kalam: loadKalam('normal', { weights: ['700'], subsets: ['latin'] }).fontFamily,
+  'caveat-brush': handFontLoads['caveat-brush'].fontFamily,
+  'permanent-marker': handFontLoads['permanent-marker'].fontFamily,
+  kalam: handFontLoads.kalam.fontFamily,
 };
+
+export const handFontReady = (font: HandFont): Promise<unknown> =>
+  handFontLoads[font].waitUntilDone();
 
 const poppins = loadPoppins('normal', {
   weights: ['500', '600', '700', '800'],
