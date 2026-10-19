@@ -15,6 +15,7 @@ export * from './clips/kinetic-type/word-build';
 export * from './clips/kinetic-type/word-punch';
 export * from './clips/list-pickers/heading-list';
 export * from './clips/list-pickers/menu-stack';
+export * from './clips/list-pickers/mind-map';
 export * from './clips/list-pickers/pill-fan';
 export * from './clips/list-pickers/skill-wheel';
 export * from './clips/list-pickers/word-picker';

@@ -282,6 +282,7 @@ describe('promo clips', () => {
     'menu-stack',
     'heading-list',
     'year-dial',
+    'mind-map',
     'skill-wheel',
   ];
 

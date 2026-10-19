@@ -13,6 +13,7 @@ import type { WordBuildProps } from './clips/kinetic-type/word-build';
 import type { WordPunchProps } from './clips/kinetic-type/word-punch';
 import type { HeadingListProps } from './clips/list-pickers/heading-list';
 import type { MenuStackProps } from './clips/list-pickers/menu-stack';
+import type { MindMapProps } from './clips/list-pickers/mind-map';
 import type { PillFanProps } from './clips/list-pickers/pill-fan';
 import type { SkillWheelProps } from './clips/list-pickers/skill-wheel';
 import type { WordPickerProps } from './clips/list-pickers/word-picker';
@@ -41,6 +42,7 @@ export interface ClipPropsMap {
   'menu-stack': MenuStackProps;
   'heading-list': HeadingListProps;
   'year-dial': YearDialProps;
+  'mind-map': MindMapProps;
   'skill-wheel': SkillWheelProps;
   'phone-flat-lay': PhoneFlatLayProps;
   'phone-pedestal': PhonePedestalProps;
