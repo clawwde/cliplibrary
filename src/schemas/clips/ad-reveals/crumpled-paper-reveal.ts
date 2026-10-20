@@ -111,14 +111,14 @@ export type CrumpledPaperRevealProps = z.infer<typeof crumpledPaperRevealSchema>
 
 export const crumpledPaperRevealDefaults: CrumpledPaperRevealProps = {
   print: {
-    headline: 'COMING\nSOON',
-    footer: 'NEW SEASON',
-    ink: '#1d1c1b',
-    paper: '#ecebe8',
-    size: 300,
+    headline: 'ALMOST\nHERE',
+    footer: 'AUTUMN EDIT',
+    ink: '#22304a',
+    paper: '#f0e8da',
+    size: 280,
     tilt: -0.13,
-    indent: 0.42,
-    centerX: 0.44,
+    indent: 0.3,
+    centerX: 0.5,
     centerY: 0.44,
     fiber: 0.5,
   },
@@ -164,10 +164,10 @@ export const crumpledPaperRevealDefaults: CrumpledPaperRevealProps = {
     gripCurl: 0.12,
     thumbCurl: 0.3,
     watch: true,
-    watchColor: '#d4d6da',
+    watchColor: '#cfae74',
   },
   room: {
-    wall: '#a9aaad',
+    wall: '#a3ae9b',
     wallDistance: 2.2,
     glow: 0.55,
   },
@@ -187,7 +187,7 @@ export const crumpledPaperRevealDefaults: CrumpledPaperRevealProps = {
   },
   light: {
     key: 3.2,
-    keyColor: '#fffdf8',
+    keyColor: '#fff3e0',
     keyX: 3.5,
     keyY: 7,
     keyZ: 8,
@@ -205,7 +205,7 @@ export const crumpledPaperRevealDefaults: CrumpledPaperRevealProps = {
     motionBlur: 5,
     shutterAngle: 180,
   },
-  look: lightLook('#1d1c1b'),
+  look: lightLook('#22304a'),
   motion: defaultMotion({ exit: 'none', exitFrames: 0, float: 0 }),
 };
 
