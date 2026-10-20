@@ -31,15 +31,15 @@ export const chalkBadgeSchema = z.object({
 export type ChalkBadgeProps = z.infer<typeof chalkBadgeSchema>;
 
 export const chalkBadgeDefaults: ChalkBadgeProps = {
-  badge: CONNECTOR_SET[0] ?? connectorBadge('script-swash', 'and'),
+  badge: CONNECTOR_SET[0] ?? connectorBadge('script-swash', 'also'),
   x: 50,
   y: 50,
   scale: 1.2,
   delay: 4,
   timing: { drawFrames: 30, eraseAt: 62, eraseFrames: 22 },
-  caption: 'EDIT ANY WORD  /  ANY COLOR',
+  caption: 'SWAP THE WORD  /  TINT THE CHALK',
   captionSize: 24,
-  captionColor: '#f7f3ea',
+  captionColor: '#eef2e8',
   captionFrames: 0.6,
   chalk: connectorChalk(),
   look: chalkboardLook(),

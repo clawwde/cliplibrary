@@ -30,10 +30,10 @@ export const chalkTitleSchema = z.object({
 export type ChalkTitleProps = z.infer<typeof chalkTitleSchema>;
 
 export const chalkTitleDefaults: ChalkTitleProps = {
-  left: 'Linkers',
-  right: 'Joiners',
+  left: 'Bridges',
+  right: 'Segues',
   wordSize: 140,
-  wordColor: '#f7f3ea',
+  wordColor: '#eef2e8',
   gap: 150,
   centerScale: 1.06,
   center: connectorBadge('ampersand', '&'),

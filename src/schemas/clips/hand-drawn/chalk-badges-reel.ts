@@ -41,12 +41,12 @@ export const chalkBadgesReelSchema = z.object({
 export type ChalkBadgesReelProps = z.infer<typeof chalkBadgesReelSchema>;
 
 export const chalkBadgesReelDefaults: ChalkBadgesReelProps = {
-  title: { show: true, left: 'Linkers', right: 'Joiners', frames: 112 },
+  title: { show: true, left: 'Bridges', right: 'Segues', frames: 112 },
   grid: { show: true, frames: 200 },
   badges: CONNECTOR_SET,
   soloFrames: 68,
   soloScale: 1.2,
-  caption: 'EDIT ANY WORD  /  ANY COLOR',
+  caption: 'SWAP THE WORD  /  TINT THE CHALK',
   outro: {
     show: true,
     lines: chunkyTypeStackDefaults.lines,
