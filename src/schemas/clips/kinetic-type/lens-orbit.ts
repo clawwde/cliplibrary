@@ -3,8 +3,8 @@ import { zMultiline, zSlider } from '../../control';
 import { defaultMotion, lookSchema, motionSchema, promoMeta } from '../../promo-common';
 import type { ClipMeta } from '../../registry';
 import {
-  cocoaLook,
   HEAVY_WEIGHT,
+  midnightLook,
   TYPE_FACES,
   typeCamera,
   typeCameraSchema,
@@ -37,9 +37,9 @@ export const lensOrbitSchema = z.object({
 export type LensOrbitProps = z.infer<typeof lensOrbitSchema>;
 
 export const lensOrbitDefaults: LensOrbitProps = {
-  words: 'spin\nbend\nround\ntwist\nroll',
-  satellites: 'orbit swirl loop arc pivot curl tilt glide whirl sway',
-  highlight: 'bend twist',
+  words: ['curve', 'glide', 'flow', 'sweep', 'drift'].join('\n'),
+  satellites: 'halo ring tide hum coil blur ease veer wisp lift',
+  highlight: 'glide sweep',
   face: 'montserrat',
   weight: 800,
   radius: 2.1,
@@ -63,7 +63,7 @@ export const lensOrbitDefaults: LensOrbitProps = {
     glowX: 0.92,
     glowY: 0.95,
   }),
-  look: cocoaLook(),
+  look: midnightLook(),
   motion: defaultMotion({ exit: 'fade', exitFrames: 10 }),
 };
 

@@ -3,13 +3,13 @@ import { zMultiline, zSlider } from '../../control';
 import { defaultMotion, lookSchema, motionSchema, promoMeta } from '../../promo-common';
 import type { ClipMeta } from '../../registry';
 import {
+  bonePaperLook,
   HEAVY_WEIGHT,
   TYPE_FACES,
   typeCamera,
   typeCameraSchema,
   typeLens,
   typeLensSchema,
-  warmPaperLook,
   warpGrid,
   warpGridSchema,
 } from '../../type3d-common';
@@ -43,8 +43,8 @@ export const gridStackSchema = z.object({
 export type GridStackProps = z.infer<typeof gridStackSchema>;
 
 export const gridStackDefaults: GridStackProps = {
-  text: 'make it move\ntype that talks\nbold by design\nloud and clear\nevery frame counts',
-  highlight: 'move talks bold loud frame',
+  text: 'shape the story\nwords with weight\nkeep it sharp\nturn heads fast\nnever stand still',
+  highlight: 'story weight sharp heads still',
   face: 'montserrat',
   weight: 800,
   bigSize: 2.15,
@@ -61,10 +61,10 @@ export const gridStackDefaults: GridStackProps = {
   exitFrames: 8,
   swing: 16,
   tilt: 6,
-  grid: warpGrid({ color: '#dcdcdf', spacing: 0.75, bulge: 1.2, lineWidth: 0.018, depth: -3 }),
+  grid: warpGrid({ color: '#d9d1bd', spacing: 0.75, bulge: 1.2, lineWidth: 0.018, depth: -3 }),
   camera: typeCamera({ drift: 0.8 }),
   lens: typeLens({ distortion: 0.45, fringe: 0.005, shift: 2, shutter: 1.5, samples: 12 }),
-  look: warmPaperLook(),
+  look: bonePaperLook(),
   motion: defaultMotion({ exit: 'none', exitFrames: 8 }),
 };
 
