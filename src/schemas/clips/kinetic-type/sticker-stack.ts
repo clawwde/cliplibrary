@@ -3,7 +3,7 @@ import { zColor, zMultiline, zSlider } from '../../control';
 import { defaultMotion, lookSchema, motionSchema, promoMeta } from '../../promo-common';
 import type { ClipMeta } from '../../registry';
 import {
-  emberLook,
+  forestLook,
   HEAVY_WEIGHT,
   TYPE_FACES,
   typeCamera,
@@ -43,20 +43,20 @@ export type StickerStackProps = z.infer<typeof stickerStackSchema>;
 
 export const stickerStackDefaults: StickerStackProps = {
   stickers: [
-    'stick',
+    'start',
     '->',
-    'with',
-    'bold',
+    'small',
+    'think',
     '*',
-    'ideas',
-    'that',
-    'pop',
+    'big',
+    'move',
+    'fast',
     '+',
-    'made',
-    'to',
-    'last',
-    '#',
-    'yours',
+    'stay',
+    'in',
+    'tune',
+    '&',
+    'daily',
   ].join('\n'),
   face: 'montserrat',
   weight: 700,
@@ -74,9 +74,9 @@ export const stickerStackDefaults: StickerStackProps = {
   chase: 22,
   lead: 1.6,
   shadow: 0.4,
-  paper: '#ffffff',
-  paperInk: '#121014',
-  accentInk: '#ffffff',
+  paper: '#f6f3ea',
+  paperInk: '#13201b',
+  accentInk: '#12201a',
   camera: typeCamera({ drift: 0.4 }),
   lens: typeLens({
     distortion: 0.1,
@@ -88,7 +88,7 @@ export const stickerStackDefaults: StickerStackProps = {
     glowX: 0.95,
     glowY: 0.95,
   }),
-  look: emberLook(),
+  look: forestLook(),
   motion: defaultMotion({ exit: 'fade', exitFrames: 12 }),
 };
 

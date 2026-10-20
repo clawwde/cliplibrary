@@ -103,34 +103,34 @@ export const inkLook = (accent = '#8b74ff', showBackdrop = true): PromoLook => (
   paperMargin: false,
 });
 
-export const warmPaperLook = (accent = '#f0435a', showBackdrop = true): PromoLook => ({
+export const bonePaperLook = (accent = '#11795f', showBackdrop = true): PromoLook => ({
   ...pastelLook(accent, showBackdrop),
-  background: '#fdfdfc',
-  backgroundEdge: '#e9e9ec',
-  ink: '#141216',
-  muted: '#8a8790',
+  background: '#f4f0e6',
+  backgroundEdge: '#e2dac6',
+  ink: '#17221e',
+  muted: '#7f857d',
 });
 
-export const cocoaLook = (accent = '#ff8a6b', showBackdrop = true): PromoLook => ({
+export const midnightLook = (accent = '#ffb84d', showBackdrop = true): PromoLook => ({
   ...inkLook(accent, showBackdrop),
-  background: '#1e1517',
-  backgroundEdge: '#060405',
-  ink: '#fff6f1',
-  muted: '#a3918c',
+  background: '#111b2c',
+  backgroundEdge: '#03060c',
+  ink: '#f1f5fc',
+  muted: '#8a96ab',
 });
 
-export const peachLook = (accent = '#f0435a', showBackdrop = true): PromoLook => ({
+export const mistLook = (accent = '#2f5bd3', showBackdrop = true): PromoLook => ({
   ...pastelLook(accent, showBackdrop),
-  background: '#fff8f4',
-  backgroundEdge: '#f7d7c8',
-  ink: '#16121a',
-  muted: '#8d7f80',
+  background: '#f2f6fc',
+  backgroundEdge: '#c9d8f0',
+  ink: '#111a2c',
+  muted: '#7d889e',
 });
 
-export const emberLook = (accent = '#f0435a', showBackdrop = true): PromoLook => ({
+export const forestLook = (accent = '#c4ea5a', showBackdrop = true): PromoLook => ({
   ...inkLook(accent, showBackdrop),
-  background: '#121013',
-  backgroundEdge: '#050405',
-  ink: '#ffffff',
-  muted: '#8f878c',
+  background: '#0f1916',
+  backgroundEdge: '#030706',
+  ink: '#f2f6ee',
+  muted: '#8c968f',
 });

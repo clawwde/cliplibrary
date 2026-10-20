@@ -56,8 +56,8 @@ export const pillFanSchema = z.object({
 export type PillFanProps = z.infer<typeof pillFanSchema>;
 
 export const pillFanDefaults: PillFanProps = {
-  label: 'I create',
-  words: ['designs', 'brands', 'websites', 'animations', 'UI/UX', 'motion', 'logos', 'content'],
+  label: 'We build',
+  words: ['stories', 'spaces', 'products', 'campaigns', 'ideas', 'worlds', 'tools', 'moments'],
   labelType: { font: 'sora', size: 84, weight: 700, tilt: -6, gap: 34 },
   pill: {
     font: 'quicksand',
@@ -65,7 +65,7 @@ export const pillFanDefaults: PillFanProps = {
     weight: 400,
     height: 124,
     padding: 48,
-    color: '#f2264b',
+    color: '#5b4bdb',
     text: '#ffffff',
     shadow: 0.45,
   },
@@ -75,17 +75,17 @@ export const pillFanDefaults: PillFanProps = {
   steps: steps({ delay: 30, interval: 21, moveFrames: 13 }),
   aura: {
     blobs: [
-      blob('#f4637c', 0, 0, 52, 0.55),
-      blob('#f2264b', 104, 104, 58, 0.5),
-      blob('#f7a1b1', 100, -6, 34, 0.35),
+      blob('#8c80ec', 0, 0, 52, 0.55),
+      blob('#5b4bdb', 104, 104, 58, 0.5),
+      blob('#b9cdf6', 100, -6, 34, 0.35),
     ],
     drift: 0.6,
   },
   look: pickerLook({
-    background: '#fbfafa',
-    backgroundEdge: '#f6eef0',
-    ink: '#111113',
-    accent: '#f2264b',
+    background: '#faf9fd',
+    backgroundEdge: '#eeecf8',
+    ink: '#14121f',
+    accent: '#5b4bdb',
     spotlight: 0.3,
   }),
   motion: pickerMotion(),

@@ -29,19 +29,22 @@ export const connectorBadgeSchema = z.object({
 
 export type ConnectorBadge = z.infer<typeof connectorBadgeSchema>;
 
+const CHALK_INK = '#eef2e8';
+const CHALK_DEEP = '#16261f';
+
 const BADGE_COLORS: Record<ConnectorBadgeVariant, Omit<ConnectorBadge, 'variant' | 'word'>> = {
-  'script-swash': { line: '#f7f3ea', fill: '#e8b866', text: '#f7f3ea' },
-  'ruled-caps': { line: '#a8c7f2', fill: '#f2a481', text: '#f7f3ea' },
-  tape: { line: '#f7f3ea', fill: '#d8303b', text: '#fbf6ec' },
-  'frame-box': { line: '#f7f3ea', fill: '#d8303b', text: '#f7f3ea' },
-  'arc-script': { line: '#f7f3ea', fill: '#f2c6a8', text: '#f2c6a8' },
-  ribbon: { line: '#232326', fill: '#f4efe4', text: '#232326' },
-  starburst: { line: '#f7f3ea', fill: '#f4cd48', text: '#1d1d1f' },
-  stamp: { line: '#f7f3ea', fill: '#e8b866', text: '#f7f3ea' },
-  bubble: { line: '#8fc3e8', fill: '#8fc3e8', text: '#f7f3ea' },
-  'arrow-sign': { line: '#f7f3ea', fill: '#93c58f', text: '#1f2a20' },
-  'pop-lines': { line: '#f7f3ea', fill: '#f6d36b', text: '#f6d36b' },
-  ampersand: { line: '#f7f3ea', fill: '#e3b467', text: '#f7f3ea' },
+  'script-swash': { line: CHALK_INK, fill: '#f4a9c0', text: CHALK_INK },
+  'ruled-caps': { line: '#f2dc8c', fill: '#c5b4ee', text: CHALK_INK },
+  tape: { line: CHALK_INK, fill: '#c5b4ee', text: CHALK_DEEP },
+  'frame-box': { line: '#a6d4ec', fill: '#a6d4ec', text: CHALK_INK },
+  'arc-script': { line: CHALK_INK, fill: '#f6bd8e', text: '#f6bd8e' },
+  ribbon: { line: CHALK_DEEP, fill: '#a6d4ec', text: CHALK_DEEP },
+  starburst: { line: CHALK_INK, fill: '#f08a76', text: CHALK_DEEP },
+  stamp: { line: CHALK_INK, fill: '#f4a9c0', text: CHALK_INK },
+  bubble: { line: '#f2dc8c', fill: '#f2dc8c', text: CHALK_INK },
+  'arrow-sign': { line: CHALK_INK, fill: '#c5b4ee', text: CHALK_DEEP },
+  'pop-lines': { line: CHALK_INK, fill: '#a6d4ec', text: '#a6d4ec' },
+  ampersand: { line: CHALK_INK, fill: '#f2dc8c', text: CHALK_INK },
 };
 
 export const connectorBadge = (
@@ -51,17 +54,17 @@ export const connectorBadge = (
 ): ConnectorBadge => ({ variant, word, ...BADGE_COLORS[variant], ...overrides });
 
 export const CONNECTOR_SET: ConnectorBadge[] = [
-  connectorBadge('script-swash', 'and'),
-  connectorBadge('ruled-caps', 'BUT'),
-  connectorBadge('tape', 'THEN'),
-  connectorBadge('frame-box', 'OR'),
-  connectorBadge('arc-script', 'for'),
-  connectorBadge('ribbon', 'PLUS'),
-  connectorBadge('starburst', 'VS'),
-  connectorBadge('stamp', 'TO'),
-  connectorBadge('bubble', 'via'),
-  connectorBadge('arrow-sign', 'YET'),
-  connectorBadge('pop-lines', 'so'),
+  connectorBadge('script-swash', 'also'),
+  connectorBadge('ruled-caps', 'NOR'),
+  connectorBadge('tape', 'NEXT'),
+  connectorBadge('frame-box', 'IF'),
+  connectorBadge('arc-script', 'into'),
+  connectorBadge('ribbon', 'ONTO'),
+  connectorBadge('starburst', 'AT'),
+  connectorBadge('stamp', 'AS'),
+  connectorBadge('bubble', 'per'),
+  connectorBadge('arrow-sign', 'NOW'),
+  connectorBadge('pop-lines', 'too'),
   connectorBadge('ampersand', '&'),
 ];
 
@@ -91,14 +94,14 @@ export const badgeTimingSchema = z.object({
 export type BadgeTiming = z.infer<typeof badgeTimingSchema>;
 
 export const chalkboardLook = (showBackdrop = true): PromoLook => ({
-  ...darkLook('#e8b866', showBackdrop),
-  background: '#2b2b2c',
-  backgroundEdge: '#18181a',
-  ink: '#f7f3ea',
-  muted: '#77777b',
+  ...darkLook('#f2dc8c', showBackdrop),
+  background: '#1f3a33',
+  backgroundEdge: '#0f1f1b',
+  ink: CHALK_INK,
+  muted: '#86a39a',
   grain: 0.22,
   spotlight: 0.12,
   paper: 'grid',
-  paperLine: '#38383a',
+  paperLine: '#2b4840',
   paperSpacing: 144,
 });

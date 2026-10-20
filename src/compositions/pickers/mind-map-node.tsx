@@ -1,7 +1,10 @@
 import type { CSSProperties } from 'react';
 import type { MindNode } from '@/schemas';
 
-const Asterisk = ({ size, color }: { size: number; color: string }) => (
+const SPARKLE_PATH =
+  'M0 -8.5 C0.8 -2.6 2.6 -0.8 8.5 0 C2.6 0.8 0.8 2.6 0 8.5 C-0.8 2.6 -2.6 0.8 -8.5 0 C-2.6 -0.8 -0.8 -2.6 0 -8.5 Z';
+
+const Sparkle = ({ size, color }: { size: number; color: string }) => (
   <svg
     width={size}
     height={size}
@@ -9,18 +12,7 @@ const Asterisk = ({ size, color }: { size: number; color: string }) => (
     style={{ flexShrink: 0 }}
     aria-hidden="true"
   >
-    {[90, 30, 150].map((angle) => (
-      <line
-        key={angle}
-        x1={-8 * Math.cos((angle * Math.PI) / 180)}
-        y1={-8 * Math.sin((angle * Math.PI) / 180)}
-        x2={8 * Math.cos((angle * Math.PI) / 180)}
-        y2={8 * Math.sin((angle * Math.PI) / 180)}
-        stroke={color}
-        strokeWidth={2.6}
-        strokeLinecap="round"
-      />
-    ))}
+    <path d={SPARKLE_PATH} fill={color} />
   </svg>
 );
 
@@ -57,7 +49,7 @@ export const NodePill = ({
     }}
   >
     <div style={{ alignSelf: 'flex-start', paddingTop: titleSize * 0.16 }}>
-      <Asterisk size={Math.round(titleSize * 0.72)} color={ink} />
+      <Sparkle size={Math.round(titleSize * 0.72)} color={ink} />
     </div>
     <div style={{ display: 'flex', flexDirection: 'column' }}>
       <div style={{ fontSize: titleSize, fontWeight: weight, lineHeight: 1.12 }}>{node.title}</div>

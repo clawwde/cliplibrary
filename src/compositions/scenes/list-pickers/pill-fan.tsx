@@ -2,6 +2,7 @@ import { AbsoluteFill, Composition, useCurrentFrame, useVideoConfig } from 'remo
 import { type PillFanProps, pillFanDefaults, pillFanMeta, pillFanSchema } from '@/schemas';
 import { PickerLayer } from '../../pickers/picker-layer';
 import { stepState, wrapIndex } from '../../pickers/steps';
+import { mixColor } from '../../pickers/word-picker-slots';
 import { pickerFonts } from '../../promo/fonts';
 import { accelerate, pixelTween, settle, tween } from '../../promo/timing';
 import type { SceneModule } from '../../scene-module';
@@ -100,7 +101,7 @@ const PillFan = ({
                 opacity: pose.opacity,
                 transform: `rotate(${pose.angle.toFixed(3)}deg)`,
                 transformOrigin: `${radius}px ${radius}px`,
-                boxShadow: `0 ${(pill.height * 0.18).toFixed(1)}px ${(pill.height * 0.32).toFixed(1)}px rgba(70, 10, 24, ${(pill.shadow * 0.4).toFixed(3)})`,
+                boxShadow: `0 ${(pill.height * 0.18).toFixed(1)}px ${(pill.height * 0.32).toFixed(1)}px ${mixColor('transparent', mixColor('#000000', pill.color, 0.29), pill.shadow * 0.4)}`,
                 zIndex: slot + 1000,
               }}
             >

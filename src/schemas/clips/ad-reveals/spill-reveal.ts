@@ -142,8 +142,8 @@ export type SpillRevealProps = z.infer<typeof spillRevealSchema>;
 
 export const spillRevealDefaults: SpillRevealProps = {
   message: {
-    text: 'YOUR\nFEED\nNEEDS US',
-    ink: '#4a4b50',
+    text: 'MAKE\nWAVES\nWITH US',
+    ink: '#2c3a57',
     size: 180,
     tilt: -0.32,
     offsetX: 0.02,
@@ -152,19 +152,19 @@ export const spillRevealDefaults: SpillRevealProps = {
     bleed: 0.45,
   },
   cup: {
-    color: '#f2561d',
-    band: '#fbfaf7',
-    badge: '#2a1d18',
-    mark: 'brew',
-    markColor: '#fbfaf7',
+    color: '#2f5f8c',
+    band: '#f5f1e8',
+    badge: '#f0c14f',
+    mark: 'drift',
+    markColor: '#23476b',
     water: '#d9e2e6',
     x: 0.55,
     z: -0.35,
     turn: 1.2,
   },
   napkin: {
-    paper: '#f7f6f2',
-    wet: '#b4b1aa',
+    paper: '#f8f7f3',
+    wet: '#aeb0ad',
     size: 2.5,
     x: -2.2,
     z: 0.45,
@@ -176,7 +176,7 @@ export const spillRevealDefaults: SpillRevealProps = {
     emboss: 0.008,
   },
   water: {
-    tint: '#4a2c16',
+    tint: '#6e4a1e',
     opacity: 0.55,
     length: 2.6,
     width: 1.15,
@@ -185,13 +185,13 @@ export const spillRevealDefaults: SpillRevealProps = {
     gloss: 0.96,
   },
   table: {
-    wood: '#b08d68',
-    grain: '#7d5e42',
-    highlight: '#c9aa86',
+    wood: '#9c7458',
+    grain: '#5f4232',
+    highlight: '#bd977c',
     grainScale: 1,
     gloss: 0.55,
     edgeZ: 1.75,
-    wall: '#d9dfd2',
+    wall: '#e7ddd0',
     window: 1.4,
   },
   timing: {
@@ -266,7 +266,7 @@ export const spillRevealDefaults: SpillRevealProps = {
     shutterAngle: 180,
     screenGlow: 0,
   },
-  look: lightLook('#f2561d'),
+  look: lightLook('#2f5f8c'),
   motion: defaultMotion({ exit: 'none', exitFrames: 0, float: 0 }),
 };
 
