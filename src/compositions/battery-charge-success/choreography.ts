@@ -68,6 +68,14 @@ const RISE: Record<CableId, Pose> = {
   rightTop: pose(859, 1280, -130, 1200, 1750, -160),
 };
 
+const FALL: Record<CableId, Pose> = {
+  leftTop: pose(230, 1002, -30, -100, 1500, -30),
+  leftBottom: pose(325, 1164, -35, -100, 1760, -40),
+  bottom: pose(559, 1210, -90, 560, 2060),
+  rightBottom: pose(741, 1190, -128, 1180, 1760, -140),
+  rightTop: pose(854, 1040, -150, 1180, 1500, -150),
+};
+
 const plugged = (id: CableId, box: BatteryBox, battery: BatteryChargeSuccessProps['battery']) => {
   const upper = box.top + box.height * battery.upperRow;
   const lower = box.top + box.height * battery.lowerRow;
@@ -101,53 +109,83 @@ const isLeft = (id: CableId) => id === 'leftTop' || id === 'leftBottom';
 
 const isRight = (id: CableId) => id === 'rightTop' || id === 'rightBottom';
 
+type Keyed = [number, Pose][];
+
 const keyedPoses = (
   id: CableId,
   props: BatteryChargeSuccessProps,
   box: BatteryBox,
   duration: number,
-): [number, Pose][] => {
+): { body: Keyed; anchor: Keyed; plugAt: number; unplugAt: number } => {
   const { timing } = props;
   const rest = DANGLE[id];
   const rise = RISE[id];
+  const fall = FALL[id];
   const socket = plugged(id, box, props.battery);
   const side = isLeft(id) ? -1 : isRight(id) ? 1 : 0;
   const approach = side === 0 ? shift(socket, 40, 0) : shift(socket, 70, side * 18);
-  const out = side === 0 ? shift(socket, 46, 4, 10) : shift(socket, 56, side * -16, 24);
-  const fallen = { ...rise, y: rise.y + 110, angle: rise.angle + side * -10 };
+  const near = side === 0 ? shift(socket, 28, 0) : shift(socket, 38, side * 5);
+  const loose = side === 0 ? shift(socket, 16, 2, 4) : shift(socket, 22, side * -8, 8);
+  const out = side === 0 ? shift(socket, 50, 4, 14) : shift(socket, 64, side * -18, 36);
   const plugAt = id === 'bottom' ? timing.bottomPlugFrame : timing.plugFrame;
   const unplugAt = timing.unplugFrame + (id === 'bottom' ? 3 : 0);
   const end = duration - 1;
-  const frames = ascending([
+  const bodyFrames = ascending([
     0,
     timing.riseStart,
-    timing.plugFrame - 26,
-    timing.plugFrame - 12,
+    timing.plugFrame - 34,
+    timing.plugFrame - 16,
     plugAt - 6,
     plugAt,
     unplugAt,
-    unplugAt + 7,
+    unplugAt + 5,
+    unplugAt + 10,
     unplugAt + 15,
-    unplugAt + 24,
+    unplugAt + 22,
     end,
   ]);
-  const poses = [
+  const bodyPoses = [
     rest,
     lift(rest, 34),
     rise,
     approach,
-    side === 0 ? shift(socket, 28, 0) : shift(socket, 38, side * 5),
+    near,
     socket,
     socket,
+    loose,
     out,
-    fallen,
-    lift(rest, 18),
+    fall,
+    lift(rest, 12),
     rest,
   ];
-  return poses.map((value, index) => [frames[index] ?? end, value]);
+  const anchorFrames = ascending([
+    0,
+    timing.riseStart,
+    timing.plugFrame - 34,
+    timing.plugFrame - 6,
+    unplugAt + 2,
+    unplugAt + 16,
+    unplugAt + 26,
+    end,
+  ]);
+  const anchorPoses = [rest, rest, rise, socket, socket, fall, rest, rest];
+  return {
+    body: bodyPoses.map((value, index) => [bodyFrames[index] ?? end, value]),
+    anchor: anchorPoses.map((value, index) => [anchorFrames[index] ?? end, value]),
+    plugAt: bodyFrames[5] ?? 0,
+    unplugAt: bodyFrames[6] ?? duration,
+  };
 };
 
-const POSE_FIELDS = ['x', 'y', 'angle', 'anchorX', 'anchorY', 'anchorAngle'] as const;
+const BODY_FIELDS = ['x', 'y', 'angle'] as const;
+
+const ANCHOR_FIELDS = ['anchorX', 'anchorY', 'anchorAngle'] as const;
+
+const sample = (frame: number, keys: Keyed, name: keyof Pose) =>
+  monotone(
+    frame,
+    keys.map(([at, value]) => [at, value[name]] as Key),
+  );
 
 export const cablePose = (
   id: CableId,
@@ -156,24 +194,18 @@ export const cablePose = (
   box: BatteryBox,
   duration: number,
 ): Pose => {
-  const keys = keyedPoses(id, props, box, duration);
-  const firstFrame = keys[0]?.[0] ?? 0;
-  const lastFrame = keys.at(-1)?.[0] ?? duration;
-  const plugAt = keys[5]?.[0] ?? 0;
-  const unplugAt = keys[6]?.[0] ?? duration;
-  const field = (name: (typeof POSE_FIELDS)[number]) =>
-    monotone(
-      frame,
-      keys.map(([at, value]) => [at, value[name]] as Key),
-    );
-  const result = Object.fromEntries(POSE_FIELDS.map((name) => [name, field(name)])) as Pose;
+  const { body, anchor, plugAt, unplugAt } = keyedPoses(id, props, box, duration);
+  const result = Object.fromEntries([
+    ...BODY_FIELDS.map((name) => [name, sample(frame, body, name)]),
+    ...ANCHOR_FIELDS.map((name) => [name, sample(frame, anchor, name)]),
+  ]) as Pose;
   const free = monotone(frame, [
-    [firstFrame, 1],
-    [keys[1]?.[0] ?? 0, 1],
+    [0, 1],
+    [body[1]?.[0] ?? 0, 1],
     [plugAt - 14, 0],
-    [unplugAt + 4, 0],
-    [unplugAt + 22, 1],
-    [lastFrame, 1],
+    [unplugAt + 6, 0],
+    [unplugAt + 24, 1],
+    [duration - 1, 1],
   ]);
   const seed = CABLE_IDS.indexOf(id) * 1.37;
   const cycle = (frame / duration) * Math.PI * 2;
