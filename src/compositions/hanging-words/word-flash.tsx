@@ -19,9 +19,13 @@ const opacityAt = (frame: number, end: number, ghost: number, ghostFrames: numbe
 };
 
 export const WordFlash = ({ props, frame }: { props: HangingWordsProps; frame: number }) => {
-  const { words, flash, palette } = props;
+  const { words, flash, palette, look } = props;
+  const current = words.reduce((found, word, index) => (frame >= word.start ? index : found), -1);
   return (
     <AbsoluteFill>
+      {look.showBackdrop ? (
+        <AbsoluteFill key={`night-${current}`} style={{ background: palette.night }} />
+      ) : null}
       {words.map((word, index) => {
         const end = words[index + 1]?.start ?? flash.end;
         const isLast = index === words.length - 1;
