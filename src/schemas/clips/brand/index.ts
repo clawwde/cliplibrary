@@ -7,6 +7,7 @@ import {
   dotWordmarkRevealMeta,
   dotWordmarkRevealSchema,
 } from './dot-wordmark-reveal';
+import { puzzleSuccessDefaults, puzzleSuccessMeta, puzzleSuccessSchema } from './puzzle-success';
 
 export const brandClips: ClipModule[] = [
   {
@@ -32,5 +33,11 @@ export const brandClips: ClipModule[] = [
     schema: dotWordmarkRevealSchema,
     defaults: dotWordmarkRevealDefaults,
     meta: dotWordmarkRevealMeta,
+  },
+  {
+    id: 'puzzle-success',
+    schema: puzzleSuccessSchema,
+    defaults: puzzleSuccessDefaults,
+    meta: puzzleSuccessMeta,
   },
 ];
