@@ -31,8 +31,9 @@ const GlowSpot = ({ bubble, glow, id }: { bubble: Bubble; glow: BubbleGlow; id: 
     <defs>
       <radialGradient id={`${id}-spot`}>
         <stop offset="0" stopColor={glow.color} stopOpacity={0.85 * glow.amount} />
-        <stop offset="0.3" stopColor={glow.color} stopOpacity={0.5 * glow.amount} />
-        <stop offset="0.62" stopColor={glow.color} stopOpacity={0.16 * glow.amount} />
+        <stop offset="0.26" stopColor={glow.color} stopOpacity={0.5 * glow.amount} />
+        <stop offset="0.56" stopColor={glow.color} stopOpacity={0.14 * glow.amount} />
+        <stop offset="0.86" stopColor={glow.color} stopOpacity={0} />
         <stop offset="1" stopColor={glow.color} stopOpacity={0} />
       </radialGradient>
       <filter id={`${id}-halo`} x="-50%" y="-100%" width="200%" height="300%">

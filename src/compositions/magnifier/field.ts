@@ -80,7 +80,7 @@ const mulberry = (seed: number) => {
   };
 };
 
-export const textWidth = (word: string, size: number): number => word.length * size * 0.54;
+const textWidth = (word: string, size: number): number => word.length * size * 0.54;
 
 const fits = (bubbles: Bubble[], x: number, y: number, r: number, gap: number): boolean =>
   bubbles.every((other) => Math.hypot(other.x - x, other.y - y) >= other.r + r + gap);

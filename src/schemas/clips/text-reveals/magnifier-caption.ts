@@ -177,8 +177,8 @@ export const magnifierCaptionDefaults: MagnifierCaptionProps = {
     moveInterval: 38.25,
     returnFrame: 420,
     returnFrames: 50,
-    fadeOutFrame: 459,
-    fadeOutStagger: 2,
+    fadeOutFrame: 462,
+    fadeOutStagger: 1.5,
   },
   brand: {
     show: true,
