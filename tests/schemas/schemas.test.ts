@@ -258,6 +258,7 @@ describe('promo clips', () => {
     'phone-swap',
     'phone-scroll',
     'message-arise',
+    'keyboard-typing-cta',
     'laptop-wipe-reveal',
     'website-found-spotlight',
     'phone-wall',

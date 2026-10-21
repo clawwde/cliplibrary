@@ -4,6 +4,11 @@ import {
   incomingCallTeaserMeta,
   incomingCallTeaserSchema,
 } from './incoming-call-teaser';
+import {
+  keyboardTypingCtaDefaults,
+  keyboardTypingCtaMeta,
+  keyboardTypingCtaSchema,
+} from './keyboard-typing-cta';
 import { messageAriseDefaults, messageAriseMeta, messageAriseSchema } from './message-arise';
 import { phoneScrollDefaults, phoneScrollMeta, phoneScrollSchema } from './phone-scroll';
 import { phoneSwapDefaults, phoneSwapMeta, phoneSwapSchema } from './phone-swap';
@@ -27,5 +32,11 @@ export const screenDemosClips: ClipModule[] = [
     schema: incomingCallTeaserSchema,
     defaults: incomingCallTeaserDefaults,
     meta: incomingCallTeaserMeta,
+  },
+  {
+    id: 'keyboard-typing-cta',
+    schema: keyboardTypingCtaSchema,
+    defaults: keyboardTypingCtaDefaults,
+    meta: keyboardTypingCtaMeta,
   },
 ];

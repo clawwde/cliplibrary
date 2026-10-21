@@ -58,6 +58,7 @@ import type { PhonePedestalProps } from './clips/phone-reveals/phone-pedestal';
 import type { PhoneSpinInProps } from './clips/phone-reveals/phone-spin-in';
 import type { PhoneTurnaroundProps } from './clips/phone-reveals/phone-turnaround';
 import type { IncomingCallTeaserProps } from './clips/screen-demos/incoming-call-teaser';
+import type { KeyboardTypingCtaProps } from './clips/screen-demos/keyboard-typing-cta';
 import type { MessageAriseProps } from './clips/screen-demos/message-arise';
 import type { PhoneScrollProps } from './clips/screen-demos/phone-scroll';
 import type { PhoneSwapProps } from './clips/screen-demos/phone-swap';
@@ -109,6 +110,7 @@ export interface ClipPropsMap {
   'phone-spin-in': PhoneSpinInProps;
   'phone-swap': PhoneSwapProps;
   'message-arise': MessageAriseProps;
+  'keyboard-typing-cta': KeyboardTypingCtaProps;
   'laptop-wipe-reveal': LaptopWipeRevealProps;
   'website-found-spotlight': WebsiteFoundSpotlightProps;
   'phone-turnaround': PhoneTurnaroundProps;
