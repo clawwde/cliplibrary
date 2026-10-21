@@ -25,7 +25,7 @@ const TARGET_PATH: Point[] = [
   { x: -42, y: 599 },
   { x: -480, y: 615 },
   { x: -571, y: 185 },
-  { x: -750, y: -215 },
+  { x: -330, y: -100 },
 ];
 
 const LENS_PATH: LensPose[] = [
@@ -48,10 +48,10 @@ const VIEW = { width: 1080, height: 1920 };
 export const captionWords = (text: string): string[] =>
   text.split(/\s+/).filter((word) => word.length > 0);
 
-export const targetPoint = (index: number): Point => {
+export const targetPoint = (index: number, spread: number): Point => {
   const base = TARGET_PATH[index % TARGET_PATH.length] ?? { x: 0, y: 0 };
   const lap = Math.floor(index / TARGET_PATH.length);
-  return { x: base.x, y: base.y + lap * 1900 };
+  return { x: base.x * spread, y: (base.y + lap * 1900) * spread };
 };
 
 export const idlePose = (lens: MagnifierCaptionProps['lens']): LensPose => ({
@@ -91,9 +91,9 @@ type LensProps = MagnifierCaptionProps['lens'];
 const worldBounds = (field: FieldProps, lens: LensProps, count: number) => {
   const keys = [{ point: { x: 0, y: 0 }, pose: idlePose(lens) }];
   for (let index = 0; index < count; index++) {
-    keys.push({ point: targetPoint(index), pose: lensPose(index, lens) });
+    keys.push({ point: targetPoint(index, field.spread), pose: lensPose(index, lens) });
   }
-  const margin = field.maxRadius + field.drift * 2 + 60;
+  const margin = field.maxRadius + field.drift * 60 + 60;
   const xs = keys.flatMap(({ point, pose }) => [point.x - pose.x, point.x - pose.x + VIEW.width]);
   const ys = keys.flatMap(({ point, pose }) => [point.y - pose.y, point.y - pose.y + VIEW.height]);
   return {
@@ -120,7 +120,7 @@ export const buildField = (field: FieldProps, text: string, lens: LensProps): Bu
     target: -1,
   });
   words.forEach((word, index) => {
-    const point = targetPoint(index);
+    const point = targetPoint(index, field.spread);
     const r = Math.max(
       field.targetRadius * (0.82 + random() * 0.36),
       textWidth(word, field.wordSize) / 2 + 40,
@@ -133,7 +133,8 @@ export const buildField = (field: FieldProps, text: string, lens: LensProps): Bu
   });
   const bounds = worldBounds(field, lens, words.length);
   const minRadius = Math.min(field.minRadius, field.maxRadius);
-  const attempts = 9000;
+  const area = (bounds.right - bounds.left) * (bounds.bottom - bounds.top);
+  const attempts = Math.min(40000, Math.round(area / 1500));
   for (let attempt = 0; attempt < attempts; attempt++) {
     const progress = (attempt / attempts) ** 0.6;
     const r = field.maxRadius - (field.maxRadius - minRadius) * progress * (0.85 + random() * 0.15);

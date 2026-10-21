@@ -67,7 +67,9 @@ export const TypedCaption = ({
                 {word.chars.map((glyph) => (
                   <span
                     key={glyph.id}
-                    style={{ opacity: charOpacity(frame, start, glyph.order, props) }}
+                    style={{
+                      opacity: charOpacity(frame, start, glyph.order, word.chars.length, props),
+                    }}
                   >
                     {glyph.char}
                   </span>
