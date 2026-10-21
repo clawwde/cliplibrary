@@ -1,45 +1,38 @@
 import { AbsoluteFill } from 'remotion';
 import type { WebsiteFoundSpotlightProps } from '@/schemas';
-import { roundedFont } from '../promo/fonts';
-import { DotMark } from './dot-mark';
+import { didoneFont, displayFont } from '../promo/fonts';
+import { RingMark } from './ring-mark';
 
 const lines = (text: string): string[] => text.split('\n');
 
 export const PosterCopy = ({ props }: { props: WebsiteFoundSpotlightProps }) => {
   const { copy, type, palette } = props;
-  const contactLine = Math.round(type.contactSize * 1.3);
+  const contactLine = Math.round(type.contactSize * 1.35);
   return (
-    <AbsoluteFill style={{ fontFamily: roundedFont, pointerEvents: 'none' }}>
-      <div style={{ position: 'absolute', left: type.insetX - 10, top: type.markTop }}>
-        <DotMark
+    <AbsoluteFill style={{ fontFamily: displayFont, pointerEvents: 'none' }}>
+      <div style={{ position: 'absolute', left: type.insetX, top: type.markTop }}>
+        <RingMark
           letter={copy.markLetter}
           size={type.markSize}
-          dots={palette.mark}
-          frame={palette.highlight}
+          ink={palette.mark}
+          ring={palette.highlight}
         />
       </div>
       <div
         style={{
           position: 'absolute',
-          right: type.insetX + 18,
-          top: type.markTop + 28,
-          display: 'flex',
-          alignItems: 'stretch',
-          gap: 14,
+          right: type.insetX,
+          top: type.markTop + type.markSize / 2 - contactLine,
+          textAlign: 'right',
+          color: palette.body,
+          fontSize: type.contactSize,
+          lineHeight: `${contactLine}px`,
+          fontWeight: 500,
+          letterSpacing: '0.01em',
         }}
       >
-        <div style={{ width: 3, background: palette.contact }} />
-        <div
-          style={{
-            color: palette.contact,
-            fontSize: type.contactSize,
-            lineHeight: `${contactLine}px`,
-            fontWeight: 500,
-          }}
-        >
-          <div>{copy.email}</div>
-          <div>{copy.website}</div>
-        </div>
+        <div style={{ color: palette.contact, fontWeight: 600 }}>{copy.website}</div>
+        <div style={{ opacity: 0.72 }}>{copy.email}</div>
       </div>
       <div style={{ position: 'absolute', left: type.insetX, top: type.headlineTop }}>
         {lines(copy.headline).map((line) => (
@@ -49,8 +42,8 @@ export const PosterCopy = ({ props }: { props: WebsiteFoundSpotlightProps }) => 
               color: palette.headline,
               fontSize: type.headlineSize,
               fontWeight: 600,
-              lineHeight: 1.06,
-              letterSpacing: '-0.01em',
+              lineHeight: 1.04,
+              letterSpacing: '-0.02em',
               whiteSpace: 'pre',
             }}
           >
@@ -60,16 +53,24 @@ export const PosterCopy = ({ props }: { props: WebsiteFoundSpotlightProps }) => 
         <div
           style={{
             color: palette.highlight,
+            fontFamily: didoneFont,
             fontSize: type.highlightSize,
-            fontWeight: 700,
-            lineHeight: 1.12,
-            letterSpacing: '-0.01em',
-            marginLeft: -4,
+            fontWeight: 500,
+            lineHeight: 1,
+            letterSpacing: '-0.02em',
+            marginLeft: -6,
+            marginTop: type.highlightSize * 0.02,
           }}
         >
           {copy.highlight}
         </div>
-        <div style={{ marginTop: type.bodySize * 2.3, marginLeft: 8 }}>
+        <div
+          style={{
+            marginTop: type.bodySize * 1.4,
+            paddingLeft: 22,
+            borderLeft: `3px solid ${palette.highlight}`,
+          }}
+        >
           {lines(copy.body).map((line) => (
             <div
               key={line}
@@ -77,7 +78,7 @@ export const PosterCopy = ({ props }: { props: WebsiteFoundSpotlightProps }) => 
                 color: palette.body,
                 fontSize: type.bodySize,
                 fontWeight: 500,
-                lineHeight: 1.45,
+                lineHeight: 1.4,
                 whiteSpace: 'pre',
               }}
             >

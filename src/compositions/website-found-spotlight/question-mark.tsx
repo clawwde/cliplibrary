@@ -1,12 +1,12 @@
 import { useMemo } from 'react';
 import * as THREE from 'three';
 import { useCanvasFont, useCanvasTexture } from '../promo/desk/canvas-texture';
-import { roundedFont, roundedFontReady } from '../promo/fonts';
+import { didoneFont, didoneFontReady } from '../promo/fonts';
 
 const SIZE = 512;
 
 const drawQuestion = (context: CanvasRenderingContext2D): void => {
-  context.font = `700 ${SIZE * 0.8}px "${roundedFont}"`;
+  context.font = `500 ${SIZE * 0.86}px "${didoneFont}"`;
   context.textAlign = 'center';
   context.textBaseline = 'middle';
   context.fillStyle = '#ffffff';
@@ -34,7 +34,7 @@ export const QuestionMark = ({
   opacity: number;
   color: string;
 }) => {
-  useCanvasFont(`700 ${SIZE * 0.8}px "${roundedFont}"`, roundedFontReady);
+  useCanvasFont(`500 ${SIZE * 0.86}px "${didoneFont}"`, didoneFontReady);
   const map = useCanvasTexture(SIZE, SIZE, drawQuestion, 'question');
   const material = useMemo(
     () =>

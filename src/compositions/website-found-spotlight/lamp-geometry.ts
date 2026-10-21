@@ -8,15 +8,18 @@ export const SHADE_DEPTH = 0.16 * SHADE_SIZE;
 
 const shadeProfile = (): THREE.Vector2[] =>
   [
-    new THREE.Vector2(0.0001, 0.46),
-    new THREE.Vector2(0.08, 0.46),
-    new THREE.Vector2(0.097, 0.448),
-    new THREE.Vector2(0.1, 0.43),
-    new THREE.Vector2(0.1, 0.05),
-    new THREE.Vector2(0.12, 0.034),
-    new THREE.Vector2(0.188, 0.026),
-    new THREE.Vector2(0.201, 0.01),
-    new THREE.Vector2(0.2, -0.15),
+    new THREE.Vector2(0.0001, 0.3),
+    new THREE.Vector2(0.03, 0.3),
+    new THREE.Vector2(0.042, 0.29),
+    new THREE.Vector2(0.044, 0.22),
+    new THREE.Vector2(0.058, 0.2),
+    new THREE.Vector2(0.1, 0.15),
+    new THREE.Vector2(0.142, 0.08),
+    new THREE.Vector2(0.172, 0.0),
+    new THREE.Vector2(0.192, -0.08),
+    new THREE.Vector2(0.2, -0.135),
+    new THREE.Vector2(0.212, -0.152),
+    new THREE.Vector2(0.206, -0.16),
     new THREE.Vector2(0.19, -0.16),
   ].map((point) => point.multiplyScalar(SHADE_SIZE));
 
