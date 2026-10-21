@@ -48,6 +48,7 @@ export * from './clips/list-pickers/word-picker';
 export * from './clips/list-pickers/year-dial';
 export * from './clips/overlays/film-dust';
 export * from './clips/overlays/floating-cards';
+export * from './clips/phone-layouts/charge-compare';
 export * from './clips/phone-layouts/phone-fan';
 export * from './clips/phone-layouts/phone-pair';
 export * from './clips/phone-layouts/phone-wall';
