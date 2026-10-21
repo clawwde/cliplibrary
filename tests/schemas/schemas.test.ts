@@ -282,6 +282,7 @@ describe('promo clips', () => {
     'printer-pages',
     'helicopter-unveil',
     'problem-strikeout',
+    'neon-sign-flicker',
     'spill-reveal',
     'crumpled-paper-reveal',
     'word-picker',
@@ -301,6 +302,8 @@ describe('promo clips', () => {
     'magnifier-caption',
     'chunky-type-stack',
     'branding-is-ticker',
+    'domino-words',
+    'scroller-callout',
   ];
 
   it('validates every promo default against its schema', () => {

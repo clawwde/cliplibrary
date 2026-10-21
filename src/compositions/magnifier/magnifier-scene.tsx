@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { AbsoluteFill, useCurrentFrame } from 'remotion';
 import type { MagnifierCaptionProps } from '@/schemas';
-import { bodyFont } from '../promo/fonts';
+import { bodyFont, didoneFont } from '../promo/fonts';
 import { BrandLine } from './brand-line';
 import { type BubbleGlow, BubbleLayer } from './bubble-layer';
 import { fieldState, glowFor } from './choreography';
@@ -43,7 +43,12 @@ export const MagnifierScene = (props: MagnifierCaptionProps) => {
   return (
     <AbsoluteFill>
       {props.look.showBackdrop ? (
-        <AbsoluteFill style={{ backgroundColor: props.look.background }} />
+        <AbsoluteFill
+          style={{
+            backgroundColor: props.look.background,
+            backgroundImage: `radial-gradient(ellipse 70% 46% at 50% 52%, ${props.look.spotlight}, ${props.look.background})`,
+          }}
+        />
       ) : null}
       <AbsoluteFill
         style={{
@@ -57,6 +62,7 @@ export const MagnifierScene = (props: MagnifierCaptionProps) => {
           offset={state.offset}
           idPrefix="outer"
           style={{
+            shape: field.shape,
             ring: field.ring,
             word: field.word,
             lineWidth: field.lineWidth,
@@ -79,6 +85,7 @@ export const MagnifierScene = (props: MagnifierCaptionProps) => {
           glowOf={glowOf}
           idPrefix="lens"
           style={{
+            shape: field.shape,
             ring: lens.ring,
             word: lens.word,
             lineWidth: lens.lineWidth,
@@ -88,7 +95,11 @@ export const MagnifierScene = (props: MagnifierCaptionProps) => {
         />
       </AbsoluteFill>
       <MagnifierGlass pose={state.lens} lens={lens} />
-      <TypedCaption frame={frame} props={props} font={bodyFont} />
+      <TypedCaption
+        frame={frame}
+        props={props}
+        font={props.caption.font === 'serif' ? didoneFont : bodyFont}
+      />
       {props.brand.show ? <BrandLine brand={props.brand} font={bodyFont} /> : null}
     </AbsoluteFill>
   );
