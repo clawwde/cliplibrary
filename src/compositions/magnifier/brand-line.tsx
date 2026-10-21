@@ -27,8 +27,14 @@ export const BrandLine = ({
       }}
     >
       <svg width={mark} height={mark} viewBox="0 0 40 40" aria-hidden="true">
-        <circle cx={20} cy={20} r={17} fill="none" stroke={brand.mark} strokeWidth={3.2} />
-        <circle cx={20} cy={20} r={7} fill={brand.mark} />
+        <polygon
+          points="37,20 28.5,34.7 11.5,34.7 3,20 11.5,5.3 28.5,5.3"
+          fill="none"
+          stroke={brand.mark}
+          strokeWidth={3.2}
+          strokeLinejoin="round"
+        />
+        <circle cx={20} cy={20} r={5.5} fill={brand.mark} />
       </svg>
       <span>{brand.url}</span>
     </div>
