@@ -16,10 +16,12 @@ import type { HandwrittenNoteProps } from './clips/hand-drawn/handwritten-note';
 import type { ScribbleCaptionProps } from './clips/hand-drawn/scribble-caption';
 import type { BrandingIsTickerProps } from './clips/kinetic-type/branding-is-ticker';
 import type { ChunkyTypeStackProps } from './clips/kinetic-type/chunky-type-stack';
+import type { DominoWordsProps } from './clips/kinetic-type/domino-words';
 import type { EchoStackProps } from './clips/kinetic-type/echo-stack';
 import type { GridStackProps } from './clips/kinetic-type/grid-stack';
 import type { LensOrbitProps } from './clips/kinetic-type/lens-orbit';
 import type { OutlineMarqueeProps } from './clips/kinetic-type/outline-marquee';
+import type { ScrollerCalloutProps } from './clips/kinetic-type/scroller-callout';
 import type { StickerStackProps } from './clips/kinetic-type/sticker-stack';
 import type { WordBuildProps } from './clips/kinetic-type/word-build';
 import type { WordFieldProps } from './clips/kinetic-type/word-field';
@@ -48,12 +50,14 @@ import type { PhoneScrollProps } from './clips/screen-demos/phone-scroll';
 import type { PhoneSwapProps } from './clips/screen-demos/phone-swap';
 import type { LetterFlipProps } from './clips/text-reveals/letter-flip';
 import type { MagnifierCaptionProps } from './clips/text-reveals/magnifier-caption';
+import type { NeonSignFlickerProps } from './clips/text-reveals/neon-sign-flicker';
 import type { NumberCounterProps } from './clips/text-reveals/number-counter';
 import type { PrinterPagesProps } from './clips/text-reveals/printer-pages';
 import type { TypewriterProps } from './clips/text-reveals/typewriter';
 import type { SceneTransitionProps } from './clips/transitions/scene-transition';
 
 export interface ClipPropsMap {
+  'neon-sign-flicker': NeonSignFlickerProps;
   'word-picker': WordPickerProps;
   'pill-fan': PillFanProps;
   'menu-stack': MenuStackProps;
@@ -99,6 +103,8 @@ export interface ClipPropsMap {
   'chalk-badges-reel': ChalkBadgesReelProps;
   'chunky-type-stack': ChunkyTypeStackProps;
   'branding-is-ticker': BrandingIsTickerProps;
+  'domino-words': DominoWordsProps;
+  'scroller-callout': ScrollerCalloutProps;
   'film-dust': FilmDustProps;
   'brand-reveal': BrandRevealProps;
   'cta-end-card': CtaEndCardProps;

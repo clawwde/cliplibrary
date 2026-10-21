@@ -1,10 +1,12 @@
 import type { SceneModule } from '../../scene-module';
 import { brandingIsTickerScene } from './branding-is-ticker';
 import { chunkyTypeStackScene } from './chunky-type-stack';
+import { dominoWordsScene } from './domino-words';
 import { echoStackScene } from './echo-stack';
 import { gridStackScene } from './grid-stack';
 import { lensOrbitScene } from './lens-orbit';
 import { outlineMarqueeScene } from './outline-marquee';
+import { scrollerCalloutScene } from './scroller-callout';
 import { stickerStackScene } from './sticker-stack';
 import { wordBuildScene } from './word-build';
 import { wordFieldScene } from './word-field';
@@ -21,4 +23,6 @@ export const kineticTypeScenes: SceneModule[] = [
   stickerStackScene,
   chunkyTypeStackScene,
   brandingIsTickerScene,
+  dominoWordsScene,
+  scrollerCalloutScene,
 ];

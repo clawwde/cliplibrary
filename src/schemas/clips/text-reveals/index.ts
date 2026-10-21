@@ -5,6 +5,11 @@ import {
   magnifierCaptionMeta,
   magnifierCaptionSchema,
 } from './magnifier-caption';
+import {
+  neonSignFlickerDefaults,
+  neonSignFlickerMeta,
+  neonSignFlickerSchema,
+} from './neon-sign-flicker';
 import { numberCounterDefaults, numberCounterMeta, numberCounterSchema } from './number-counter';
 import { printerPagesDefaults, printerPagesMeta, printerPagesSchema } from './printer-pages';
 import { typewriterDefaults, typewriterMeta, typewriterSchema } from './typewriter';
@@ -39,5 +44,11 @@ export const textRevealsClips: ClipModule[] = [
     schema: magnifierCaptionSchema,
     defaults: magnifierCaptionDefaults,
     meta: magnifierCaptionMeta,
+  },
+  {
+    id: 'neon-sign-flicker',
+    schema: neonSignFlickerSchema,
+    defaults: neonSignFlickerDefaults,
+    meta: neonSignFlickerMeta,
   },
 ];
