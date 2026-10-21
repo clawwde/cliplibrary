@@ -100,7 +100,11 @@ describe('gallery filters', () => {
     const categories = facetCounts(items, filters, 'category', (meta) => [meta.category]);
     expect(categories.get('kinetic-type')).toBeGreaterThan(0);
     const themes = facetCounts(items, filters, 'theme', (meta) => [meta.theme]);
-    expect(themes.get('dark')).toBe(1);
+    const darkPhoneLayouts = CLIP_REGISTRY.filter(
+      (meta) => meta.category === 'phone-layouts' && meta.theme === 'dark',
+    ).length;
+    expect(darkPhoneLayouts).toBeGreaterThan(0);
+    expect(themes.get('dark')).toBe(darkPhoneLayouts);
   });
 
   it('reports active filters and formats durations', () => {

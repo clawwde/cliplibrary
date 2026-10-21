@@ -45,6 +45,7 @@ import type { WordPickerProps } from './clips/list-pickers/word-picker';
 import type { YearDialProps } from './clips/list-pickers/year-dial';
 import type { FilmDustProps } from './clips/overlays/film-dust';
 import type { FloatingCardsProps } from './clips/overlays/floating-cards';
+import type { ChargeCompareProps } from './clips/phone-layouts/charge-compare';
 import type { PhoneFanProps } from './clips/phone-layouts/phone-fan';
 import type { PhonePairProps } from './clips/phone-layouts/phone-pair';
 import type { PhoneWallProps } from './clips/phone-layouts/phone-wall';
@@ -96,6 +97,7 @@ export interface ClipPropsMap {
   'handwritten-note': HandwrittenNoteProps;
   'phone-fan': PhoneFanProps;
   'phone-pair': PhonePairProps;
+  'charge-compare': ChargeCompareProps;
   'phone-scroll': PhoneScrollProps;
   'phone-spin-in': PhoneSpinInProps;
   'phone-swap': PhoneSwapProps;
