@@ -286,6 +286,7 @@ describe('promo clips', () => {
     'neon-sign-flicker',
     'spill-reveal',
     'crumpled-paper-reveal',
+    'battery-charge-success',
     'word-picker',
     'pill-fan',
     'menu-stack',
