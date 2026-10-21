@@ -6,6 +6,7 @@ import { comingSoonFlipsScene } from './coming-soon-flips';
 import { dominoWordsScene } from './domino-words';
 import { echoStackScene } from './echo-stack';
 import { gridStackScene } from './grid-stack';
+import { hangingWordsScene } from './hanging-words';
 import { lensOrbitScene } from './lens-orbit';
 import { outlineMarqueeScene } from './outline-marquee';
 import { scrollerCalloutScene } from './scroller-callout';
@@ -21,6 +22,7 @@ export const kineticTypeScenes: SceneModule[] = [
   outlineMarqueeScene,
   echoStackScene,
   gridStackScene,
+  hangingWordsScene,
   lensOrbitScene,
   wordFieldScene,
   stickerStackScene,

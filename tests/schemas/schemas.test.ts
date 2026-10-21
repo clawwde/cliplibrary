@@ -277,6 +277,7 @@ describe('promo clips', () => {
     'typewriter',
     'word-build',
     'word-punch',
+    'hanging-words',
     'scribble-caption',
     'echo-stack',
     'outline-marquee',

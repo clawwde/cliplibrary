@@ -30,6 +30,7 @@ export * from './clips/kinetic-type/coming-soon-flips';
 export * from './clips/kinetic-type/domino-words';
 export * from './clips/kinetic-type/echo-stack';
 export * from './clips/kinetic-type/grid-stack';
+export * from './clips/kinetic-type/hanging-words';
 export * from './clips/kinetic-type/lens-orbit';
 export * from './clips/kinetic-type/outline-marquee';
 export * from './clips/kinetic-type/scroller-callout';
