@@ -102,7 +102,10 @@ export const Cables = ({ props, frame, duration, box, phase, height }: CablesPro
   const visible = CABLE_IDS.filter((id) => props.cables[id].show);
   const cables = visible.map((id, index) => {
     const pose = cablePose(id, frame, props, box, duration);
-    const points = cablePoints(pose, frame, cableShape.wave, index * 2.1 + 0.4);
+    const points = cablePoints(pose, frame, cableShape.wave, index * 2.1 + 0.4, {
+      width: box.centerX * 2,
+      height,
+    });
     return { id, pose, points };
   });
   const plugGlow = look.plugGlow;

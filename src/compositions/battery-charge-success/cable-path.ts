@@ -23,12 +23,33 @@ const bezier = (a: number, b: number, c: number, d: number, t: number) => {
 
 const radians = (degrees: number) => (degrees * Math.PI) / 180;
 
+const MARGIN = 70;
+
+const offscreen = (
+  x: number,
+  y: number,
+  width: number,
+  height: number,
+): { x: number; y: number } => {
+  const centerX = width / 2;
+  const centerY = height / 2;
+  const dx = x - centerX;
+  const dy = y - centerY;
+  const reachX = dx === 0 ? Number.POSITIVE_INFINITY : (centerX + MARGIN) / Math.abs(dx);
+  const reachY = dy === 0 ? Number.POSITIVE_INFINITY : (centerY + MARGIN) / Math.abs(dy);
+  const scale = Math.max(1, Math.min(reachX, reachY));
+  return { x: centerX + dx * scale, y: centerY + dy * scale };
+};
+
 export const cablePoints = (
-  pose: Pose,
+  rawPose: Pose,
   frame: number,
   wave: number,
   seed: number,
+  size: { width: number; height: number },
 ): CablePoint[] => {
+  const anchor = offscreen(rawPose.anchorX, rawPose.anchorY, size.width, size.height);
+  const pose = { ...rawPose, anchorX: anchor.x, anchorY: anchor.y };
   const ux = Math.cos(radians(pose.angle));
   const uy = Math.sin(radians(pose.angle));
   const tailX = pose.x - ux * TAIL;

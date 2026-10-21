@@ -16,7 +16,7 @@ export type Pose = {
 
 export const PLUG = { connector: 40, body: 73, neck: 14, width: 36 } as const;
 
-export const PLUG_DEPTH = PLUG.connector - 3;
+const PLUG_DEPTH = PLUG.connector - 3;
 
 export const TAIL = PLUG.connector + PLUG.body + PLUG.neck;
 
