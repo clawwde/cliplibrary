@@ -29,7 +29,15 @@ const sparkWindow = (frame: number, props: BatteryChargeSuccessProps) => {
   return clamp01((frame - start) / 12) * clamp01((end - frame) / 14);
 };
 
-const Plug = ({ pose, props }: { pose: Pose; props: BatteryChargeSuccessProps }) => {
+const Plug = ({
+  pose,
+  props,
+  band,
+}: {
+  pose: Pose;
+  props: BatteryChargeSuccessProps;
+  band: string;
+}) => {
   const { look } = props;
   const half = PLUG.width / 2;
   const bodyStart = -PLUG.connector - PLUG.body;
@@ -57,6 +65,23 @@ const Plug = ({ pose, props }: { pose: Pose; props: BatteryChargeSuccessProps })
         fill={look.plug}
         stroke={look.plugEdge}
         strokeWidth={1.5}
+      />
+      <rect
+        x={bodyStart + PLUG.body * 0.6}
+        y={-half + 4}
+        width={9}
+        height={PLUG.width - 8}
+        rx={2}
+        fill={band}
+      />
+      <rect
+        x={bodyStart + PLUG.body * 0.6 + 14}
+        y={-half + 4}
+        width={4}
+        height={PLUG.width - 8}
+        rx={2}
+        fill={band}
+        opacity={0.55}
       />
     </g>
   );
@@ -87,6 +112,7 @@ const Label = ({
         dominantBaseline="central"
         fontFamily={labelFont}
         fontSize={labels.size}
+        fontWeight={500}
         fill={look.ink}
       >
         <tspan fill={dot}>•</tspan>
@@ -190,7 +216,12 @@ export const Cables = ({ props, frame, duration, box, phase, height }: CablesPro
         }}
       >
         {cables.map(({ id, pose }) => (
-          <Plug key={id} pose={pose} props={props} />
+          <Plug
+            key={id}
+            pose={pose}
+            props={props}
+            band={mixHex(props.charge.empty, props.cables[id].spark, phase)}
+          />
         ))}
       </g>
       <g

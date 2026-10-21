@@ -4,6 +4,8 @@ import { Bubbles } from './bubbles';
 import { labelFont } from './cable-path';
 import type { BatteryBox } from './choreography';
 import { mixHex, mixThree, rgba, smoothstep } from './curves';
+import { boltPath, boltStrength, Ticks } from './gauge';
+import { CompletionRing } from './ring';
 
 type BatteryProps = {
   props: BatteryChargeSuccessProps;
@@ -77,6 +79,9 @@ export const Battery = ({ props, frame, box, level, phase, width, height }: Batt
   const percentText = `${Math.round(level * 100)}${props.copy.suffix}`;
   const percentY = box.top + box.height * battery.percentY;
   const baseHeight = innerHeight * 0.42;
+  const bolt = boltPath(box.centerX, box.top + box.height * battery.boltY, battery.boltSize);
+  const boltAlpha = boltStrength(frame, props.timing);
+  const boltColor = mixHex(glowColor, look.ink, 0.25);
   const percent = (fill: string, clip?: string) => (
     <text
       x={box.centerX}
@@ -88,6 +93,7 @@ export const Battery = ({ props, frame, box, level, phase, width, height }: Batt
       fontSize={battery.percentSize}
       fill={fill}
       clipPath={clip}
+      style={{ fontVariantNumeric: 'tabular-nums' }}
     >
       {percentText}
     </text>
@@ -157,12 +163,31 @@ export const Battery = ({ props, frame, box, level, phase, width, height }: Batt
           fill={mixHex(glowColor, '#ffffff', 0.15)}
           opacity={0.9 * charge.baseGlow}
         />
+        {battery.boltSize > 0 ? (
+          <path
+            d={bolt}
+            fill={rgba(boltColor, boltAlpha)}
+            style={{ filter: `drop-shadow(0 0 10px ${rgba(glowColor, 0.7 * boltAlpha)})` }}
+          />
+        ) : null}
         {percent(look.ink)}
-        <path d={back} fill={rgba(mixHex(top, '#7a5cff', 0.35), liquid.backWave)} />
+        <path d={back} fill={rgba(mixHex(top, liquid.backTint, 0.35), liquid.backWave)} />
         <path d={front} fill={`url(#battery-fill-${uid})`} />
+        <g clipPath={`url(#battery-liquid-${uid})`}>
+          {battery.boltSize > 0 ? (
+            <path d={bolt} fill={rgba(charge.percentInLiquid, 0.42)} />
+          ) : null}
+        </g>
         {percent(rgba(charge.percentInLiquid, 0.62), `url(#battery-liquid-${uid})`)}
+        <Ticks props={props} inner={inner} fillable={fillable} level={level} color={look.ink} />
         <Bubbles props={props} frame={frame} inner={inner} surface={surface} level={level} />
       </g>
+      <CompletionRing
+        props={props}
+        frame={frame}
+        box={box}
+        color={mixHex(charge.charged, '#ffffff', 0.2)}
+      />
       <rect
         x={box.left}
         y={box.top}
