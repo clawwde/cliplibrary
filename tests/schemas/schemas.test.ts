@@ -302,6 +302,8 @@ describe('promo clips', () => {
     'magnifier-caption',
     'chunky-type-stack',
     'branding-is-ticker',
+    'domino-words',
+    'scroller-callout',
   ];
 
   it('validates every promo default against its schema', () => {
