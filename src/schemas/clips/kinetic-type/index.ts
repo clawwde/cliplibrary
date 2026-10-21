@@ -1,9 +1,15 @@
 import type { ClipModule } from '../../registry';
 import {
+  brandingIsTickerDefaults,
+  brandingIsTickerMeta,
+  brandingIsTickerSchema,
+} from './branding-is-ticker';
+import {
   chunkyTypeStackDefaults,
   chunkyTypeStackMeta,
   chunkyTypeStackSchema,
 } from './chunky-type-stack';
+import { dominoWordsDefaults, dominoWordsMeta, dominoWordsSchema } from './domino-words';
 import { echoStackDefaults, echoStackMeta, echoStackSchema } from './echo-stack';
 import { gridStackDefaults, gridStackMeta, gridStackSchema } from './grid-stack';
 import { lensOrbitDefaults, lensOrbitMeta, lensOrbitSchema } from './lens-orbit';
@@ -12,6 +18,11 @@ import {
   outlineMarqueeMeta,
   outlineMarqueeSchema,
 } from './outline-marquee';
+import {
+  scrollerCalloutDefaults,
+  scrollerCalloutMeta,
+  scrollerCalloutSchema,
+} from './scroller-callout';
 import { stickerStackDefaults, stickerStackMeta, stickerStackSchema } from './sticker-stack';
 import { wordBuildDefaults, wordBuildMeta, wordBuildSchema } from './word-build';
 import { wordFieldDefaults, wordFieldMeta, wordFieldSchema } from './word-field';
@@ -41,5 +52,23 @@ export const kineticTypeClips: ClipModule[] = [
     schema: chunkyTypeStackSchema,
     defaults: chunkyTypeStackDefaults,
     meta: chunkyTypeStackMeta,
+  },
+  {
+    id: 'branding-is-ticker',
+    schema: brandingIsTickerSchema,
+    defaults: brandingIsTickerDefaults,
+    meta: brandingIsTickerMeta,
+  },
+  {
+    id: 'domino-words',
+    schema: dominoWordsSchema,
+    defaults: dominoWordsDefaults,
+    meta: dominoWordsMeta,
+  },
+  {
+    id: 'scroller-callout',
+    schema: scrollerCalloutSchema,
+    defaults: scrollerCalloutDefaults,
+    meta: scrollerCalloutMeta,
   },
 ];
