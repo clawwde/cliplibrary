@@ -52,6 +52,7 @@ export * from './clips/screen-demos/phone-scroll';
 export * from './clips/screen-demos/phone-swap';
 export * from './clips/text-reveals/letter-flip';
 export * from './clips/text-reveals/magnifier-caption';
+export * from './clips/text-reveals/neon-sign-flicker';
 export * from './clips/text-reveals/number-counter';
 export * from './clips/text-reveals/printer-pages';
 export * from './clips/text-reveals/typewriter';
