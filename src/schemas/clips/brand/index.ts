@@ -2,6 +2,11 @@ import type { ClipModule } from '../../registry';
 import { appIconRevealDefaults, appIconRevealMeta, appIconRevealSchema } from './app-icon-reveal';
 import { brandRevealDefaults, brandRevealMeta, brandRevealSchema } from './brand-reveal';
 import { ctaEndCardDefaults, ctaEndCardMeta, ctaEndCardSchema } from './cta-end-card';
+import {
+  dotWordmarkRevealDefaults,
+  dotWordmarkRevealMeta,
+  dotWordmarkRevealSchema,
+} from './dot-wordmark-reveal';
 
 export const brandClips: ClipModule[] = [
   {
@@ -21,5 +26,11 @@ export const brandClips: ClipModule[] = [
     schema: ctaEndCardSchema,
     defaults: ctaEndCardDefaults,
     meta: ctaEndCardMeta,
+  },
+  {
+    id: 'dot-wordmark-reveal',
+    schema: dotWordmarkRevealSchema,
+    defaults: dotWordmarkRevealDefaults,
+    meta: dotWordmarkRevealMeta,
   },
 ];

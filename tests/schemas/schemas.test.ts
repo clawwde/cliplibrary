@@ -300,6 +300,7 @@ describe('promo clips', () => {
     'chalk-title',
     'chalk-badges-reel',
     'magnifier-caption',
+    'dot-wordmark-reveal',
     'chunky-type-stack',
     'branding-is-ticker',
     'domino-words',
