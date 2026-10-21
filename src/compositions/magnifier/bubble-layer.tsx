@@ -1,6 +1,10 @@
+import type { MagnifierCaptionProps } from '@/schemas';
 import type { Bubble, Point } from './field';
 
+type BubbleShape = MagnifierCaptionProps['field']['shape'];
+
 export interface BubbleStyle {
+  shape: BubbleShape;
   ring: string;
   word: string;
   lineWidth: number;
@@ -25,6 +29,32 @@ const visible = (bubble: Bubble, offset: Point, scale: number, center: Point): b
   const r = bubble.r * scale + 40;
   return x + r > 0 && x - r < WIDTH && y + r > 0 && y - r < HEIGHT;
 };
+
+const hexagonPoints = (bubble: Bubble): string =>
+  Array.from({ length: 6 }, (_, corner) => {
+    const angle = (Math.PI / 3) * corner;
+    return `${bubble.x + bubble.r * Math.cos(angle)},${bubble.y + bubble.r * Math.sin(angle)}`;
+  }).join(' ');
+
+const Outline = ({ bubble, style }: { bubble: Bubble; style: BubbleStyle }) =>
+  style.shape === 'hexagon' ? (
+    <polygon
+      points={hexagonPoints(bubble)}
+      fill="none"
+      stroke={style.ring}
+      strokeWidth={style.lineWidth}
+      strokeLinejoin="round"
+    />
+  ) : (
+    <circle
+      cx={bubble.x}
+      cy={bubble.y}
+      r={bubble.r}
+      fill="none"
+      stroke={style.ring}
+      strokeWidth={style.lineWidth}
+    />
+  );
 
 const GlowSpot = ({ bubble, glow, id }: { bubble: Bubble; glow: BubbleGlow; id: string }) => (
   <>
@@ -127,14 +157,7 @@ export const BubbleLayer = ({
           return (
             <g key={id}>
               {glow && glow.amount > 0 ? <GlowSpot bubble={bubble} glow={glow} id={id} /> : null}
-              <circle
-                cx={bubble.x}
-                cy={bubble.y}
-                r={bubble.r}
-                fill="none"
-                stroke={style.ring}
-                strokeWidth={style.lineWidth}
-              />
+              <Outline bubble={bubble} style={style} />
               {bubble.word ? <Label bubble={bubble} style={style} glow={glow} id={id} /> : null}
             </g>
           );
