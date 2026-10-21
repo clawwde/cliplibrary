@@ -19,10 +19,12 @@ const bareWord = (word: string): string => word.toLowerCase().replace(/[^\p{L}\p
 const Underline = ({
   frame,
   start,
+  length,
   props,
 }: {
   frame: number;
   start: number;
+  length: number;
   props: MagnifierCaptionProps;
 }) => {
   const { caption, timing, glow } = props;
@@ -30,7 +32,10 @@ const Underline = ({
   const drawn = tween(frame, [drawFrom, drawFrom + 26], [0, 1], glide);
   const fade = tween(
     frame,
-    [timing.fadeOutFrame, timing.fadeOutFrame + caption.charFade + 6],
+    [
+      timing.fadeOutFrame,
+      timing.fadeOutFrame + (length - 1) * timing.fadeOutStagger + caption.charFade,
+    ],
     [1, 0],
   );
   return (
@@ -114,7 +119,12 @@ export const TypedCaption = ({
                   }}
                 >
                   {accent && caption.underline > 0 ? (
-                    <Underline frame={frame} start={start} props={props} />
+                    <Underline
+                      frame={frame}
+                      start={start}
+                      length={word.chars.length}
+                      props={props}
+                    />
                   ) : null}
                   {word.chars.map((glyph) => (
                     <span
