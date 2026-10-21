@@ -1,9 +1,9 @@
-import { loadFont } from '@remotion/google-fonts/Arimo';
+import { loadFont } from '@remotion/google-fonts/SpaceGrotesk';
 import { type Pose, TAIL } from './choreography';
 import { smoothstep } from './curves';
 
 export const labelFont = loadFont('normal', {
-  weights: ['400', '700'],
+  weights: ['500', '700'],
   subsets: ['latin'],
 }).fontFamily;
 
