@@ -6,6 +6,7 @@ import {
 } from './chunky-type-stack';
 import { echoStackDefaults, echoStackMeta, echoStackSchema } from './echo-stack';
 import { gridStackDefaults, gridStackMeta, gridStackSchema } from './grid-stack';
+import { hangingWordsDefaults, hangingWordsMeta, hangingWordsSchema } from './hanging-words';
 import { lensOrbitDefaults, lensOrbitMeta, lensOrbitSchema } from './lens-orbit';
 import {
   outlineMarqueeDefaults,
@@ -28,6 +29,12 @@ export const kineticTypeClips: ClipModule[] = [
   },
   { id: 'echo-stack', schema: echoStackSchema, defaults: echoStackDefaults, meta: echoStackMeta },
   { id: 'grid-stack', schema: gridStackSchema, defaults: gridStackDefaults, meta: gridStackMeta },
+  {
+    id: 'hanging-words',
+    schema: hangingWordsSchema,
+    defaults: hangingWordsDefaults,
+    meta: hangingWordsMeta,
+  },
   { id: 'lens-orbit', schema: lensOrbitSchema, defaults: lensOrbitDefaults, meta: lensOrbitMeta },
   { id: 'word-field', schema: wordFieldSchema, defaults: wordFieldDefaults, meta: wordFieldMeta },
   {

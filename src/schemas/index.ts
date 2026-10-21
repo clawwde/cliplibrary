@@ -19,6 +19,7 @@ export * from './clips/hand-drawn/scribble-caption';
 export * from './clips/kinetic-type/chunky-type-stack';
 export * from './clips/kinetic-type/echo-stack';
 export * from './clips/kinetic-type/grid-stack';
+export * from './clips/kinetic-type/hanging-words';
 export * from './clips/kinetic-type/lens-orbit';
 export * from './clips/kinetic-type/outline-marquee';
 export * from './clips/kinetic-type/sticker-stack';

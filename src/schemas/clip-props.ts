@@ -17,6 +17,7 @@ import type { ScribbleCaptionProps } from './clips/hand-drawn/scribble-caption';
 import type { ChunkyTypeStackProps } from './clips/kinetic-type/chunky-type-stack';
 import type { EchoStackProps } from './clips/kinetic-type/echo-stack';
 import type { GridStackProps } from './clips/kinetic-type/grid-stack';
+import type { HangingWordsProps } from './clips/kinetic-type/hanging-words';
 import type { LensOrbitProps } from './clips/kinetic-type/lens-orbit';
 import type { OutlineMarqueeProps } from './clips/kinetic-type/outline-marquee';
 import type { StickerStackProps } from './clips/kinetic-type/sticker-stack';
@@ -70,6 +71,7 @@ export interface ClipPropsMap {
   'printer-pages': PrinterPagesProps;
   'word-build': WordBuildProps;
   'word-punch': WordPunchProps;
+  'hanging-words': HangingWordsProps;
   'scribble-caption': ScribbleCaptionProps;
   'echo-stack': EchoStackProps;
   'grid-stack': GridStackProps;

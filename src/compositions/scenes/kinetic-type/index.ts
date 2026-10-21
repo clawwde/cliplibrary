@@ -2,6 +2,7 @@ import type { SceneModule } from '../../scene-module';
 import { chunkyTypeStackScene } from './chunky-type-stack';
 import { echoStackScene } from './echo-stack';
 import { gridStackScene } from './grid-stack';
+import { hangingWordsScene } from './hanging-words';
 import { lensOrbitScene } from './lens-orbit';
 import { outlineMarqueeScene } from './outline-marquee';
 import { stickerStackScene } from './sticker-stack';
@@ -15,6 +16,7 @@ export const kineticTypeScenes: SceneModule[] = [
   outlineMarqueeScene,
   echoStackScene,
   gridStackScene,
+  hangingWordsScene,
   lensOrbitScene,
   wordFieldScene,
   stickerStackScene,

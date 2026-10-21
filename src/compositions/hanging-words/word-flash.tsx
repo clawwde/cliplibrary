@@ -1,0 +1,50 @@
+import { AbsoluteFill } from 'remotion';
+import type { HangingWordsProps } from '@/schemas';
+import { heavyFont } from './fonts';
+import { TextLine } from './text-line';
+
+export const CAP_CENTER = 0.36;
+
+const opacityAt = (frame: number, end: number, ghost: number, ghostFrames: number): number => {
+  if (frame < end - 1) {
+    return 1;
+  }
+  if (frame < end) {
+    return ghost;
+  }
+  if (ghostFrames <= 0) {
+    return 0;
+  }
+  return Math.max(0, ghost * 0.5 * (1 - (frame - end) / ghostFrames));
+};
+
+export const WordFlash = ({ props, frame }: { props: HangingWordsProps; frame: number }) => {
+  const { words, flash, palette } = props;
+  return (
+    <AbsoluteFill>
+      {words.map((word, index) => {
+        const end = words[index + 1]?.start ?? flash.end;
+        if (frame < word.start || frame >= end + flash.ghostFrames) {
+          return null;
+        }
+        const opacity = opacityAt(frame, end, flash.ghost, flash.ghostFrames);
+        if (opacity <= 0) {
+          return null;
+        }
+        return (
+          <TextLine
+            key={`${index}:${word.text}`}
+            centerY={flash.baseline - word.size * CAP_CENTER}
+            size={word.size}
+            font={heavyFont}
+            weight={flash.weight}
+            color={palette.light}
+            style={{ opacity, zIndex: frame >= end ? 0 : 1 }}
+          >
+            {word.text}
+          </TextLine>
+        );
+      })}
+    </AbsoluteFill>
+  );
+};
