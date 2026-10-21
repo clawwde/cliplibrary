@@ -51,6 +51,7 @@ export * from './clips/phone-reveals/phone-flat-lay';
 export * from './clips/phone-reveals/phone-pedestal';
 export * from './clips/phone-reveals/phone-spin-in';
 export * from './clips/phone-reveals/phone-turnaround';
+export * from './clips/screen-demos/incoming-call-teaser';
 export * from './clips/screen-demos/message-arise';
 export * from './clips/screen-demos/phone-scroll';
 export * from './clips/screen-demos/phone-swap';

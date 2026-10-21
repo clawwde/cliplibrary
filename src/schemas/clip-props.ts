@@ -49,6 +49,7 @@ import type { PhoneFlatLayProps } from './clips/phone-reveals/phone-flat-lay';
 import type { PhonePedestalProps } from './clips/phone-reveals/phone-pedestal';
 import type { PhoneSpinInProps } from './clips/phone-reveals/phone-spin-in';
 import type { PhoneTurnaroundProps } from './clips/phone-reveals/phone-turnaround';
+import type { IncomingCallTeaserProps } from './clips/screen-demos/incoming-call-teaser';
 import type { MessageAriseProps } from './clips/screen-demos/message-arise';
 import type { PhoneScrollProps } from './clips/screen-demos/phone-scroll';
 import type { PhoneSwapProps } from './clips/screen-demos/phone-swap';
@@ -121,6 +122,7 @@ export interface ClipPropsMap {
   'battery-charge-success': BatteryChargeSuccessProps;
   'crumpled-paper-reveal': CrumpledPaperRevealProps;
   'billboard-reader': BillboardReaderProps;
+  'incoming-call-teaser': IncomingCallTeaserProps;
   'scene-transition': SceneTransitionProps;
 }
 

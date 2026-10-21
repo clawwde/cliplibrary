@@ -288,6 +288,7 @@ describe('promo clips', () => {
     'crumpled-paper-reveal',
     'battery-charge-success',
     'billboard-reader',
+    'incoming-call-teaser',
     'word-picker',
     'pill-fan',
     'menu-stack',
