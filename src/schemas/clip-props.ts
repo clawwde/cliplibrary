@@ -1,3 +1,4 @@
+import type { BatteryChargeSuccessProps } from './clips/ad-reveals/battery-charge-success';
 import type { CrumpledPaperRevealProps } from './clips/ad-reveals/crumpled-paper-reveal';
 import type { HelicopterUnveilProps } from './clips/ad-reveals/helicopter-unveil';
 import type { ProblemStrikeoutProps } from './clips/ad-reveals/problem-strikeout';
@@ -102,6 +103,7 @@ export interface ClipPropsMap {
   'helicopter-unveil': HelicopterUnveilProps;
   'problem-strikeout': ProblemStrikeoutProps;
   'spill-reveal': SpillRevealProps;
+  'battery-charge-success': BatteryChargeSuccessProps;
   'crumpled-paper-reveal': CrumpledPaperRevealProps;
   'scene-transition': SceneTransitionProps;
 }

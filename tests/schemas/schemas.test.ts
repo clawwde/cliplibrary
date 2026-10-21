@@ -284,6 +284,7 @@ describe('promo clips', () => {
     'problem-strikeout',
     'spill-reveal',
     'crumpled-paper-reveal',
+    'battery-charge-success',
     'word-picker',
     'pill-fan',
     'menu-stack',
