@@ -11,6 +11,8 @@ type Card = BrandingIsTickerProps['card'];
 
 const ICON_STROKE = 1.25;
 
+const LABEL_FEATHER = 30;
+
 const ContactRow = ({
   card,
   top,
@@ -88,12 +90,13 @@ export const ContactCard = ({
     [0, 1],
     smooth,
   );
-  const labelIn = tween(
+  const labelEdge = tween(
     frame,
-    [card.logoStart + card.logoFrames * 0.3, card.logoStart + card.logoFrames],
-    [0, 1],
-    smooth,
+    [card.logoStart + card.logoFrames * 0.15, card.logoStart + card.logoFrames],
+    [-LABEL_FEATHER, 100],
+    (t) => t,
   );
+  const labelReveal = `linear-gradient(270deg, #000 ${labelEdge.toFixed(3)}%, transparent ${(labelEdge + LABEL_FEATHER).toFixed(3)}%)`;
   const wipe = tween(
     frame,
     [card.buttonStart, card.buttonStart + card.buttonFrames],
@@ -121,7 +124,9 @@ export const ContactCard = ({
         />
         <div
           style={{
-            opacity: labelIn,
+            width: 'max-content',
+            maskImage: labelReveal,
+            WebkitMaskImage: labelReveal,
             marginLeft: card.logoSize * 0.02,
             marginTop: -card.nameSize * 0.12,
           }}
