@@ -313,6 +313,7 @@ describe('promo clips', () => {
     'scroller-callout',
     'scroller-wall',
     'anniversary-kinetic',
+    'coming-soon-flips',
   ];
 
   it('validates every promo default against its schema', () => {

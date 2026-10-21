@@ -65,7 +65,7 @@ describe('gallery filters', () => {
   });
 
   it('ranks title matches above tag and description matches', () => {
-    expect(search('flip')).toEqual(['letter-flip', 'app-icon-reveal']);
+    expect(search('flip')).toEqual(['letter-flip', 'coming-soon-flips', 'app-icon-reveal']);
     expect(search('counter')[0]).toBe('number-counter');
   });
 
