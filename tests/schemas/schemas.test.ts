@@ -299,6 +299,7 @@ describe('promo clips', () => {
     'chalk-title',
     'chalk-badges-reel',
     'chunky-type-stack',
+    'branding-is-ticker',
   ];
 
   it('validates every promo default against its schema', () => {

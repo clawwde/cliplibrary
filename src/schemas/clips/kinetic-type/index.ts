@@ -1,5 +1,10 @@
 import type { ClipModule } from '../../registry';
 import {
+  brandingIsTickerDefaults,
+  brandingIsTickerMeta,
+  brandingIsTickerSchema,
+} from './branding-is-ticker';
+import {
   chunkyTypeStackDefaults,
   chunkyTypeStackMeta,
   chunkyTypeStackSchema,
@@ -41,5 +46,11 @@ export const kineticTypeClips: ClipModule[] = [
     schema: chunkyTypeStackSchema,
     defaults: chunkyTypeStackDefaults,
     meta: chunkyTypeStackMeta,
+  },
+  {
+    id: 'branding-is-ticker',
+    schema: brandingIsTickerSchema,
+    defaults: brandingIsTickerDefaults,
+    meta: brandingIsTickerMeta,
   },
 ];
