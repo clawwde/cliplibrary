@@ -65,8 +65,8 @@ export const cablePoints = (
     const offset =
       wave *
       smoothstep(0, 150, along) *
-      (0.7 * Math.sin(along / 160 + seed + frame * 0.021) +
-        0.3 * Math.sin(along / 83 + seed * 2.3 - frame * 0.017));
+      (0.7 * Math.sin(along / 52 + seed + frame * 0.05) +
+        0.3 * Math.sin(along / 31 + seed * 2.3 - frame * 0.04));
     points.push({
       x: point.x + nx * offset,
       y: point.y + ny * offset,

@@ -200,15 +200,15 @@ export const batteryChargeSuccessDefaults: BatteryChargeSuccessProps = {
   },
   cableShape: {
     width: 2.5,
-    wave: 26,
+    wave: 22,
     sway: 1,
   },
   timing: {
     riseStart: 22,
     plugFrame: 86,
     bottomPlugFrame: 100,
-    colorShiftStart: 100,
-    colorShiftFrames: 36,
+    colorShiftStart: 98,
+    colorShiftFrames: 20,
     chargeStart: 120,
     fullFrame: 243,
     unplugFrame: 265,

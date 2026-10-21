@@ -160,7 +160,7 @@ export const Battery = ({ props, frame, box, level, phase, width, height }: Batt
         {percent(look.ink)}
         <path d={back} fill={rgba(mixHex(top, '#7a5cff', 0.35), liquid.backWave)} />
         <path d={front} fill={`url(#battery-fill-${uid})`} />
-        {percent(rgba(charge.percentInLiquid, 0.85), `url(#battery-liquid-${uid})`)}
+        {percent(rgba(charge.percentInLiquid, 0.62), `url(#battery-liquid-${uid})`)}
         <Bubbles props={props} frame={frame} inner={inner} surface={surface} level={level} />
       </g>
       <rect
