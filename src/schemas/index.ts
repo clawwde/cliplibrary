@@ -63,6 +63,7 @@ export * from './clips/screen-demos/incoming-call-teaser';
 export * from './clips/screen-demos/message-arise';
 export * from './clips/screen-demos/phone-scroll';
 export * from './clips/screen-demos/phone-swap';
+export * from './clips/text-reveals/going-live-teaser';
 export * from './clips/text-reveals/letter-flip';
 export * from './clips/text-reveals/magnifier-caption';
 export * from './clips/text-reveals/neon-sign-flicker';

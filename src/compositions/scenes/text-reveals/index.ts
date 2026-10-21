@@ -1,4 +1,5 @@
 import type { SceneModule } from '../../scene-module';
+import { goingLiveTeaserScene } from './going-live-teaser';
 import { letterFlipScene } from './letter-flip';
 import { magnifierCaptionScene } from './magnifier-caption';
 import { neonSignFlickerScene } from './neon-sign-flicker';
@@ -13,4 +14,5 @@ export const textRevealsScenes: SceneModule[] = [
   printerPagesScene,
   magnifierCaptionScene,
   neonSignFlickerScene,
+  goingLiveTeaserScene,
 ];

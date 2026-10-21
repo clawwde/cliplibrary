@@ -1,4 +1,9 @@
 import type { ClipModule } from '../../registry';
+import {
+  goingLiveTeaserDefaults,
+  goingLiveTeaserMeta,
+  goingLiveTeaserSchema,
+} from './going-live-teaser';
 import { letterFlipDefaults, letterFlipMeta, letterFlipSchema } from './letter-flip';
 import {
   magnifierCaptionDefaults,
@@ -50,5 +55,11 @@ export const textRevealsClips: ClipModule[] = [
     schema: neonSignFlickerSchema,
     defaults: neonSignFlickerDefaults,
     meta: neonSignFlickerMeta,
+  },
+  {
+    id: 'going-live-teaser',
+    schema: goingLiveTeaserSchema,
+    defaults: goingLiveTeaserDefaults,
+    meta: goingLiveTeaserMeta,
   },
 ];
