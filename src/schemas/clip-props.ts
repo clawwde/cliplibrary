@@ -22,6 +22,7 @@ import type { ScribbleCaptionProps } from './clips/hand-drawn/scribble-caption';
 import type { AnniversaryKineticProps } from './clips/kinetic-type/anniversary-kinetic';
 import type { BrandingIsTickerProps } from './clips/kinetic-type/branding-is-ticker';
 import type { ChunkyTypeStackProps } from './clips/kinetic-type/chunky-type-stack';
+import type { ComingSoonFlipsProps } from './clips/kinetic-type/coming-soon-flips';
 import type { DominoWordsProps } from './clips/kinetic-type/domino-words';
 import type { EchoStackProps } from './clips/kinetic-type/echo-stack';
 import type { GridStackProps } from './clips/kinetic-type/grid-stack';
@@ -118,6 +119,7 @@ export interface ClipPropsMap {
   'scroller-callout': ScrollerCalloutProps;
   'scroller-wall': ScrollerWallProps;
   'anniversary-kinetic': AnniversaryKineticProps;
+  'coming-soon-flips': ComingSoonFlipsProps;
   'film-dust': FilmDustProps;
   'brand-reveal': BrandRevealProps;
   'dot-wordmark-reveal': DotWordmarkRevealProps;

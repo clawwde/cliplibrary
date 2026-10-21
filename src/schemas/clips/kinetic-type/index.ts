@@ -14,6 +14,11 @@ import {
   chunkyTypeStackMeta,
   chunkyTypeStackSchema,
 } from './chunky-type-stack';
+import {
+  comingSoonFlipsDefaults,
+  comingSoonFlipsMeta,
+  comingSoonFlipsSchema,
+} from './coming-soon-flips';
 import { dominoWordsDefaults, dominoWordsMeta, dominoWordsSchema } from './domino-words';
 import { echoStackDefaults, echoStackMeta, echoStackSchema } from './echo-stack';
 import { gridStackDefaults, gridStackMeta, gridStackSchema } from './grid-stack';
@@ -88,5 +93,11 @@ export const kineticTypeClips: ClipModule[] = [
     schema: anniversaryKineticSchema,
     defaults: anniversaryKineticDefaults,
     meta: anniversaryKineticMeta,
+  },
+  {
+    id: 'coming-soon-flips',
+    schema: comingSoonFlipsSchema,
+    defaults: comingSoonFlipsDefaults,
+    meta: comingSoonFlipsMeta,
   },
 ];
