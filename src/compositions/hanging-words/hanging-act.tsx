@@ -53,6 +53,7 @@ export const HangingAct = ({ props, frame }: { props: HangingWordsProps; frame: 
   const topCenter = textTop + hang.topSize * 0.5;
   const bottomCenter = topCenter + hang.topSize * 0.5 + hang.bottomSize * (hang.leading - 0.5);
   const showHang = drop > 0;
+  const bobSide = knot.dotSize * (0.8 + (0.2 * knot.corner) / 50);
   return (
     <AbsoluteFill>
       {greetingLines(greeting.lines).map((line) => {
@@ -66,6 +67,7 @@ export const HangingAct = ({ props, frame }: { props: HangingWordsProps; frame: 
         if (reveal <= 0 || exit >= 1) {
           return null;
         }
+        const hollow = line.offset !== 0 && greeting.outline > 0;
         return (
           <TextLine
             key={line.order}
@@ -74,7 +76,8 @@ export const HangingAct = ({ props, frame }: { props: HangingWordsProps; frame: 
             font={squareFont}
             weight={greeting.weight}
             tracking={greeting.tracking}
-            color={props.palette.light}
+            color={hollow ? 'transparent' : look.ink}
+            style={hollow ? { WebkitTextStroke: `${greeting.outline}px ${look.ink}` } : {}}
           >
             <GlitchWord word={greeting.word} reveal={reveal} exit={exit} />
           </TextLine>
@@ -100,11 +103,12 @@ export const HangingAct = ({ props, frame }: { props: HangingWordsProps; frame: 
           <div
             style={{
               position: 'absolute',
-              left: 540 - knot.dotSize / 2,
-              top: dot.y - knot.dotSize / 2,
-              width: knot.dotSize,
-              height: knot.dotSize,
-              borderRadius: '50%',
+              left: 540 - bobSide / 2,
+              top: dot.y - bobSide / 2,
+              width: bobSide,
+              height: bobSide,
+              borderRadius: `${knot.corner}%`,
+              transform: 'rotate(45deg)',
               background: look.ink,
             }}
           />

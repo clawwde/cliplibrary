@@ -4,7 +4,6 @@ import { progress } from './physics';
 
 const WIDTH = 1080;
 const HEIGHT = 1920;
-const CROWN = -600;
 
 const coverage = (props: HangingWordsProps, frame: number): number => {
   const { drop } = props;
@@ -14,15 +13,22 @@ const coverage = (props: HangingWordsProps, frame: number): number => {
   return 1 - progress(frame, drop.liftStart, drop.liftFrames);
 };
 
-const dropShape = (amount: number, width: number): string | undefined => {
+const diamondShape = (amount: number, width: number, centerY: number): string | undefined => {
   if (amount >= 1) {
     return undefined;
   }
-  const bottom = amount * HEIGHT * 1.68;
-  const radiusX = amount * WIDTH * 0.56 * width;
-  const radiusY = (bottom - CROWN) / 2;
-  const centerY = CROWN + radiusY;
-  return `ellipse(${radiusX.toFixed(1)}px ${radiusY.toFixed(1)}px at 50% ${centerY.toFixed(1)}px)`;
+  const centerX = WIDTH / 2;
+  const reach = (centerX / width + Math.max(centerY, HEIGHT - centerY)) * 1.04;
+  const eased = 1 - (1 - amount) ** 2;
+  const vertical = eased * reach;
+  const horizontal = vertical * width;
+  const point = (x: number, y: number) => `${x.toFixed(1)}px ${y.toFixed(1)}px`;
+  return `polygon(${[
+    point(centerX, centerY - vertical),
+    point(centerX + horizontal, centerY),
+    point(centerX, centerY + vertical),
+    point(centerX - horizontal, centerY),
+  ].join(', ')})`;
 };
 
 export const inkCovers = (props: HangingWordsProps, frame: number): boolean =>
@@ -37,7 +43,7 @@ export const InkDrop = ({ props, frame }: { props: HangingWordsProps; frame: num
     <AbsoluteFill
       style={{
         background: props.palette.night,
-        clipPath: dropShape(amount, props.drop.width),
+        clipPath: diamondShape(amount, props.drop.width, props.knot.y),
       }}
     />
   );

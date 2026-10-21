@@ -16,7 +16,7 @@ import type { SceneModule } from '../../scene-module';
 const HangingWords = (props: HangingWordsProps) => {
   const frame = useCurrentFrame() * props.motion.speed;
   const { look, drop } = props;
-  const firstActOver = frame >= drop.fallStart + drop.fallFrames / 2;
+  const firstActOver = frame >= drop.fallStart + drop.fallFrames;
   const nightFull = frame >= drop.fallStart && inkCovers(props, frame);
   const nightOver = frame >= drop.liftStart;
   return (
