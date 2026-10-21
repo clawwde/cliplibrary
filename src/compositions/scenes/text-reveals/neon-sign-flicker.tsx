@@ -9,14 +9,15 @@ import { NeonBackdrop } from '../../neon-sign/backdrop';
 import { BrandLockup, Website } from '../../neon-sign/brand-lockup';
 import { flickerLevels } from '../../neon-sign/flicker';
 import { NeonWord } from '../../neon-sign/neon-word';
+import { PendantLamp } from '../../neon-sign/pendant-lamp';
 import { Subtitle } from '../../neon-sign/subtitle';
 import { TransitionFrame } from '../../promo/transition-frame';
 import type { SceneModule } from '../../scene-module';
 
 const NeonSignFlicker = (props: NeonSignFlickerProps) => {
-  const { copy, neon, flicker, lamp, look, motion } = props;
+  const { copy, neon, flicker, pendant, look, motion } = props;
   const frame = useCurrentFrame() * motion.speed;
-  const levels = flickerLevels(frame, flicker, lamp.idle);
+  const levels = flickerLevels(frame, flicker, pendant.idle);
   const flickering = Math.round(flicker.letter);
   const letterLevels = Array.from(copy.word, (_, index) =>
     index === flickering ? levels.letter : 1,
@@ -25,12 +26,8 @@ const NeonSignFlicker = (props: NeonSignFlickerProps) => {
     <TransitionFrame motion={motion}>
       {look.showBackdrop ? <NeonBackdrop look={look} /> : null}
       <NeonWord word={copy.word} neon={neon} levels={letterLevels} />
-      <Subtitle
-        text={copy.subtitle}
-        subtitle={props.subtitle}
-        lamp={lamp}
-        lampLevel={levels.lamp}
-      />
+      {pendant.show ? <PendantLamp pendant={pendant} level={levels.lamp} frame={frame} /> : null}
+      <Subtitle text={copy.subtitle} subtitle={props.subtitle} />
       {props.brand.show ? (
         <BrandLockup name={copy.brand} line={copy.brandLine} brand={props.brand} />
       ) : null}

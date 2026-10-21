@@ -4,11 +4,6 @@ import { neonFont } from './fonts';
 
 type Neon = NeonSignFlickerProps['neon'];
 
-const stroked = (width: number, color: string): CSSProperties => ({
-  color: 'transparent',
-  WebkitTextStroke: `${width}px ${color}`,
-});
-
 const layer: CSSProperties = { position: 'absolute', left: 0, top: 0 };
 
 const NeonLetter = ({ char, level, neon }: { char: string; level: number; neon: Neon }) => {
@@ -30,9 +25,9 @@ const NeonLetter = ({ char, level, neon }: { char: string; level: number; neon: 
       <span
         style={{
           ...layer,
-          color: neon.fill,
-          filter: `blur(${neon.glowBlur * 3}px)`,
-          opacity: neon.fillStrength * lit,
+          color: neon.deadHighlight,
+          transform: 'translate(-1.5px, -2px)',
+          opacity: 1 - lit,
         }}
       >
         {char}
@@ -41,8 +36,7 @@ const NeonLetter = ({ char, level, neon }: { char: string; level: number; neon: 
         style={{
           ...layer,
           color: neon.deadTube,
-          WebkitTextStroke: `${neon.tubeWidth}px ${neon.deadTube}`,
-          filter: 'drop-shadow(0 6px 5px rgba(0,0,0,0.85))',
+          filter: 'drop-shadow(0 8px 6px rgba(0,0,0,0.85))',
           opacity: 1 - lit,
         }}
       >
@@ -51,17 +45,8 @@ const NeonLetter = ({ char, level, neon }: { char: string; level: number; neon: 
       <span
         style={{
           ...layer,
-          ...stroked(neon.tubeWidth * 0.5, neon.deadHighlight),
-          transform: 'translate(-1px, -1.5px)',
-          opacity: 1 - lit,
-        }}
-      >
-        {char}
-      </span>
-      <span
-        style={{
-          ...layer,
-          ...stroked(neon.glowWidth, neon.glow),
+          color: neon.glow,
+          WebkitTextStroke: `${neon.glowWidth}px ${neon.glow}`,
           filter: `blur(${neon.glowBlur}px)`,
           opacity: lit,
         }}
@@ -71,14 +56,24 @@ const NeonLetter = ({ char, level, neon }: { char: string; level: number; neon: 
       <span
         style={{
           ...layer,
-          ...stroked(neon.tubeWidth * 1.8, neon.glow),
-          filter: `blur(${neon.tubeWidth * 0.5}px)`,
+          color: neon.glow,
+          WebkitTextStroke: `${neon.tubeWidth * 0.3}px ${neon.glow}`,
           opacity: lit,
         }}
       >
         {char}
       </span>
-      <span style={{ ...layer, ...stroked(neon.tubeWidth, neon.core), opacity: lit }}>{char}</span>
+      <span
+        style={{
+          ...layer,
+          color: neon.core,
+          WebkitTextStroke: `${neon.tubeWidth}px ${neon.glow}`,
+          filter: `blur(${(neon.tubeWidth * 0.14).toFixed(2)}px)`,
+          opacity: lit,
+        }}
+      >
+        {char}
+      </span>
     </span>
   );
 };
@@ -97,10 +92,10 @@ export const NeonWord = ({
       position: 'absolute',
       top: neon.top,
       left: neon.centerX,
-      transform: `translateX(-50%) scaleX(${neon.squeeze})`,
+      transform: 'translateX(-50%)',
       whiteSpace: 'nowrap',
       fontFamily: neonFont,
-      fontWeight: neon.weight,
+      fontWeight: 400,
       fontSize: neon.size,
       lineHeight: 1,
       letterSpacing: `${neon.tracking}em`,

@@ -2,13 +2,13 @@ import { describe, expect, it } from 'bun:test';
 import { flickerLevels } from '@/compositions/neon-sign/flicker';
 import { neonSignFlickerDefaults } from '@/schemas';
 
-const { flicker, lamp } = neonSignFlickerDefaults;
+const { flicker, pendant } = neonSignFlickerDefaults;
 const letterAt = (frame: number): number =>
-  Number(flickerLevels(frame, flicker, lamp.idle).letter.toFixed(3));
+  Number(flickerLevels(frame, flicker, pendant.idle).letter.toFixed(3));
 
 describe('flickerLevels', () => {
   it('holds fully lit before the first burst', () => {
-    expect(flickerLevels(0, flicker, lamp.idle)).toEqual({ letter: 1, lamp: 1 });
+    expect(flickerLevels(0, flicker, pendant.idle)).toEqual({ letter: 1, lamp: 1 });
     expect(letterAt(19)).toBe(1);
   });
 
@@ -17,7 +17,7 @@ describe('flickerLevels', () => {
   });
 
   it('rests dark with the lamp idling between bursts', () => {
-    expect(flickerLevels(50, flicker, lamp.idle)).toEqual({ letter: 0, lamp: lamp.idle });
+    expect(flickerLevels(50, flicker, pendant.idle)).toEqual({ letter: 0, lamp: pendant.idle });
   });
 
   it('starts the later bursts on the reference frames', () => {
@@ -27,12 +27,12 @@ describe('flickerLevels', () => {
 
   it('burns out after the last burst', () => {
     expect(letterAt(189)).toBe(1);
-    expect(flickerLevels(191, flicker, lamp.idle)).toEqual({ letter: 0, lamp: 0 });
-    expect(flickerLevels(299, flicker, lamp.idle)).toEqual({ letter: 0, lamp: 0 });
+    expect(flickerLevels(191, flicker, pendant.idle)).toEqual({ letter: 0, lamp: 0 });
+    expect(flickerLevels(299, flicker, pendant.idle)).toEqual({ letter: 0, lamp: 0 });
   });
 
   it('relights for good when the sign does not stay dead', () => {
-    expect(flickerLevels(250, { ...flicker, staysDead: false }, lamp.idle)).toEqual({
+    expect(flickerLevels(250, { ...flicker, staysDead: false }, pendant.idle)).toEqual({
       letter: 1,
       lamp: 1,
     });
