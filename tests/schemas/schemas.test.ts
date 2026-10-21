@@ -264,6 +264,7 @@ describe('promo clips', () => {
     'floating-cards',
     'brand-reveal',
     'cta-end-card',
+    'puzzle-success',
     'scene-transition',
     'doodle-arrows',
     'handwritten-note',

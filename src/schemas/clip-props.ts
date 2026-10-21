@@ -7,6 +7,7 @@ import type { AppIconRevealProps } from './clips/brand/app-icon-reveal';
 import type { BrandRevealProps } from './clips/brand/brand-reveal';
 import type { CtaEndCardProps } from './clips/brand/cta-end-card';
 import type { DotWordmarkRevealProps } from './clips/brand/dot-wordmark-reveal';
+import type { PuzzleSuccessProps } from './clips/brand/puzzle-success';
 import type { LaptopWipeRevealProps } from './clips/desk-scenes/laptop-wipe-reveal';
 import type { ChalkBadgeProps } from './clips/hand-drawn/chalk-badge';
 import type { ChalkBadgeGridProps } from './clips/hand-drawn/chalk-badge-grid';
@@ -110,6 +111,7 @@ export interface ClipPropsMap {
   'brand-reveal': BrandRevealProps;
   'dot-wordmark-reveal': DotWordmarkRevealProps;
   'cta-end-card': CtaEndCardProps;
+  'puzzle-success': PuzzleSuccessProps;
   'relief-backdrop': ReliefBackdropProps;
   'helicopter-unveil': HelicopterUnveilProps;
   'problem-strikeout': ProblemStrikeoutProps;
