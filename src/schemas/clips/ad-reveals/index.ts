@@ -1,5 +1,15 @@
 import type { ClipModule } from '../../registry';
 import {
+  batteryChargeSuccessDefaults,
+  batteryChargeSuccessMeta,
+  batteryChargeSuccessSchema,
+} from './battery-charge-success';
+import {
+  billboardReaderDefaults,
+  billboardReaderMeta,
+  billboardReaderSchema,
+} from './billboard-reader';
+import {
   crumpledPaperRevealDefaults,
   crumpledPaperRevealMeta,
   crumpledPaperRevealSchema,
@@ -40,5 +50,17 @@ export const adRevealsClips: ClipModule[] = [
     schema: crumpledPaperRevealSchema,
     defaults: crumpledPaperRevealDefaults,
     meta: crumpledPaperRevealMeta,
+  },
+  {
+    id: 'battery-charge-success',
+    schema: batteryChargeSuccessSchema,
+    defaults: batteryChargeSuccessDefaults,
+    meta: batteryChargeSuccessMeta,
+  },
+  {
+    id: 'billboard-reader',
+    schema: billboardReaderSchema,
+    defaults: billboardReaderDefaults,
+    meta: billboardReaderMeta,
   },
 ];

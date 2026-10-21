@@ -1,5 +1,15 @@
 import type { ClipModule } from '../../registry';
 import { letterFlipDefaults, letterFlipMeta, letterFlipSchema } from './letter-flip';
+import {
+  magnifierCaptionDefaults,
+  magnifierCaptionMeta,
+  magnifierCaptionSchema,
+} from './magnifier-caption';
+import {
+  neonSignFlickerDefaults,
+  neonSignFlickerMeta,
+  neonSignFlickerSchema,
+} from './neon-sign-flicker';
 import { numberCounterDefaults, numberCounterMeta, numberCounterSchema } from './number-counter';
 import { printerPagesDefaults, printerPagesMeta, printerPagesSchema } from './printer-pages';
 import { typewriterDefaults, typewriterMeta, typewriterSchema } from './typewriter';
@@ -28,5 +38,17 @@ export const textRevealsClips: ClipModule[] = [
     schema: printerPagesSchema,
     defaults: printerPagesDefaults,
     meta: printerPagesMeta,
+  },
+  {
+    id: 'magnifier-caption',
+    schema: magnifierCaptionSchema,
+    defaults: magnifierCaptionDefaults,
+    meta: magnifierCaptionMeta,
+  },
+  {
+    id: 'neon-sign-flicker',
+    schema: neonSignFlickerSchema,
+    defaults: neonSignFlickerDefaults,
+    meta: neonSignFlickerMeta,
   },
 ];

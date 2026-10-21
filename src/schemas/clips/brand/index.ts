@@ -2,6 +2,12 @@ import type { ClipModule } from '../../registry';
 import { appIconRevealDefaults, appIconRevealMeta, appIconRevealSchema } from './app-icon-reveal';
 import { brandRevealDefaults, brandRevealMeta, brandRevealSchema } from './brand-reveal';
 import { ctaEndCardDefaults, ctaEndCardMeta, ctaEndCardSchema } from './cta-end-card';
+import {
+  dotWordmarkRevealDefaults,
+  dotWordmarkRevealMeta,
+  dotWordmarkRevealSchema,
+} from './dot-wordmark-reveal';
+import { puzzleSuccessDefaults, puzzleSuccessMeta, puzzleSuccessSchema } from './puzzle-success';
 
 export const brandClips: ClipModule[] = [
   {
@@ -21,5 +27,17 @@ export const brandClips: ClipModule[] = [
     schema: ctaEndCardSchema,
     defaults: ctaEndCardDefaults,
     meta: ctaEndCardMeta,
+  },
+  {
+    id: 'dot-wordmark-reveal',
+    schema: dotWordmarkRevealSchema,
+    defaults: dotWordmarkRevealDefaults,
+    meta: dotWordmarkRevealMeta,
+  },
+  {
+    id: 'puzzle-success',
+    schema: puzzleSuccessSchema,
+    defaults: puzzleSuccessDefaults,
+    meta: puzzleSuccessMeta,
   },
 ];

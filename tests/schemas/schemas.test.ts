@@ -265,6 +265,7 @@ describe('promo clips', () => {
     'floating-cards',
     'brand-reveal',
     'cta-end-card',
+    'puzzle-success',
     'scene-transition',
     'doodle-arrows',
     'handwritten-note',
@@ -283,8 +284,12 @@ describe('promo clips', () => {
     'printer-pages',
     'helicopter-unveil',
     'problem-strikeout',
+    'neon-sign-flicker',
     'spill-reveal',
     'crumpled-paper-reveal',
+    'battery-charge-success',
+    'billboard-reader',
+    'incoming-call-teaser',
     'word-picker',
     'pill-fan',
     'menu-stack',
@@ -299,7 +304,12 @@ describe('promo clips', () => {
     'chalk-badge-grid',
     'chalk-title',
     'chalk-badges-reel',
+    'magnifier-caption',
+    'dot-wordmark-reveal',
     'chunky-type-stack',
+    'branding-is-ticker',
+    'domino-words',
+    'scroller-callout',
   ];
 
   it('validates every promo default against its schema', () => {
