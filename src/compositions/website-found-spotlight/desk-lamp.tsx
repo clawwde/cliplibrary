@@ -202,7 +202,7 @@ export const DeskLamp = ({
           position={questionAt}
           eye={eye}
           size={lamp.questionSize * lamp.scale * (0.15 + 0.85 * question)}
-          opacity={level * 0.42}
+          opacity={level * 0.45}
           color={palette.question}
         />
       ) : null}

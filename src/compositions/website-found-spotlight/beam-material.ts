@@ -39,7 +39,7 @@ export const createBeamMaterial = (): THREE.ShaderMaterial =>
       color: { value: new THREE.Color('#ffffff') },
       opacity: { value: 1 },
       softness: { value: 1.5 },
-      floorFade: { value: 0.3 },
+      floorFade: { value: 0.2 },
     },
     vertexShader,
     fragmentShader,

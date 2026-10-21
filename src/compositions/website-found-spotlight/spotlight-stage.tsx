@@ -26,9 +26,9 @@ const SCATTER_CENTER = new THREE.Vector2(0.12, 3.6);
 
 export const cameraEye = (camera: Camera, frame: number): THREE.Vector3 =>
   new THREE.Vector3(
-    frame * 0.0016 * camera.drift,
+    frame * 0.0026 * camera.drift,
     camera.height - frame * 0.0008 * camera.drift,
-    camera.distance - frame * 0.0032 * camera.drift,
+    camera.distance - frame * 0.0014 * camera.drift,
   );
 
 const CameraRig = ({ camera, eye }: { camera: Camera; eye: THREE.Vector3 }) => {
@@ -87,7 +87,7 @@ export const SpotlightStage = ({
       <ambientLight color={palette.lamp} intensity={camera.ambient} />
       <directionalLight
         position={[-4, 7, 2.5]}
-        color="#f2d2ff"
+        color="#f2def6"
         intensity={camera.fill}
         castShadow
         shadow-mapSize={[2048, 2048]}

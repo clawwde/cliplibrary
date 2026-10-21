@@ -8,10 +8,10 @@ export const SHADE_DEPTH = 0.16 * SHADE_SIZE;
 
 const shadeProfile = (): THREE.Vector2[] =>
   [
-    new THREE.Vector2(0.0001, 0.36),
-    new THREE.Vector2(0.08, 0.36),
-    new THREE.Vector2(0.097, 0.348),
-    new THREE.Vector2(0.1, 0.33),
+    new THREE.Vector2(0.0001, 0.46),
+    new THREE.Vector2(0.08, 0.46),
+    new THREE.Vector2(0.097, 0.448),
+    new THREE.Vector2(0.1, 0.43),
     new THREE.Vector2(0.1, 0.05),
     new THREE.Vector2(0.12, 0.034),
     new THREE.Vector2(0.188, 0.026),

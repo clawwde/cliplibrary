@@ -14,6 +14,7 @@ const drawQuestion = (context: CanvasRenderingContext2D): void => {
   context.shadowBlur = SIZE * 0.06;
   context.fillText('?', SIZE / 2, SIZE * 0.53);
   context.shadowBlur = 0;
+  context.filter = `blur(${SIZE * 0.008}px)`;
   context.globalAlpha = 0.6;
   context.fillText('?', SIZE / 2, SIZE * 0.53);
 };

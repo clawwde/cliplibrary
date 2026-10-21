@@ -4,49 +4,66 @@ import { mergeVertices } from 'three/examples/jsm/utils/BufferGeometryUtils.js';
 import { seeded } from '../unveil/random';
 
 interface Fold {
+  center: THREE.Vector3;
   normal: THREE.Vector3;
-  offset: number;
+  reach: number;
+  width: number;
   depth: number;
 }
 
 const ballGeometries = new Map<string, THREE.BufferGeometry>();
 
+const randomDirection = (random: () => number): THREE.Vector3 =>
+  new THREE.Vector3(random() - 0.5, random() - 0.5, random() - 0.5).normalize();
+
 const foldsFor = (random: () => number, count: number): Fold[] =>
-  Array.from({ length: count }, () => ({
-    normal: new THREE.Vector3(random() - 0.5, random() - 0.5, random() - 0.5).normalize(),
-    offset: (random() - 0.5) * 1.4,
-    depth: (0.03 + random() * 0.07) * (random() < 0.5 ? -1 : 1),
-  }));
+  Array.from({ length: count }, () => {
+    const center = randomDirection(random);
+    const normal = randomDirection(random).cross(center).normalize();
+    return {
+      center,
+      normal,
+      reach: 0.35 + random() * 0.5,
+      width: 0.06 + random() * 0.14,
+      depth: (0.05 + random() * 0.08) * (random() < 0.55 ? 1 : -1),
+    };
+  });
+
+const foldAt = (fold: Fold, point: THREE.Vector3): number => {
+  const across = Math.abs(point.dot(fold.normal));
+  if (across >= fold.width) {
+    return 0;
+  }
+  const spread = point.distanceToSquared(fold.center) / (fold.reach * fold.reach);
+  return fold.depth * (1 - across / fold.width) * Math.exp(-spread);
+};
 
 const buildBall = (seed: number, crumple: number, facets: number): THREE.BufferGeometry => {
   const random = seeded(seed * 4093 + 17);
-  const raw = new THREE.IcosahedronGeometry(1, facets + 1);
+  const raw = new THREE.IcosahedronGeometry(1, facets * 7);
   raw.deleteAttribute('normal');
   raw.deleteAttribute('uv');
-  const base = mergeVertices(raw);
-  const folds = foldsFor(random, 60);
+  const geometry = mergeVertices(raw);
+  const folds = foldsFor(random, 80);
   const squash = new THREE.Vector3(
-    0.92 + random() * 0.16,
-    0.86 + random() * 0.12,
-    0.92 + random() * 0.16,
+    0.94 + random() * 0.1,
+    0.9 + random() * 0.08,
+    0.94 + random() * 0.1,
   );
-  const position = base.getAttribute('position');
+  const position = geometry.getAttribute('position');
   const point = new THREE.Vector3();
   for (let index = 0; index < position.count; index++) {
     point.fromBufferAttribute(position, index);
     let radius = 1;
     for (const fold of folds) {
-      const distance = point.dot(fold.normal) - fold.offset;
-      radius += fold.depth * Math.exp(-Math.abs(distance) * 16) * crumple;
+      radius += foldAt(fold, point) * crumple;
     }
-    radius += (random() - 0.5) * 0.035 * crumple;
     point.multiplyScalar(radius).multiply(squash);
     position.setXYZ(index, point.x, point.y, point.z);
   }
-  const faceted = base.toNonIndexed();
-  faceted.computeVertexNormals();
-  faceted.computeBoundingSphere();
-  return faceted;
+  geometry.computeVertexNormals();
+  geometry.computeBoundingSphere();
+  return geometry;
 };
 
 const ballGeometry = (seed: number, crumple: number, facets: number): THREE.BufferGeometry => {
@@ -90,7 +107,6 @@ export const PaperBall = ({
         color,
         roughness,
         metalness: 0,
-        flatShading: true,
       }),
     [color, roughness],
   );
