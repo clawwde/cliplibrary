@@ -10,6 +10,11 @@ import {
   billboardReaderSchema,
 } from './billboard-reader';
 import {
+  burningPaperRevealDefaults,
+  burningPaperRevealMeta,
+  burningPaperRevealSchema,
+} from './burning-paper-reveal';
+import {
   crumpledPaperRevealDefaults,
   crumpledPaperRevealMeta,
   crumpledPaperRevealSchema,
@@ -62,5 +67,11 @@ export const adRevealsClips: ClipModule[] = [
     schema: billboardReaderSchema,
     defaults: billboardReaderDefaults,
     meta: billboardReaderMeta,
+  },
+  {
+    id: 'burning-paper-reveal',
+    schema: burningPaperRevealSchema,
+    defaults: burningPaperRevealDefaults,
+    meta: burningPaperRevealMeta,
   },
 ];

@@ -3,6 +3,7 @@ export * from './clip-props';
 export * from './clips';
 export * from './clips/ad-reveals/battery-charge-success';
 export * from './clips/ad-reveals/billboard-reader';
+export * from './clips/ad-reveals/burning-paper-reveal';
 export * from './clips/ad-reveals/crumpled-paper-reveal';
 export * from './clips/ad-reveals/helicopter-unveil';
 export * from './clips/ad-reveals/problem-strikeout';

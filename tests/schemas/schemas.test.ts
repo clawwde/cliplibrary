@@ -290,6 +290,7 @@ describe('promo clips', () => {
     'battery-charge-success',
     'billboard-reader',
     'incoming-call-teaser',
+    'burning-paper-reveal',
     'word-picker',
     'pill-fan',
     'menu-stack',
