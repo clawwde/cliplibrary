@@ -1,5 +1,7 @@
 import { useId } from 'react';
 
+export const TILE_RADIUS = 0.28;
+
 const SUN = 'M 25 66 A 25 25 0 0 1 75 66';
 
 const HORIZON = 'M 14 66 L 86 66';
@@ -48,7 +50,7 @@ export const BrandMark = ({
           </linearGradient>
         </defs>
       )}
-      <rect width={100} height={100} rx={28} fill={fill} opacity={discOpacity} />
+      <rect width={100} height={100} rx={TILE_RADIUS * 100} fill={fill} opacity={discOpacity} />
       {STROKES.map(({ d, from, to }) => {
         const amount = portion(draw, from, to);
         return amount <= 0 ? null : (
@@ -62,6 +64,7 @@ export const BrandMark = ({
             strokeLinecap="butt"
             strokeDasharray="1 1"
             strokeDashoffset={1 - amount}
+            opacity={Math.min(1, amount * 5)}
           />
         );
       })}

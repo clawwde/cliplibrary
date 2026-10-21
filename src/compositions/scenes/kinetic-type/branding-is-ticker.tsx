@@ -5,16 +5,31 @@ import {
   brandingIsTickerMeta,
   brandingIsTickerSchema,
 } from '@/schemas';
-import { BrandLabel, BrandMark } from '../../branding-ticker/brand-mark';
+import { BrandLabel, BrandMark, TILE_RADIUS } from '../../branding-ticker/brand-mark';
 import { ContactCard } from '../../branding-ticker/contact-card';
 import { tickerFont } from '../../branding-ticker/fonts';
 import { tickerWords, WordTicker } from '../../branding-ticker/word-ticker';
 import { PromoLayer } from '../../promo/promo-layer';
-import { smooth, tween } from '../../promo/timing';
+import { settle, smooth, tween } from '../../promo/timing';
 import type { SceneModule } from '../../scene-module';
 
-const irisRadius = (x: number, y: number, width: number, height: number): number =>
-  Math.hypot(Math.max(x, width - x), Math.max(y, height - y)) * 1.01;
+const OVERSCAN = 1.04;
+
+const tileOpening = (
+  progress: number,
+  brand: BrandingIsTickerProps['brand'],
+  width: number,
+  height: number,
+): string => {
+  const half = brand.size / 2;
+  const closed = 1 - progress * OVERSCAN;
+  const top = (brand.y - half) * closed;
+  const left = (brand.x - half) * closed;
+  const right = (width - brand.x - half) * closed;
+  const bottom = (height - brand.y - half) * closed;
+  const round = Math.max(0, brand.size * TILE_RADIUS * closed);
+  return `inset(${top.toFixed(2)}px ${right.toFixed(2)}px ${bottom.toFixed(2)}px ${left.toFixed(2)}px round ${round.toFixed(2)}px)`;
+};
 
 const BrandingIsTicker = ({
   copy,
@@ -31,17 +46,16 @@ const BrandingIsTicker = ({
   const cardStart = tickerWords(copy.words).length * ticker.stepFrames + card.delay;
   const cardFrame = frame - cardStart;
   const showCard = card.show && cardFrame >= 0;
-  const irisDone = cardFrame >= card.irisFrames;
-  const radius = tween(
-    cardFrame,
-    [0, Math.max(1, card.irisFrames)],
-    [0, irisRadius(brand.x, brand.y, width, height)],
-    smooth,
+  const opened = cardFrame >= card.openFrames;
+  const opening = tween(cardFrame, [0, Math.max(1, card.openFrames)], [0, 1], smooth);
+  const drawFrames = Math.max(1, brand.drawFrames);
+  const markDraw = Math.min(
+    tween(frame, [0, drawFrames], [0, 1], settle),
+    card.show ? tween(frame, [cardStart - drawFrames, cardStart], [1, 0], smooth) : 1,
   );
-  const markDraw = tween(frame, [0, Math.max(1, brand.drawFrames)], [0, 1], smooth);
   return (
     <PromoLayer look={look} motion={motion}>
-      {showCard && irisDone ? null : (
+      {showCard && opened ? null : (
         <AbsoluteFill>
           <div
             style={{
@@ -75,11 +89,7 @@ const BrandingIsTicker = ({
       )}
       {showCard ? (
         <AbsoluteFill
-          style={
-            irisDone
-              ? undefined
-              : { clipPath: `circle(${radius.toFixed(2)}px at ${brand.x}px ${brand.y}px)` }
-          }
+          style={opened ? undefined : { clipPath: tileOpening(opening, brand, width, height) }}
         >
           <ContactCard card={card} kicker={brand.kicker} name={brand.name} frame={cardFrame} />
         </AbsoluteFill>

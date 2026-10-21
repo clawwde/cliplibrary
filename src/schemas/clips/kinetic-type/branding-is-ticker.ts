@@ -60,7 +60,7 @@ export const brandingIsTickerSchema = z.object({
   card: z.object({
     show: z.boolean(),
     delay: frames(30),
-    irisFrames: frames(60),
+    openFrames: frames(60),
     background: zColor(),
     accent: zColor(),
     accentDeep: zColor(),
@@ -161,8 +161,8 @@ export const brandingIsTickerDefaults: BrandingIsTickerProps = {
   card: {
     show: true,
     delay: 1,
-    irisFrames: 20,
-    background: '#f6efe4',
+    openFrames: 22,
+    background: '#f5ecdd',
     accent: '#e0603e',
     accentDeep: '#8e2b52',
     text: '#231b33',
@@ -218,7 +218,7 @@ export const brandingIsTickerMeta: ClipMeta = {
   id: 'branding-is-ticker',
   title: 'Brand Word Ticker',
   description:
-    'A serif "your brand is" lead over a ticker of words easing through it, the active word lit in apricot with a sliding underline and its neighbours outlined, then an iris from the logo opens a contact end card.',
+    'A serif "your brand is" lead over a ticker of words easing through it, the active word lit in apricot with a sliding underline and its neighbours outlined, then the logo tile opens out into a contact end card.',
   category: 'kinetic-type',
   tags: ['kinetic', 'text', 'slide', 'marquee', 'end-card', 'cta', 'logo'],
   theme: 'dark',
