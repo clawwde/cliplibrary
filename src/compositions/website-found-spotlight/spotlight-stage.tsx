@@ -24,7 +24,7 @@ const SCATTER: readonly [number, number, number][] = [
 
 const SCATTER_CENTER = new THREE.Vector2(0.12, 3.6);
 
-export const cameraEye = (camera: Camera, frame: number): THREE.Vector3 =>
+const cameraEye = (camera: Camera, frame: number): THREE.Vector3 =>
   new THREE.Vector3(
     frame * 0.0026 * camera.drift,
     camera.height - frame * 0.0008 * camera.drift,

@@ -66,7 +66,7 @@ export interface LampRig {
   target: THREE.Vector3;
 }
 
-export const lampRig = (lamp: LampLook): LampRig => {
+const lampRig = (lamp: LampLook): LampRig => {
   const base = new THREE.Vector3(lamp.x, 0, lamp.z);
   const head = HEAD_JOINT.clone().add(HEAD_DROP).multiplyScalar(lamp.scale).add(base);
   const target = new THREE.Vector3(lamp.targetX, 0, lamp.targetZ);
