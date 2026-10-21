@@ -48,12 +48,14 @@ import type { PhoneScrollProps } from './clips/screen-demos/phone-scroll';
 import type { PhoneSwapProps } from './clips/screen-demos/phone-swap';
 import type { LetterFlipProps } from './clips/text-reveals/letter-flip';
 import type { MagnifierCaptionProps } from './clips/text-reveals/magnifier-caption';
+import type { NeonSignFlickerProps } from './clips/text-reveals/neon-sign-flicker';
 import type { NumberCounterProps } from './clips/text-reveals/number-counter';
 import type { PrinterPagesProps } from './clips/text-reveals/printer-pages';
 import type { TypewriterProps } from './clips/text-reveals/typewriter';
 import type { SceneTransitionProps } from './clips/transitions/scene-transition';
 
 export interface ClipPropsMap {
+  'neon-sign-flicker': NeonSignFlickerProps;
   'word-picker': WordPickerProps;
   'pill-fan': PillFanProps;
   'menu-stack': MenuStackProps;
