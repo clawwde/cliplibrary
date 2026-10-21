@@ -1,4 +1,4 @@
-import { AbsoluteFill, Composition, useCurrentFrame } from 'remotion';
+import { AbsoluteFill, Composition, useCurrentFrame, useVideoConfig } from 'remotion';
 import {
   type BrandingIsTickerProps,
   brandingIsTickerDefaults,
@@ -10,11 +10,16 @@ import { ContactCard } from '../../branding-ticker/contact-card';
 import { tickerFont } from '../../branding-ticker/fonts';
 import { tickerWords, WordTicker } from '../../branding-ticker/word-ticker';
 import { PromoLayer } from '../../promo/promo-layer';
+import { smooth, tween } from '../../promo/timing';
 import type { SceneModule } from '../../scene-module';
+
+const irisRadius = (x: number, y: number, width: number, height: number): number =>
+  Math.hypot(Math.max(x, width - x), Math.max(y, height - y)) * 1.01;
 
 const BrandingIsTicker = ({
   copy,
   type,
+  underline,
   ticker,
   brand,
   card,
@@ -22,18 +27,21 @@ const BrandingIsTicker = ({
   motion,
 }: BrandingIsTickerProps) => {
   const frame = useCurrentFrame() * motion.speed;
+  const { width, height } = useVideoConfig();
   const cardStart = tickerWords(copy.words).length * ticker.stepFrames + card.delay;
-  const showCard = card.show && frame >= cardStart;
+  const cardFrame = frame - cardStart;
+  const showCard = card.show && cardFrame >= 0;
+  const irisDone = cardFrame >= card.irisFrames;
+  const radius = tween(
+    cardFrame,
+    [0, Math.max(1, card.irisFrames)],
+    [0, irisRadius(brand.x, brand.y, width, height)],
+    smooth,
+  );
+  const markDraw = tween(frame, [0, Math.max(1, brand.drawFrames)], [0, 1], smooth);
   return (
     <PromoLayer look={look} motion={motion}>
-      {showCard ? (
-        <ContactCard
-          card={card}
-          kicker={brand.kicker}
-          name={brand.name}
-          frame={frame - cardStart}
-        />
-      ) : (
+      {showCard && irisDone ? null : (
         <AbsoluteFill>
           <div
             style={{
@@ -43,8 +51,8 @@ const BrandingIsTicker = ({
               width: brand.size,
             }}
           >
-            <BrandMark size={brand.size} disc={brand.mark} wave={brand.cutout} />
-            <div style={{ marginLeft: brand.size * 0.03, marginTop: brand.size * 0.03 }}>
+            <BrandMark size={brand.size} disc={brand.mark} wave={brand.cutout} draw={markDraw} />
+            <div style={{ marginTop: brand.size * 0.16 }}>
               <BrandLabel
                 kicker={brand.kicker}
                 name={brand.name}
@@ -59,11 +67,23 @@ const BrandingIsTicker = ({
             words={copy.words}
             separator={copy.separator}
             type={type}
+            underline={underline}
             timing={ticker}
             frame={frame}
           />
         </AbsoluteFill>
       )}
+      {showCard ? (
+        <AbsoluteFill
+          style={
+            irisDone
+              ? undefined
+              : { clipPath: `circle(${radius.toFixed(2)}px at ${brand.x}px ${brand.y}px)` }
+          }
+        >
+          <ContactCard card={card} kicker={brand.kicker} name={brand.name} frame={cardFrame} />
+        </AbsoluteFill>
+      ) : null}
     </PromoLayer>
   );
 };

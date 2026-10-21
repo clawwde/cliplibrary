@@ -1,11 +1,11 @@
-import { loadFont as loadBarlowCondensed } from '@remotion/google-fonts/BarlowCondensed';
+import { loadFont as loadPlayfairDisplay } from '@remotion/google-fonts/PlayfairDisplay';
 import { roundedFont, roundedFontReady } from '../promo/fonts';
 
 export const tickerFont = roundedFont;
 
 export const tickerFontReady = roundedFontReady;
 
-export const buttonFont = loadBarlowCondensed('normal', {
-  weights: ['600', '700'],
+export const leadSerifFont = loadPlayfairDisplay('italic', {
+  weights: ['600'],
   subsets: ['latin'],
 }).fontFamily;

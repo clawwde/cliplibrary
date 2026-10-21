@@ -1,7 +1,19 @@
 import { useId } from 'react';
 
-const WAVE =
-  'M -4 44 C 10 44, 15 66, 28 66 C 41 66, 42 34, 55 34 C 68 34, 69 60, 81 60 C 92 60, 95 50, 104 47';
+const SUN = 'M 25 66 A 25 25 0 0 1 75 66';
+
+const HORIZON = 'M 14 66 L 86 66';
+
+const SHORE = 'M 32 80 L 68 80';
+
+const STROKES: { d: string; from: number; to: number }[] = [
+  { d: HORIZON, from: 0, to: 0.45 },
+  { d: SUN, from: 0.2, to: 0.85 },
+  { d: SHORE, from: 0.55, to: 1 },
+];
+
+const portion = (draw: number, from: number, to: number): number =>
+  Math.min(1, Math.max(0, (draw - from) / (to - from)));
 
 export const BrandMark = ({
   size,
@@ -28,30 +40,31 @@ export const BrandMark = ({
       style={{ display: 'block' }}
       aria-hidden="true"
     >
-      <defs>
-        <clipPath id={`mark-clip-${id}`}>
-          <circle cx={50} cy={50} r={50} />
-        </clipPath>
-        {discDeep === undefined ? null : (
-          <radialGradient id={`mark-fill-${id}`} cx="30%" cy="22%" r="85%">
+      {discDeep === undefined ? null : (
+        <defs>
+          <linearGradient id={`mark-fill-${id}`} x1="0" y1="0" x2="1" y2="1">
             <stop offset="0%" stopColor={disc} />
             <stop offset="100%" stopColor={discDeep} />
-          </radialGradient>
-        )}
-      </defs>
-      <circle cx={50} cy={50} r={50} fill={fill} opacity={discOpacity} />
-      <g clipPath={`url(#mark-clip-${id})`}>
-        <path
-          d={WAVE}
-          pathLength={1}
-          fill="none"
-          stroke={wave}
-          strokeWidth={13}
-          strokeLinecap="butt"
-          strokeDasharray="1 1"
-          strokeDashoffset={1 - draw}
-        />
-      </g>
+          </linearGradient>
+        </defs>
+      )}
+      <rect width={100} height={100} rx={28} fill={fill} opacity={discOpacity} />
+      {STROKES.map(({ d, from, to }) => {
+        const amount = portion(draw, from, to);
+        return amount <= 0 ? null : (
+          <path
+            key={d}
+            d={d}
+            pathLength={1}
+            fill="none"
+            stroke={wave}
+            strokeWidth={8}
+            strokeLinecap="butt"
+            strokeDasharray="1 1"
+            strokeDashoffset={1 - amount}
+          />
+        );
+      })}
     </svg>
   );
 };
@@ -62,25 +75,35 @@ export const BrandLabel = ({
   size,
   color,
   font,
+  align = 'left',
 }: {
   kicker: string;
   name: string;
   size: number;
   color: string;
   font: string;
+  align?: 'left' | 'center';
 }) => (
-  <div style={{ fontFamily: font, color, lineHeight: 1, whiteSpace: 'nowrap' }}>
+  <div style={{ fontFamily: font, color, lineHeight: 1, whiteSpace: 'nowrap', textAlign: align }}>
     {kicker === '' ? null : (
-      <div style={{ fontSize: size * 0.36, fontWeight: 600, letterSpacing: '0.04em' }}>
+      <div
+        style={{
+          fontSize: size * 0.36,
+          fontWeight: 600,
+          letterSpacing: '0.32em',
+          marginRight: '-0.32em',
+        }}
+      >
         {kicker}
       </div>
     )}
     <div
       style={{
         fontSize: size,
-        fontWeight: 600,
-        letterSpacing: '0.02em',
-        marginTop: size * 0.06,
+        fontWeight: 700,
+        letterSpacing: '0.14em',
+        marginRight: '-0.14em',
+        marginTop: size * 0.1,
       }}
     >
       {name}
