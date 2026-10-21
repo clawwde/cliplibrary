@@ -1,4 +1,5 @@
 import type { SceneModule } from '../../scene-module';
+import { anniversaryKineticScene } from './anniversary-kinetic';
 import { brandingIsTickerScene } from './branding-is-ticker';
 import { chunkyTypeStackScene } from './chunky-type-stack';
 import { dominoWordsScene } from './domino-words';
@@ -27,4 +28,5 @@ export const kineticTypeScenes: SceneModule[] = [
   dominoWordsScene,
   scrollerCalloutScene,
   scrollerWallScene,
+  anniversaryKineticScene,
 ];
