@@ -23,6 +23,7 @@ import {
   scrollerCalloutMeta,
   scrollerCalloutSchema,
 } from './scroller-callout';
+import { scrollerWallDefaults, scrollerWallMeta, scrollerWallSchema } from './scroller-wall';
 import { stickerStackDefaults, stickerStackMeta, stickerStackSchema } from './sticker-stack';
 import { wordBuildDefaults, wordBuildMeta, wordBuildSchema } from './word-build';
 import { wordFieldDefaults, wordFieldMeta, wordFieldSchema } from './word-field';
@@ -70,5 +71,11 @@ export const kineticTypeClips: ClipModule[] = [
     schema: scrollerCalloutSchema,
     defaults: scrollerCalloutDefaults,
     meta: scrollerCalloutMeta,
+  },
+  {
+    id: 'scroller-wall',
+    schema: scrollerWallSchema,
+    defaults: scrollerWallDefaults,
+    meta: scrollerWallMeta,
   },
 ];

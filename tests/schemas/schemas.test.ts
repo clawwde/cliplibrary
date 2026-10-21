@@ -310,6 +310,7 @@ describe('promo clips', () => {
     'branding-is-ticker',
     'domino-words',
     'scroller-callout',
+    'scroller-wall',
   ];
 
   it('validates every promo default against its schema', () => {
