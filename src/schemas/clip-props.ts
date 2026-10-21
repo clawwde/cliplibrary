@@ -7,6 +7,7 @@ import type { AppIconRevealProps } from './clips/brand/app-icon-reveal';
 import type { BrandRevealProps } from './clips/brand/brand-reveal';
 import type { CtaEndCardProps } from './clips/brand/cta-end-card';
 import type { LaptopWipeRevealProps } from './clips/desk-scenes/laptop-wipe-reveal';
+import type { WebsiteFoundSpotlightProps } from './clips/desk-scenes/website-found-spotlight';
 import type { ChalkBadgeProps } from './clips/hand-drawn/chalk-badge';
 import type { ChalkBadgeGridProps } from './clips/hand-drawn/chalk-badge-grid';
 import type { ChalkBadgesReelProps } from './clips/hand-drawn/chalk-badges-reel';
@@ -86,6 +87,7 @@ export interface ClipPropsMap {
   'phone-swap': PhoneSwapProps;
   'message-arise': MessageAriseProps;
   'laptop-wipe-reveal': LaptopWipeRevealProps;
+  'website-found-spotlight': WebsiteFoundSpotlightProps;
   'phone-turnaround': PhoneTurnaroundProps;
   'phone-wall': PhoneWallProps;
   'floating-cards': FloatingCardsProps;

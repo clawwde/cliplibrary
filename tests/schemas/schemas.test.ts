@@ -259,6 +259,7 @@ describe('promo clips', () => {
     'phone-scroll',
     'message-arise',
     'laptop-wipe-reveal',
+    'website-found-spotlight',
     'phone-wall',
     'phone-pair',
     'floating-cards',
