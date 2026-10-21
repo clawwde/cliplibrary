@@ -8,6 +8,7 @@ export * from './clips/backgrounds/relief-backdrop';
 export * from './clips/brand/app-icon-reveal';
 export * from './clips/brand/brand-reveal';
 export * from './clips/brand/cta-end-card';
+export * from './clips/brand/dot-wordmark-reveal';
 export * from './clips/desk-scenes/laptop-wipe-reveal';
 export * from './clips/hand-drawn/chalk-badge';
 export * from './clips/hand-drawn/chalk-badge-grid';

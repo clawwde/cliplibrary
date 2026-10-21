@@ -6,6 +6,7 @@ import type { ReliefBackdropProps } from './clips/backgrounds/relief-backdrop';
 import type { AppIconRevealProps } from './clips/brand/app-icon-reveal';
 import type { BrandRevealProps } from './clips/brand/brand-reveal';
 import type { CtaEndCardProps } from './clips/brand/cta-end-card';
+import type { DotWordmarkRevealProps } from './clips/brand/dot-wordmark-reveal';
 import type { LaptopWipeRevealProps } from './clips/desk-scenes/laptop-wipe-reveal';
 import type { ChalkBadgeProps } from './clips/hand-drawn/chalk-badge';
 import type { ChalkBadgeGridProps } from './clips/hand-drawn/chalk-badge-grid';
@@ -107,6 +108,7 @@ export interface ClipPropsMap {
   'scroller-callout': ScrollerCalloutProps;
   'film-dust': FilmDustProps;
   'brand-reveal': BrandRevealProps;
+  'dot-wordmark-reveal': DotWordmarkRevealProps;
   'cta-end-card': CtaEndCardProps;
   'relief-backdrop': ReliefBackdropProps;
   'helicopter-unveil': HelicopterUnveilProps;
