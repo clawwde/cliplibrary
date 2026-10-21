@@ -13,6 +13,7 @@ export * from './clips/brand/cta-end-card';
 export * from './clips/brand/dot-wordmark-reveal';
 export * from './clips/brand/puzzle-success';
 export * from './clips/desk-scenes/laptop-wipe-reveal';
+export * from './clips/desk-scenes/website-found-spotlight';
 export * from './clips/hand-drawn/chalk-badge';
 export * from './clips/hand-drawn/chalk-badge-grid';
 export * from './clips/hand-drawn/chalk-badges-reel';
