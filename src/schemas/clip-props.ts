@@ -47,6 +47,7 @@ import type { MessageAriseProps } from './clips/screen-demos/message-arise';
 import type { PhoneScrollProps } from './clips/screen-demos/phone-scroll';
 import type { PhoneSwapProps } from './clips/screen-demos/phone-swap';
 import type { LetterFlipProps } from './clips/text-reveals/letter-flip';
+import type { MagnifierCaptionProps } from './clips/text-reveals/magnifier-caption';
 import type { NumberCounterProps } from './clips/text-reveals/number-counter';
 import type { PrinterPagesProps } from './clips/text-reveals/printer-pages';
 import type { TypewriterProps } from './clips/text-reveals/typewriter';
@@ -68,6 +69,7 @@ export interface ClipPropsMap {
   'app-icon-reveal': AppIconRevealProps;
   'number-counter': NumberCounterProps;
   typewriter: TypewriterProps;
+  'magnifier-caption': MagnifierCaptionProps;
   'printer-pages': PrinterPagesProps;
   'word-build': WordBuildProps;
   'word-punch': WordPunchProps;

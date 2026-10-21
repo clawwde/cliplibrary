@@ -298,6 +298,7 @@ describe('promo clips', () => {
     'chalk-badge-grid',
     'chalk-title',
     'chalk-badges-reel',
+    'magnifier-caption',
     'chunky-type-stack',
     'branding-is-ticker',
   ];
