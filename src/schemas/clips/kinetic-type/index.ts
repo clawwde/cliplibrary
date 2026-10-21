@@ -18,6 +18,11 @@ import {
   outlineMarqueeMeta,
   outlineMarqueeSchema,
 } from './outline-marquee';
+import {
+  scrollerCalloutDefaults,
+  scrollerCalloutMeta,
+  scrollerCalloutSchema,
+} from './scroller-callout';
 import { stickerStackDefaults, stickerStackMeta, stickerStackSchema } from './sticker-stack';
 import { wordBuildDefaults, wordBuildMeta, wordBuildSchema } from './word-build';
 import { wordFieldDefaults, wordFieldMeta, wordFieldSchema } from './word-field';
@@ -59,5 +64,11 @@ export const kineticTypeClips: ClipModule[] = [
     schema: dominoWordsSchema,
     defaults: dominoWordsDefaults,
     meta: dominoWordsMeta,
+  },
+  {
+    id: 'scroller-callout',
+    schema: scrollerCalloutSchema,
+    defaults: scrollerCalloutDefaults,
+    meta: scrollerCalloutMeta,
   },
 ];

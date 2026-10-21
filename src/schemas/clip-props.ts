@@ -21,6 +21,7 @@ import type { EchoStackProps } from './clips/kinetic-type/echo-stack';
 import type { GridStackProps } from './clips/kinetic-type/grid-stack';
 import type { LensOrbitProps } from './clips/kinetic-type/lens-orbit';
 import type { OutlineMarqueeProps } from './clips/kinetic-type/outline-marquee';
+import type { ScrollerCalloutProps } from './clips/kinetic-type/scroller-callout';
 import type { StickerStackProps } from './clips/kinetic-type/sticker-stack';
 import type { WordBuildProps } from './clips/kinetic-type/word-build';
 import type { WordFieldProps } from './clips/kinetic-type/word-field';
@@ -101,6 +102,7 @@ export interface ClipPropsMap {
   'chunky-type-stack': ChunkyTypeStackProps;
   'branding-is-ticker': BrandingIsTickerProps;
   'domino-words': DominoWordsProps;
+  'scroller-callout': ScrollerCalloutProps;
   'film-dust': FilmDustProps;
   'brand-reveal': BrandRevealProps;
   'cta-end-card': CtaEndCardProps;
