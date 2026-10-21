@@ -1,10 +1,5 @@
 import type { CSSProperties } from 'react';
 
-const STEPS = 3;
-
-const stepped = (value: number): number =>
-  value <= 0 ? 0 : value >= 1 ? 1 : Math.ceil(value * STEPS) / STEPS;
-
 const unit = (value: number): number => Math.min(1, Math.max(0, value));
 
 const letterReveal = (index: number, progress: number): CSSProperties => {
@@ -16,20 +11,19 @@ const letterReveal = (index: number, progress: number): CSSProperties => {
     return { opacity: 0 };
   }
   if (mode === 1) {
-    const local = unit((progress - 0.15) / 0.85);
-    return { opacity: local * local };
+    const local = unit((progress - 0.2) / 0.8);
+    return { opacity: local * (2 - local) };
   }
   if (mode === 0) {
-    const local = unit((progress - 0.1) / 0.75);
-    const shown = stepped(local);
+    const local = unit((progress - 0.08) / 0.32);
     return {
-      opacity: 0.55 + 0.45 * shown,
-      clipPath: `inset(0 0 0 ${((1 - shown) * 62).toFixed(1)}%)`,
+      opacity: 0.55 + 0.45 * local,
+      clipPath: `inset(0 0 0 ${((1 - local) * 100).toFixed(1)}%)`,
     };
   }
-  const shown = stepped(unit(progress / 0.7));
+  const local = unit(progress / 0.3);
   return {
-    clipPath: `inset(0 0 ${((1 - shown) * 85).toFixed(1)}% ${((1 - shown) * 55).toFixed(1)}%)`,
+    clipPath: `inset(0 0 ${((1 - local) * 100).toFixed(1)}% ${((1 - local) * 70).toFixed(1)}%)`,
   };
 };
 

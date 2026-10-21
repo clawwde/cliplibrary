@@ -1,12 +1,23 @@
 import { AbsoluteFill } from 'remotion';
 import type { HangingWordsProps } from '@/schemas';
 import { heavyFont } from './fonts';
-import { launchDistance, launchSpeed } from './physics';
 import { Streak } from './streak';
 import { TextLine } from './text-line';
 import { CAP_CENTER } from './word-flash';
 
 const SCROLL_DISTANCE = 1500;
+
+const SCROLL_CLEAR = 2600;
+
+const ECHOES = 3;
+
+const echoOffsets = (speed: number) =>
+  speed <= 0
+    ? [{ offset: 0, opacity: 1 }]
+    : Array.from({ length: ECHOES }, (_, index) => ({
+        offset: speed * index * 0.16,
+        opacity: index === 0 ? 1 : 0.7,
+      }));
 
 const sequenceSlots = (sideLines: number) =>
   Array.from({ length: sideLines * 2 }, (_, order) => ({
@@ -52,13 +63,13 @@ const SplitWord = ({
 
 export const RepeatStack = ({ props, frame }: { props: HangingWordsProps; frame: number }) => {
   const { stack, outro, flash, palette, look } = props;
-  if (frame < stack.start || frame >= outro.expandStart) {
+  if (frame < stack.start) {
     return null;
   }
   const centerY = flash.baseline - stack.size * CAP_CENTER;
   const elapsed = frame - stack.scrollStart;
-  const rise = launchDistance(elapsed, stack.scrollFrames, SCROLL_DISTANCE);
-  const speed = launchSpeed(elapsed, stack.scrollFrames, SCROLL_DISTANCE);
+  const speed = elapsed > 0 ? SCROLL_DISTANCE / Math.max(1, stack.scrollFrames) : 0;
+  const rise = Math.max(0, elapsed) * speed;
   const scrolling = elapsed > 0;
   const total = Math.max(1, stack.sideLines * 2);
   const slotFrame = (order: number) =>
@@ -67,43 +78,51 @@ export const RepeatStack = ({ props, frame }: { props: HangingWordsProps; frame:
   const ring = { width: stack.ringStroke, color: palette.night };
   return (
     <AbsoluteFill>
-      {frame < outro.inkAt ? (
-        <Streak
-          y={speed * 0.12}
-          style={{ position: 'absolute', inset: 0, transform: `translateY(${-rise}px)` }}
-        >
-          {sequenceSlots(stack.sideLines)
-            .filter((slot) => frame >= slotFrame(slot.order))
-            .map((slot) => (
+      {rise < SCROLL_CLEAR
+        ? echoOffsets(speed).map((echo) => (
+            <Streak
+              key={echo.offset}
+              y={speed * 0.08}
+              style={{
+                position: 'absolute',
+                inset: 0,
+                opacity: echo.opacity,
+                transform: `translateY(${(echo.offset - rise).toFixed(1)}px)`,
+              }}
+            >
+              {sequenceSlots(stack.sideLines)
+                .filter((slot) => frame >= slotFrame(slot.order))
+                .map((slot) => (
+                  <TextLine
+                    key={slot.order}
+                    centerY={centerY + slot.offset * stack.pitch}
+                    size={stack.size}
+                    font={heavyFont}
+                    weight={flash.weight}
+                    color={palette.light}
+                  >
+                    {stack.word}
+                  </TextLine>
+                ))}
               <TextLine
-                key={slot.order}
-                centerY={centerY + slot.offset * stack.pitch}
+                centerY={centerY}
                 size={stack.size}
                 font={heavyFont}
                 weight={flash.weight}
                 color={palette.light}
               >
-                {stack.word}
+                <SplitWord
+                  word={stack.word}
+                  index={stack.highlightIndex}
+                  show="all"
+                  accent={scrolling ? palette.night : palette.highlight}
+                  ring={ring}
+                />
               </TextLine>
-            ))}
-          <TextLine
-            centerY={centerY}
-            size={stack.size}
-            font={heavyFont}
-            weight={flash.weight}
-            color={palette.light}
-          >
-            <SplitWord
-              word={stack.word}
-              index={stack.highlightIndex}
-              show="all"
-              accent={palette.highlight}
-              ring={ring}
-            />
-          </TextLine>
-        </Streak>
-      ) : null}
-      {scrolling ? (
+            </Streak>
+          ))
+        : null}
+      {scrolling && frame < outro.expandStart ? (
         <TextLine
           centerY={centerY}
           size={stack.size}

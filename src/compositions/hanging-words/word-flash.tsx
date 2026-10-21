@@ -24,10 +24,11 @@ export const WordFlash = ({ props, frame }: { props: HangingWordsProps; frame: n
     <AbsoluteFill>
       {words.map((word, index) => {
         const end = words[index + 1]?.start ?? flash.end;
+        const isLast = index === words.length - 1;
         if (frame < word.start || frame >= end + flash.ghostFrames) {
           return null;
         }
-        const opacity = opacityAt(frame, end, flash.ghost, flash.ghostFrames);
+        const opacity = opacityAt(frame, end, flash.ghost, isLast ? 0 : flash.ghostFrames);
         if (opacity <= 0) {
           return null;
         }
