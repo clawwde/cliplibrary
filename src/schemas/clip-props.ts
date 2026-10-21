@@ -48,6 +48,7 @@ import type { WordPickerProps } from './clips/list-pickers/word-picker';
 import type { YearDialProps } from './clips/list-pickers/year-dial';
 import type { FilmDustProps } from './clips/overlays/film-dust';
 import type { FloatingCardsProps } from './clips/overlays/floating-cards';
+import type { SpiderWebServicesProps } from './clips/overlays/spider-web-services';
 import type { ChargeCompareProps } from './clips/phone-layouts/charge-compare';
 import type { PhoneFanProps } from './clips/phone-layouts/phone-fan';
 import type { PhonePairProps } from './clips/phone-layouts/phone-pair';
@@ -126,6 +127,7 @@ export interface ClipPropsMap {
   'anniversary-kinetic': AnniversaryKineticProps;
   'coming-soon-flips': ComingSoonFlipsProps;
   'film-dust': FilmDustProps;
+  'spider-web-services': SpiderWebServicesProps;
   'brand-reveal': BrandRevealProps;
   'dot-wordmark-reveal': DotWordmarkRevealProps;
   'cta-end-card': CtaEndCardProps;

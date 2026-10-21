@@ -293,6 +293,7 @@ describe('promo clips', () => {
     'billboard-reader',
     'incoming-call-teaser',
     'burning-paper-reveal',
+    'spider-web-services',
     'word-picker',
     'pill-fan',
     'menu-stack',
