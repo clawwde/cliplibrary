@@ -1,9 +1,25 @@
 import type { ClipModule } from '../../registry';
 import {
+  anniversaryKineticDefaults,
+  anniversaryKineticMeta,
+  anniversaryKineticSchema,
+} from './anniversary-kinetic';
+import {
+  brandingIsTickerDefaults,
+  brandingIsTickerMeta,
+  brandingIsTickerSchema,
+} from './branding-is-ticker';
+import {
   chunkyTypeStackDefaults,
   chunkyTypeStackMeta,
   chunkyTypeStackSchema,
 } from './chunky-type-stack';
+import {
+  comingSoonFlipsDefaults,
+  comingSoonFlipsMeta,
+  comingSoonFlipsSchema,
+} from './coming-soon-flips';
+import { dominoWordsDefaults, dominoWordsMeta, dominoWordsSchema } from './domino-words';
 import { echoStackDefaults, echoStackMeta, echoStackSchema } from './echo-stack';
 import { gridStackDefaults, gridStackMeta, gridStackSchema } from './grid-stack';
 import { hangingWordsDefaults, hangingWordsMeta, hangingWordsSchema } from './hanging-words';
@@ -13,6 +29,12 @@ import {
   outlineMarqueeMeta,
   outlineMarqueeSchema,
 } from './outline-marquee';
+import {
+  scrollerCalloutDefaults,
+  scrollerCalloutMeta,
+  scrollerCalloutSchema,
+} from './scroller-callout';
+import { scrollerWallDefaults, scrollerWallMeta, scrollerWallSchema } from './scroller-wall';
 import { stickerStackDefaults, stickerStackMeta, stickerStackSchema } from './sticker-stack';
 import { wordBuildDefaults, wordBuildMeta, wordBuildSchema } from './word-build';
 import { wordFieldDefaults, wordFieldMeta, wordFieldSchema } from './word-field';
@@ -48,5 +70,41 @@ export const kineticTypeClips: ClipModule[] = [
     schema: chunkyTypeStackSchema,
     defaults: chunkyTypeStackDefaults,
     meta: chunkyTypeStackMeta,
+  },
+  {
+    id: 'branding-is-ticker',
+    schema: brandingIsTickerSchema,
+    defaults: brandingIsTickerDefaults,
+    meta: brandingIsTickerMeta,
+  },
+  {
+    id: 'domino-words',
+    schema: dominoWordsSchema,
+    defaults: dominoWordsDefaults,
+    meta: dominoWordsMeta,
+  },
+  {
+    id: 'scroller-callout',
+    schema: scrollerCalloutSchema,
+    defaults: scrollerCalloutDefaults,
+    meta: scrollerCalloutMeta,
+  },
+  {
+    id: 'scroller-wall',
+    schema: scrollerWallSchema,
+    defaults: scrollerWallDefaults,
+    meta: scrollerWallMeta,
+  },
+  {
+    id: 'anniversary-kinetic',
+    schema: anniversaryKineticSchema,
+    defaults: anniversaryKineticDefaults,
+    meta: anniversaryKineticMeta,
+  },
+  {
+    id: 'coming-soon-flips',
+    schema: comingSoonFlipsSchema,
+    defaults: comingSoonFlipsDefaults,
+    meta: comingSoonFlipsMeta,
   },
 ];

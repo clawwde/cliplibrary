@@ -1,4 +1,9 @@
 import type { ClipModule } from '../../registry';
+import {
+  incomingCallTeaserDefaults,
+  incomingCallTeaserMeta,
+  incomingCallTeaserSchema,
+} from './incoming-call-teaser';
 import { messageAriseDefaults, messageAriseMeta, messageAriseSchema } from './message-arise';
 import { phoneScrollDefaults, phoneScrollMeta, phoneScrollSchema } from './phone-scroll';
 import { phoneSwapDefaults, phoneSwapMeta, phoneSwapSchema } from './phone-swap';
@@ -16,5 +21,11 @@ export const screenDemosClips: ClipModule[] = [
     schema: messageAriseSchema,
     defaults: messageAriseDefaults,
     meta: messageAriseMeta,
+  },
+  {
+    id: 'incoming-call-teaser',
+    schema: incomingCallTeaserSchema,
+    defaults: incomingCallTeaserDefaults,
+    meta: incomingCallTeaserMeta,
   },
 ];
