@@ -60,6 +60,7 @@ import type { IncomingCallTeaserProps } from './clips/screen-demos/incoming-call
 import type { MessageAriseProps } from './clips/screen-demos/message-arise';
 import type { PhoneScrollProps } from './clips/screen-demos/phone-scroll';
 import type { PhoneSwapProps } from './clips/screen-demos/phone-swap';
+import type { GoingLiveTeaserProps } from './clips/text-reveals/going-live-teaser';
 import type { LetterFlipProps } from './clips/text-reveals/letter-flip';
 import type { MagnifierCaptionProps } from './clips/text-reveals/magnifier-caption';
 import type { NeonSignFlickerProps } from './clips/text-reveals/neon-sign-flicker';
@@ -86,6 +87,7 @@ export interface ClipPropsMap {
   'number-counter': NumberCounterProps;
   typewriter: TypewriterProps;
   'magnifier-caption': MagnifierCaptionProps;
+  'going-live-teaser': GoingLiveTeaserProps;
   'printer-pages': PrinterPagesProps;
   'word-build': WordBuildProps;
   'word-punch': WordPunchProps;

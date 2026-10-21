@@ -283,6 +283,7 @@ describe('promo clips', () => {
     'outline-marquee',
     'letter-flip',
     'printer-pages',
+    'going-live-teaser',
     'helicopter-unveil',
     'problem-strikeout',
     'neon-sign-flicker',
