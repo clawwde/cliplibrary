@@ -9,6 +9,7 @@ import {
   chunkyTypeStackMeta,
   chunkyTypeStackSchema,
 } from './chunky-type-stack';
+import { dominoWordsDefaults, dominoWordsMeta, dominoWordsSchema } from './domino-words';
 import { echoStackDefaults, echoStackMeta, echoStackSchema } from './echo-stack';
 import { gridStackDefaults, gridStackMeta, gridStackSchema } from './grid-stack';
 import { lensOrbitDefaults, lensOrbitMeta, lensOrbitSchema } from './lens-orbit';
@@ -52,5 +53,11 @@ export const kineticTypeClips: ClipModule[] = [
     schema: brandingIsTickerSchema,
     defaults: brandingIsTickerDefaults,
     meta: brandingIsTickerMeta,
+  },
+  {
+    id: 'domino-words',
+    schema: dominoWordsSchema,
+    defaults: dominoWordsDefaults,
+    meta: dominoWordsMeta,
   },
 ];

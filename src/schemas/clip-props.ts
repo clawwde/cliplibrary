@@ -16,6 +16,7 @@ import type { HandwrittenNoteProps } from './clips/hand-drawn/handwritten-note';
 import type { ScribbleCaptionProps } from './clips/hand-drawn/scribble-caption';
 import type { BrandingIsTickerProps } from './clips/kinetic-type/branding-is-ticker';
 import type { ChunkyTypeStackProps } from './clips/kinetic-type/chunky-type-stack';
+import type { DominoWordsProps } from './clips/kinetic-type/domino-words';
 import type { EchoStackProps } from './clips/kinetic-type/echo-stack';
 import type { GridStackProps } from './clips/kinetic-type/grid-stack';
 import type { LensOrbitProps } from './clips/kinetic-type/lens-orbit';
@@ -99,6 +100,7 @@ export interface ClipPropsMap {
   'chalk-badges-reel': ChalkBadgesReelProps;
   'chunky-type-stack': ChunkyTypeStackProps;
   'branding-is-ticker': BrandingIsTickerProps;
+  'domino-words': DominoWordsProps;
   'film-dust': FilmDustProps;
   'brand-reveal': BrandRevealProps;
   'cta-end-card': CtaEndCardProps;

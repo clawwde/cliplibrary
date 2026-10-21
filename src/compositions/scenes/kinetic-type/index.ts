@@ -1,6 +1,7 @@
 import type { SceneModule } from '../../scene-module';
 import { brandingIsTickerScene } from './branding-is-ticker';
 import { chunkyTypeStackScene } from './chunky-type-stack';
+import { dominoWordsScene } from './domino-words';
 import { echoStackScene } from './echo-stack';
 import { gridStackScene } from './grid-stack';
 import { lensOrbitScene } from './lens-orbit';
@@ -21,4 +22,5 @@ export const kineticTypeScenes: SceneModule[] = [
   stickerStackScene,
   chunkyTypeStackScene,
   brandingIsTickerScene,
+  dominoWordsScene,
 ];
