@@ -311,6 +311,7 @@ describe('promo clips', () => {
     'domino-words',
     'scroller-callout',
     'scroller-wall',
+    'anniversary-kinetic',
   ];
 
   it('validates every promo default against its schema', () => {

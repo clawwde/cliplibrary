@@ -1,5 +1,10 @@
 import type { ClipModule } from '../../registry';
 import {
+  anniversaryKineticDefaults,
+  anniversaryKineticMeta,
+  anniversaryKineticSchema,
+} from './anniversary-kinetic';
+import {
   brandingIsTickerDefaults,
   brandingIsTickerMeta,
   brandingIsTickerSchema,
@@ -77,5 +82,11 @@ export const kineticTypeClips: ClipModule[] = [
     schema: scrollerWallSchema,
     defaults: scrollerWallDefaults,
     meta: scrollerWallMeta,
+  },
+  {
+    id: 'anniversary-kinetic',
+    schema: anniversaryKineticSchema,
+    defaults: anniversaryKineticDefaults,
+    meta: anniversaryKineticMeta,
   },
 ];

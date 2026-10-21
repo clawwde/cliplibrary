@@ -19,6 +19,7 @@ import type { ChalkTitleProps } from './clips/hand-drawn/chalk-title';
 import type { DoodleArrowsProps } from './clips/hand-drawn/doodle-arrows';
 import type { HandwrittenNoteProps } from './clips/hand-drawn/handwritten-note';
 import type { ScribbleCaptionProps } from './clips/hand-drawn/scribble-caption';
+import type { AnniversaryKineticProps } from './clips/kinetic-type/anniversary-kinetic';
 import type { BrandingIsTickerProps } from './clips/kinetic-type/branding-is-ticker';
 import type { ChunkyTypeStackProps } from './clips/kinetic-type/chunky-type-stack';
 import type { DominoWordsProps } from './clips/kinetic-type/domino-words';
@@ -114,6 +115,7 @@ export interface ClipPropsMap {
   'domino-words': DominoWordsProps;
   'scroller-callout': ScrollerCalloutProps;
   'scroller-wall': ScrollerWallProps;
+  'anniversary-kinetic': AnniversaryKineticProps;
   'film-dust': FilmDustProps;
   'brand-reveal': BrandRevealProps;
   'dot-wordmark-reveal': DotWordmarkRevealProps;

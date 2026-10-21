@@ -1,3 +1,4 @@
+export * from './anniversary-common';
 export * from './clip-props';
 export * from './clips';
 export * from './clips/ad-reveals/battery-charge-success';
@@ -21,6 +22,7 @@ export * from './clips/hand-drawn/chalk-title';
 export * from './clips/hand-drawn/doodle-arrows';
 export * from './clips/hand-drawn/handwritten-note';
 export * from './clips/hand-drawn/scribble-caption';
+export * from './clips/kinetic-type/anniversary-kinetic';
 export * from './clips/kinetic-type/branding-is-ticker';
 export * from './clips/kinetic-type/chunky-type-stack';
 export * from './clips/kinetic-type/domino-words';
