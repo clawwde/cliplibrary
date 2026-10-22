@@ -39,6 +39,8 @@ const ADJUSTMENTS: {
   { key: 'invert', label: 'Invert', min: 0, max: 1, step: 0.01 },
 ];
 
+const DEFAULT_CROP = { zoom: 1, focusX: 0.5, focusY: 0.5 };
+
 export const ImageSection = ({ element, onChange, onCommit }: ImageSectionProps) => {
   const inputRef = useRef<HTMLInputElement>(null);
   const patch = (partial: Partial<ImageElement>, live = false) =>
@@ -84,6 +86,46 @@ export const ImageSection = ({ element, onChange, onCommit }: ImageSectionProps)
             </ToggleButton>
           ))}
         </div>
+        {element.fit === 'cover' && element.src !== '' ? (
+          <>
+            <SliderRow
+              label="Crop zoom"
+              value={element.crop?.zoom ?? 1}
+              min={1}
+              max={5}
+              step={0.01}
+              format={(value) => `${Math.round(value * 100)}%`}
+              onChange={(zoom) =>
+                patch({ crop: { ...(element.crop ?? DEFAULT_CROP), zoom } }, true)
+              }
+              onCommit={onCommit}
+            />
+            <SliderRow
+              label="Focus left to right"
+              value={element.crop?.focusX ?? 0.5}
+              min={0}
+              max={1}
+              step={0.01}
+              format={(value) => `${Math.round(value * 100)}%`}
+              onChange={(focusX) =>
+                patch({ crop: { ...(element.crop ?? DEFAULT_CROP), focusX } }, true)
+              }
+              onCommit={onCommit}
+            />
+            <SliderRow
+              label="Focus top to bottom"
+              value={element.crop?.focusY ?? 0.5}
+              min={0}
+              max={1}
+              step={0.01}
+              format={(value) => `${Math.round(value * 100)}%`}
+              onChange={(focusY) =>
+                patch({ crop: { ...(element.crop ?? DEFAULT_CROP), focusY } }, true)
+              }
+              onCommit={onCommit}
+            />
+          </>
+        ) : null}
         <div className="flex gap-1">
           <ToggleButton
             label="Flip horizontal"

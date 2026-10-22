@@ -1,9 +1,11 @@
 'use client';
 
-import type { ReactNode } from 'react';
+import { Pipette } from 'lucide-react';
+import { type ReactNode, useEffect, useState } from 'react';
 import { Input } from '@/components/ui/input';
 import { Slider } from '@/components/ui/slider';
 import { cn } from '@/lib/utils';
+import { eyeDropperSupported, pickScreenColor, useDocumentColors } from '../document-colors';
 
 export const SWATCHES = [
   '#000000',
@@ -146,6 +148,28 @@ export const ToggleButton = ({
   </button>
 );
 
+const SwatchRow = ({
+  colors,
+  onPick,
+}: {
+  colors: readonly string[];
+  onPick: (color: string) => void;
+}) => (
+  <div className="grid grid-cols-10 gap-1">
+    {colors.map((swatch) => (
+      <button
+        type="button"
+        key={swatch}
+        title={swatch}
+        aria-label={`Use ${swatch}`}
+        onClick={() => onPick(swatch)}
+        className="aspect-square rounded-[5px] ring-1 ring-black/10 ring-inset transition-transform hover:scale-110"
+        style={{ background: swatch }}
+      />
+    ))}
+  </div>
+);
+
 export const ColorInput = ({
   label,
   value,
@@ -158,38 +182,54 @@ export const ColorInput = ({
   onChange: (next: string, live?: boolean) => void;
   onCommit?: () => void;
   showSwatches?: boolean;
-}) => (
-  <div className="flex flex-col gap-2">
-    <div className="flex items-center gap-2">
-      <input
-        type="color"
-        aria-label={`${label} picker`}
-        value={/^#[0-9a-f]{6}/i.test(value) ? value.slice(0, 7) : '#000000'}
-        onChange={(event) => onChange(event.target.value, true)}
-        onBlur={onCommit}
-        className="size-8 shrink-0 cursor-pointer rounded-md border-0 bg-transparent p-0"
-      />
-      <Input
-        aria-label={label}
-        value={value}
-        onChange={(event) => onChange(event.target.value)}
-        className="h-8 font-mono text-xs"
-      />
-    </div>
-    {showSwatches ? (
-      <div className="grid grid-cols-10 gap-1">
-        {SWATCHES.map((swatch) => (
+}) => {
+  const documentColors = useDocumentColors();
+  const [canPick, setCanPick] = useState(false);
+  useEffect(() => setCanPick(eyeDropperSupported()), []);
+  return (
+    <div className="flex flex-col gap-2">
+      <div className="flex items-center gap-2">
+        <input
+          type="color"
+          aria-label={`${label} picker`}
+          value={/^#[0-9a-f]{6}/i.test(value) ? value.slice(0, 7) : '#000000'}
+          onChange={(event) => onChange(event.target.value, true)}
+          onBlur={onCommit}
+          className="size-8 shrink-0 cursor-pointer rounded-md border-0 bg-transparent p-0"
+        />
+        <Input
+          aria-label={label}
+          value={value}
+          onChange={(event) => onChange(event.target.value)}
+          className="h-8 font-mono text-xs"
+        />
+        {canPick ? (
           <button
             type="button"
-            key={swatch}
-            title={swatch}
-            aria-label={`Use ${swatch}`}
-            onClick={() => onChange(swatch)}
-            className="aspect-square rounded-[5px] ring-1 ring-black/10 ring-inset transition-transform hover:scale-110"
-            style={{ background: swatch }}
-          />
-        ))}
+            aria-label={`Pick ${label} from screen`}
+            title="Pick a colour from the screen"
+            onClick={() => {
+              pickScreenColor()
+                .then((color) => {
+                  if (color !== null) {
+                    onChange(color);
+                  }
+                })
+                .catch(() => undefined);
+            }}
+            className="inline-flex size-8 shrink-0 items-center justify-center rounded-md bg-muted hover:bg-accent"
+          >
+            <Pipette className="size-4" />
+          </button>
+        ) : null}
       </div>
-    ) : null}
-  </div>
-);
+      {showSwatches && documentColors.length > 0 ? (
+        <div className="flex flex-col gap-1.5">
+          <span className="text-[11px] text-muted-foreground">Document colours</span>
+          <SwatchRow colors={documentColors} onPick={(color) => onChange(color)} />
+        </div>
+      ) : null}
+      {showSwatches ? <SwatchRow colors={SWATCHES} onPick={(color) => onChange(color)} /> : null}
+    </div>
+  );
+};

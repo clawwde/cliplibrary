@@ -35,6 +35,18 @@ const strokeShape = {
 
 export const TEXT_ALIGNS = ['left', 'center', 'right'] as const;
 
+export const textBackgroundSchema = z.object({
+  fill: z.string(),
+  padding: z.number().min(0),
+  radius: z.number().min(0),
+});
+
+export const imageCropSchema = z.object({
+  zoom: z.number().min(1).max(5),
+  focusX: z.number().min(0).max(1),
+  focusY: z.number().min(0).max(1),
+});
+
 export const textElementSchema = z.object({
   ...baseShape,
   type: z.literal('text'),
@@ -52,6 +64,7 @@ export const textElementSchema = z.object({
   fill: fillSchema,
   stroke: z.string(),
   strokeWidth: z.number().min(0),
+  background: textBackgroundSchema.optional(),
 });
 
 export const rectElementSchema = z.object({
@@ -130,6 +143,7 @@ export const imageElementSchema = z.object({
   stroke: z.string(),
   strokeWidth: z.number().min(0),
   filters: imageFiltersSchema,
+  crop: imageCropSchema.optional(),
 });
 
 export const iconElementSchema = z.object({
@@ -153,6 +167,8 @@ export const designElementSchema = z.discriminatedUnion('type', [
 ]);
 
 export type Shadow = z.infer<typeof shadowSchema>;
+export type TextBackground = z.infer<typeof textBackgroundSchema>;
+export type ImageCrop = z.infer<typeof imageCropSchema>;
 export type TextAlign = (typeof TEXT_ALIGNS)[number];
 export type ImageFit = (typeof IMAGE_FITS)[number];
 export type ImageFilters = z.infer<typeof imageFiltersSchema>;

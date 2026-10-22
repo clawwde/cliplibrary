@@ -18,7 +18,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
-import { FONT_FAMILIES, FONT_WEIGHTS, type TextElement } from '@/design';
+import { cssFontFamily, FONT_FAMILIES, FONT_WEIGHTS, type TextElement } from '@/design';
 import { loadFontFamily } from '../font-loader';
 import { ColorInput, NumberInput, Section, SliderRow, ToggleButton } from './fields';
 import { FillEditor } from './fill-editor';
@@ -61,7 +61,7 @@ export const TextSection = ({ element, onChange, onCommit }: TextSectionProps) =
                 value={font.family}
                 onMouseEnter={() => loadFontFamily(font.family).catch(() => undefined)}
               >
-                <span style={{ fontFamily: font.family }}>{font.family}</span>
+                <span style={{ fontFamily: cssFontFamily(font.family) }}>{font.family}</span>
               </SelectItem>
             ))}
           </SelectContent>

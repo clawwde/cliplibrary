@@ -5,11 +5,17 @@ export const coverCrop = (
   imageHeight: number,
   boxWidth: number,
   boxHeight: number,
+  crop: { zoom: number; focusX: number; focusY: number } = { zoom: 1, focusX: 0.5, focusY: 0.5 },
 ): Box => {
-  const scale = Math.max(boxWidth / imageWidth, boxHeight / imageHeight);
+  const scale = Math.max(boxWidth / imageWidth, boxHeight / imageHeight) * crop.zoom;
   const width = boxWidth / scale;
   const height = boxHeight / scale;
-  return { x: (imageWidth - width) / 2, y: (imageHeight - height) / 2, width, height };
+  return {
+    x: (imageWidth - width) * crop.focusX,
+    y: (imageHeight - height) * crop.focusY,
+    width,
+    height,
+  };
 };
 
 export const containBox = (

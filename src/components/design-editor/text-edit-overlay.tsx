@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
-import { firstFillColor, type Point, type TextElement } from '@/design';
+import { cssFontFamily, firstFillColor, type Point, type TextElement } from '@/design';
 
 interface TextEditOverlayProps {
   element: TextElement;
@@ -61,7 +61,7 @@ export const TextEditOverlay = ({ element, zoom, offset, onCommit }: TextEditOve
         width: element.width * zoom,
         transform: `rotate(${element.rotation}deg)`,
         transformOrigin: 'top left',
-        fontFamily: element.fontFamily,
+        fontFamily: cssFontFamily(element.fontFamily),
         fontSize: element.fontSize * zoom,
         fontWeight: element.fontWeight,
         fontStyle: element.italic ? 'italic' : 'normal',

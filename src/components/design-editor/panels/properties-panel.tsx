@@ -9,6 +9,7 @@ import { IconSection } from './icon-section';
 import { ImageSection } from './image-section';
 import { ShadowSection } from './shadow-section';
 import { LineSection, ShapeSection } from './shape-section';
+import { TextEffectsSection } from './text-effects-section';
 import { TextSection } from './text-section';
 
 const TYPE_LABELS: Record<DesignElement['type'], string> = {
@@ -34,7 +35,12 @@ const TypeSection = ({
 }) => {
   switch (element.type) {
     case 'text':
-      return <TextSection element={element} onChange={onChange} onCommit={onCommit} />;
+      return (
+        <>
+          <TextSection element={element} onChange={onChange} onCommit={onCommit} />
+          <TextEffectsSection element={element} onChange={onChange} onCommit={onCommit} />
+        </>
+      );
     case 'image':
       return <ImageSection element={element} onChange={onChange} onCommit={onCommit} />;
     case 'icon':

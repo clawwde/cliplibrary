@@ -3,6 +3,7 @@ import {
   containBox,
   coverCrop,
   cssFilterString,
+  cssFontFamily,
   DESIGN_ICON_NAMES,
   fitInside,
   fontStyleString,
@@ -64,5 +65,8 @@ describe('icons and fonts', () => {
     expect(fontStyleString(400, false)).toBe('400');
     expect(textDecorationString(true, true)).toBe('underline line-through');
     expect(textDecorationString(false, false)).toBe('');
+    expect(cssFontFamily('Press Start 2P')).toBe('Press Start TwoP');
+    expect(cssFontFamily('VT323')).toBe('VTThreeTwoThree');
+    expect(cssFontFamily('Inter')).toBe('Inter');
   });
 });

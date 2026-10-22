@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect } from 'react';
-import { createText, type DesignElement, type TextElement } from '@/design';
+import { createText, cssFontFamily, type DesignElement, type TextElement } from '@/design';
 import { loadFontFamilies, loadFontFamily } from '../font-loader';
 
 interface TextPreset {
@@ -216,7 +216,7 @@ export const TextPanel = ({ onAdd }: { onAdd: (element: DesignElement) => void }
                 onAdd(combo.element());
               }}
               className={`flex aspect-[4/3] items-center justify-center rounded-lg bg-muted/70 px-2 text-center transition-colors hover:bg-accent ${combo.style}`}
-              style={{ fontFamily: combo.fontFamily }}
+              style={{ fontFamily: cssFontFamily(combo.fontFamily) }}
             >
               {combo.label}
             </button>

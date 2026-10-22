@@ -3,11 +3,12 @@
 import type Konva from 'konva';
 import type { KonvaEventObject } from 'konva/lib/Node';
 import { memo, type ReactNode, useLayoutEffect, useRef } from 'react';
-import { Arrow, Ellipse, Group, Image, Line, Path, Rect, Text } from 'react-konva';
+import { Arrow, Ellipse, Group, Image, Label, Line, Path, Rect, Tag, Text } from 'react-konva';
 import {
   containBox,
   coverCrop,
   cssFilterString,
+  cssFontFamily,
   type DesignElement,
   fontStyleString,
   hasFilters,
@@ -46,25 +47,37 @@ const displayText = (element: TextElement): string =>
 const estimatedTextHeight = (element: TextElement): number =>
   element.text.split('\n').length * element.fontSize * element.lineHeight;
 
-const TextNode = ({ element }: { element: TextElement }) => (
-  <Text
-    text={displayText(element)}
-    width={element.width}
-    fontFamily={element.fontFamily}
-    fontSize={element.fontSize}
-    fontStyle={fontStyleString(element.fontWeight, element.italic)}
-    textDecoration={textDecorationString(element.underline, element.strikethrough)}
-    align={element.align}
-    lineHeight={element.lineHeight}
-    letterSpacing={element.letterSpacing}
-    stroke={element.stroke}
-    strokeEnabled={element.strokeWidth > 0}
-    strokeWidth={element.strokeWidth}
-    fillAfterStrokeEnabled
-    {...konvaFill(element.fill, element.width, estimatedTextHeight(element))}
-    {...shadowProps(element.shadow)}
-  />
-);
+const TextNode = ({ element }: { element: TextElement }) => {
+  const text = (
+    <Text
+      text={displayText(element)}
+      width={element.width}
+      fontFamily={cssFontFamily(element.fontFamily)}
+      fontSize={element.fontSize}
+      fontStyle={fontStyleString(element.fontWeight, element.italic)}
+      textDecoration={textDecorationString(element.underline, element.strikethrough)}
+      align={element.align}
+      lineHeight={element.lineHeight}
+      letterSpacing={element.letterSpacing}
+      stroke={element.stroke}
+      strokeEnabled={element.strokeWidth > 0}
+      strokeWidth={element.strokeWidth}
+      fillAfterStrokeEnabled
+      padding={element.background?.padding ?? 0}
+      {...konvaFill(element.fill, element.width, estimatedTextHeight(element))}
+      {...shadowProps(element.shadow)}
+    />
+  );
+  if (element.background === undefined) {
+    return text;
+  }
+  return (
+    <Label>
+      <Tag fill={element.background.fill} cornerRadius={element.background.radius} />
+      {text}
+    </Label>
+  );
+};
 
 const roundedClip = (width: number, height: number, radius: number) => {
   const r = Math.min(radius, width / 2, height / 2);
@@ -127,7 +140,13 @@ const ImageBitmap = memo(
         : { x: 0, y: 0, width: element.width, height: element.height };
     const crop =
       element.fit === 'cover'
-        ? coverCrop(image.naturalWidth, image.naturalHeight, element.width, element.height)
+        ? coverCrop(
+            image.naturalWidth,
+            image.naturalHeight,
+            element.width,
+            element.height,
+            element.crop,
+          )
         : undefined;
 
     useLayoutEffect(() => {

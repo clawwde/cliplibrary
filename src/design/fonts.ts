@@ -71,3 +71,10 @@ export const fontStyleString = (weight: number, italic: boolean): string =>
 
 export const textDecorationString = (underline: boolean, strikethrough: boolean): string =>
   [underline ? 'underline' : '', strikethrough ? 'line-through' : ''].filter(Boolean).join(' ');
+
+const REGISTERED_FAMILIES: Record<string, string> = {
+  'Press Start 2P': 'Press Start TwoP',
+  VT323: 'VTThreeTwoThree',
+};
+
+export const cssFontFamily = (family: string): string => REGISTERED_FAMILIES[family] ?? family;

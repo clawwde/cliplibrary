@@ -12,6 +12,7 @@ import {
 } from '@/design';
 import { CanvasWorkspace } from './canvas-workspace';
 import { EditorContextMenu } from './context-menu';
+import { DocumentColorsProvider } from './document-colors';
 import { EditorHeader } from './editor-header';
 import { EditorSidebar, type SidebarPanel } from './editor-sidebar';
 import { exportPages } from './export-design';
@@ -282,7 +283,9 @@ export const DesignEditor = ({
           className="hidden w-[280px] shrink-0 overflow-y-auto border-l bg-background lg:block"
           aria-label="Properties"
         >
-          <PropertiesPanel editor={editor} />
+          <DocumentColorsProvider design={design}>
+            <PropertiesPanel editor={editor} />
+          </DocumentColorsProvider>
         </aside>
       </div>
       <ShortcutsDialog open={helpOpen} onOpenChange={setHelpOpen} />
