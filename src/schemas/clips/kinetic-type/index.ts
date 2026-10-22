@@ -17,6 +17,8 @@ import {
   chunkyTypeStackSchema,
 } from './chunky-type-stack';
 import { chunkyTypeStackControls } from './chunky-type-stack-controls';
+import { circlePopDefaults, circlePopMeta, circlePopSchema } from './circle-pop';
+import { circlePopControls } from './circle-pop-controls';
 import {
   comingSoonFlipsDefaults,
   comingSoonFlipsMeta,
@@ -39,6 +41,8 @@ import {
   outlineMarqueeSchema,
 } from './outline-marquee';
 import { outlineMarqueeControls } from './outline-marquee-controls';
+import { ribbonWordsDefaults, ribbonWordsMeta, ribbonWordsSchema } from './ribbon-words';
+import { ribbonWordsControls } from './ribbon-words-controls';
 import {
   scrollerCalloutDefaults,
   scrollerCalloutMeta,
@@ -128,6 +132,13 @@ export const kineticTypeClips: ClipModule[] = [
     controls: chunkyTypeStackControls,
   },
   {
+    id: 'circle-pop',
+    schema: circlePopSchema,
+    defaults: circlePopDefaults,
+    meta: circlePopMeta,
+    controls: circlePopControls,
+  },
+  {
     id: 'branding-is-ticker',
     schema: brandingIsTickerSchema,
     defaults: brandingIsTickerDefaults,
@@ -154,6 +165,13 @@ export const kineticTypeClips: ClipModule[] = [
     defaults: scrollerWallDefaults,
     meta: scrollerWallMeta,
     controls: scrollerWallControls,
+  },
+  {
+    id: 'ribbon-words',
+    schema: ribbonWordsSchema,
+    defaults: ribbonWordsDefaults,
+    meta: ribbonWordsMeta,
+    controls: ribbonWordsControls,
   },
   {
     id: 'anniversary-kinetic',

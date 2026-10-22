@@ -89,7 +89,8 @@ export const Backdrop = ({
   return (
     <AbsoluteFill
       style={{
-        background: `radial-gradient(130% 130% at ${focusX}% ${focusY - 2}%, ${easedGradient(look.background, look.backgroundEdge)})`,
+        backgroundColor: look.background,
+        backgroundImage: `radial-gradient(130% 130% at ${focusX}% ${focusY - 2}%, ${easedGradient(look.background, look.backgroundEdge)})`,
       }}
     >
       <AbsoluteFill
