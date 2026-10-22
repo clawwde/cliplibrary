@@ -93,7 +93,7 @@ export const editableLaptop =
         theme,
         copy.body,
         size.width * 0.18,
-        size.height * 0.2 + size.width * 0.05,
+        size.height * 0.2 + size.width * 0.07,
         size.width * 0.64,
         size.width * 0.026,
         'center',

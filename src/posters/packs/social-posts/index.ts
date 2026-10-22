@@ -18,6 +18,7 @@ import { crimsonCorporateEdgePack } from './crimson-corporate-edge';
 import { emberDeviceMockupsPack } from './ember-device-mockups';
 import { emeraldSaasLaunchPack } from './emerald-saas-launch';
 import { fernB2bStrategyPack } from './fern-b2b-strategy';
+import { fernhillMustardMarketingPack } from './fernhill-mustard-marketing';
 import { fuchsiaStartupBundlePack } from './fuchsia-startup-bundle';
 import { graphiteSaasFoundersPack } from './graphite-saas-founders';
 import { harborB2bMarketingPack } from './harbor-b2b-marketing';
@@ -28,11 +29,13 @@ import { jadeEventCalendarPack } from './jade-event-calendar';
 import { lagoonSaasStatsPack } from './lagoon-saas-stats';
 import { limeB2bBundlePack } from './lime-b2b-bundle';
 import { magentaGrowthPostsPack } from './magenta-growth-posts';
+import { magentaInkSalesPack } from './magenta-ink-sales';
 import { magentaMiniGamesPack } from './magenta-mini-games';
 import { meridianNavyCorporatePack } from './meridian-navy-corporate';
 import { mintCircuitTechPostsPack } from './mint-circuit-tech-posts';
 import { mintSignalMarketingPack } from './mint-signal-marketing';
 import { nightSignalPodcastPack } from './night-signal-podcast';
+import { obsidianOrangeExecutivePack } from './obsidian-orange-executive';
 import { pineSaasReviewsPack } from './pine-saas-reviews';
 import { pixelQuestArcadePack } from './pixel-quest-arcade';
 import { plumProofReviewsPack } from './plum-proof-reviews';
@@ -46,10 +49,12 @@ import { sunbeamShopStatsPack } from './sunbeam-shop-stats';
 import { sunsetOpsCorporatePack } from './sunset-ops-corporate';
 import { tangerineLinkedinReviewsPack } from './tangerine-linkedin-reviews';
 import { tangerineNavyMarketingPack } from './tangerine-navy-marketing';
+import { tealCoralFinancePack } from './teal-coral-finance';
 import { tidelineEnterprisePostsPack } from './tideline-enterprise-posts';
 import { violetAppLaunchPack } from './violet-app-launch';
 import { violetKeyDatesPack } from './violet-key-dates';
 import { violetPulseStatsPack } from './violet-pulse-stats';
+import { violetWaveSalesPack } from './violet-wave-sales';
 import { voltBoldMarketingPack } from './volt-bold-marketing';
 import { voltageBlueAiPostsPack } from './voltage-blue-ai-posts';
 import { willowKeyRealtyPack } from './willow-key-realty';
@@ -74,6 +79,7 @@ export const SOCIAL_POST_PACKS: PosterPack[] = [
   emberDeviceMockupsPack,
   emeraldSaasLaunchPack,
   fernB2bStrategyPack,
+  fernhillMustardMarketingPack,
   fuchsiaStartupBundlePack,
   graphiteSaasFoundersPack,
   harborB2bMarketingPack,
@@ -84,11 +90,13 @@ export const SOCIAL_POST_PACKS: PosterPack[] = [
   lagoonSaasStatsPack,
   limeB2bBundlePack,
   magentaGrowthPostsPack,
+  magentaInkSalesPack,
   magentaMiniGamesPack,
   meridianNavyCorporatePack,
   mintCircuitTechPostsPack,
   mintSignalMarketingPack,
   nightSignalPodcastPack,
+  obsidianOrangeExecutivePack,
   pineSaasReviewsPack,
   pixelQuestArcadePack,
   plumProofReviewsPack,
@@ -102,10 +110,12 @@ export const SOCIAL_POST_PACKS: PosterPack[] = [
   sunsetOpsCorporatePack,
   tangerineLinkedinReviewsPack,
   tangerineNavyMarketingPack,
+  tealCoralFinancePack,
   tidelineEnterprisePostsPack,
   violetAppLaunchPack,
   violetKeyDatesPack,
   violetPulseStatsPack,
+  violetWaveSalesPack,
   voltBoldMarketingPack,
   voltageBlueAiPostsPack,
   willowKeyRealtyPack,
