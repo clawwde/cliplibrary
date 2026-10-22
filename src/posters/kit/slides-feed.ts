@@ -164,7 +164,7 @@ export const phoneWithMosaic =
       postInPhone(
         size.width * 0.1,
         size.height * 0.06,
-        size.width * 0.36,
+        size.width * 0.31,
         hero,
         theme,
         copy.handle,
