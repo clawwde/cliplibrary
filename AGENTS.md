@@ -101,8 +101,9 @@ and every element is independently selectable, movable, trimmable and animatable
 editor.
 
 - Stacking order: the FIRST track in `tracks` is the TOP visual layer and the TOP row of the
-  timeline. `ProjectComposition` paints tracks with a descending `zIndex` (`tracks.length - index`)
-  so earlier tracks sit on top; within a track, later elements paint over earlier ones. The
+  timeline. `ProjectComposition` renders tracks in reverse DOM order, never `z-index` (the browser
+  renderer ignores it), so earlier tracks sit on top; within a track, later elements paint over
+  earlier ones. Project videos use `<Video>` from `@remotion/media`, not `OffthreadVideo`. The
   timeline UI, `moveTrack` (up = toward the top layer) and the render stay consistent with this.
 - Pure reducers in `src/project/mutations.ts`: `moveElementToTrack` (reassign an element's
   layer, optionally re-clamping `from`), `moveTrack` (restack a whole track up/down) and
