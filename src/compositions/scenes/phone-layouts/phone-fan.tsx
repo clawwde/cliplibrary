@@ -6,7 +6,11 @@ import { offscreenDrop, Stage } from '../../promo/stage';
 import { settle, smooth, TAU, tween } from '../../promo/timing';
 import type { SceneModule } from '../../scene-module';
 
-const ENTRY_ORDER = [1, 0, 2];
+const RISE_ORDER: Record<PhoneFanProps['riseOrder'], readonly number[]> = {
+  'center-out': [1, 0, 2],
+  'left-to-right': [0, 1, 2],
+  'right-to-left': [2, 1, 0],
+};
 
 interface FanPose {
   visible: boolean;
@@ -20,10 +24,16 @@ const risePose = (
   frame: number,
   offset: number,
   delay: number,
-  { spacing, fan, drop }: { spacing: number; fan: number; drop: number },
+  {
+    spacing,
+    fan,
+    drop,
+    riseFrames,
+    riseSpin,
+  }: { spacing: number; fan: number; drop: number; riseFrames: number; riseSpin: number },
 ): FanPose => {
-  const arrive = tween(frame, [delay, delay + 72], [0, 1], settle);
-  const spin = (1 - arrive) * TAU * 0.12 * (offset === 0 ? 1 : Math.sign(offset));
+  const arrive = tween(frame, [delay, delay + riseFrames], [0, 1], settle);
+  const spin = (1 - arrive) * TAU * riseSpin * (offset === 0 ? 1 : Math.sign(offset));
   return {
     visible: true,
     x: offset * spacing,
@@ -73,7 +83,12 @@ export const PhoneFan = ({
   spacing,
   fan,
   stagger,
+  riseOrder,
+  riseFrames,
+  riseSpin,
   orbit,
+  dollyFrom,
+  dollyTo,
   entrance,
   spreadDelay,
   flyFrom,
@@ -87,9 +102,9 @@ export const PhoneFan = ({
   const raw = useCurrentFrame();
   const { durationInFrames } = useVideoConfig();
   const frame = raw * motion.speed;
-  const dolly = tween(raw, [0, durationInFrames], [1.1, 0.98], (t) => t);
+  const dolly = tween(raw, [0, durationInFrames], [dollyFrom, dollyTo], (t) => t);
   const sway = tween(raw, [0, durationInFrames], [-orbit, orbit], (t) => t);
-  const drop = offscreenDrop(stage, scale, 1.1);
+  const drop = offscreenDrop(stage, scale, dollyFrom);
   return (
     <PromoLayer look={look} motion={motion}>
       <Stage
@@ -113,10 +128,12 @@ export const PhoneFan = ({
                     flyFrames,
                     spreadFrames,
                   })
-                : risePose(frame, offset, (ENTRY_ORDER[index] ?? index) * stagger, {
+                : risePose(frame, offset, (RISE_ORDER[riseOrder][index] ?? index) * stagger, {
                     spacing,
                     fan,
                     drop,
+                    riseFrames,
+                    riseSpin,
                   });
             return (
               <group

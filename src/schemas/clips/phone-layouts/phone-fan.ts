@@ -17,6 +17,8 @@ import type { ClipMeta } from '../../registry';
 
 export const FAN_ENTRANCES = ['rise', 'spread'] as const;
 
+export const FAN_RISE_ORDERS = ['center-out', 'left-to-right', 'right-to-left'] as const;
+
 export const phoneFanSchema = z.object({
   phones: z.array(phoneSchema).length(3),
   position: positionSchema,
@@ -24,7 +26,12 @@ export const phoneFanSchema = z.object({
   spacing: zSlider({ min: 1.6, max: 5, step: 0.05 }),
   fan: zSlider({ min: 0, max: 0.9, step: 0.01 }),
   stagger: zSlider({ min: 0, max: 30 }),
+  riseOrder: z.enum(FAN_RISE_ORDERS),
+  riseFrames: zSlider({ min: 6, max: 120 }),
+  riseSpin: zSlider({ min: 0, max: 0.5, step: 0.01 }),
   orbit: zSlider({ min: 0, max: 0.5, step: 0.01 }),
+  dollyFrom: zSlider({ min: 0.6, max: 1.6, step: 0.01 }),
+  dollyTo: zSlider({ min: 0.6, max: 1.6, step: 0.01 }),
   entrance: z.enum(FAN_ENTRANCES),
   spreadDelay: zSlider({ min: 0, max: 160 }),
   flyFrom: zSlider({ min: -14, max: 14, step: 0.05 }),
@@ -45,7 +52,12 @@ export const phoneFanDefaults: PhoneFanProps = {
   spacing: 3.35,
   fan: 0.4,
   stagger: 9,
+  riseOrder: 'center-out',
+  riseFrames: 72,
+  riseSpin: 0.12,
   orbit: 0.14,
+  dollyFrom: 1.1,
+  dollyTo: 0.98,
   entrance: 'rise',
   spreadDelay: 60,
   flyFrom: -6,
