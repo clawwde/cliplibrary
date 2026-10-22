@@ -2,6 +2,7 @@ import type { SceneModule } from '../../scene-module';
 import { anniversaryKineticScene } from './anniversary-kinetic';
 import { brandingIsTickerScene } from './branding-is-ticker';
 import { chunkyTypeStackScene } from './chunky-type-stack';
+import { circlePopScene } from './circle-pop';
 import { comingSoonFlipsScene } from './coming-soon-flips';
 import { dominoWordsScene } from './domino-words';
 import { echoStackScene } from './echo-stack';
@@ -28,6 +29,7 @@ export const kineticTypeScenes: SceneModule[] = [
   wordFieldScene,
   stickerStackScene,
   chunkyTypeStackScene,
+  circlePopScene,
   brandingIsTickerScene,
   dominoWordsScene,
   scrollerCalloutScene,

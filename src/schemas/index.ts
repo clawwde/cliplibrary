@@ -27,6 +27,7 @@ export * from './clips/hand-drawn/scribble-caption';
 export * from './clips/kinetic-type/anniversary-kinetic';
 export * from './clips/kinetic-type/branding-is-ticker';
 export * from './clips/kinetic-type/chunky-type-stack';
+export * from './clips/kinetic-type/circle-pop';
 export * from './clips/kinetic-type/coming-soon-flips';
 export * from './clips/kinetic-type/domino-words';
 export * from './clips/kinetic-type/echo-stack';
