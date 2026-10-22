@@ -4,6 +4,8 @@ import type { RibbonWordsProps } from './ribbon-words';
 
 const FRAME_NUMBER = 'Frame number';
 const IN_FRAMES = 'In frames';
+const TIGHT_BENDS =
+  'Bends never get tighter than the ribbon can take: the waves flatten a little instead of pinching';
 
 export const ribbonWordsControls = defineControls<RibbonWordsProps>({
   sections: [
@@ -25,7 +27,6 @@ export const ribbonWordsControls = defineControls<RibbonWordsProps>({
           label: 'Highlighted word',
           hint: 'Colored with the Highlight color. Leave empty to keep every letter one color',
         },
-        { path: 'words.color', label: 'Text color' },
       ],
       more: [
         { path: 'words.weight', label: 'Font weight' },
@@ -49,12 +50,12 @@ export const ribbonWordsControls = defineControls<RibbonWordsProps>({
         {
           path: 'ribbon.color',
           label: 'Ribbon color',
-          hint: 'Also the background when Light version is on',
+          hint: 'The light color. Colors the ribbon, or the background when Light version is on. In Outline style the letters take this color',
         },
         {
           path: 'ribbon.style',
           label: 'Ribbon style',
-          hint: 'Outline draws two thin edges with a see-through middle; the phrase then takes the ribbon color',
+          hint: 'Solid cuts the letters out of the ribbon in the background color. Outline draws two thin edges with a see-through middle and letters in the Ribbon color',
         },
       ],
       more: [
@@ -77,7 +78,7 @@ export const ribbonWordsControls = defineControls<RibbonWordsProps>({
         {
           path: 'second.offsetY',
           label: 'Distance',
-          hint: 'How far below the first ribbon it runs, in pixels. Negative puts it above',
+          hint: 'Gap from the first ribbon, center to center, measured across the overall direction of the path, in pixels. Negative puts it above',
         },
       ],
       more: [
@@ -89,7 +90,7 @@ export const ribbonWordsControls = defineControls<RibbonWordsProps>({
         {
           path: 'second.delay',
           label: 'Draw-on delay',
-          hint: 'Frames it starts after the first ribbon. Both retract together',
+          hint: 'Frames it starts after the first ribbon. It retracts with the first one, but never before it has finished drawing, so long delays can still be leaving when the clip ends',
         },
       ],
     },
@@ -99,39 +100,39 @@ export const ribbonWordsControls = defineControls<RibbonWordsProps>({
         {
           path: 'path.shape',
           label: 'Path shape',
-          hint: 'Wave snakes up and down, Swoop is one smooth arc, Swell is a wave that grows toward the right',
+          hint: 'Wave snakes up and down, Swoop is one big arc across the frame, Swell is a wave that grows toward the right',
         },
         {
           path: 'path.amplitude',
           label: 'Wave height',
-          hint: 'In pixels above and below the center line. 0 makes a straight ribbon',
+          hint: `In pixels above and below the center line. 0 makes a straight ribbon. ${TIGHT_BENDS}`,
         },
         {
           path: 'path.waves',
           label: 'Wave count',
-          hint: 'Full waves across the path, edge to edge. Higher counts bend tighter. Swoop ignores it',
+          hint: `Full waves you see across the frame width. Swoop ignores it. ${TIGHT_BENDS}`,
         },
         {
           path: 'path.drop',
           label: 'Tilt',
-          hint: 'How much lower the right end sits than the left, in pixels. Negative tilts it up',
+          hint: 'How much lower the ribbon meets the right edge of the frame than the left edge, in pixels. Negative tilts it up',
         },
         {
           path: 'path.centerY',
           label: 'Vertical position',
-          hint: 'Center of the path, in pixels from the top',
+          hint: 'Where the center line crosses the middle of the frame, in pixels from the top',
         },
       ],
       more: [
         {
           path: 'path.shift',
           label: 'Wave shift',
-          hint: 'Slides the waves along the path, in degrees. For Swoop, past 90 bends the arc downward',
+          hint: 'Slides the waves sideways, in degrees. For Swoop, 0 arcs upward, 180 arcs downward and 90 flattens it',
         },
         {
           path: 'path.breathe',
           label: 'Wave breathing',
-          hint: 'How far the waves slowly sway, in pixels. 0 holds the path still',
+          hint: 'How far the ribbon slowly sways, in pixels. 0 holds the path still',
         },
         { path: 'path.breatheFrames', label: 'Breathing cycle', hint: 'Frames per sway' },
       ],
@@ -143,17 +144,17 @@ export const ribbonWordsControls = defineControls<RibbonWordsProps>({
         {
           path: 'timing.settleAt',
           label: 'Resting spot',
-          hint: 'Where the middle of the phrase settles, as a share of the path from the left',
+          hint: 'Where the middle of the phrase settles, as a share of the path from the left. The second phrase rests beside it',
         },
         {
           path: 'timing.drift',
           label: 'Drift speed',
-          hint: 'Pixels per frame the words keep gliding while they rest. 1 is the slowest smooth speed',
+          hint: 'Pixels per frame the words keep gliding on screen while they rest; they never move slower than this. 1 is the slowest',
         },
         {
           path: 'timing.retractAt',
           label: 'Retract at',
-          hint: `${FRAME_NUMBER}; the ribbon pulls off from the left and takes the words with it`,
+          hint: `${FRAME_NUMBER}; the ribbon pulls off from the left and takes the words with it. Never starts before the draw-on finishes`,
         },
         {
           ...MOTION.speed,
@@ -182,18 +183,25 @@ export const ribbonWordsControls = defineControls<RibbonWordsProps>({
         {
           path: 'inverted',
           label: 'Light version',
-          hint: 'Swaps the colors: the background takes the ribbon color, the ribbon takes the background color and the phrase turns light',
+          hint: 'Swaps the two colors: Ribbon color fills the background, Background color fills the ribbon, and solid-ribbon letters turn light',
         },
         {
-          link: ['look.background', 'look.backgroundEdge', 'words.color'],
+          link: ['look.background', 'look.backgroundEdge'],
           label: 'Background color',
-          hint: 'Also colors the phrase, so the letters read as cut out of the ribbon',
+          hint: 'The dark color. Fills the background and the letters cut into a solid ribbon. In Light version it colors the ribbon instead',
         },
         LOOK.grain,
       ],
       more: [
-        LOOK.background,
-        LOOK.backgroundEdge,
+        {
+          ...LOOK.background,
+          label: 'Background center',
+          hint: 'Also the letter color on a solid ribbon, and the ribbon color in Light version',
+        },
+        {
+          ...LOOK.backgroundEdge,
+          hint: 'Color the background fades to at the corners. Light version uses a flat Ribbon color instead',
+        },
         LOOK.spotlight,
         LOOK.liveGrain,
         LOOK.paper,
