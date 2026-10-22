@@ -51,7 +51,7 @@ export const heavy = font(800, 1.05);
 export const bold = font(700, 1.2);
 export const copy = font(400, 1.4);
 
-export const button = (label: string, x: number, y: number, fill: string, color: string) =>
+const button = (label: string, x: number, y: number, fill: string, color: string) =>
   pill(label, x, y, { fill, color, fontSize: 26, fontFamily: 'Poppins', fontWeight: 600 });
 
 export const handle = (y: number, color: string) =>
