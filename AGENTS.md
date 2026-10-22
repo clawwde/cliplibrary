@@ -21,7 +21,7 @@ Everything lives in one package. Modules import each other through the `@/` alia
 - `src/schemas` - per-clip Zod schemas, typed defaults, inferred types, the `ClipId` union and clip
   registry metadata. Pure, no React, no Node.
 - `src/compositions` - the Remotion scenes, motion kit, `Root`, and the `registerRoot` entry.
-- `src/project` - the layered `Project` model, its pure reducers and the clip library.
+- `src/project` - the layered `Project` model and its pure reducers.
 - `src/core` - domain types, the clip project seed and the Zod-schema-to-control introspection.
 - `tests` - `bun test` suites, mirroring `src` (`tests/schemas`, `tests/core`, ...); top-level
   files and `tests/components` cover the UI. `e2e` holds the Playwright suite.
@@ -31,21 +31,24 @@ Everything lives in one package. Modules import each other through the `@/` alia
 - Bun only. No npm, pnpm or yarn.
 - Biome for lint and format. Strict TypeScript (`tsconfig.json`, every strictness flag on).
 - Tests: `bun test` with happy-dom + Testing Library for unit and component, Playwright for e2e.
-- lefthook runs Biome and the no-comments check pre-commit; typecheck and lint pre-push.
+- lefthook runs Biome and the no-comments, em-dash and repository checks pre-commit; typecheck and
+  lint pre-push.
 
 ## Commands
 
 - `bun run dev` - Next.js dev server.
 - `bun run build` - production Next.js build.
-- `bun run verify` - lint, no-comments check, typecheck and tests (what CI runs).
+- `bun run verify` - Biome, no-comments, no em-dashes, repository hygiene (files at most 400 lines,
+  kebab-case paths), knip, typecheck and tests. CI also runs coverage, build, e2e, audit and the
+  Markdown, YAML and workflow linters.
 - `bun run lint` / `bun run lint:fix` - Biome.
 - `bun run typecheck` - `tsc --noEmit`.
 - `bun run test` / `bun run test:e2e` - unit/component / Playwright.
 - `bun run render [clipId...]` - gallery previews: a half-size mp4 plus a 48px first-frame jpg per
   clip in `public/previews`. The previews are committed, so the deployed build never renders:
   the homepage is prerendered at build time, inlines the first frame as a blurred data-URI card
-  background and lazily plays the mp4 over it once the card nears the viewport. Every new or
-  changed clip must commit its re-rendered preview; `tests/render/gallery-previews.test.ts`
+  background and lazily plays the mp4 over it once the card nears the viewport. Every new clip,
+  and every clip whose rendered output changes, must commit its re-rendered preview; `tests/render/gallery-previews.test.ts`
   fails when one is missing.
 - `bun run render --new` - same, but only clips whose preview files are missing from
   `public/previews` (`-new` also works).
@@ -70,7 +73,8 @@ gallery search and filters read.
 
 - Schema side: `src/schemas/clips/<category>/<id>.ts` exports `<name>Schema`,
   `<name>Defaults`, `<Name>Props` and `<name>Meta: ClipMeta` (metadata, including `category`, is
-  co-located with the schema). Each category's `index.ts` exports a `ClipModule[]`, and
+  co-located with the schema), with its editor layout in `<id>-controls.ts` beside it. Each
+  category's `index.ts` exports a `ClipModule[]` (`{ id, schema, defaults, meta, controls }`), and
   `clips/index.ts` concatenates them into `CLIP_MODULES`, then derives `CLIP_REGISTRY`,
   `CLIP_SCHEMAS`, `CLIP_DEFAULTS`, `CLIP_IDS` and the `getClip*`/`isClipId` accessors.
 - Composition side: `src/compositions/scenes/<category>/<id>.tsx` exports the scene
@@ -81,24 +85,45 @@ gallery search and filters read.
 To add a clip:
 
 1. Add the schema file under the chosen category (`<name>Schema`/`<name>Defaults`/`<Name>Props`/
-   `<name>Meta`).
+   `<name>Meta`) and re-export it from `src/schemas/index.ts`.
 2. Add its id and `Props` type to `ClipPropsMap` in `src/schemas/clip-props.ts` (this is
    the typed map of the built-in clips and the source of the `ClipId` union).
-3. Register the module in that category's `clips/<category>/index.ts` (one line).
-4. Add the scene file under `scenes/<category>/` (component + `<name>Scene`).
-5. Register the scene in `scenes/<category>/index.ts` (one line).
+3. Add its control layout `clips/<category>/<id>-controls.ts` (`<name>Controls`, see Controls).
+4. Register the module, with its `controls`, in that category's `clips/<category>/index.ts`.
+5. Add the scene file under `scenes/<category>/` (component + `<name>Scene`).
+6. Register the scene in `scenes/<category>/index.ts` (one line).
+7. Run `bun run render <id>` and commit its preview files in `public/previews`.
 
 ## Controls
 
-Field controls are tagged on the zod schema and read back by
-`src/core/schema-introspect.ts`:
+Every clip has a hand-written control layout that drives its editor panel, and a field tag on
+the zod schema decides each control's widget.
 
-- `zColor()`, `zMultiline()`, `zSlider({ min, max, step })`, `zImage()` (a URL or data-URI string;
-  empty is allowed and renders a placeholder), and `z.enum(EASING_IDS)` for an easing curve picker.
+- Layout: `clips/<category>/<id>-controls.ts` exports
+  `<name>Controls = defineControls<<Name>Props>({ sections, hidden })`
+  (`src/schemas/control-layout.ts`). Each section has a `title`, primary `fields` and optional
+  `more` (behind "More options"). A field is a typed path, `{ path, label, hint, items }`, or
+  `{ link: [paths], label, hint }`, one control that writes the same value to several paths of
+  identical shape. `hidden` is only for shared sub-schema fields the scene never reads.
+- `src/schemas/control-presets.ts` holds `LOOK`, `MOTION`, `PLACEMENT` and `STAGE` fields with
+  standard labels; spread them to relabel for a specific clip.
+- `src/core/clip-controls.ts` resolves layouts for the editor. `tests/core/clip-controls.test.ts`
+  requires every schema path to appear exactly once as a single field or in `hidden` (a path
+  inside a `link` still needs its own single entry), no unknown paths, unique section titles and
+  every link to resolve.
+- Layouts are personal to the clip: sections named after what the viewer sees, content first,
+  2 to 6 primary fields per section, linked controls for values people change together, accurate
+  plain-English labels and hints, and no hard-coded value a user would want to change.
+
+Field tags are read back by `src/core/schema-introspect.ts`:
+
+- `zColor()`, `zMultiline()`, `zSlider({ min, max, step })`, `zImage()` and `zVideo()` (a URL,
+  data-URI or object URL string; empty is allowed and renders a placeholder), and
+  `z.enum(EASING_IDS)` for an easing curve picker.
 - `EASING_IDS`/`EasingId` live in `@/schemas` and are the single source consumed by the
   compositions motion kit (`kit/easing.ts`).
 
-## Projects, layering and the clip library
+## Projects and layering
 
 A `Project` (in `@/project`) is `{ fps, width, height, durationInFrames, background,
 tracks }`. Each `Track` holds ordered `Element`s (`text | image | video | shape | composition`),
@@ -114,11 +139,9 @@ editor.
   layer, optionally re-clamping `from`), `moveTrack` (restack a whole track up/down) and
   `trimElementStart` (left-edge trim: moves `from` while holding the right edge fixed, min one
   frame). Right-edge drag uses `resizeElement`. All are frame-snapped and clamped.
-- The clip library (`src/project/library`) defines the gallery clips as data: each
-  `LibraryClip` has `{ meta, build() }` and `build()` returns a multi-element `Project` (every
-  element on its own track). `seedProjectForClip(id)` (in `@/core`) returns these, the
-  homepage lists `LIBRARY_CLIP_META`, and `/clips/[clipId]` validates with `isLibraryClipId`.
-  Split clip definitions across files under `library/` to keep each under 400 lines.
-- The hand-coded `@/schemas` scenes remain reusable building blocks: the timeline
+- `seedProjectForClip(id)` (in `@/core`) opens a clip as a one-track project holding it as a
+  `composition` element. The homepage lists `CLIP_REGISTRY`, and `/clips/[clipId]` validates
+  with `isClipId`.
+- The `@/schemas` scenes are reusable building blocks: the timeline
   toolbar's "Animation" picker inserts one as a `composition` element (its `clipId` is a schema
   `ClipId`, rendered through `CLIP_COMPONENTS`), layerable alongside the primitive elements.
