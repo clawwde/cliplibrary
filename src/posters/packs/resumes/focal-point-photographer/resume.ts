@@ -11,7 +11,7 @@ export const FOCAL = {
   white: '#ffffff',
 };
 
-export const FONT = 'Poppins';
+const FONT = 'Poppins';
 
 const { width: W, height: H } = A4_SIZE;
 

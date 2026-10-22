@@ -16,7 +16,7 @@ export const NEON = {
 
 export const { width: W, height: H } = POST_SIZE;
 
-export const SANS = 'Sora';
+const SANS = 'Sora';
 
 type TextStyle = NonNullable<Parameters<typeof text>[4]>;
 

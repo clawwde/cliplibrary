@@ -33,7 +33,7 @@ export const POSTS = [
   typewriter(AMBER),
 ];
 
-export const THEME: SlideTheme = {
+const THEME: SlideTheme = {
   background: INK,
   text: WHITE,
   muted: '#d4d4d8',
@@ -45,7 +45,7 @@ export const THEME: SlideTheme = {
   bodyFont: 'Inter',
 };
 
-export const editorBadge = (x: number, y: number, size: number) =>
+const editorBadge = (x: number, y: number, size: number) =>
   group(
     rect(x, y, size, size, linear(135, AMBER.from, '#7c3aed'), {
       cornerRadius: size * 0.24,

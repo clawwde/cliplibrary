@@ -125,7 +125,7 @@ export const partsLine = (
   });
 };
 
-export const editorBadge = (x: number, y: number, size: number, theme: ListingTheme) =>
+const editorBadge = (x: number, y: number, size: number, theme: ListingTheme) =>
   group(
     rect(x, y, size, size, linear(135, theme.folder[0], theme.brand), {
       name: 'Editor badge',

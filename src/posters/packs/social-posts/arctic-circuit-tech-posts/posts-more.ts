@@ -28,7 +28,7 @@ import {
 } from './posts';
 import { mythFact, precisionTracking, quoteRival } from './posts-mid';
 
-export const adSpend = template(W, H, () => [
+const adSpend = template(W, H, () => [
   darkBg(H),
   text('Sharpen Your', 0, 250, W, {
     fontFamily: HEAD,

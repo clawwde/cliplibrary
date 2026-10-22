@@ -57,7 +57,7 @@ export const launchCover = template(W, H, () => [
 
 const topBar = () => rect(90, 150, 170, 22, EMBER, { name: 'Accent bar', cornerRadius: 11 });
 
-export const dosAndDonts = template(W, H, () => [
+const dosAndDonts = template(W, H, () => [
   rect(0, 0, W, H, NIGHT, { name: 'Background' }),
   topBar(),
   text("Do's &\nDon'ts", 0, 230, W, {

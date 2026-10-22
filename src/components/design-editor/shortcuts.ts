@@ -137,7 +137,7 @@ export const shortcutFor = (input: KeyInput & { code?: string }): ShortcutAction
 
 const TEXT_INPUT_TYPES = new Set(['text', 'search', 'email', 'url', 'tel', 'password', '']);
 
-export const isTextEntry = (target: EventTarget | null): boolean => {
+const isTextEntry = (target: EventTarget | null): boolean => {
   if (!(target instanceof HTMLElement)) {
     return false;
   }

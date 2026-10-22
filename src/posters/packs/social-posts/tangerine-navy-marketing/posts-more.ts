@@ -53,7 +53,7 @@ export const clientHappiness = template(W, H, () => [
   hashtag(1120),
 ]);
 
-export const reviewsWall = template(W, H, () => [
+const reviewsWall = template(W, H, () => [
   rect(0, 0, W, H, TAN.navy, { name: 'Background' }),
   Array.from({ length: 7 }, (_, index) =>
     text('Reviews', 50, 30 + index * 182, 980, {
@@ -103,7 +103,7 @@ export const reviewsWall = template(W, H, () => [
   ),
 ]);
 
-export const launchChecklist = template(W, H, () => [
+const launchChecklist = template(W, H, () => [
   rect(0, 0, W, H, linear(180, TAN.peach, TAN.tangerine), { name: 'Background' }),
   path(
     'M 0 120 Q 540 220 1080 120',
@@ -148,7 +148,7 @@ export const launchChecklist = template(W, H, () => [
   hashtag(1220, TAN.white),
 ]);
 
-export const nowHiring = template(W, H, () => [
+const nowHiring = template(W, H, () => [
   rect(0, 0, W, H, TAN.paper, { name: 'Background' }),
   Array.from({ length: 6 }, (_, index) =>
     text('HIRING', index % 2 === 0 ? 40 : 300, 20 + index * 222, 760, {

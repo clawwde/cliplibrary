@@ -27,7 +27,7 @@ const elementColors = (element: DesignElement): string[] => {
 
 const isSolid = (color: string): boolean => /^#[0-9a-f]{3,8}$/i.test(color);
 
-export const documentColors = (design: Design, limit = 20): string[] => {
+const documentColors = (design: Design, limit = 20): string[] => {
   const counts = new Map<string, number>();
   for (const page of design.pages) {
     for (const color of [...fillColors(page.background), ...page.elements.flatMap(elementColors)]) {

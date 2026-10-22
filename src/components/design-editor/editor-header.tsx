@@ -43,7 +43,7 @@ interface EditorHeaderProps {
   onViewChange: (view: EditorView) => void;
 }
 
-export interface EditorView {
+interface EditorView {
   grid: boolean;
   snap: boolean;
 }

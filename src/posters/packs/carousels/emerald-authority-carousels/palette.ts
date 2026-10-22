@@ -13,7 +13,7 @@ export const LEAF = {
 export const HEAD = 'Outfit';
 export const BODY = 'DM Sans';
 export const SCRIPT = 'Caveat';
-export const BRAND = 'EVERLEAF MEDIA';
+const BRAND = 'EVERLEAF MEDIA';
 
 export const { width: W, height: H } = POST_SIZE;
 

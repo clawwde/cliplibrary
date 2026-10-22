@@ -138,7 +138,7 @@ const screenCard = (
     }),
   );
 
-export const editorBadge = (x: number, y: number, size: number, from: string, to: string) =>
+const editorBadge = (x: number, y: number, size: number, from: string, to: string) =>
   group(
     rect(x, y, size, size, linear(135, from, to), {
       cornerRadius: size * 0.28,

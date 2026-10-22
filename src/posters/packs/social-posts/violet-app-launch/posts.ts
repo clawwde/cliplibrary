@@ -130,7 +130,7 @@ export const workspace = template(W, H, () => [
   }),
 ]);
 
-export const trackTasks = template(W, H, () => [
+const trackTasks = template(W, H, () => [
   rect(0, 0, W, H, VIOLET.paper, { name: 'Background' }),
   text('nimbly.app', 600, 90, 400, {
     fontSize: 28,
@@ -155,7 +155,7 @@ export const trackTasks = template(W, H, () => [
   badges(300, 1160),
 ]);
 
-export const freshUpdate = template(W, H, () => [
+const freshUpdate = template(W, H, () => [
   rect(0, 0, W, H, linear(180, VIOLET.night, VIOLET.ink), { name: 'Background' }),
   text('nimbly.app', 0, 80, W, {
     fontSize: 28,
@@ -225,7 +225,7 @@ export const textAlerts = (p: AppPalette) =>
     text('Arrives Friday', 716, 685, 290, { fontSize: 24, fontWeight: 500, fill: p.muted }),
   ]);
 
-export const futureHand = template(W, H, () => [
+const futureHand = template(W, H, () => [
   rect(0, 0, W, H, VIOLET.paper, { name: 'Background' }),
   headline('The Future of', 80, 130, VIOLET.ink, 78, 500),
   headline('Work is Automated', 80, 222, VIOLET.brand, 78),

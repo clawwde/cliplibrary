@@ -44,7 +44,7 @@ export const brandMark = (
     letterSpacing: 4,
   });
 
-export const glow = (x: number, y: number, width: number, height: number, alpha = 0.32) =>
+const glow = (x: number, y: number, width: number, height: number, alpha = 0.32) =>
   ellipse(
     x,
     y,

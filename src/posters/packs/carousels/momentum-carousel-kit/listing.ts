@@ -46,7 +46,7 @@ const FONT = 'Figtree';
 const GREY = '#e5e7eb';
 const INK = '#111827';
 
-export const badge = (style: ListingStyle, cx: number, cy: number, size: number) =>
+const badge = (style: ListingStyle, cx: number, cy: number, size: number) =>
   group(
     rect(cx - size / 2, cy - size / 2, size, size, style.badge, {
       name: 'Editor badge',
