@@ -2,8 +2,8 @@ import { Easing } from 'remotion';
 import type { RibbonWordsProps } from '@/schemas';
 import { tween } from '../promo/timing';
 
-const draw = Easing.bezier(0.35, 0.35, 0.55, 1);
-const retract = Easing.bezier(0.45, 0, 0.7, 0.55);
+const draw = Easing.bezier(0.35, 0.35, 0.6, 0.8);
+const retract = Easing.bezier(0.4, 0, 0.8, 0.9);
 const SCAN_STEP = 0.25;
 const REFINE_STEPS = 24;
 
@@ -78,24 +78,26 @@ const holdCenter = (timing: RibbonWordsProps['timing'], track: Track, frame: num
   return from + distance * hermite((frame - settleStart) / settleFrames, startSlope, endSlope);
 };
 
+const retractStart = (timing: RibbonWordsProps['timing']): number =>
+  Math.max(timing.retractAt, timing.drawAt + timing.drawFrames);
+
 export const ribbonMotion = (
   props: RibbonWordsProps,
   track: Track,
   frame: number,
 ): RibbonMotion => {
   const { timing } = props;
-  const leave = tween(
-    frame,
-    [timing.retractAt, timing.retractAt + timing.retractFrames],
-    [0, 1],
-    retract,
-  );
+  const start = retractStart(timing);
+  const leave = tween(frame, [start, start + timing.retractFrames], [0, 1], retract);
+  const head = headAt(timing, track, frame);
   const hold = holdCenter(timing, track, frame);
-  const holdAtExit = holdCenter(timing, track, Math.min(frame, timing.retractAt));
+  const holdAtExit = holdCenter(timing, track, Math.min(frame, start));
   const exitTarget = track.length + track.textWidth / 2 + props.words.size;
+  const behindTip =
+    head < track.length - 0.5 ? head - timing.lag - track.textWidth / 2 : Number.POSITIVE_INFINITY;
   return {
-    head: headAt(timing, track, frame),
-    tail: frame < timing.retractAt ? 0 : track.entry + (track.length - track.entry) * leave,
-    textCenter: hold + leave * Math.max(0, exitTarget - holdAtExit),
+    head,
+    tail: frame < start ? 0 : track.entry + (track.length - track.entry) * leave,
+    textCenter: Math.min(behindTip, hold + leave * Math.max(0, exitTarget - holdAtExit)),
   };
 };

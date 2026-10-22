@@ -16,12 +16,12 @@ import type { SceneModule } from '../../scene-module';
 const MAIN_LANE = { offsetY: 0, shift: 0 };
 
 const strandColors = (props: RibbonWordsProps): StrandColors => {
-  const { inverted, ribbon, words, look } = props;
+  const { inverted, ribbon, look } = props;
   const ribbonColor = inverted ? look.background : ribbon.color;
-  const solidText = inverted ? ribbon.color : words.color;
+  const fieldColor = inverted ? ribbon.color : look.background;
   return {
     ribbon: ribbonColor,
-    text: ribbon.style === 'outline' ? ribbonColor : solidText,
+    text: ribbon.style === 'outline' ? ribbonColor : fieldColor,
     accent: look.accent,
   };
 };
