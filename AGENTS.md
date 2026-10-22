@@ -37,10 +37,13 @@ Everything lives in one package. Modules import each other through the `@/` alia
 - `bun run typecheck` - `tsc --noEmit`.
 - `bun run test` / `bun run test:e2e` - unit/component / Playwright.
 - `bun run render [clipId...]` - gallery previews: a half-size mp4 plus a 48px first-frame jpg per
-  clip in `public/exports`. The homepage inlines the first frame as a blurred data-URI
-  card background and lazily plays the mp4 over it once the card nears the viewport.
+  clip in `public/previews`. The previews are committed, so the deployed build never renders:
+  the homepage is prerendered at build time, inlines the first frame as a blurred data-URI card
+  background and lazily plays the mp4 over it once the card nears the viewport. Every new or
+  changed clip must commit its re-rendered preview; `tests/render/gallery-previews.test.ts`
+  fails when one is missing.
 - `bun run render --new` - same, but only clips whose preview files are missing from
-  `public/exports` (`-new` also works).
+  `public/previews` (`-new` also works).
 
 ## Rules
 

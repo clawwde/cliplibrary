@@ -1,3 +1,4 @@
+import { rm } from 'node:fs/promises';
 import { join } from 'node:path';
 import { renderStill, selectComposition } from '@remotion/renderer';
 import type { Project } from '@/project';
@@ -22,7 +23,6 @@ const firstFrameFileName = (name: string): string => `${name}.first-frame.jpg`;
 
 export const galleryPreviewFileNames = (name: string): string[] => [
   `${name}.${outputExtension(GALLERY_PREVIEW_OPTIONS.codec)}`,
-  `${name}.jpg`,
   firstFrameFileName(name),
 ];
 
@@ -53,6 +53,12 @@ export const renderGalleryPreview = async (
   outDir: string,
   name: string,
 ): Promise<void> => {
-  await renderProject({ project, outDir, options: GALLERY_PREVIEW_OPTIONS, name });
+  const { poster } = await renderProject({
+    project,
+    outDir,
+    options: GALLERY_PREVIEW_OPTIONS,
+    name,
+  });
+  await rm(poster, { force: true });
   await renderFirstFrame(project, join(outDir, firstFrameFileName(name)));
 };
