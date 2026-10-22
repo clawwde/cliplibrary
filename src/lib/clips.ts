@@ -2,10 +2,13 @@ import 'server-only';
 import { existsSync } from 'node:fs';
 import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
-import { CLIP_REGISTRY, type ClipMeta } from '@/schemas';
+import { CLIP_REGISTRY, type ClipId, type ClipMeta } from '@/schemas';
 import { repoRoot } from './repo-root';
 
 const galleryPreviews = (root: string): string => join(root, 'public', 'previews');
+
+export const clipPreviewVideo = (id: ClipId): string | null =>
+  existsSync(join(galleryPreviews(repoRoot()), `${id}.mp4`)) ? `/previews/${id}.mp4` : null;
 
 const readFirstFrame = async (root: string, meta: ClipMeta): Promise<string | null> => {
   try {
@@ -27,9 +30,7 @@ export const listClips = (): Promise<ClipListItem[]> => {
   return Promise.all(
     CLIP_REGISTRY.map(async (meta) => ({
       meta,
-      video: existsSync(join(galleryPreviews(root), `${meta.id}.mp4`))
-        ? `/previews/${meta.id}.mp4`
-        : null,
+      video: clipPreviewVideo(meta.id),
       firstFrame: await readFirstFrame(root, meta),
     })),
   );
