@@ -96,7 +96,7 @@ export const Typewriter = (props: TypewriterProps) => {
       <span
         style={{
           position: 'absolute',
-          background: look.ink,
+          background: props.caretColor,
           ...(blockActive
             ? { ...blockStyle(frame, delay, size, caretWidth), opacity: 1 }
             : {
@@ -142,7 +142,7 @@ export const Typewriter = (props: TypewriterProps) => {
               position: 'absolute',
               inset: '-0.06em -0.04em',
               padding: '0.06em 0.04em',
-              background: look.ink,
+              background: props.selectionColor,
               color: look.background,
               opacity: 1 - vanish,
               ...(collapse > 0

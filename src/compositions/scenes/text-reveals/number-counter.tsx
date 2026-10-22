@@ -21,6 +21,14 @@ const columnPosition = (value: number, place: number): number => {
 
 const digitCount = (value: number): number => String(Math.max(0, Math.round(value))).length;
 
+const THOUSANDS = /\B(?=(\d{3})+(?!\d))/g;
+
+const groupDigits = (value: number, separator: string): string =>
+  separator.length > 0 ? String(value).replace(THOUSANDS, () => separator) : String(value);
+
+const separatorOpacity = (value: number, place: number): number =>
+  Math.min(1, Math.max(0, columnPosition(value, place)));
+
 const SHUTTER_SAMPLES = 6;
 const ZOOM_THROUGH = 0.14;
 
@@ -81,6 +89,9 @@ export const NumberCounter = ({
   to,
   prefix,
   suffix,
+  separator,
+  affixScale,
+  affixColor,
   size,
   weight,
   delay,
@@ -88,6 +99,7 @@ export const NumberCounter = ({
   roll,
   glow,
   bloom,
+  glowColor,
   placement,
   look,
   motion,
@@ -102,6 +114,7 @@ export const NumberCounter = ({
   const shown = Math.floor(countAt(frame) + 0.0001);
   const places = Math.max(digitCount(from), digitCount(to));
   const columns = Array.from({ length: places }, (_, index) => places - 1 - index);
+  const affixStyle = { color: affixColor, fontSize: `${affixScale}em` };
   return (
     <KineticLayer look={look} motion={motion} placement={placement}>
       <div
@@ -110,25 +123,30 @@ export const NumberCounter = ({
           color: look.ink,
           opacity: enter,
           fontVariantNumeric: 'tabular-nums',
-          textShadow: glowShadow(look.ink, glow + bloom * 1.6 * flare, size),
+          textShadow: glowShadow(glowColor, glow + bloom * 1.6 * flare, size),
           filter:
             roll === 0 && flare > 0.6 ? `blur(${((flare - 0.6) * 10).toFixed(2)}px)` : undefined,
           display: 'flex',
           alignItems: 'baseline',
         }}
       >
-        {prefix.length > 0 ? <span>{prefix}</span> : null}
-        {roll === 0 ? <span>{shown}</span> : null}
-        {(roll === 0 ? [] : columns).map((place) => (
+        {prefix.length > 0 ? <span style={affixStyle}>{prefix}</span> : null}
+        {roll === 0 ? <span>{groupDigits(shown, separator)}</span> : null}
+        {(roll === 0 ? [] : columns).flatMap((place) => [
           <DigitColumn
             key={place}
             position={columnPosition(value, place)}
             previous={columnPosition(previous, place)}
             leading={place > 0}
             roll={roll}
-          />
-        ))}
-        {suffix.length > 0 ? <span>{suffix}</span> : null}
+          />,
+          separator.length > 0 && place > 0 && place % 3 === 0 ? (
+            <span key={`separator:${place}`} style={{ opacity: separatorOpacity(value, place) }}>
+              {separator}
+            </span>
+          ) : null,
+        ])}
+        {suffix.length > 0 ? <span style={affixStyle}>{suffix}</span> : null}
       </div>
     </KineticLayer>
   );

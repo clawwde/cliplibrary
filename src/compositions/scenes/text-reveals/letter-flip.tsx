@@ -20,18 +20,20 @@ export const LetterFlip = ({
   delay,
   stagger,
   flipFrames,
+  depth,
   highlight,
   glowOut,
   placement,
   look,
   motion,
 }: LetterFlipProps) => {
-  const frame = useCurrentFrame() * motion.speed;
+  const clipFrame = useCurrentFrame();
+  const frame = clipFrame * motion.speed;
   const letters = Array.from(text);
   const reach = size * (0.3 * startAngle * (Math.PI / 180) + slide);
   const { durationInFrames } = useVideoConfig();
   const burnAt = durationInFrames - motion.exitFrames - Math.round(letters.length * 2.5) - 10;
-  const burn = glowOut * tween(frame, [burnAt, burnAt + 12], [0, 1], (t) => t);
+  const burn = glowOut * tween(clipFrame, [burnAt, burnAt + 12], [0, 1], (t) => t);
   return (
     <KineticLayer look={look} motion={motion} placement={placement}>
       <div
@@ -57,12 +59,12 @@ export const LetterFlip = ({
                   (1 -
                     glowOut *
                       tween(
-                        frame,
+                        clipFrame,
                         [burnAt + 12 + index * 2.5, burnAt + 16 + index * 2.5],
                         [0, 1],
                         (t) => t,
                       )),
-                transform: `perspective(${size * 3}px) translateX(${(-slide * size * turn).toFixed(2)}px) rotateY(${(-startAngle * turn).toFixed(3)}deg)`,
+                transform: `perspective(${size * depth}px) translateX(${(-slide * size * turn).toFixed(2)}px) rotateY(${(-startAngle * turn).toFixed(3)}deg)`,
                 transformOrigin: '50% 50%',
                 willChange: 'transform',
               }}

@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { zSlider } from '../../control';
+import { zColor, zSlider } from '../../control';
 import {
   defaultMotion,
   FONT_WEIGHT,
@@ -30,6 +30,8 @@ export const typewriterSchema = z.object({
   outroAt: zSlider({ min: 10, max: 600 }),
   showCaret: z.boolean(),
   caretPulse: zSlider({ min: 8, max: 60 }),
+  caretColor: zColor(),
+  selectionColor: zColor(),
   placement: placementSchema,
   look: lookSchema,
   motion: motionSchema,
@@ -51,6 +53,8 @@ export const typewriterDefaults: TypewriterProps = {
   outroAt: 92,
   showCaret: true,
   caretPulse: 24,
+  caretColor: '#f1f1f1',
+  selectionColor: '#f1f1f1',
   placement: placement('center', 'center', { width: 1600 }),
   look: kineticLook(),
   motion: defaultMotion({ exit: 'fade', exitFrames: 12 }),
