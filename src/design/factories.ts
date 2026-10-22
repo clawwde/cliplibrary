@@ -1,3 +1,4 @@
+import { randomHex } from '@/lib/random-hex';
 import type { Design, Page } from './design';
 import type {
   EllipseElement,
@@ -13,8 +14,7 @@ import type {
 } from './element';
 import type { Fill } from './fill';
 
-export const createDesignId = (prefix: string): string =>
-  `${prefix}-${crypto.randomUUID().slice(0, 8)}`;
+export const createDesignId = (prefix: string): string => `${prefix}-${randomHex(8)}`;
 
 type Overrides<T> = Partial<Omit<T, 'type'>>;
 

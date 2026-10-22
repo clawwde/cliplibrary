@@ -8,8 +8,8 @@ import {
   hasActiveFilters,
   parseFilters,
   serializeFilters,
-  videoMeta,
 } from '@/lib/gallery-filters';
+import { videoMeta } from '@/lib/video-meta';
 import { CLIP_REGISTRY } from '@/schemas';
 
 const items = CLIP_REGISTRY.map((meta) => ({ meta: videoMeta(meta) }));
@@ -48,7 +48,12 @@ describe('gallery filters', () => {
       'hiring-spotlight',
     ]);
     expect(filterClips(mixed, { ...DEFAULT_FILTERS, kind: 'video' })).toHaveLength(items.length);
-    expect(ids(filterClips(mixed, DEFAULT_FILTERS))[0]).toBe('hiring-spotlight');
+    expect(ids(filterClips(mixed, { ...DEFAULT_FILTERS, sort: 'updated' }))[0]).toBe(
+      'hiring-spotlight',
+    );
+    const mixedOrder = filterClips(mixed, DEFAULT_FILTERS).map((item) => item.meta.kind);
+    expect(mixedOrder.indexOf('poster')).toBeGreaterThan(0);
+    expect(mixedOrder.indexOf('poster')).toBeLessThan(mixedOrder.length - 1);
     expect(ids(filterClips(mixed, { ...DEFAULT_FILTERS, query: 'hiring' }))).toContain(
       'hiring-spotlight',
     );

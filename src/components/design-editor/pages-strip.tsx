@@ -59,7 +59,7 @@ export const PagesStrip = ({ editor, zoom, onZoomChange }: PagesStripProps) => {
   const { design, pageId } = editor;
   const index = design.pages.findIndex((page) => page.id === pageId);
   return (
-    <div className="flex h-24 shrink-0 items-center gap-3 border-t bg-background px-3">
+    <div className="flex h-20 shrink-0 items-center gap-2 border-t bg-background px-2 sm:h-24 sm:gap-3 sm:px-3">
       <div className="flex min-w-0 flex-1 items-center gap-2 overflow-x-auto py-2">
         {design.pages.map((page, position) => (
           <PageThumb
@@ -96,7 +96,7 @@ export const PagesStrip = ({ editor, zoom, onZoomChange }: PagesStripProps) => {
           />
           <span className="w-10 tabular-nums">{Math.round(zoom * 100)}%</span>
         </label>
-        <span className="mr-2 text-xs tabular-nums">
+        <span className="mr-2 hidden text-xs tabular-nums sm:inline">
           Page {index + 1} / {design.pages.length}
         </span>
         <button

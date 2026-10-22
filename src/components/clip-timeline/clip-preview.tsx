@@ -4,7 +4,7 @@ import { Player, type PlayerRef } from '@remotion/player';
 import { Maximize, Monitor, Smartphone, Square } from 'lucide-react';
 import { type ComponentType, type RefObject, useEffect } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { ProjectComposition } from '@/compositions';
+import { ProjectComposition } from '@/compositions/project/project-composition';
 import { usePersistedState } from '@/lib/use-persisted-state';
 import { cn } from '@/lib/utils';
 import type { Project } from '@/project';
@@ -17,6 +17,11 @@ const DEVICES = [
 ] as const;
 
 type DeviceKey = (typeof DEVICES)[number]['key'];
+
+type PreviewView = 'editor' | 'demo';
+
+const isPreviewView = (value: string): value is PreviewView =>
+  value === 'editor' || value === 'demo';
 
 const frameWidth = (maxWidth: number | null, aspect: number): string =>
   `min(100%, ${maxWidth === null ? '' : `${maxWidth}px, `}${aspect * 100}cqh)`;
@@ -40,6 +45,8 @@ export const ClipPreview = ({
 }: ClipPreviewProps) => {
   const [device, setDevice] = usePersistedState<DeviceKey>('cliplibrary-device', 'desktop');
   const active = DEVICES.find((entry) => entry.key === device) ?? DEVICES[2];
+  const [view, setView] = usePersistedState<PreviewView>('cliplibrary-preview-view', 'editor');
+  const shownView: PreviewView = demoSrc === null ? 'editor' : view;
 
   useEffect(() => {
     const player = playerRef.current;
@@ -61,15 +68,19 @@ export const ClipPreview = ({
 
   return (
     <Tabs
-      defaultValue="editor"
-      onValueChange={(view) => {
-        if (view === 'demo') {
+      value={shownView}
+      onValueChange={(next) => {
+        if (!isPreviewView(next)) {
+          return;
+        }
+        if (next === 'demo') {
           playerRef.current?.pause();
         }
+        setView(next);
       }}
       className="h-full gap-0"
     >
-      <div className="flex flex-wrap items-center justify-center gap-3 p-3">
+      <div className="flex flex-wrap items-center justify-center gap-2 p-2 sm:gap-3 sm:p-3">
         <TabsList>
           <TabsTrigger value="editor">Editor</TabsTrigger>
           <TabsTrigger value="demo" disabled={demoSrc === null}>
@@ -84,20 +95,21 @@ export const ClipPreview = ({
                 key={entry.key}
                 type="button"
                 onClick={() => setDevice(entry.key)}
+                aria-label={entry.label}
                 className={cn(
                   'inline-flex items-center gap-1.5 rounded-md px-2.5 py-1.5 text-muted-foreground text-xs transition-colors',
                   entry.key === device && 'bg-background text-foreground shadow-sm',
                 )}
               >
                 <Icon className="size-3.5" />
-                {entry.label}
+                <span className="hidden sm:inline">{entry.label}</span>
               </button>
             );
           })}
         </div>
       </div>
       <div
-        className="flex min-h-0 flex-1 items-center justify-center overflow-hidden p-6"
+        className="flex min-h-0 flex-1 items-center justify-center overflow-hidden p-3 sm:p-6"
         style={{ containerType: 'size' }}
       >
         <div

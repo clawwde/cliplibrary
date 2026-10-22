@@ -1,9 +1,10 @@
 import { useThree } from '@react-three/fiber';
 import { ThreeCanvas } from '@remotion/three';
 import { useMemo } from 'react';
-import { getRemotionEnvironment, useVideoConfig } from 'remotion';
+import { useVideoConfig } from 'remotion';
 import * as THREE from 'three';
 import type { WebsiteFoundSpotlightProps } from '@/schemas';
+import { useCanvasPixelRatio } from '../kit/pixel-ratio';
 import { DeskLamp } from './desk-lamp';
 import type { LightCue } from './light-cues';
 import { PaperBall } from './paper-ball';
@@ -68,7 +69,7 @@ export const SpotlightStage = ({
 }) => {
   const { camera, palette, paper, lamp, look } = props;
   const { width, height } = useVideoConfig();
-  const pixelRatio = getRemotionEnvironment().isRendering ? 2 : 1;
+  const pixelRatio = useCanvasPixelRatio(2);
   const eye = cameraEye(camera, frame);
   const fogNear = camera.distance * (1.6 - camera.fog);
   const fogFar = fogNear + 4 + 22 * (1 - camera.fog);

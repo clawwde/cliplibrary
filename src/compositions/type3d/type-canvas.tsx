@@ -1,8 +1,9 @@
 import { useThree } from '@react-three/fiber';
 import { ThreeCanvas } from '@remotion/three';
 import type { ReactNode } from 'react';
-import { getRemotionEnvironment, useVideoConfig } from 'remotion';
+import { useVideoConfig } from 'remotion';
 import type * as THREE from 'three';
+import { useCanvasPixelRatio } from '../kit/pixel-ratio';
 import { useAnimator } from './frame-composer';
 
 export type Vec3 = [number, number, number];
@@ -49,7 +50,7 @@ export const TypeCanvas = ({
   children: ReactNode;
 }) => {
   const { width, height } = useVideoConfig();
-  const pixelRatio = getRemotionEnvironment().isRendering ? 2 : 1;
+  const pixelRatio = useCanvasPixelRatio(2);
   return (
     <ThreeCanvas
       width={width}

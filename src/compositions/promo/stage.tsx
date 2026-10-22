@@ -2,10 +2,11 @@ import { Environment, Lightformer } from '@react-three/drei';
 import { useThree } from '@react-three/fiber';
 import { ThreeCanvas } from '@remotion/three';
 import type { ReactNode } from 'react';
-import { getRemotionEnvironment, useCurrentFrame, useVideoConfig } from 'remotion';
+import { useCurrentFrame, useVideoConfig } from 'remotion';
 import type * as THREE from 'three';
 import { DoubleSide } from 'three';
 import type { PromoCardId, PromoStage } from '@/schemas';
+import { useCanvasPixelRatio } from '../kit/pixel-ratio';
 import { cardUrl } from './screen-assets';
 import { useTexture } from './use-texture';
 
@@ -137,7 +138,7 @@ export const Stage = ({
   const { width, height } = useVideoConfig();
   const frame = useCurrentFrame();
   const { position, aim } = stageCamera(stage, frame, { target, cameraOffset, distanceScale });
-  const pixelRatio = getRemotionEnvironment().isRendering ? 2 : 1;
+  const pixelRatio = useCanvasPixelRatio(2);
   return (
     <ThreeCanvas
       width={width}

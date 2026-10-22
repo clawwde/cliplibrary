@@ -8,23 +8,17 @@ import { TimingSection } from '@/components/timeline/property-panel/timing-secti
 import { TransformSection } from '@/components/timeline/property-panel/transform-section';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
-import type { ControlSectionView } from '@/core';
+import { clipControlsFor } from '@/core';
 import type { Element } from '@/project';
 import { getClipMeta, isClipId } from '@/schemas';
 
 interface ClipPropertySidebarProps {
   element: Element | null;
-  controlsByClip: Record<string, ControlSectionView[]>;
   onChange: (next: Element) => void;
   onDelete: (id: string) => void;
 }
 
-export const ClipPropertySidebar = ({
-  element,
-  controlsByClip,
-  onChange,
-  onDelete,
-}: ClipPropertySidebarProps) => {
+export const ClipPropertySidebar = ({ element, onChange, onDelete }: ClipPropertySidebarProps) => {
   if (element === null) {
     return (
       <div className="p-4 text-muted-foreground text-sm">
@@ -37,7 +31,7 @@ export const ClipPropertySidebar = ({
     return <PropertyPanel element={element} onChange={onChange} onDelete={onDelete} />;
   }
 
-  const sections = controlsByClip[element.clipId] ?? [];
+  const sections = clipControlsFor(element.clipId);
   const clipTitle = isClipId(element.clipId) ? getClipMeta(element.clipId).title : element.clipId;
 
   return (

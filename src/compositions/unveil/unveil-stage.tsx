@@ -2,9 +2,10 @@ import { Environment } from '@react-three/drei';
 import { useThree } from '@react-three/fiber';
 import { ThreeCanvas } from '@remotion/three';
 import type { ReactNode } from 'react';
-import { getRemotionEnvironment, useVideoConfig } from 'remotion';
+import { useVideoConfig } from 'remotion';
 import * as THREE from 'three';
 import type { UnveilSky } from '@/schemas';
+import { useCanvasPixelRatio } from '../kit/pixel-ratio';
 import type { CameraShot } from './flight';
 import { SkyDome, sunDirection } from './sky';
 import { VisibleSky } from './sky-gradient';
@@ -55,7 +56,7 @@ export const UnveilStage = ({
   children: ReactNode;
 }) => {
   const { width, height } = useVideoConfig();
-  const pixelRatio = getRemotionEnvironment().isRendering ? 2 : 1;
+  const pixelRatio = useCanvasPixelRatio(2);
   const sun = new THREE.Vector3(...sunDirection(sky)).normalize().multiplyScalar(SUN_DISTANCE);
   return (
     <ThreeCanvas

@@ -37,9 +37,11 @@ export const DownloadMenu = ({ design, pageId, busy, run }: DownloadMenuProps) =
         <Button
           size="sm"
           disabled={busy}
+          aria-label="Download"
           className="bg-violet-600 text-white hover:bg-violet-600/90"
         >
-          {busy ? <Loader2 className="animate-spin" /> : <Download />} Download
+          {busy ? <Loader2 className="animate-spin" /> : <Download />}
+          <span className="hidden sm:inline">Download</span>
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-64">

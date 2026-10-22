@@ -1,30 +1,35 @@
 'use client';
 
-import { useSearchParams } from 'next/navigation';
-import { Suspense } from 'react';
+import dynamic from 'next/dynamic';
+import { DesignEditorSkeleton } from '@/components/skeletons';
 import type { Design } from '@/design';
-import { DesignEditorClient } from './design-editor-client';
 
 const pageIndexFrom = (value: string | null, pageCount: number): number => {
   const parsed = Number(value);
   return Number.isInteger(parsed) && parsed >= 1 && parsed <= pageCount ? parsed - 1 : 0;
 };
 
-const PosterEditorWithPage = ({ packId, design }: { packId: string; design: Design }) => {
-  const params = useSearchParams();
-  return (
-    <DesignEditorClient
-      initialDesign={design}
-      initialPageIndex={pageIndexFrom(params.get('page'), design.pages.length)}
-      storageKey={`cliplibrary-poster:${packId}`}
-      backHref="/?type=poster"
-      initialPanel="elements"
-    />
-  );
-};
+interface PosterEditorProps {
+  packId: string;
+  design: Design;
+}
 
-export const PosterEditor = ({ packId, design }: { packId: string; design: Design }) => (
-  <Suspense fallback={null}>
-    <PosterEditorWithPage packId={packId} design={design} />
-  </Suspense>
+export const PosterEditor = dynamic(
+  () =>
+    import('./design-editor').then(({ DesignEditor }) => {
+      const PosterDesignEditor = ({ packId, design }: PosterEditorProps) => (
+        <DesignEditor
+          initialDesign={design}
+          initialPageIndex={pageIndexFrom(
+            new URLSearchParams(window.location.search).get('page'),
+            design.pages.length,
+          )}
+          storageKey={`cliplibrary-poster:${packId}`}
+          backHref="/?type=poster"
+          initialPanel="elements"
+        />
+      );
+      return PosterDesignEditor;
+    }),
+  { ssr: false, loading: () => <DesignEditorSkeleton /> },
 );

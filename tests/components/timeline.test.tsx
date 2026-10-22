@@ -1,8 +1,11 @@
 import { describe, expect, it, mock } from 'bun:test';
-import { fireEvent, render, screen } from '@testing-library/react';
+import { act, fireEvent, render, screen } from '@testing-library/react';
 import { useState } from 'react';
 import { PropertyPanel } from '@/components/timeline/property-panel/property-panel';
 import { Timeline } from '@/components/timeline/timeline';
+import { seedProjectForClip } from '@/core';
+import { createFrameStore } from '@/lib/frame-store';
+import { LABEL_WIDTH } from '@/lib/timeline-geometry';
 import {
   addElement,
   addTrack,
@@ -47,7 +50,7 @@ const renderTimeline = (project: Project, overrides: Record<string, unknown> = {
     <Timeline
       project={project}
       pxPerFrame={PX}
-      currentFrame={0}
+      frames={createFrameStore()}
       selectedId={null}
       activeTrackId={project.tracks[0]?.id ?? null}
       {...handlers}
@@ -56,6 +59,37 @@ const renderTimeline = (project: Project, overrides: Record<string, unknown> = {
   );
   return handlers;
 };
+
+describe('Timeline playhead', () => {
+  it('follows the frame store without re-rendering the tracks', () => {
+    const frames = createFrameStore();
+    const project = seedProjectForClip('phone-spin-in');
+    render(
+      <Timeline
+        project={project}
+        pxPerFrame={PX}
+        frames={frames}
+        selectedId={null}
+        activeTrackId={project.tracks[0]?.id ?? null}
+        onSeek={mock()}
+        onActivateTrack={mock()}
+        onSelectElement={mock()}
+        onMoveElement={mock()}
+        onResizeElement={mock()}
+        onTrimElementStart={mock()}
+        onMoveElementToTrack={mock()}
+        onMoveTrack={mock()}
+        onRemoveTrack={mock()}
+      />,
+    );
+    const block = screen.getByRole('button', { name: 'Clip element' });
+    act(() => frames.set(30));
+    expect(screen.getByTestId('playhead').style.transform).toBe(
+      `translateX(${LABEL_WIDTH + 30 * PX}px)`,
+    );
+    expect(screen.getByRole('button', { name: 'Clip element' })).toBe(block);
+  });
+});
 
 describe('Timeline', () => {
   it('renders a block for each element', () => {
@@ -159,7 +193,7 @@ const SelectionHarness = ({ project }: { project: Project }) => {
       <Timeline
         project={project}
         pxPerFrame={PX}
-        currentFrame={0}
+        frames={createFrameStore()}
         selectedId={selectedId}
         activeTrackId={project.tracks[0]?.id ?? null}
         onSeek={noop}

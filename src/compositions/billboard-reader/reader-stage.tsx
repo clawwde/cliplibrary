@@ -1,9 +1,10 @@
 import { useThree } from '@react-three/fiber';
 import { ThreeCanvas } from '@remotion/three';
 import { type ReactNode, useMemo } from 'react';
-import { getRemotionEnvironment, useVideoConfig } from 'remotion';
+import { useVideoConfig } from 'remotion';
 import * as THREE from 'three';
 import type { ReaderLight, ReaderWorld } from '@/schemas';
+import { useCanvasPixelRatio } from '../kit/pixel-ratio';
 import { hazeDensity } from './ground';
 import { BOARD, type CameraShot } from './layout';
 
@@ -69,7 +70,7 @@ export const ReaderStage = ({
   children: ReactNode;
 }) => {
   const { width, height } = useVideoConfig();
-  const pixelRatio = getRemotionEnvironment().isRendering ? 2 : 1;
+  const pixelRatio = useCanvasPixelRatio(2);
   return (
     <ThreeCanvas
       width={width}

@@ -11,12 +11,15 @@ import {
   type GalleryFilters,
 } from '@/lib/gallery-filters';
 import { FilterBar } from './filter-bar';
+import { MasonryGrid } from './masonry-grid';
 
 export interface VideoGalleryItem {
   kind: 'video';
   meta: GalleryMeta;
   video: string | null;
   firstFrame: string | null;
+  width: number;
+  height: number;
 }
 
 export interface PosterGalleryItem {
@@ -31,13 +34,9 @@ export type GalleryItem = VideoGalleryItem | PosterGalleryItem;
 
 type GalleryTile = ComponentType<GalleryItem>;
 
-const Grid = ({ items, Tile }: { items: GalleryItem[]; Tile: GalleryTile }) => (
-  <div className="grid grid-cols-[repeat(auto-fill,minmax(min(100%,18rem),1fr))] gap-5">
-    {items.map((item) => (
-      <Tile key={`${item.kind}-${item.meta.id}`} {...item} />
-    ))}
-  </div>
-);
+const galleryItemKey = (item: GalleryItem): string => `${item.kind}-${item.meta.id}`;
+
+const heightRatio = (item: GalleryItem): number => item.height / item.width;
 
 interface ClipGalleryProps {
   items: GalleryItem[];
@@ -92,7 +91,12 @@ export const ClipGallery = ({
           </Button>
         </div>
       ) : (
-        <Grid items={visible} Tile={Tile} />
+        <MasonryGrid
+          items={visible}
+          itemKey={galleryItemKey}
+          heightRatio={heightRatio}
+          Tile={Tile}
+        />
       )}
     </div>
   );

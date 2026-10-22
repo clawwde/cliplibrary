@@ -94,12 +94,16 @@ export const DesignEditor = ({
   const [uploads, setUploads] = useState<LoadedImage[]>([]);
   const restored = useRef(false);
 
+  const fitMargin = viewport.width < 640 ? 32 : 96;
   const fitZoom =
     viewport.width === 0
       ? 0.4
       : Math.max(
           0.05,
-          Math.min((viewport.width - 96) / design.width, (viewport.height - 96) / design.height),
+          Math.min(
+            (viewport.width - fitMargin) / design.width,
+            (viewport.height - fitMargin) / design.height,
+          ),
         );
   const zoom = userZoom ?? fitZoom;
 
@@ -296,7 +300,7 @@ export const DesignEditor = ({
           );
         }}
       />
-      <div className="flex min-h-0 flex-1">
+      <div className="flex min-h-0 flex-1 flex-col md:flex-row">
         <EditorSidebar
           panels={panels}
           {...(initialPanel === undefined ? {} : { initial: initialPanel })}
@@ -320,14 +324,16 @@ export const DesignEditor = ({
           type="button"
           onClick={() => setPropertiesOpen((open) => !open)}
           aria-expanded={propertiesOpen}
-          className="fixed right-4 bottom-28 z-30 inline-flex items-center gap-2 rounded-full bg-violet-600 px-4 py-2 font-medium text-sm text-white shadow-lg lg:hidden"
+          className="fixed right-4 bottom-40 z-50 inline-flex items-center gap-2 rounded-full bg-violet-600 px-4 py-2 font-medium text-sm text-white shadow-lg md:bottom-28 lg:hidden"
         >
           <SlidersHorizontal className="size-4" /> {propertiesOpen ? 'Close' : 'Properties'}
         </button>
         <aside
           className={cn(
-            'w-[280px] shrink-0 overflow-y-auto border-l bg-background lg:static lg:block lg:shadow-none',
-            propertiesOpen ? 'fixed top-28 right-0 bottom-0 z-20 block shadow-2xl' : 'hidden',
+            'shrink-0 overflow-y-auto bg-background lg:static lg:block lg:w-[280px] lg:border-l lg:shadow-none',
+            propertiesOpen
+              ? 'fixed inset-x-0 bottom-0 z-40 block h-[60dvh] rounded-t-2xl border-t shadow-2xl md:inset-x-auto md:top-28 md:right-0 md:h-auto md:w-[280px] md:rounded-none md:border-t-0 md:border-l'
+              : 'hidden',
           )}
           aria-label="Properties"
         >

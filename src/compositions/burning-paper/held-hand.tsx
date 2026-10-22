@@ -1,8 +1,9 @@
 import { Environment, Lightformer } from '@react-three/drei';
 import { ThreeCanvas } from '@remotion/three';
-import { getRemotionEnvironment, useVideoConfig } from 'remotion';
+import { useVideoConfig } from 'remotion';
 import * as THREE from 'three';
 import type { BurningPaperRevealProps } from '@/schemas';
+import { useCanvasPixelRatio } from '../kit/pixel-ratio';
 import type { ArmLook } from '../promo/desk/arm';
 import { HandModel, useHandScene } from '../promo/desk/hand-model';
 import { applyHandPose, type HandPose } from '../promo/desk/hand-rig';
@@ -99,6 +100,7 @@ const Hand = ({ props, frame }: { props: BurningPaperRevealProps; frame: number 
 export const HeldHand = ({ props, cues }: { props: BurningPaperRevealProps; cues: BurnCues }) => {
   const { width, height } = useVideoConfig();
   const { paper, hand } = props;
+  const pixelRatio = useCanvasPixelRatio(2);
   if (!hand.show) {
     return null;
   }
@@ -107,7 +109,6 @@ export const HeldHand = ({ props, cues }: { props: BurningPaperRevealProps; cues
   const fire = paperToScreen(props, cues, edgeXAt(cues.edge, fireY, paper.width), fireY);
   const corner = paperToScreen(props, cues, 0, 0);
   const angle = toRadians(paper.tilt + cues.shake.angle);
-  const pixelRatio = getRemotionEnvironment().isRendering ? 2 : 1;
   const world = (point: { x: number; y: number }) =>
     [point.x - width / 2, height / 2 - point.y] as const;
   const [ax, ay] = world(anchor);
