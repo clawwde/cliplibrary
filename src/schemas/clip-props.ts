@@ -39,6 +39,7 @@ import type { TextRingsProps } from './clips/kinetic-type/text-rings';
 import type { WordBuildProps } from './clips/kinetic-type/word-build';
 import type { WordFieldProps } from './clips/kinetic-type/word-field';
 import type { WordPunchProps } from './clips/kinetic-type/word-punch';
+import type { WordStreamsProps } from './clips/kinetic-type/word-streams';
 import type { ColorPillsProps } from './clips/list-pickers/color-pills';
 import type { HeadingListProps } from './clips/list-pickers/heading-list';
 import type { ListPickersReelProps } from './clips/list-pickers/list-pickers-reel';
@@ -96,6 +97,7 @@ export interface ClipPropsMap {
   'printer-pages': PrinterPagesProps;
   'word-build': WordBuildProps;
   'word-punch': WordPunchProps;
+  'word-streams': WordStreamsProps;
   'hanging-words': HangingWordsProps;
   'scribble-caption': ScribbleCaptionProps;
   'echo-stack': EchoStackProps;

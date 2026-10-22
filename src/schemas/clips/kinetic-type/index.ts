@@ -61,6 +61,8 @@ import { wordFieldDefaults, wordFieldMeta, wordFieldSchema } from './word-field'
 import { wordFieldControls } from './word-field-controls';
 import { wordPunchDefaults, wordPunchMeta, wordPunchSchema } from './word-punch';
 import { wordPunchControls } from './word-punch-controls';
+import { wordStreamsDefaults, wordStreamsMeta, wordStreamsSchema } from './word-streams';
+import { wordStreamsControls } from './word-streams-controls';
 
 export const kineticTypeClips: ClipModule[] = [
   {
@@ -76,6 +78,13 @@ export const kineticTypeClips: ClipModule[] = [
     defaults: wordPunchDefaults,
     meta: wordPunchMeta,
     controls: wordPunchControls,
+  },
+  {
+    id: 'word-streams',
+    schema: wordStreamsSchema,
+    defaults: wordStreamsDefaults,
+    meta: wordStreamsMeta,
+    controls: wordStreamsControls,
   },
   {
     id: 'outline-marquee',

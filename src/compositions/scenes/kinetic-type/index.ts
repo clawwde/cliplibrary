@@ -18,10 +18,12 @@ import { textRingsScene } from './text-rings';
 import { wordBuildScene } from './word-build';
 import { wordFieldScene } from './word-field';
 import { wordPunchScene } from './word-punch';
+import { wordStreamsScene } from './word-streams';
 
 export const kineticTypeScenes: SceneModule[] = [
   wordBuildScene,
   wordPunchScene,
+  wordStreamsScene,
   outlineMarqueeScene,
   echoStackScene,
   gridStackScene,

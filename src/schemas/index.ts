@@ -43,6 +43,7 @@ export * from './clips/kinetic-type/text-rings';
 export * from './clips/kinetic-type/word-build';
 export * from './clips/kinetic-type/word-field';
 export * from './clips/kinetic-type/word-punch';
+export * from './clips/kinetic-type/word-streams';
 export * from './clips/list-pickers/color-pills';
 export * from './clips/list-pickers/heading-list';
 export * from './clips/list-pickers/list-pickers-reel';
