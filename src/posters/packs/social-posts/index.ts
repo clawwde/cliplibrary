@@ -1,8 +1,11 @@
 import type { PosterPack } from '../../pack';
 import { amberClientReviewsPack } from './amber-client-reviews';
 import { amberInsightStatsPack } from './amber-insight-stats';
+import { amethystSignalAiPostsPack } from './amethyst-signal-ai-posts';
+import { arcticCircuitTechPostsPack } from './arctic-circuit-tech-posts';
 import { azureCommentMagnetsPack } from './azure-comment-magnets';
 import { blushDateEventsPack } from './blush-date-events';
+import { citronScaleAiPostsPack } from './citron-scale-ai-posts';
 import { cobaltBeforeAfterPack } from './cobalt-before-after';
 import { cobaltLessonTipsPack } from './cobalt-lesson-tips';
 import { cobaltValuePropositionPack } from './cobalt-value-proposition';
@@ -26,12 +29,14 @@ import { nightSignalPodcastPack } from './night-signal-podcast';
 import { pineSaasReviewsPack } from './pine-saas-reviews';
 import { pixelQuestArcadePack } from './pixel-quest-arcade';
 import { plumProofReviewsPack } from './plum-proof-reviews';
+import { rosequartzAiEnterprisePack } from './rosequartz-ai-enterprise';
 import { rosewoodTechEventsPack } from './rosewood-tech-events';
 import { rubyKeyStatsPack } from './ruby-key-stats';
 import { saffronLaunchEventsPack } from './saffron-launch-events';
 import { solarFlareAiPostsPack } from './solar-flare-ai-posts';
 import { sunbeamShopStatsPack } from './sunbeam-shop-stats';
 import { tangerineLinkedinReviewsPack } from './tangerine-linkedin-reviews';
+import { tangerineNavyMarketingPack } from './tangerine-navy-marketing';
 import { tidelineEnterprisePostsPack } from './tideline-enterprise-posts';
 import { violetAppLaunchPack } from './violet-app-launch';
 import { violetKeyDatesPack } from './violet-key-dates';
@@ -42,8 +47,11 @@ import { willowKeyRealtyPack } from './willow-key-realty';
 export const SOCIAL_POST_PACKS: PosterPack[] = [
   amberClientReviewsPack,
   amberInsightStatsPack,
+  amethystSignalAiPostsPack,
+  arcticCircuitTechPostsPack,
   azureCommentMagnetsPack,
   blushDateEventsPack,
+  citronScaleAiPostsPack,
   cobaltBeforeAfterPack,
   cobaltLessonTipsPack,
   cobaltValuePropositionPack,
@@ -67,12 +75,14 @@ export const SOCIAL_POST_PACKS: PosterPack[] = [
   pineSaasReviewsPack,
   pixelQuestArcadePack,
   plumProofReviewsPack,
+  rosequartzAiEnterprisePack,
   rosewoodTechEventsPack,
   rubyKeyStatsPack,
   saffronLaunchEventsPack,
   solarFlareAiPostsPack,
   sunbeamShopStatsPack,
   tangerineLinkedinReviewsPack,
+  tangerineNavyMarketingPack,
   tidelineEnterprisePostsPack,
   violetAppLaunchPack,
   violetKeyDatesPack,
