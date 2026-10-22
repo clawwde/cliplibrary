@@ -20,6 +20,9 @@ export const PhoneSwap = ({
   offset,
   scale,
   spinTurns,
+  turn,
+  sway,
+  arriveFrames,
   look,
   stage,
   motion,
@@ -39,11 +42,11 @@ export const PhoneSwap = ({
     finish,
   });
   const mix = progress > 0 ? tween(progress, [0.06, 0.94], [0, 1]) : 0;
-  const arrive = tween(frame, [0, 60], [0, 1], settle);
+  const arrive = arriveFrames > 0 ? tween(frame, [0, arriveFrames], [0, 1], settle) : 1;
   const rotateY =
-    -0.36 * side +
+    -turn * side +
     progress * TAU * Math.round(spinTurns) * from +
-    Math.sin(frame / 36) * 0.13 +
+    Math.sin(frame / 36) * sway +
     (1 - arrive) * -0.7;
   return (
     <PromoLayer look={look} motion={motion} focusX={50 + side * 16}>

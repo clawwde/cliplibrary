@@ -14,8 +14,6 @@ import { CameraShot, driftCamera, TypeCanvas, type Vec3 } from '../../type3d/typ
 import type { WordArt } from '../../type3d/word-art';
 import { seeded } from '../../unveil/random';
 
-const BADGE_SCALE = 1.05;
-
 interface Sticker {
   art: WordArt;
   height: number;
@@ -100,7 +98,7 @@ const layoutStickers = (props: StickerStackProps): Sticker[] => {
       const side = (index % 2 === 0 ? -1 : 1) * (0.45 + 0.55 * random()) * props.spread;
       return {
         art,
-        height: props.size * (art.shape === 'circle' ? BADGE_SCALE : 1),
+        height: props.size * (art.shape === 'circle' ? props.badgeScale : 1),
         x: (along[0] ?? 1) * distance + (across[0] ?? 0) * side,
         y: (along[1] ?? 0) * distance + (across[1] ?? 1) * side,
         angle: ((random() - 0.5) * 2 * props.spin * Math.PI) / 180,
@@ -197,7 +195,7 @@ export const StickerStack = (props: StickerStackProps) => {
             shot={(time) =>
               driftCamera(
                 time,
-                camera.distance * (1 + 0.28 * endGather(time, stickers, props)),
+                camera.distance * (1 + props.pullBack * endGather(time, stickers, props)),
                 camera.fieldOfView,
                 camera.drift,
                 chaseTarget(time, stickers, props),

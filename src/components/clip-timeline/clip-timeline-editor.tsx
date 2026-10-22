@@ -6,7 +6,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { Timeline } from '@/components/timeline/timeline';
 import { TimelineToolbar } from '@/components/timeline/timeline-toolbar';
 import { Skeleton } from '@/components/ui/skeleton';
-import type { ControlDescriptor } from '@/core';
+import type { ControlSectionView } from '@/core';
 import { clampPxPerFrame, DEFAULT_PX_PER_FRAME, fitPxPerFrame } from '@/lib/timeline-geometry';
 import { DEFAULT_EXPORT_SETTINGS, useProjectExport } from '@/lib/use-project-export';
 import { useUndoable, useUndoRedoKeys } from '@/lib/use-undoable';
@@ -83,13 +83,13 @@ const ANIMATION_OPTIONS = CLIP_REGISTRY.map((meta) => ({ id: meta.id, title: met
 
 interface ClipTimelineEditorProps {
   title: string;
-  descriptorsByClip: Record<string, ControlDescriptor[]>;
+  controlsByClip: Record<string, ControlSectionView[]>;
   initialProject: Project;
 }
 
 export const ClipTimelineEditor = ({
   title,
-  descriptorsByClip,
+  controlsByClip,
   initialProject,
 }: ClipTimelineEditorProps) => {
   const editor = useUndoable<Project>(initialProject);
@@ -213,7 +213,7 @@ export const ClipTimelineEditor = ({
           <ClipTimelineHeader title={title} />
           <ClipPropertySidebar
             element={selectedElement}
-            descriptorsByClip={descriptorsByClip}
+            controlsByClip={controlsByClip}
             onChange={(next) => setProjectLive(replaceElement(project, next))}
             onDelete={handleDelete}
           />

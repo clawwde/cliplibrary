@@ -25,6 +25,7 @@ export const goingLiveTeaserSchema = z.object({
     website: z.string(),
     phone: z.string(),
     email: z.string(),
+    showContacts: z.boolean(),
   }),
   wall: z.object({
     headline: zMultiline(),
@@ -55,6 +56,7 @@ export const goingLiveTeaserSchema = z.object({
     smoke: zColor(),
     logo: zColor(),
     muted: zColor(),
+    underline: zColor(),
   }),
   type: z.object({
     weight: zSlider({ min: 500, max: 900, step: 100 }),
@@ -102,9 +104,14 @@ export const goingLiveTeaserSchema = z.object({
     opacity: unit(),
   }),
   logo: z.object({
+    show: z.boolean(),
     scale: zSlider({ min: 0.3, max: 2, step: 0.01 }),
     y: zSlider({ min: 500, max: 1300 }),
     stroke: zSlider({ min: 40, max: 200 }),
+  }),
+  endCard: z.object({
+    taglineY: zSlider({ min: 600, max: 1800 }),
+    contactsY: zSlider({ min: 600, max: 1800 }),
   }),
   timing: z.object({
     openerStart: at(),
@@ -165,6 +172,7 @@ export const goingLiveTeaserDefaults: GoingLiveTeaserProps = {
     website: 'northlight.studio',
     phone: '+1 555 014 7788',
     email: 'hi@northlight.studio',
+    showContacts: true,
   },
   wall: {
     headline: 'Designing Products\nPeople Come Back To\nEvery Day',
@@ -195,6 +203,7 @@ export const goingLiveTeaserDefaults: GoingLiveTeaserProps = {
     smoke: '#5b4a92',
     logo: '#f7efe4',
     muted: '#d4cbec',
+    underline: '#9b7bff',
   },
   type: {
     weight: 800,
@@ -242,9 +251,14 @@ export const goingLiveTeaserDefaults: GoingLiveTeaserProps = {
     opacity: 0.85,
   },
   logo: {
+    show: true,
     scale: 1,
     y: 880,
     stroke: 126,
+  },
+  endCard: {
+    taglineY: 1256,
+    contactsY: 1312,
   },
   timing: {
     openerStart: 21,

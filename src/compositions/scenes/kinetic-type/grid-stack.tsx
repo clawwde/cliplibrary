@@ -114,7 +114,7 @@ const Grid = ({ props }: { props: GridStackProps }) => {
       bulge={props.grid.bulge}
       lineWidth={props.grid.lineWidth}
       color={props.grid.color}
-      opacity={1}
+      opacity={props.gridOpacity}
       z={props.grid.depth}
     />
   );

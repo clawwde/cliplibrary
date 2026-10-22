@@ -180,7 +180,7 @@ export const SuccessWord = ({
     fontFamily: displayFont,
     fontWeight: 700,
     fontSize: type.wordSize,
-    letterSpacing: '0.06em',
+    letterSpacing: `${type.wordSpacing}em`,
   };
   return (
     <g

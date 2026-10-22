@@ -37,7 +37,9 @@ export const ScribbleCaption = (props: ScribbleCaptionProps) => {
   const textStart = props.scribbleAt === 'start' ? delay + Math.round(drawFrames * 0.35) : delay;
   const typeEnd = textStart + letters.length * props.typeFrames;
   const open =
-    props.reveal === 'spread' ? land(frame, [textStart, textStart + 36], [1, 0], 1 / reach) : 0;
+    props.reveal === 'spread'
+      ? land(frame, [textStart, textStart + props.spreadFrames], [1, 0], 1 / reach)
+      : 0;
   const extraTracking =
     props.reveal === 'type' ? land(frame, [textStart, typeEnd + 8], [spread, 0], 0.002) : 0;
   const shown =
@@ -60,7 +62,10 @@ export const ScribbleCaption = (props: ScribbleCaptionProps) => {
         top: '50%',
         transform: `translate(-50%, -50%) translateY(${OFFSET_Y[props.scribblePlace] * size}px) scale(${props.scribblePlace === 'around' ? 1.25 : 1})`,
         pointerEvents: 'none',
-        filter: glow > 0 ? `drop-shadow(0 0 ${(glow * 18).toFixed(2)}px ${look.ink})` : undefined,
+        filter:
+          glow > 0
+            ? `drop-shadow(0 0 ${(glow * 18).toFixed(2)}px ${props.scribbleColor})`
+            : undefined,
       }}
     >
       <Scribble
@@ -69,7 +74,7 @@ export const ScribbleCaption = (props: ScribbleCaptionProps) => {
         tail={tail}
         width={props.scribbleWidth}
         strokeWidth={props.strokeWidth}
-        color={look.ink}
+        color={props.scribbleColor}
       />
     </div>
   );

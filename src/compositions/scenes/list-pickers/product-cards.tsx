@@ -21,6 +21,15 @@ const smoothstep = (value: number): number => {
 const mix = (color: string, amount: number): string =>
   `color-mix(in oklab, ${color} ${(amount * 100).toFixed(1)}%, transparent)`;
 
+const shade = (hex: string, alpha: number): string => {
+  const channel = (start: number): number => Number.parseInt(hex.slice(start, start + 2), 16);
+  const own = hex.length === 9 ? channel(7) / 255 : 1;
+  return `rgba(${channel(1)}, ${channel(3)}, ${channel(5)}, ${(alpha * own).toFixed(3)})`;
+};
+
+const depth = (slot: number, progress: number): number =>
+  Math.round(Math.abs(slot - progress) * 10);
+
 const Tile = ({ product, tile }: { product: ProductCard; tile: ProductCardsProps['tile'] }) => (
   <div
     style={{
@@ -41,7 +50,7 @@ const Tile = ({ product, tile }: { product: ProductCard; tile: ProductCardsProps
         icon={product.icon}
         ink={tile.ink}
         tint={product.tint}
-        size={Math.round(tile.size * 0.74)}
+        size={Math.round(tile.size * tile.iconScale)}
       />
     ) : (
       <Img src={product.image} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
@@ -71,7 +80,9 @@ const ProductCards = ({
   const centerX = Math.round(width / 2 + layout.x - card.width / 2);
   const centerY = Math.round(height / 2 + layout.y - card.height / 2);
   const first = Math.floor(progress) - 2;
-  const slots = Array.from({ length: 6 }, (_, offset) => first + offset);
+  const slots = Array.from({ length: 6 }, (_, offset) => first + offset).sort(
+    (a, b) => depth(b, progress) - depth(a, progress),
+  );
   const padding = Math.max(0, (card.height - tile.size) / 2);
   return (
     <PickerLayer look={look} aura={aura} motion={motion}>
@@ -112,7 +123,6 @@ const ProductCards = ({
                 width: card.width,
                 height: card.height,
                 opacity,
-                zIndex: 100 - Math.round(distance * 10),
                 transform: `scale(${scale.toFixed(4)})`,
                 display: 'flex',
                 alignItems: 'center',
@@ -121,9 +131,9 @@ const ProductCards = ({
                 boxSizing: 'border-box',
                 borderRadius: card.radius,
                 background: `linear-gradient(180deg, ${mix(card.fill, card.fillOpacity * 1.5)}, ${mix(card.fill, card.fillOpacity)})`,
-                border: `3px solid ${mix(card.border, 0.72)}`,
+                border: `${card.borderWidth}px solid ${mix(card.border, 0.72)}`,
                 backdropFilter: card.blur > 0 ? `blur(${card.blur}px)` : undefined,
-                boxShadow: `0 0 14px ${mix(card.border, 0.45)}, inset 0 0 26px ${mix(card.border, 0.32)}, 0 26px 54px rgba(120, 30, 90, ${(card.shadow * 0.35).toFixed(3)})`,
+                boxShadow: `0 0 14px ${mix(card.border, 0.45 * card.glow)}, inset 0 0 26px ${mix(card.border, 0.32 * card.glow)}, 0 26px 54px ${shade(card.shadowColor, card.shadow * 0.35)}`,
               }}
             >
               <Tile product={product} tile={tile} />
@@ -146,7 +156,8 @@ const ProductCards = ({
                 <div
                   style={{
                     fontSize: type.description,
-                    fontWeight: 300,
+                    fontWeight: type.descriptionWeight,
+                    color: type.descriptionInk,
                     lineHeight: 1.2,
                     opacity: 0.88,
                   }}

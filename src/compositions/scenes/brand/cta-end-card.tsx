@@ -1,3 +1,4 @@
+import type { CSSProperties } from 'react';
 import { Composition, useCurrentFrame } from 'remotion';
 import {
   type CtaEndCardProps,
@@ -12,6 +13,12 @@ import { glyphUrl } from '../../promo/screen-assets';
 import { AppIconMark, StoreButton } from '../../promo/store-badges';
 import { BodyCopy, FadeIn, Headline } from '../../promo/typography';
 import type { SceneModule } from '../../scene-module';
+
+const COLUMN_ALIGN: Record<CtaEndCardProps['textAlign'], CSSProperties['alignItems']> = {
+  left: 'flex-start',
+  center: 'center',
+  right: 'flex-end',
+};
 
 export const CtaEndCard = ({
   brandName,
@@ -31,6 +38,12 @@ export const CtaEndCard = ({
   markGlyph,
   markSize,
   headlineSize,
+  brandSize,
+  sublineSize,
+  sublineWidth,
+  urlSize,
+  showSecondaryButton,
+  textAlign,
   placement,
   headline,
   highlight,
@@ -43,7 +56,7 @@ export const CtaEndCard = ({
   look,
   motion,
 }: CtaEndCardProps) => {
-  const frame = useCurrentFrame() * motion.speed;
+  const ringFrame = markAt + (useCurrentFrame() - markAt) * motion.speed;
   return (
     <PromoLayer look={look} motion={motion}>
       <div style={placementFrame(placement)}>
@@ -52,14 +65,14 @@ export const CtaEndCard = ({
             width: placement.width,
             display: 'flex',
             flexDirection: 'column',
-            alignItems: 'center',
+            alignItems: COLUMN_ALIGN[textAlign],
             gap,
           }}
         >
           {showMark || brandName.length > 0 ? (
             <div style={{ display: 'flex', alignItems: 'center', gap: 18 }}>
               {showMark && mark === 'ring' ? (
-                <BrandMark color={markColor} frame={frame} size={markSize} start={markAt} />
+                <BrandMark color={markColor} frame={ringFrame} size={markSize} start={markAt} />
               ) : null}
               {showMark && mark === 'app-icon' ? (
                 <FadeIn start={markAt}>
@@ -77,7 +90,7 @@ export const CtaEndCard = ({
                   <span
                     style={{
                       fontFamily: displayFont,
-                      fontSize: 54,
+                      fontSize: brandSize,
                       fontWeight: 600,
                       letterSpacing: '-0.05em',
                       color: look.ink,
@@ -95,7 +108,7 @@ export const CtaEndCard = ({
             size={headlineSize}
             color={look.ink}
             accent={look.accent}
-            align="center"
+            align={textAlign}
             weight={headlineWeight}
             family={font === 'rounded' ? roundedFont : displayFont}
             tracking={font === 'rounded' ? -0.01 : -0.045}
@@ -103,7 +116,13 @@ export const CtaEndCard = ({
           />
           {subline.length > 0 ? (
             <FadeIn start={headlineAt + 16}>
-              <BodyCopy text={subline} color={look.muted} width={900} align="center" size={32} />
+              <BodyCopy
+                text={subline}
+                color={look.muted}
+                width={sublineWidth}
+                align={textAlign}
+                size={sublineSize}
+              />
             </FadeIn>
           ) : null}
           <FadeIn start={badgesAt} style={{ display: 'flex', gap: 18, marginTop: 8 }}>
@@ -116,22 +135,24 @@ export const CtaEndCard = ({
               variant={badges}
               scale={badgeScale}
             />
-            <StoreButton
-              caption={secondaryCaption}
-              label={secondaryLabel}
-              filled={false}
-              ink={look.ink}
-              paper={look.background}
-              variant={badges}
-              scale={badgeScale}
-            />
+            {showSecondaryButton ? (
+              <StoreButton
+                caption={secondaryCaption}
+                label={secondaryLabel}
+                filled={false}
+                ink={look.ink}
+                paper={look.background}
+                variant={badges}
+                scale={badgeScale}
+              />
+            ) : null}
           </FadeIn>
           {url.length > 0 ? (
             <FadeIn start={badgesAt + 12}>
               <div
                 style={{
                   fontFamily: bodyFont,
-                  fontSize: 20,
+                  fontSize: urlSize,
                   fontWeight: 500,
                   letterSpacing: '0.24em',
                   textTransform: 'uppercase',

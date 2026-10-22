@@ -54,7 +54,7 @@ const Badge = ({ card }: { card: Card }) => (
         width: 150,
         height: 150,
         borderRadius: '50%',
-        background: '#ffffff',
+        background: card.badgeFill,
         boxShadow: '0 10px 28px rgba(120,50,0,0.28)',
         display: 'flex',
         alignItems: 'center',
@@ -102,7 +102,7 @@ const Footer = ({ card }: { card: Card }) => (
         gap: 22,
         padding: '16px 34px',
         borderRadius: 999,
-        background: '#ffffff',
+        background: card.footerFill,
         boxShadow: '0 8px 22px rgba(120,50,0,0.25)',
         fontFamily: bodyFont,
         fontWeight: 700,
@@ -149,8 +149,8 @@ export const SolutionCard = ({
           fontWeight: 700,
           fontSize: 900,
           letterSpacing: '-0.08em',
-          color: '#ffffff',
-          opacity: 0.06,
+          color: card.watermarkInk,
+          opacity: card.watermark,
           transform: 'translateY(-60px)',
         }}
       >
@@ -163,7 +163,7 @@ export const SolutionCard = ({
           style={{
             fontFamily: bodyFont,
             fontWeight: 600,
-            fontSize: 50,
+            fontSize: card.kickerSize,
             color: card.ink,
             textShadow: '0 3px 12px rgba(120,45,0,0.3)',
           }}
@@ -171,7 +171,7 @@ export const SolutionCard = ({
           {card.kicker}
         </span>
       </Rising>
-      <Rising frame={frame} start={card.stagger * 2} top={KICKER_Y + 74}>
+      <Rising frame={frame} start={card.stagger * 2} top={KICKER_Y + 24 + card.kickerSize}>
         {lines.map((line) => (
           <div
             key={line}

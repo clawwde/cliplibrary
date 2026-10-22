@@ -4,6 +4,7 @@ import {
   sceneTransitionMeta,
   sceneTransitionSchema,
 } from './scene-transition';
+import { sceneTransitionControls } from './scene-transition-controls';
 
 export const transitionsClips: ClipModule[] = [
   {
@@ -11,5 +12,6 @@ export const transitionsClips: ClipModule[] = [
     schema: sceneTransitionSchema,
     defaults: sceneTransitionDefaults,
     meta: sceneTransitionMeta,
+    controls: sceneTransitionControls,
   },
 ];

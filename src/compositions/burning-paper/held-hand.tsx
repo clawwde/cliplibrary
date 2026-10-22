@@ -11,14 +11,12 @@ import { type BurnCues, edgeXAt, paperToScreen } from './burn-cues';
 
 const toRadians = (degrees: number): number => (degrees * Math.PI) / 180;
 
-const ARM: ArmLook = {
+const ARM: Omit<ArmLook, 'band' | 'bandColor'> = {
   style: 'bare',
   sleeveColor: '#eef2f7',
   length: 0.9,
   looseness: 0.5,
   knit: 0.003,
-  band: true,
-  bandColor: '#d4a95a',
   bandMetal: 1,
 };
 
@@ -85,7 +83,13 @@ const Hand = ({ props, frame }: { props: BurningPaperRevealProps; frame: number 
         skin={look.skin}
         roughness={0.48}
         detail={1}
-        arm={{ ...ARM, style: look.sleeve ? 'sleeve' : 'bare', sleeveColor: look.sleeveColor }}
+        arm={{
+          ...ARM,
+          style: look.sleeve ? 'sleeve' : 'bare',
+          sleeveColor: look.sleeveColor,
+          band: look.bracelet,
+          bandColor: look.braceletColor,
+        }}
         elbow={elbow}
       />
     </group>

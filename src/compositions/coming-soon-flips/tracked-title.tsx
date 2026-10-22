@@ -77,7 +77,7 @@ const TitleLine = ({
         display: 'flex',
         justifyContent: 'center',
         fontFamily: extendedFont,
-        fontWeight: 800,
+        fontWeight: title.weight,
         fontSize: size,
         lineHeight: 0.74,
         letterSpacing: `${title.tracking}em`,

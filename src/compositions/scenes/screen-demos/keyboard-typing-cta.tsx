@@ -79,6 +79,7 @@ const TypingScene = ({
             text={plan.text.slice(0, typedCount(plan, frame))}
             caret={cursorOpacity(plan, frame, timing.cursorAt) * (1 - sent)}
             placeholder={tween(frame, [firstPress - 5, firstPress], [0.6, 0], linear)}
+            placeholderText={copy.placeholder}
             fade={charFades(plan, frame)}
             sent={sent}
             pulse={pulse}

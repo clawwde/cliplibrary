@@ -10,6 +10,7 @@ const frames = (max = 600) => zSlider({ min: 0, max });
 export const keyboardTypingCtaSchema = z.object({
   copy: z.object({
     typed: z.string().min(1).max(60),
+    placeholder: z.string().max(30),
     watermark: z.string().max(40),
     brand: z.string().max(20),
     headline: zMultiline(),
@@ -42,6 +43,7 @@ export const keyboardTypingCtaSchema = z.object({
     hint: zColor(),
     accent: zColor(),
     enter: zColor(),
+    iconInk: zColor(),
     popup: zColor(),
     popupFrames: zSlider({ min: 4, max: 30 }),
     swapFrames: zSlider({ min: 1, max: 20 }),
@@ -102,6 +104,7 @@ export const keyboardTypingCtaSchema = z.object({
     accent: zColor(),
     button: zColor(),
     buttonInk: zColor(),
+    buttonArrow: z.boolean(),
     mark: zColor(),
     markLeaf: zColor(),
     pattern: zColor(),
@@ -125,6 +128,7 @@ export type KeyboardTypingCtaProps = z.infer<typeof keyboardTypingCtaSchema>;
 export const keyboardTypingCtaDefaults: KeyboardTypingCtaProps = {
   copy: {
     typed: 'Bold ideas, launched in 30 days!',
+    placeholder: 'Message',
     watermark: 'fernlo.studio',
     brand: 'fernlo',
     headline: 'Grow Your Brand With\nCampaigns That Click',
@@ -157,6 +161,7 @@ export const keyboardTypingCtaDefaults: KeyboardTypingCtaProps = {
     hint: '#76625a',
     accent: '#e8603c',
     enter: '#e8603c',
+    iconInk: '#ffffff',
     popup: '#fffaf5',
     popupFrames: 10,
     swapFrames: 6,
@@ -217,6 +222,7 @@ export const keyboardTypingCtaDefaults: KeyboardTypingCtaProps = {
     accent: '#ff8a5c',
     button: '#ff8a5c',
     buttonInk: '#12302a',
+    buttonArrow: true,
     mark: '#ff8a5c',
     markLeaf: '#a6e3bb',
     pattern: '#1a3d35',

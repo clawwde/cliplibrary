@@ -23,6 +23,9 @@ export const NodePill = ({
   titleSize,
   subtitleSize,
   ink,
+  subtitleInk,
+  showIcon,
+  iconColor,
   padding,
   style,
 }: {
@@ -32,6 +35,9 @@ export const NodePill = ({
   titleSize: number;
   subtitleSize: number;
   ink: string;
+  subtitleInk: string;
+  showIcon: boolean;
+  iconColor: string;
   padding: number;
   style: CSSProperties;
 }) => (
@@ -40,7 +46,7 @@ export const NodePill = ({
       display: 'flex',
       alignItems: 'center',
       gap: titleSize * 0.36,
-      padding: `${padding * 0.5}px ${padding * 1.3}px ${padding * 0.5}px ${padding * 0.8}px`,
+      padding: `${padding * 0.5}px ${padding * 1.3}px ${padding * 0.5}px ${padding * (showIcon ? 0.8 : 1.3)}px`,
       borderRadius: titleSize * 0.9,
       color: ink,
       fontFamily: family,
@@ -48,9 +54,11 @@ export const NodePill = ({
       ...style,
     }}
   >
-    <div style={{ alignSelf: 'flex-start', paddingTop: titleSize * 0.16 }}>
-      <Sparkle size={Math.round(titleSize * 0.72)} color={ink} />
-    </div>
+    {showIcon ? (
+      <div style={{ alignSelf: 'flex-start', paddingTop: titleSize * 0.16 }}>
+        <Sparkle size={Math.round(titleSize * 0.72)} color={iconColor} />
+      </div>
+    ) : null}
     <div style={{ display: 'flex', flexDirection: 'column' }}>
       <div style={{ fontSize: titleSize, fontWeight: weight, lineHeight: 1.12 }}>{node.title}</div>
       <div
@@ -58,6 +66,7 @@ export const NodePill = ({
           fontSize: subtitleSize,
           fontWeight: Math.max(300, weight - 100),
           lineHeight: 1.2,
+          color: subtitleInk,
           opacity: 0.82,
         }}
       >

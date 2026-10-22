@@ -200,7 +200,7 @@ export const BrandField = ({
               progress={monogramDrawn}
               color={frame < beats.irisStart ? look.onBrand : look.monogramInk}
             />
-            {accentDot > 0 ? (
+            {look.monogramDot && accentDot > 0 ? (
               <circle
                 cx={dotX}
                 cy={dotY}

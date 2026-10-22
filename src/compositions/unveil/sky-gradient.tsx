@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import * as THREE from 'three';
 import type { UnveilSky } from '@/schemas';
-import { SUN } from './sky';
+import { sunDirection } from './sky';
 
 const VERTEX = `
 varying vec3 vDirection;
@@ -36,7 +36,7 @@ export const VisibleSky = ({ sky }: { sky: UnveilSky }) => {
       uZenith: { value: new THREE.Color() },
       uHorizon: { value: new THREE.Color() },
       uHaze: { value: new THREE.Color() },
-      uSun: { value: new THREE.Vector3(...SUN) },
+      uSun: { value: new THREE.Vector3() },
     };
     return {
       uniforms: values,
@@ -53,6 +53,7 @@ export const VisibleSky = ({ sky }: { sky: UnveilSky }) => {
   uniforms.uZenith.value.set(sky.zenith);
   uniforms.uHorizon.value.set(sky.horizon);
   uniforms.uHaze.value.set(sky.haze);
+  uniforms.uSun.value.set(...sunDirection(sky));
   return (
     <mesh material={material} renderOrder={-2} frustumCulled={false}>
       <sphereGeometry args={[1700, 64, 32]} />

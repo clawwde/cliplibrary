@@ -4,7 +4,9 @@ import { Sky as Atmosphere } from 'three/examples/jsm/objects/Sky.js';
 import type { UnveilSky } from '@/schemas';
 import type { Vec3 } from './flight';
 
-export const SUN: Vec3 = [0.42, 0.6, 0.68];
+const SUN_DEPTH = 0.68;
+
+export const sunDirection = (sky: UnveilSky): Vec3 => [sky.sunSide, sky.sunHeight, SUN_DEPTH];
 
 const CLOUD_VERTEX = `
 varying vec3 vDirection;
@@ -94,7 +96,7 @@ const configureAtmosphere = (atmosphere: Atmosphere, sky: UnveilSky): void => {
   set('mieCoefficient', 0.0022);
   set('mieDirectionalG', 0.82);
   const sunName = 'sunPosition';
-  uniforms[sunName]?.value.set(...SUN);
+  uniforms[sunName]?.value.set(...sunDirection(sky));
 };
 
 export const SkyDome = ({ sky }: { sky: UnveilSky }) => {
@@ -110,7 +112,7 @@ export const SkyDome = ({ sky }: { sky: UnveilSky }) => {
 export const Clouds = ({ sky, frame }: { sky: UnveilSky; frame: number }) => {
   const { material, uniforms } = useMemo(() => {
     const values = {
-      uSun: { value: new THREE.Vector3(...SUN).normalize() },
+      uSun: { value: new THREE.Vector3() },
       uHaze: { value: new THREE.Color() },
       uShade: { value: new THREE.Color() },
       uCover: { value: 0 },
@@ -128,6 +130,7 @@ export const Clouds = ({ sky, frame }: { sky: UnveilSky; frame: number }) => {
       }),
     };
   }, []);
+  uniforms.uSun.value.set(...sunDirection(sky)).normalize();
   uniforms.uHaze.value.set(sky.haze);
   uniforms.uShade.value.set(sky.cloudShade);
   uniforms.uCover.value = sky.clouds;

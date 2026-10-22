@@ -1,5 +1,5 @@
 import { AbsoluteFill } from 'remotion';
-import type { AnniversaryBeat, AnniversaryLook } from '@/schemas';
+import type { AnniversaryBeat, AnniversaryLook, AnniversarySparkles } from '@/schemas';
 import { anniversaryFont, hash } from './type';
 
 const STRIPS = [
@@ -128,12 +128,14 @@ const wrap = (value: number, span: number): number => {
 
 export const Dust = ({
   look,
+  sparkles,
   frame,
   dark,
   width,
   height,
 }: {
   look: AnniversaryLook;
+  sparkles: AnniversarySparkles;
   frame: number;
   dark: boolean;
   width: number;
@@ -142,9 +144,10 @@ export const Dust = ({
   <AbsoluteFill style={{ pointerEvents: 'none' }}>
     {Array.from({ length: look.dustCount }, (_, index) => {
       const seed = look.glitchSeed * 31 + index * 7;
-      const x = wrap(hash(seed) * width + frame * (hash(seed + 1) - 0.5) * 3, width);
-      const y = wrap(hash(seed + 2) * height - frame * (0.8 + hash(seed + 3) * 1.6), height);
-      const size = 9 + hash(seed + 4) * 9;
+      const travel = frame * sparkles.speed;
+      const x = wrap(hash(seed) * width + travel * (hash(seed + 1) - 0.5) * 3, width);
+      const y = wrap(hash(seed + 2) * height - travel * (0.8 + hash(seed + 3) * 1.6), height);
+      const size = sparkles.size + hash(seed + 4) * sparkles.size;
       const accent = index % 3 === 0;
       return (
         <div
@@ -157,7 +160,7 @@ export const Dust = ({
             height: size,
             clipPath: SPARKLE,
             backgroundColor: sparkleColor(look, dark, accent),
-            opacity: 0.9,
+            opacity: sparkles.opacity,
             transform: `rotate(${(hash(seed + 6) * 40 - 20).toFixed(2)}deg)`,
           }}
         />

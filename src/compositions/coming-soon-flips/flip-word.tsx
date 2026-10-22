@@ -2,8 +2,6 @@ import { AbsoluteFill, useVideoConfig } from 'remotion';
 import type { ComingSoonFlipsProps, FlipBeat } from '@/schemas';
 import { FLIP_FACES } from './fonts';
 
-const BAR_START = 0.3;
-
 type Words = ComingSoonFlipsProps['words'];
 
 const faceFor = (beat: FlipBeat, words: Words, local: number) => {
@@ -33,7 +31,8 @@ export const FlipWord = ({
   const { height } = useVideoConfig();
   const face = faceFor(beat, words, local);
   const { bar } = words;
-  const grown = BAR_START + (1 - BAR_START) * Math.min(1, local / Math.max(1, beat.frames - 1));
+  const grown =
+    bar.startWidth + (1 - bar.startWidth) * Math.min(1, local / Math.max(1, beat.frames - 1));
   return (
     <AbsoluteFill>
       {bar.show && beat.text.trim() !== '' ? (

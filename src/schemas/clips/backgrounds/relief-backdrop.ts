@@ -13,6 +13,7 @@ import type { ClipMeta } from '../../registry';
 
 export const reliefBackdropSchema = z.object({
   wallColor: zColor(),
+  ringColor: zColor(),
   roughness: zSlider({ min: 0.2, max: 1, step: 0.01 }),
   rings: z.object({
     count: zSlider({ min: 1, max: 12, step: 1 }),
@@ -35,6 +36,8 @@ export const reliefBackdropSchema = z.object({
     lightX: zSlider({ min: -20, max: 20, step: 0.5 }),
     lightY: zSlider({ min: -20, max: 20, step: 0.5 }),
     lightZ: zSlider({ min: 1, max: 30, step: 0.5 }),
+    offsetX: zSlider({ min: -10, max: 10, step: 0.1 }),
+    offsetY: zSlider({ min: -10, max: 10, step: 0.1 }),
   }),
   look: lookSchema,
   stage: stageSchema,
@@ -45,6 +48,7 @@ export type ReliefBackdropProps = z.infer<typeof reliefBackdropSchema>;
 
 export const reliefBackdropDefaults: ReliefBackdropProps = {
   wallColor: '#a9a9a7',
+  ringColor: '#a9a9a7',
   roughness: 0.86,
   rings: {
     count: 6,
@@ -67,6 +71,8 @@ export const reliefBackdropDefaults: ReliefBackdropProps = {
     lightX: -7,
     lightY: 9,
     lightZ: 9,
+    offsetX: 0,
+    offsetY: 0,
   },
   look: clayLook(),
   stage: defaultStage({ keyLight: 1.9, shadow: 0.2, shadowSoftness: 14, cameraDrift: 0.25 }),

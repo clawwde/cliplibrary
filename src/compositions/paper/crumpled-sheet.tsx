@@ -27,7 +27,7 @@ const useSheetGeometry = (width: number, height: number) =>
 
 const usePrintTexture = (print: PaperPrint, width: number, height: number) => {
   useCanvasFont(`400 ${print.size}px "${didoneFont}"`, didoneFontReady);
-  useCanvasFont(`500 ${Math.round(print.size * 0.13)}px "${bodyFont}"`, bodyFontReady);
+  useCanvasFont(`500 ${Math.round(print.size * print.footerSize)}px "${bodyFont}"`, bodyFontReady);
   const canvasHeight = printHeight(width, height);
   return useCanvasTexture(
     PRINT_WIDTH,

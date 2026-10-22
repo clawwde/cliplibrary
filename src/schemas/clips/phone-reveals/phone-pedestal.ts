@@ -20,6 +20,7 @@ export const phonePedestalSchema = z.object({
   yaw: zSlider({ min: -1, max: 1, step: 0.01 }),
   pitch: zSlider({ min: -0.6, max: 0.6, step: 0.01 }),
   rock: zSlider({ min: 0, max: 0.2, step: 0.005 }),
+  rockSpeed: zSlider({ min: 0.25, max: 3, step: 0.05 }),
   pedestal: z.object({
     show: z.boolean(),
     color: zColor(),
@@ -57,6 +58,7 @@ export const phonePedestalDefaults: PhonePedestalProps = {
   yaw: -0.22,
   pitch: -0.06,
   rock: 0.035,
+  rockSpeed: 1,
   pedestal: {
     show: true,
     color: '#9a7a0c',

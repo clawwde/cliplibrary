@@ -9,6 +9,8 @@ const PUNCTUATION = /[.,!?;:]+$/;
 
 const TYPE_GAP = 2;
 
+const markOf = (word: string): string => word.match(PUNCTUATION)?.[0] ?? '';
+
 const JUSTIFY = { left: 'flex-start', center: 'center', right: 'flex-end' } as const;
 
 const TypedWord = ({
@@ -19,6 +21,7 @@ const TypedWord = ({
   leaveAt,
   isLast,
   color,
+  accentMark,
 }: {
   word: string;
   frame: number;
@@ -27,8 +30,9 @@ const TypedWord = ({
   leaveAt: number;
   isLast: boolean;
   color: string;
+  accentMark: string | null;
 }) => {
-  const mark = word.match(PUNCTUATION)?.[0] ?? '';
+  const mark = markOf(word);
   const letters = Array.from(word.slice(0, word.length - mark.length));
   const typed = Math.min(letters.length, Math.max(0, (frame - start) / typeFrames));
   const deleted = isLast
@@ -60,10 +64,53 @@ const TypedWord = ({
             </span>
           );
         })}
-        <span style={{ opacity: markOpacity }}>{mark}</span>
+        <span style={{ opacity: markOpacity, color: accentMark ?? color }}>{mark}</span>
       </span>
     </span>
   );
+};
+
+const PunchedWord = ({ word, accentMark }: { word: string; accentMark: string | null }) => {
+  const mark = markOf(word);
+  if (accentMark === null || mark === '') {
+    return word;
+  }
+  return (
+    <>
+      {word.slice(0, word.length - mark.length)}
+      <span style={{ color: accentMark }}>{mark}</span>
+    </>
+  );
+};
+
+const punchMotion = ({
+  frame,
+  start,
+  leaveAt,
+  isLast,
+  swapFrames,
+  punch,
+  rise,
+  wordSize,
+}: {
+  frame: number;
+  start: number;
+  leaveAt: number;
+  isLast: boolean;
+  swapFrames: number;
+  punch: number;
+  rise: number;
+  wordSize: number;
+}) => {
+  const arrive = tween(frame, [start, start + swapFrames], [0, 1], (t) => t);
+  const scale = land(frame, [start, start + swapFrames + 8], [1 + punch, 1], 1 / wordSize);
+  const leave = isLast ? 0 : tween(frame, [leaveAt, leaveAt + swapFrames], [0, 1], (t) => t);
+  const settle = land(frame, [start, start + swapFrames + 4], [wordSize * rise, 0]);
+  const lift = isLast ? 0 : launch(frame, [leaveAt, leaveAt + swapFrames], [0, -wordSize * rise]);
+  return {
+    opacity: arrive * (1 - leave),
+    transform: `translateY(${(settle + lift).toFixed(2)}px) scale(${(scale * (1 - leave * 0.06)).toFixed(5)})`,
+  };
 };
 
 export const WordPunch = ({
@@ -73,11 +120,14 @@ export const WordPunch = ({
   size,
   shrink,
   weight,
+  tracking,
+  accentPunctuation,
   delay,
   wordFrames,
   swapFrames,
   typeFrames,
   punch,
+  rise,
   placement,
   look,
   motion,
@@ -85,6 +135,7 @@ export const WordPunch = ({
   const frame = useCurrentFrame() * motion.speed;
   const words = wordsOf(text);
   const accented = highlightSet(highlight);
+  const accentMark = accentPunctuation ? look.accent : null;
   const cycle = (word: string) =>
     style === 'type' ? wordFrames + word.length * typeFrames + TYPE_GAP : wordFrames;
   const starts = words.map((_, index) =>
@@ -100,7 +151,7 @@ export const WordPunch = ({
           const wordSize = size * (1 - shrink) ** index;
           const color = accented.has(normalize(word)) ? look.accent : look.ink;
           const frameStyle = {
-            ...displayType(wordSize, weight),
+            ...displayType(wordSize, weight, tracking),
             position: 'absolute' as const,
             inset: 0,
             display: 'flex',
@@ -122,6 +173,7 @@ export const WordPunch = ({
                   leaveAt={leaveAt}
                   isLast={isLast}
                   color={color}
+                  accentMark={accentMark}
                 />
               </div>
             );
@@ -129,27 +181,26 @@ export const WordPunch = ({
           if (frame < start || (!isLast && frame > leaveAt + swapFrames)) {
             return null;
           }
-          const arrive = tween(frame, [start, start + swapFrames], [0, 1], (t) => t);
-          const scale = land(frame, [start, start + swapFrames + 8], [1 + punch, 1], 1 / wordSize);
-          const leave = isLast
-            ? 0
-            : tween(frame, [leaveAt, leaveAt + swapFrames], [0, 1], (t) => t);
-          const rise = land(frame, [start, start + swapFrames + 4], [wordSize * 0.32, 0]);
-          const lift = isLast
-            ? 0
-            : launch(frame, [leaveAt, leaveAt + swapFrames], [0, -wordSize * 0.32]);
           return (
             <div
               key={`${index}:${word}`}
               style={{
                 ...frameStyle,
                 color,
-                opacity: arrive * (1 - leave),
-                transform: `translateY(${(rise + lift).toFixed(2)}px) scale(${(scale * (1 - leave * 0.06)).toFixed(5)})`,
+                ...punchMotion({
+                  frame,
+                  start,
+                  leaveAt,
+                  isLast,
+                  swapFrames,
+                  punch,
+                  rise,
+                  wordSize,
+                }),
                 willChange: 'transform',
               }}
             >
-              {word}
+              <PunchedWord word={word} accentMark={accentMark} />
             </div>
           );
         })}

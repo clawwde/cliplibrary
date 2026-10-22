@@ -96,6 +96,7 @@ const shiftFor = (
 
 const HeadingList = ({
   heading,
+  headingColor,
   items,
   loop,
   stops,
@@ -131,7 +132,7 @@ const HeadingList = ({
             fontFamily: pickerFonts[type.font],
             fontSize: type.headingSize,
             fontWeight: type.headingWeight,
-            color: look.ink,
+            color: headingColor,
             whiteSpace: 'nowrap',
             opacity: label.opacity,
           }}

@@ -10,11 +10,15 @@ import { zColor, zSlider } from '../../control';
 import { defaultMotion, lookSchema, motionSchema, promoMeta } from '../../promo-common';
 import type { ClipMeta } from '../../registry';
 
+const CHALK_TITLE_FONTS = ['script', 'thin', 'bold', 'chunky', 'serif'] as const;
+
 export const chalkTitleSchema = z.object({
   left: z.string(),
   right: z.string(),
   wordSize: zSlider({ min: 40, max: 260 }),
   wordColor: zColor(),
+  wordFont: z.enum(CHALK_TITLE_FONTS),
+  wordTilt: zSlider({ min: -20, max: 20, step: 0.5 }),
   gap: zSlider({ min: 40, max: 400 }),
   centerScale: zSlider({ min: 0.3, max: 2, step: 0.01 }),
   center: connectorBadgeSchema,
@@ -34,6 +38,8 @@ export const chalkTitleDefaults: ChalkTitleProps = {
   right: 'Segues',
   wordSize: 140,
   wordColor: '#eef2e8',
+  wordFont: 'script',
+  wordTilt: -3,
   gap: 150,
   centerScale: 1.06,
   center: connectorBadge('ampersand', '&'),

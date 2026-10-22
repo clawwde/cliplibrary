@@ -19,7 +19,7 @@ export const drawMessage = (
   const scale = size / 1024;
   const lines = message.text.split('\n').filter((line) => line.trim().length > 0);
   const fontSize = message.size * scale;
-  const leading = fontSize * 0.92;
+  const leading = fontSize * message.lineSpacing;
   context.save();
   context.translate(size * (0.5 + message.offsetX), size * (0.5 + message.offsetY));
   context.scale(mirror ? -1 : 1, 1);

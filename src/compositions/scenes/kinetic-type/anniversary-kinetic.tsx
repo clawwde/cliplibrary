@@ -11,7 +11,15 @@ import { LogoLockup } from '../../anniversary/logo-lockup';
 import { TransitionFrame } from '../../promo/transition-frame';
 import type { SceneModule } from '../../scene-module';
 
-const AnniversaryKinetic = ({ beats, logo, look, motion }: AnniversaryKineticProps) => {
+const AnniversaryKinetic = ({
+  beats,
+  logo,
+  look,
+  band,
+  sparkles,
+  chrome,
+  motion,
+}: AnniversaryKineticProps) => {
   const frame = useCurrentFrame() * motion.speed;
   const { width, height } = useVideoConfig();
   const ordered = beats
@@ -32,6 +40,8 @@ const AnniversaryKinetic = ({ beats, logo, look, motion }: AnniversaryKineticPro
             beat={current.beat}
             index={current.index}
             look={look}
+            band={band}
+            chrome={chrome}
             local={frame - current.beat.start}
             length={Math.max(1, Math.min(nextStart, logo.start) - current.beat.start)}
             width={width}
@@ -39,7 +49,14 @@ const AnniversaryKinetic = ({ beats, logo, look, motion }: AnniversaryKineticPro
           />
         )}
         {showLogo ? null : (
-          <Dust look={look} frame={frame} dark={paper} width={width} height={height} />
+          <Dust
+            look={look}
+            sparkles={sparkles}
+            frame={frame}
+            dark={paper}
+            width={width}
+            height={height}
+          />
         )}
       </AbsoluteFill>
     </TransitionFrame>

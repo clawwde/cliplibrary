@@ -11,6 +11,10 @@ import { zSlider } from '../../control';
 import { defaultMotion, lookSchema, motionSchema, promoMeta } from '../../promo-common';
 import type { ClipMeta } from '../../registry';
 
+export const BADGE_GRID_ORDERS = ['scattered', 'in-order', 'reverse'] as const;
+
+export type BadgeGridOrder = (typeof BADGE_GRID_ORDERS)[number];
+
 export const chalkBadgeGridSchema = z.object({
   badges: z.array(connectorBadgeSchema).min(1).max(16),
   columns: zSlider({ min: 1, max: 6 }),
@@ -19,6 +23,7 @@ export const chalkBadgeGridSchema = z.object({
   insetY: zSlider({ min: 0, max: 300 }),
   delay: zSlider({ min: 0, max: 120 }),
   stagger: zSlider({ min: 0, max: 20, step: 0.5 }),
+  order: z.enum(BADGE_GRID_ORDERS),
   eraseStagger: zSlider({ min: 0, max: 20, step: 0.5 }),
   shuffle: zSlider({ min: 0, max: 999 }),
   timing: badgeTimingSchema,
@@ -37,6 +42,7 @@ export const chalkBadgeGridDefaults: ChalkBadgeGridProps = {
   insetY: 70,
   delay: 2,
   stagger: 3.5,
+  order: 'scattered',
   eraseStagger: 1.5,
   shuffle: 7,
   timing: { drawFrames: 34, eraseAt: 150, eraseFrames: 26 },

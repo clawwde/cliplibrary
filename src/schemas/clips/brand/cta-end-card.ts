@@ -1,7 +1,8 @@
 import { z } from 'zod';
-import { zColor, zImage, zSlider } from '../../control';
+import { zColor, zImage, zMultiline, zSlider } from '../../control';
 import {
   defaultMotion,
+  HORIZONTAL_ALIGNMENTS,
   lightLook,
   lookSchema,
   motionSchema,
@@ -35,8 +36,14 @@ export const ctaEndCardSchema = z.object({
   markGlyph: zImage(),
   markSize: zSlider({ min: 32, max: 200 }),
   headlineSize: zSlider({ min: 40, max: 160 }),
+  brandSize: zSlider({ min: 24, max: 120 }),
+  sublineSize: zSlider({ min: 16, max: 64 }),
+  sublineWidth: zSlider({ min: 300, max: 1700 }),
+  urlSize: zSlider({ min: 12, max: 48 }),
+  showSecondaryButton: z.boolean(),
+  textAlign: z.enum(HORIZONTAL_ALIGNMENTS),
   placement: placementSchema,
-  headline: z.string(),
+  headline: zMultiline(),
   highlight: z.string(),
   subline: z.string(),
   primaryCaption: z.string(),
@@ -68,6 +75,12 @@ export const ctaEndCardDefaults: CtaEndCardProps = {
   markGlyph: '',
   markSize: 64,
   headlineSize: 104,
+  brandSize: 54,
+  sublineSize: 32,
+  sublineWidth: 900,
+  urlSize: 20,
+  showSecondaryButton: true,
+  textAlign: 'center',
   placement: placement('center', 'center', { insetX: 0, insetY: 0, width: 1600 }),
   headline: 'Download Halo today.',
   highlight: 'Halo',

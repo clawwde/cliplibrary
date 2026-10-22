@@ -6,7 +6,7 @@ import { getRemotionEnvironment, useVideoConfig } from 'remotion';
 import * as THREE from 'three';
 import type { UnveilSky } from '@/schemas';
 import type { CameraShot } from './flight';
-import { SkyDome, SUN } from './sky';
+import { SkyDome, sunDirection } from './sky';
 import { VisibleSky } from './sky-gradient';
 
 const SUN_DISTANCE = 140;
@@ -56,7 +56,7 @@ export const UnveilStage = ({
 }) => {
   const { width, height } = useVideoConfig();
   const pixelRatio = getRemotionEnvironment().isRendering ? 2 : 1;
-  const sun = new THREE.Vector3(...SUN).normalize().multiplyScalar(SUN_DISTANCE);
+  const sun = new THREE.Vector3(...sunDirection(sky)).normalize().multiplyScalar(SUN_DISTANCE);
   return (
     <ThreeCanvas
       width={width}
@@ -68,13 +68,13 @@ export const UnveilStage = ({
       style={{ position: 'absolute', inset: 0 }}
     >
       <CameraRig shot={shot} fov={fov} exposure={sky.exposure} />
-      <fogExp2 attach="fog" args={[sky.haze, 0.0021]} />
+      <fogExp2 attach="fog" args={[sky.haze, sky.fog]} />
       <VisibleSky sky={sky} />
       <SkyLight sky={sky} />
       <directionalLight
         position={[sun.x, sun.y, sun.z]}
         intensity={sky.sun}
-        color="#fff1dc"
+        color={sky.sunColor}
         castShadow
         shadow-mapSize={[4096, 4096]}
         shadow-radius={5}

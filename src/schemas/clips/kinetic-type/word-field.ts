@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { zMultiline, zSlider } from '../../control';
+import { zColor, zMultiline, zSlider } from '../../control';
 import { defaultMotion, lookSchema, motionSchema, promoMeta } from '../../promo-common';
 import type { ClipMeta } from '../../registry';
 import {
@@ -32,7 +32,10 @@ export const wordFieldSchema = z.object({
   stagger: zSlider({ min: 0, max: 8, step: 0.1 }),
   riseFrames: zSlider({ min: 8, max: 60 }),
   rise: zSlider({ min: 0, max: 4, step: 0.05 }),
+  riseTip: zSlider({ min: 0, max: 1.6, step: 0.05 }),
   float: zSlider({ min: 0, max: 0.6, step: 0.01 }),
+  bobTempo: zSlider({ min: 8, max: 120 }),
+  glowColor: zColor(),
   slide: zSlider({ min: 0, max: 8, step: 0.05 }),
   camera: typeCameraSchema,
   lens: typeLensSchema,
@@ -79,7 +82,10 @@ export const wordFieldDefaults: WordFieldProps = {
   stagger: 1.6,
   riseFrames: 30,
   rise: 1.4,
+  riseTip: 0.9,
   float: 0.16,
+  bobTempo: 34,
+  glowColor: '#2f5bd3',
   slide: 2.4,
   camera: typeCamera({ drift: 0.7 }),
   lens: typeLens({

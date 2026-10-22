@@ -9,6 +9,12 @@ const size = (min: number, max: number) => zSlider({ min, max });
 
 const weight = zSlider({ min: 400, max: 900, step: 100 });
 
+export const HANGING_FONTS = ['square', 'geometric'] as const;
+
+export type HangingFont = (typeof HANGING_FONTS)[number];
+
+const font = z.enum(HANGING_FONTS);
+
 export const hangingWordsSchema = z.object({
   palette: z.object({
     night: zColor(),
@@ -30,6 +36,7 @@ export const hangingWordsSchema = z.object({
     word: z.string(),
     lines: zSlider({ min: 1, max: 5 }),
     size: size(80, 480),
+    font,
     weight,
     tracking: zSlider({ min: -0.1, max: 0.2, step: 0.005 }),
     outline: zSlider({ min: 0, max: 16, step: 0.5 }),
@@ -45,6 +52,7 @@ export const hangingWordsSchema = z.object({
     bottom: z.string(),
     topSize: size(60, 360),
     bottomSize: size(60, 360),
+    font,
     weight,
     gap: size(-60, 200),
     leading: zSlider({ min: 0.6, max: 1.4, step: 0.01 }),
@@ -74,6 +82,7 @@ export const hangingWordsSchema = z.object({
     .min(1)
     .max(12),
   flash: z.object({
+    font,
     weight,
     baseline: size(600, 1400),
     end: frames(),
@@ -127,6 +136,7 @@ export const hangingWordsDefaults: HangingWordsProps = {
     word: 'PSST',
     lines: 3,
     size: 320,
+    font: 'square',
     weight: 700,
     tracking: 0,
     outline: 6,
@@ -142,6 +152,7 @@ export const hangingWordsDefaults: HangingWordsProps = {
     bottom: 'that thumb',
     topSize: 200,
     bottomSize: 168,
+    font: 'square',
     weight: 700,
     gap: 10,
     leading: 0.84,
@@ -169,6 +180,7 @@ export const hangingWordsDefaults: HangingWordsProps = {
     { text: 'STORY', size: 168, start: 160 },
   ],
   flash: {
+    font: 'geometric',
     weight: 900,
     baseline: 1077,
     end: 175,

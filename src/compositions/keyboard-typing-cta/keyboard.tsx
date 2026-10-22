@@ -135,7 +135,7 @@ const KeyFace = ({ spec, look, upper }: { spec: KeySpec; look: KeyboardLook; upp
     case 'globe':
       return <GlobeIcon color={look.ink} size={44} />;
     case 'enter':
-      return <EnterIcon color="#ffffff" size={50} />;
+      return <EnterIcon color={look.iconInk} size={50} />;
     default:
       return spec.output === undefined ? (
         <span style={{ ...labelStyle(look, look.labelSize * 0.6), fontWeight: 600 }}>

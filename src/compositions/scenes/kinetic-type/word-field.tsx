@@ -75,10 +75,10 @@ const Field = ({ props }: { props: WordFieldProps }) => {
           pose={(time): Pose => {
             const start = props.delay + word.order * props.stagger;
             const arrive = tween(time, [start, start + props.riseFrames], [0, 1], settle);
-            const bob = Math.sin(time / 34 + word.phase) * props.float * arrive;
+            const bob = Math.sin(time / props.bobTempo + word.phase) * props.float * arrive;
             return {
               position: [word.x, word.y, (1 - arrive) * -props.rise + bob],
-              rotation: [(1 - arrive) * -0.9, 0, 0],
+              rotation: [(1 - arrive) * -props.riseTip, 0, 0],
               scale: 1,
               opacity: tween(time, [start, start + props.riseFrames * 0.55], [0, 1], smooth),
             };
@@ -103,7 +103,7 @@ export const WordField = (props: WordFieldProps) => {
             show: look.showBackdrop,
             inner: look.background,
             outer: look.backgroundEdge,
-            glow: look.accent,
+            glow: props.glowColor,
           }}
         >
           <CameraShot

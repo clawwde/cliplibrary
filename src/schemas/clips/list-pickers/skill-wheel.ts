@@ -25,6 +25,7 @@ export const skillWheelSchema = z.object({
     right: zSlider({ min: -200, max: 600 }),
   }),
   pointer: z.object({
+    show: z.boolean(),
     color: zColor(),
     size: zSlider({ min: 10, max: 140 }),
     offset: zSlider({ min: -200, max: 600 }),
@@ -40,6 +41,8 @@ export const skillWheelSchema = z.object({
     range: zSlider({ min: 20, max: 180 }),
     color: zColor(),
     activeColor: zColor(),
+    direction: z.enum(['down', 'up']),
+    entryTurn: zSlider({ min: 0, max: 6, step: 0.1 }),
   }),
   ticks: z.object({
     show: z.boolean(),
@@ -94,7 +97,7 @@ export const skillWheelDefaults: SkillWheelProps = {
     gap: 14,
     right: 190,
   },
-  pointer: { color: '#cf4a1c', size: 64, offset: 252 },
+  pointer: { show: true, color: '#cf4a1c', size: 64, offset: 252 },
   wheel: {
     font: 'sora',
     size: 64,
@@ -106,6 +109,8 @@ export const skillWheelDefaults: SkillWheelProps = {
     range: 128,
     color: '#ffffff',
     activeColor: '#cf4a1c',
+    direction: 'down',
+    entryTurn: 1.5,
   },
   ticks: {
     show: true,
@@ -127,6 +132,7 @@ export const skillWheelDefaults: SkillWheelProps = {
     background: '#c8d2c2',
     backgroundEdge: '#becab8',
     ink: '#1d2b23',
+    muted: '#1d2b23',
     accent: '#cf4a1c',
     grain: 0.05,
     spotlight: 0.15,

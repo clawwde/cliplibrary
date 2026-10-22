@@ -1,5 +1,6 @@
 import { Composition, useCurrentFrame } from 'remotion';
 import {
+  type FlatLayEase,
   type PhoneFlatLayProps,
   phoneFlatLayDefaults,
   phoneFlatLayMeta,
@@ -10,10 +11,16 @@ import { PhoneModel } from '../../promo/phone-model';
 import { isDarkLook, PromoLayer } from '../../promo/promo-layer';
 import { RibbonField } from '../../promo/set-pieces';
 import { Stage } from '../../promo/stage';
-import { settle, tween } from '../../promo/timing';
+import { settle, smooth, tween } from '../../promo/timing';
 import type { SceneModule } from '../../scene-module';
 
 const REST_GAP = 0.01;
+
+const CAMERA_EASES: Record<FlatLayEase, (t: number) => number> = {
+  settle,
+  smooth,
+  linear: (t) => t,
+};
 
 export const PhoneFlatLay = ({
   phone,
@@ -27,7 +34,12 @@ export const PhoneFlatLay = ({
   motion,
 }: PhoneFlatLayProps) => {
   const frame = useCurrentFrame() * motion.speed;
-  const progress = tween(frame, [0, camera.frames], [0, 1], settle);
+  const progress = tween(
+    frame,
+    [camera.delay, camera.delay + camera.frames],
+    [0, 1],
+    CAMERA_EASES[camera.ease],
+  );
   const tilt = camera.tiltFrom + (camera.tiltTo - camera.tiltFrom) * progress;
   const turn = camera.turnFrom + (camera.turnTo - camera.turnFrom) * progress;
   const rest = surface.show ? surface.thickness + surface.step + surface.amplitude + REST_GAP : 0;

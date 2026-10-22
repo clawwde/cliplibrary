@@ -20,6 +20,8 @@ export type ReelClipId = (typeof REEL_CLIP_IDS)[number];
 
 const reelClip = z.enum(REEL_CLIP_IDS);
 
+export const REEL_POP_ORDERS = ['center-first', 'row-by-row'] as const;
+
 export const reelBeatSchema = z.object({
   clip: reelClip,
   frames: zSlider({ min: 45, max: 360 }),
@@ -35,6 +37,8 @@ export const listPickersReelSchema = z.object({
     gap: zSlider({ min: 0, max: 60 }),
     radius: zSlider({ min: 0, max: 40 }),
     popFrames: zSlider({ min: 4, max: 40 }),
+    popOrder: z.enum(REEL_POP_ORDERS),
+    popScale: zSlider({ min: 0.5, max: 1, step: 0.01 }),
     stagger: zSlider({ min: 0, max: 20 }),
     zoomFrames: zSlider({ min: 12, max: 90 }),
     lead: zSlider({ min: 0, max: 120 }),
@@ -55,6 +59,8 @@ export const listPickersReelDefaults: ListPickersReelProps = {
     gap: 8,
     radius: 12,
     popFrames: 16,
+    popOrder: 'center-first',
+    popScale: 0.86,
     stagger: 5,
     zoomFrames: 54,
     lead: 48,

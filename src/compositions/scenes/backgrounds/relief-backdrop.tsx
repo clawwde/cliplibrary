@@ -6,8 +6,9 @@ import {
   reliefBackdropSchema,
 } from '@/schemas';
 import { isDarkLook, PromoLayer } from '../../promo/promo-layer';
+import { clayMaterial } from '../../promo/set-materials';
 import { ReliefWall } from '../../promo/set-pieces';
-import { Stage } from '../../promo/stage';
+import { Stage, type Vec3 } from '../../promo/stage';
 import { cameraPush, swingAngle } from '../../promo/timing';
 import type { SceneModule } from '../../scene-module';
 
@@ -15,6 +16,7 @@ const MATTE = 0.3;
 
 export const ReliefBackdrop = ({
   wallColor,
+  ringColor,
   roughness,
   rings,
   camera,
@@ -31,11 +33,15 @@ export const ReliefBackdrop = ({
     camera.orbitAngle,
     camera.orbitPeak,
   );
+  const view: Vec3 = [-camera.offsetX, -camera.offsetY, 0];
+  const clayReflections = stage.reflections * MATTE;
   return (
     <PromoLayer look={{ ...look, showBackdrop: false }} motion={motion}>
       <Stage
         stage={stage}
         dark={isDarkLook(look)}
+        target={view}
+        cameraOffset={view}
         distanceScale={push}
         backdropZ={-40}
         keyPosition={[camera.lightX, camera.lightY, camera.lightZ]}
@@ -44,13 +50,18 @@ export const ReliefBackdrop = ({
       >
         <group position={[0, 0, camera.orbitPivot]} rotation={[0, swing, 0]}>
           <group position={[0, 0, -camera.orbitPivot]}>
+            {look.showBackdrop ? (
+              <mesh material={clayMaterial(wallColor, roughness, clayReflections)} receiveShadow>
+                <planeGeometry args={[900, 300]} />
+              </mesh>
+            ) : null}
             <ReliefWall
               layout={rings}
               bevel={rings.bevel}
-              color={wallColor}
+              color={ringColor}
               roughness={roughness}
-              reflections={stage.reflections * MATTE}
-              showWall={look.showBackdrop}
+              reflections={clayReflections}
+              showWall={false}
             />
           </group>
         </group>

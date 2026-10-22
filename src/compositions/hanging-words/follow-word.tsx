@@ -1,6 +1,6 @@
 import { AbsoluteFill } from 'remotion';
 import type { HangingWordsProps } from '@/schemas';
-import { heavyFont } from './fonts';
+import { fontFamily } from './fonts';
 import { progress } from './physics';
 import { Streak } from './streak';
 import { TextLine } from './text-line';
@@ -14,11 +14,12 @@ export const FollowWord = ({ props, frame }: { props: HangingWordsProps; frame: 
   if (frame < outro.expandStart) {
     return null;
   }
+  const font = fontFamily(flash.font);
   const raw = progress(frame, outro.expandStart, outro.expandFrames);
   const amount = easeOut(raw);
   const previous = easeOut(progress(frame - 1, outro.expandStart, outro.expandFrames));
-  const from = letterCenter(stack.word, stack.highlightIndex, heavyFont, flash.weight, stack.size);
-  const pivot = letterCenter(outro.word, outro.pivotIndex, heavyFont, flash.weight, outro.size);
+  const from = letterCenter(stack.word, stack.highlightIndex, font, flash.weight, stack.size);
+  const pivot = letterCenter(outro.word, outro.pivotIndex, font, flash.weight, outro.size);
   const scale = stack.size / outro.size + (1 - stack.size / outro.size) * amount;
   const shift = (1 - amount) * (from - pivot);
   const startY = flash.baseline - stack.size * CAP_CENTER;
@@ -31,7 +32,7 @@ export const FollowWord = ({ props, frame }: { props: HangingWordsProps; frame: 
         <TextLine
           centerY={centerY}
           size={outro.size}
-          font={heavyFont}
+          font={font}
           weight={flash.weight}
           color={look.ink}
           style={{
@@ -41,7 +42,7 @@ export const FollowWord = ({ props, frame }: { props: HangingWordsProps; frame: 
         >
           {letters.map((letter, index) => {
             const isPivot = index === outro.pivotIndex;
-            const own = letterCenter(outro.word, index, heavyFont, flash.weight, outro.size);
+            const own = letterCenter(outro.word, index, font, flash.weight, outro.size);
             const pull = (1 - amount) * (pivot - own);
             return (
               <span

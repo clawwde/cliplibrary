@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { zMultiline, zSlider } from '../../control';
+import { zColor, zMultiline, zSlider } from '../../control';
 import { defaultMotion, lookSchema, motionSchema, promoMeta } from '../../promo-common';
 import type { ClipMeta } from '../../registry';
 import {
@@ -22,9 +22,13 @@ export const lensOrbitSchema = z.object({
   wordHeight: zSlider({ min: 10, max: 60, step: 1 }),
   maxArc: zSlider({ min: 40, max: 150, step: 1 }),
   satelliteScale: zSlider({ min: 0.1, max: 0.8, step: 0.01 }),
+  satelliteColor: zColor(),
+  satelliteAccent: zColor(),
   edgeFade: zSlider({ min: 0, max: 1, step: 0.01 }),
   delay: zSlider({ min: 0, max: 60 }),
   introFrames: zSlider({ min: 6, max: 60 }),
+  introSpin: zSlider({ min: 0, max: 6.3, step: 0.05 }),
+  introScale: zSlider({ min: 0.05, max: 1, step: 0.01 }),
   holdFrames: zSlider({ min: 4, max: 90 }),
   turnFrames: zSlider({ min: 4, max: 40 }),
   wobble: zSlider({ min: 0, max: 0.4, step: 0.01 }),
@@ -46,9 +50,13 @@ export const lensOrbitDefaults: LensOrbitProps = {
   wordHeight: 34,
   maxArc: 92,
   satelliteScale: 0.34,
+  satelliteColor: '#f1f5fc',
+  satelliteAccent: '#ffb84d',
   edgeFade: 1,
   delay: 0,
   introFrames: 16,
+  introSpin: 2.4,
+  introScale: 0.35,
   holdFrames: 22,
   turnFrames: 10,
   wobble: 0.14,

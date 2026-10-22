@@ -1,4 +1,5 @@
 import type { CSSProperties } from 'react';
+import type { AnniversaryChrome } from '@/schemas';
 import { land, settle, tween } from '../promo/timing';
 import { type EffectProps, settleScale, settleTracking } from './effects';
 import { centered, clamp01, letters, wordStyle } from './type';
@@ -145,15 +146,15 @@ export const TripleSlideWord = ({ beat, local, length, width, id }: EffectProps)
   );
 };
 
-const STACK = [
-  { x: 0, y: -1, top: '#7a7a7a', bottom: '#c9c9c9' },
-  { x: 0.32, y: 0, top: '#d9d9d9', bottom: '#f4f4f4' },
-  { x: 0, y: 1, top: '#f6f6f6', bottom: '#9c9c9c' },
+const stackLines = (chrome: AnniversaryChrome) => [
+  { x: 0, y: -1, top: chrome.topStart, bottom: chrome.topEnd },
+  { x: 0.32, y: 0, top: chrome.middleStart, bottom: chrome.middleEnd },
+  { x: 0, y: 1, top: chrome.bottomStart, bottom: chrome.bottomEnd },
 ];
 
-export const TripleStackWord = ({ beat, look, local, length, width }: EffectProps) => (
+export const TripleStackWord = ({ beat, look, chrome, local, length, width }: EffectProps) => (
   <div style={centered}>
-    {STACK.map((line) => (
+    {stackLines(chrome).map((line) => (
       <div
         key={line.y}
         style={{

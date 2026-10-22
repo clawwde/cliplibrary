@@ -27,7 +27,7 @@ const NeonSignFlicker = (props: NeonSignFlickerProps) => {
       {look.showBackdrop ? <NeonBackdrop look={look} /> : null}
       <NeonWord word={copy.word} neon={neon} levels={letterLevels} />
       {pendant.show ? <PendantLamp pendant={pendant} level={levels.lamp} frame={frame} /> : null}
-      <Subtitle text={copy.subtitle} subtitle={props.subtitle} />
+      {props.subtitle.show ? <Subtitle text={copy.subtitle} subtitle={props.subtitle} /> : null}
       {props.brand.show ? (
         <BrandLockup name={copy.brand} line={copy.brandLine} brand={props.brand} />
       ) : null}

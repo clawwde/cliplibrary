@@ -8,20 +8,20 @@ import { TimingSection } from '@/components/timeline/property-panel/timing-secti
 import { TransformSection } from '@/components/timeline/property-panel/transform-section';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
-import type { ControlDescriptor } from '@/core';
+import type { ControlSectionView } from '@/core';
 import type { Element } from '@/project';
 import { getClipMeta, isClipId } from '@/schemas';
 
 interface ClipPropertySidebarProps {
   element: Element | null;
-  descriptorsByClip: Record<string, ControlDescriptor[]>;
+  controlsByClip: Record<string, ControlSectionView[]>;
   onChange: (next: Element) => void;
   onDelete: (id: string) => void;
 }
 
 export const ClipPropertySidebar = ({
   element,
-  descriptorsByClip,
+  controlsByClip,
   onChange,
   onDelete,
 }: ClipPropertySidebarProps) => {
@@ -37,7 +37,7 @@ export const ClipPropertySidebar = ({
     return <PropertyPanel element={element} onChange={onChange} onDelete={onDelete} />;
   }
 
-  const descriptors = descriptorsByClip[element.clipId] ?? [];
+  const sections = controlsByClip[element.clipId] ?? [];
   const clipTitle = isClipId(element.clipId) ? getClipMeta(element.clipId).title : element.clipId;
 
   return (
@@ -56,7 +56,7 @@ export const ClipPropertySidebar = ({
         </Button>
       </div>
       <PropertiesPanel
-        descriptors={descriptors}
+        sections={sections}
         values={element.props}
         onChange={(values) => onChange({ ...element, props: values })}
       />

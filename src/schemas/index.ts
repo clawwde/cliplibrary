@@ -75,6 +75,8 @@ export * from './clips/text-reveals/typewriter';
 export * from './clips/transitions/scene-transition';
 export * from './connector-common';
 export * from './control';
+export * from './control-layout';
+export * from './control-presets';
 export * from './doodle-common';
 export * from './easing';
 export * from './picker-common';
