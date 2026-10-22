@@ -12,10 +12,27 @@ import {
   type Template,
 } from './template';
 
-export const decorations = (size: PageSize, hole = '#000000') => [
-  circle(size.width * 0.86, -size.width * 0.02, size.width * 0.12, radial('#ff7ac6', '#d6247f'), {
-    name: 'Donut',
-  }),
+export interface DecorationPalette {
+  primary: string;
+  secondary: string;
+}
+
+const DEFAULT_DECORATION: DecorationPalette = { primary: '#ff5fa8', secondary: '#f59e0b' };
+
+export const decorations = (
+  size: PageSize,
+  hole = '#000000',
+  palette: DecorationPalette = DEFAULT_DECORATION,
+) => [
+  circle(
+    size.width * 0.86,
+    -size.width * 0.02,
+    size.width * 0.12,
+    radial(palette.primary, palette.secondary),
+    {
+      name: 'Donut',
+    },
+  ),
   circle(size.width * 0.86, -size.width * 0.02, size.width * 0.05, hole, {
     name: 'Donut hole',
   }),
@@ -25,7 +42,7 @@ export const decorations = (size: PageSize, hole = '#000000') => [
     -size.width * 0.02,
     size.width * 0.14,
     size.width * 0.14,
-    linear(160, '#ff5fa8', '#7c1d6f'),
+    linear(160, palette.primary, palette.secondary),
     { rotation: 30, name: 'Cone' },
   ),
   rect(
@@ -33,7 +50,7 @@ export const decorations = (size: PageSize, hole = '#000000') => [
     size.height * 0.84,
     size.width * 0.13,
     size.width * 0.13,
-    linear(150, '#ffd166', '#f59e0b'),
+    linear(150, palette.secondary, palette.primary),
     { cornerRadius: size.width * 0.03, rotation: -18, name: 'Cube' },
   ),
   polygon(
@@ -42,7 +59,7 @@ export const decorations = (size: PageSize, hole = '#000000') => [
     size.height * 0.82,
     size.width * 0.16,
     size.width * 0.16,
-    linear(140, '#ff6fb5', '#b3125f'),
+    linear(140, palette.primary, palette.secondary),
     { rotation: -14, name: 'Pyramid' },
   ),
 ];
@@ -61,7 +78,10 @@ export const editableLaptop =
     const cell = screenWidth / 6;
     return page(
       theme.background,
-      decorations(size, typeof theme.background === 'string' ? theme.background : '#000000'),
+      decorations(size, typeof theme.background === 'string' ? theme.background : '#000000', {
+        primary: theme.accent,
+        secondary: theme.brand,
+      }),
       text(copy.title, 0, size.height * 0.2, size.width, {
         fontFamily: theme.headFont,
         fontSize: size.width * 0.046,
@@ -81,7 +101,7 @@ export const editableLaptop =
       laptop(size.width * 0.19, size.height * 0.46, width, {
         screen: '#f8fafc',
         content: [
-          rect(0, 0, screenWidth, screenHeight * 0.08, '#7c3aed', { name: 'Editor bar' }),
+          rect(0, 0, screenWidth, screenHeight * 0.08, theme.brand, { name: 'Editor bar' }),
           Array.from({ length: 12 }, (_, index) =>
             fitBox(
               cycle(templates, index),
@@ -109,7 +129,10 @@ export const howToStart =
     const column = size.width / (copy.steps.length + 1);
     return page(
       theme.background,
-      decorations(size, typeof theme.background === 'string' ? theme.background : '#000000'),
+      decorations(size, typeof theme.background === 'string' ? theme.background : '#000000', {
+        primary: theme.accent,
+        secondary: theme.brand,
+      }),
       heading(theme, copy.title, 0, size.height * 0.24, size.width, size.width * 0.05, 'center'),
       copy.steps.map((step, index) => {
         const cx = column * (index + 1);
