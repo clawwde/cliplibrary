@@ -60,7 +60,7 @@ describe('resolveClipControls', () => {
 });
 
 describe('auditClipControls', () => {
-  it('reports missing, repeated and unknown paths', () => {
+  it('reports missing, repeated and unknown paths and repeated section titles', () => {
     expect(
       auditClipControls(schema, {
         sections: [
@@ -69,10 +69,16 @@ describe('auditClipControls', () => {
             fields: ['title', 'title', { link: ['look.ink', 'look.accent'], label: 'Ink' }],
           },
           { title: 'B', fields: ['nope'], more: ['look.ink'] },
+          { title: 'A', fields: [] },
         ],
         hidden: ['look.paper'],
       }),
-    ).toEqual({ missing: ['size', 'gap'], repeated: ['title'], unknown: ['nope'] });
+    ).toEqual({
+      missing: ['size', 'gap', 'look.accent'],
+      repeated: ['title'],
+      unknown: ['nope'],
+      repeatedTitles: ['A'],
+    });
   });
 });
 
@@ -83,6 +89,7 @@ describe('clip control layouts', () => {
         missing: [],
         repeated: [],
         unknown: [],
+        repeatedTitles: [],
       });
       expect(() => resolveClipControls(module.schema, module.controls)).not.toThrow();
     });
