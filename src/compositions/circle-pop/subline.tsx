@@ -8,6 +8,7 @@ export const Subline = ({
   start,
   end,
   subline,
+  size,
   color,
   anchorY,
   offsetX,
@@ -18,6 +19,7 @@ export const Subline = ({
   start: number;
   end: number;
   subline: CirclePopProps['subline'];
+  size: number;
   color: string;
   anchorY: number;
   offsetX: number;
@@ -44,7 +46,7 @@ export const Subline = ({
           textAlign: 'center',
           whiteSpace: 'pre',
           fontFamily: bodyFont,
-          fontSize: subline.size,
+          fontSize: size,
           fontWeight: subline.weight,
           letterSpacing: `${subline.tracking}em`,
           lineHeight: 1.2,

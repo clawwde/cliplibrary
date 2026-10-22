@@ -1,10 +1,14 @@
+import { Easing } from 'remotion';
 import type { BlobShape, CirclePopProps } from '@/schemas';
-import { pixelTween, settle, tween } from '../promo/timing';
+import { pixelTween, tween } from '../promo/timing';
 
 const PEAK_SHARE = 0.55;
 const BLOB_POINTS = 720;
 const PEAK_SPEED = 1.5;
 const TILT_LANDING_SPEED = 0.15;
+const swell = Easing.bezier(0.35, 0, 0.15, 1);
+const FADE_LAUNCH = 1.5;
+const READING_HOLD = 8;
 
 const EDGE_WAVES: Record<BlobShape, (angle: number) => number> = {
   wobble: Math.sin,
@@ -20,11 +24,15 @@ const hermite = (t: number, startSlope: number, endSlope: number): number => {
 const slopeFor = (speed: number, frames: number, distance: number): number =>
   distance > 0 ? Math.min(3, (speed * frames) / distance) : 0;
 
-export const circlePopTimeline = ({ pop, wobble, flood, tilt, subline }: CirclePopProps) => {
+export const circlePopTimeline = (
+  { pop, wobble, flood, tilt, subline }: CirclePopProps,
+  speed = 1,
+) => {
   const popStart = pop.delay;
   const popPeak =
     popStart + Math.min(pop.frames - 1, Math.max(1, Math.round(pop.frames * PEAK_SHARE)));
   const popEnd = popStart + pop.frames;
+  const fadeEnd = popStart + Math.min(pop.fadeFrames, pop.frames);
   const floodStart = popEnd + wobble.buildFrames;
   const floodEnd = floodStart + flood.frames;
   const growStart = floodStart + flood.wordDelay;
@@ -34,21 +42,35 @@ export const circlePopTimeline = ({ pop, wobble, flood, tilt, subline }: CircleP
   const sublineStart = floodStart + subline.delay;
   const sublineEnd = sublineStart + subline.frames;
   return {
-    popStart,
-    popPeak,
-    popEnd,
-    floodStart,
-    floodEnd,
-    growStart,
-    growEnd,
-    tiltStart,
-    tiltEnd,
-    sublineStart,
-    sublineEnd,
+    popStart: popStart / speed,
+    popPeak: popPeak / speed,
+    popEnd: popEnd / speed,
+    fadeEnd: fadeEnd / speed,
+    floodStart: floodStart / speed,
+    floodEnd: floodEnd / speed,
+    growStart: growStart / speed,
+    growEnd: growEnd / speed,
+    tiltStart: tiltStart / speed,
+    tiltEnd: tiltEnd / speed,
+    sublineStart: sublineStart / speed,
+    sublineEnd: sublineEnd / speed,
   };
 };
 
 type Timeline = ReturnType<typeof circlePopTimeline>;
+
+const lastLanding = (timeline: Timeline, props: CirclePopProps): number =>
+  Math.max(
+    timeline.floodEnd,
+    timeline.growEnd,
+    timeline.tiltEnd,
+    props.subline.text === '' ? 0 : timeline.sublineEnd,
+  );
+
+export const playbackSpeed = (props: CirclePopProps, durationInFrames: number): number => {
+  const room = Math.max(1, durationInFrames - props.motion.exitFrames - READING_HOLD);
+  return Math.max(props.motion.speed, lastLanding(circlePopTimeline(props), props) / room);
+};
 
 const popEasings = (timeline: Timeline, restSize: number, overshoot: number) => {
   const peakSize = restSize * (1 + overshoot);
@@ -62,6 +84,9 @@ const popEasings = (timeline: Timeline, restSize: number, overshoot: number) => 
     fall: (t: number) => hermite(t, returnStart, 0),
   };
 };
+
+export const fadeIn = (frame: number, timeline: Timeline): number =>
+  tween(frame, [timeline.popStart, timeline.fadeEnd], [0, 1], (t) => hermite(t, FADE_LAUNCH, 0));
 
 export const popRadius = (
   frame: number,
@@ -78,7 +103,8 @@ export const popRadius = (
 export const wordSizeAt = (
   frame: number,
   timeline: Timeline,
-  { startSize, endSize }: CirclePopProps['word'],
+  startSize: number,
+  endSize: number,
   overshoot: number,
 ): number => {
   const { peakSize, rise, fall } = popEasings(timeline, startSize, overshoot);
@@ -88,16 +114,11 @@ export const wordSizeAt = (
   if (frame <= timeline.growStart) {
     return pixelTween(frame, [timeline.popPeak, timeline.popEnd], [peakSize, startSize], fall);
   }
-  return pixelTween(frame, [timeline.growStart, timeline.growEnd], [startSize, endSize], settle);
+  return pixelTween(frame, [timeline.growStart, timeline.growEnd], [startSize, endSize], swell);
 };
 
-export const tiltAt = (
-  frame: number,
-  timeline: Timeline,
-  from: number,
-  to: number,
-  frames: number,
-): number => {
+export const tiltAt = (frame: number, timeline: Timeline, from: number, to: number): number => {
+  const frames = timeline.tiltEnd - timeline.tiltStart;
   const landing = Math.min(1, slopeFor(TILT_LANDING_SPEED, frames, Math.abs(to - from)));
   return tween(frame, [timeline.tiltStart, timeline.tiltEnd], [from, to], (t) =>
     hermite(t, 0, landing),

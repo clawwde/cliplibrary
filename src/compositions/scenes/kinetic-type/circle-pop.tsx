@@ -1,12 +1,15 @@
 import { AbsoluteFill, Composition, useCurrentFrame, useVideoConfig } from 'remotion';
 import { type CirclePopProps, circlePopDefaults, circlePopMeta, circlePopSchema } from '@/schemas';
+import { useFittedSizes } from '../../circle-pop/fitted-sizes';
 import { Subline } from '../../circle-pop/subline';
 import {
   blobPath,
   circlePopTimeline,
   cornerReach,
+  fadeIn,
   invertHex,
   mixHex,
+  playbackSpeed,
   popRadius,
   tiltAt,
   wordSizeAt,
@@ -17,29 +20,26 @@ import { settle, smooth, tween } from '../../promo/timing';
 import type { SceneModule } from '../../scene-module';
 
 const DEGREES = Math.PI / 180;
-const DESCENDER_DEPTH = 0.6;
 
 const tonedLook = (look: CirclePopProps['look'], tone: (color: string) => string) => ({
   ...look,
   background: tone(look.background),
   backgroundEdge: tone(look.backgroundEdge),
-  paperLine: tone(look.paperLine),
+  paper: 'plain' as const,
+  paperMargin: false,
 });
 
 const CirclePop = (props: CirclePopProps) => {
   const { word, disc, pop, wobble, flood, subline, look, motion } = props;
   const tone = (color: string) => (props.inverted ? invertHex(color) : color);
-  const frame = useCurrentFrame() * motion.speed;
-  const { width, height } = useVideoConfig();
-  const timeline = circlePopTimeline(props);
+  const frame = useCurrentFrame();
+  const { width, height, durationInFrames } = useVideoConfig();
+  const speed = playbackSpeed(props, durationInFrames);
+  const timeline = circlePopTimeline(props, speed);
+  const fitted = useFittedSizes(props, width);
   const centerX = width / 2 + disc.offsetX;
   const centerY = height / 2 + disc.offsetY;
-  const opacity = tween(
-    frame,
-    [timeline.popStart, timeline.popStart + pop.fadeFrames],
-    [0, 1],
-    (t) => t,
-  );
+  const opacity = fadeIn(frame, timeline);
   const flooded = tween(frame, [timeline.floodStart, timeline.floodEnd], [0, 1], smooth);
   const amplitude =
     wobble.amount * tween(frame, [timeline.popPeak, timeline.floodStart], [0, 1], settle);
@@ -47,9 +47,9 @@ const CirclePop = (props: CirclePopProps) => {
   const floodRadius =
     (flood.reach * cornerReach(width, height, centerX, centerY)) / (1 - wobble.amount);
   const radius = restRadius + (floodRadius - restRadius) * flooded;
-  const size = wordSizeAt(frame, timeline, word, pop.overshoot);
-  const rotation = tiltAt(frame, timeline, word.rotation, props.tilt.angle, props.tilt.frames);
-  const phase = frame * wobble.speed * DEGREES;
+  const size = wordSizeAt(frame, timeline, fitted.startSize, fitted.endSize, pop.overshoot);
+  const rotation = tiltAt(frame, timeline, word.rotation, props.tilt.angle);
+  const phase = frame * speed * wobble.speed * DEGREES;
   return (
     <PromoLayer look={tonedLook(look, tone)} motion={motion}>
       {opacity > 0 && radius > 0 ? (
@@ -95,8 +95,9 @@ const CirclePop = (props: CirclePopProps) => {
             start={timeline.sublineStart}
             end={timeline.sublineEnd}
             subline={subline}
+            size={fitted.sublineSize}
             color={tone(subline.color)}
-            anchorY={height / 2 + word.endSize * DESCENDER_DEPTH}
+            anchorY={height / 2 + fitted.wordBottom}
             offsetX={disc.offsetX}
             offsetY={disc.offsetY}
             rotation={rotation}

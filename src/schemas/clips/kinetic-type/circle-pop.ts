@@ -95,7 +95,7 @@ export const circlePopDefaults: CirclePopProps = {
     delay: 2,
     frames: 18,
     overshoot: 0.08,
-    fadeFrames: 7,
+    fadeFrames: 8,
   },
   wobble: {
     shape: 'wobble',
@@ -107,13 +107,13 @@ export const circlePopDefaults: CirclePopProps = {
   flood: {
     frames: 22,
     reach: 1.04,
-    wordDelay: 4,
-    wordFrames: 22,
+    wordDelay: 2,
+    wordFrames: 26,
   },
   tilt: {
     angle: 3,
     delay: 10,
-    frames: 16,
+    frames: 18,
   },
   subline: {
     text: '',
@@ -127,7 +127,7 @@ export const circlePopDefaults: CirclePopProps = {
     frames: 16,
   },
   inverted: false,
-  look: { ...kineticLook(), grain: 0 },
+  look: { ...kineticLook(), backgroundEdge: '#020202', grain: 0 },
   motion: defaultMotion(),
 };
 
@@ -144,5 +144,5 @@ export const circlePopMeta: ClipMeta = {
   width: 1080,
   height: 1920,
   durationInFrames: 96,
-  posterFrame: 76,
+  posterFrame: 78,
 };
