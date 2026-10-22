@@ -53,12 +53,16 @@ import { scrollerWallDefaults, scrollerWallMeta, scrollerWallSchema } from './sc
 import { scrollerWallControls } from './scroller-wall-controls';
 import { stickerStackDefaults, stickerStackMeta, stickerStackSchema } from './sticker-stack';
 import { stickerStackControls } from './sticker-stack-controls';
+import { textRingsDefaults, textRingsMeta, textRingsSchema } from './text-rings';
+import { textRingsControls } from './text-rings-controls';
 import { wordBuildDefaults, wordBuildMeta, wordBuildSchema } from './word-build';
 import { wordBuildControls } from './word-build-controls';
 import { wordFieldDefaults, wordFieldMeta, wordFieldSchema } from './word-field';
 import { wordFieldControls } from './word-field-controls';
 import { wordPunchDefaults, wordPunchMeta, wordPunchSchema } from './word-punch';
 import { wordPunchControls } from './word-punch-controls';
+import { wordStreamsDefaults, wordStreamsMeta, wordStreamsSchema } from './word-streams';
+import { wordStreamsControls } from './word-streams-controls';
 
 export const kineticTypeClips: ClipModule[] = [
   {
@@ -74,6 +78,13 @@ export const kineticTypeClips: ClipModule[] = [
     defaults: wordPunchDefaults,
     meta: wordPunchMeta,
     controls: wordPunchControls,
+  },
+  {
+    id: 'word-streams',
+    schema: wordStreamsSchema,
+    defaults: wordStreamsDefaults,
+    meta: wordStreamsMeta,
+    controls: wordStreamsControls,
   },
   {
     id: 'outline-marquee',
@@ -186,5 +197,12 @@ export const kineticTypeClips: ClipModule[] = [
     defaults: comingSoonFlipsDefaults,
     meta: comingSoonFlipsMeta,
     controls: comingSoonFlipsControls,
+  },
+  {
+    id: 'text-rings',
+    schema: textRingsSchema,
+    defaults: textRingsDefaults,
+    meta: textRingsMeta,
+    controls: textRingsControls,
   },
 ];

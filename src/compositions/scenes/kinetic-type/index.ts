@@ -14,13 +14,16 @@ import { ribbonWordsScene } from './ribbon-words';
 import { scrollerCalloutScene } from './scroller-callout';
 import { scrollerWallScene } from './scroller-wall';
 import { stickerStackScene } from './sticker-stack';
+import { textRingsScene } from './text-rings';
 import { wordBuildScene } from './word-build';
 import { wordFieldScene } from './word-field';
 import { wordPunchScene } from './word-punch';
+import { wordStreamsScene } from './word-streams';
 
 export const kineticTypeScenes: SceneModule[] = [
   wordBuildScene,
   wordPunchScene,
+  wordStreamsScene,
   outlineMarqueeScene,
   echoStackScene,
   gridStackScene,
@@ -37,4 +40,5 @@ export const kineticTypeScenes: SceneModule[] = [
   ribbonWordsScene,
   anniversaryKineticScene,
   comingSoonFlipsScene,
+  textRingsScene,
 ];
