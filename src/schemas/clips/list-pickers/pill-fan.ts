@@ -19,6 +19,7 @@ export const pillFanSchema = z.object({
     font: z.enum(PICKER_FONTS),
     size: zSlider({ min: 24, max: 200 }),
     weight: zSlider(FONT_WEIGHT),
+    tracking: zSlider({ min: -0.1, max: 0.3, step: 0.005 }),
     tilt: zSlider({ min: -30, max: 30, step: 0.5 }),
     gap: zSlider({ min: 0, max: 160 }),
   }),
@@ -58,7 +59,7 @@ export type PillFanProps = z.infer<typeof pillFanSchema>;
 export const pillFanDefaults: PillFanProps = {
   label: 'We build',
   words: ['stories', 'spaces', 'products', 'campaigns', 'ideas', 'worlds', 'tools', 'moments'],
-  labelType: { font: 'sora', size: 84, weight: 700, tilt: -6, gap: 34 },
+  labelType: { font: 'sora', size: 84, weight: 700, tracking: -0.02, tilt: -6, gap: 34 },
   pill: {
     font: 'quicksand',
     textSize: 80,

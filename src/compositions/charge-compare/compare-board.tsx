@@ -120,10 +120,10 @@ export const CompareBoard = ({
             fontFamily: CHARGE_FONTS.display,
             fontWeight: 600,
             fontSize: layout.labelSize,
-            letterSpacing: '0.12em',
-            paddingLeft: '0.12em',
+            letterSpacing: `${layout.labelSpacing}em`,
+            paddingLeft: `${layout.labelSpacing}em`,
             lineHeight: 1.2,
-            color: index === 1 ? look.highlightFrom : look.labelInk,
+            color: index === 1 ? look.chargedLabelInk : look.labelInk,
             whiteSpace: 'pre',
           }}
         >

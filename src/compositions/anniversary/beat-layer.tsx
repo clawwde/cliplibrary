@@ -1,6 +1,12 @@
 import type { FC } from 'react';
 import { AbsoluteFill } from 'remotion';
-import type { AnniversaryBeat, AnniversaryEffect, AnniversaryLook } from '@/schemas';
+import type {
+  AnniversaryBand,
+  AnniversaryBeat,
+  AnniversaryChrome,
+  AnniversaryEffect,
+  AnniversaryLook,
+} from '@/schemas';
 import { BeatBackdrop } from './backdrop';
 import { BeatDecor } from './decor';
 import {
@@ -53,6 +59,8 @@ export const BeatLayer = ({
   beat,
   index,
   look,
+  band,
+  chrome,
   local,
   length,
   width,
@@ -61,6 +69,8 @@ export const BeatLayer = ({
   beat: AnniversaryBeat;
   index: number;
   look: AnniversaryLook;
+  band: AnniversaryBand;
+  chrome: AnniversaryChrome;
   local: number;
   length: number;
   width: number;
@@ -76,6 +86,7 @@ export const BeatLayer = ({
         <BeatBackdrop
           kind={beat.backdrop}
           look={look}
+          band={band}
           local={local}
           index={index}
           width={width}
@@ -94,6 +105,7 @@ export const BeatLayer = ({
           <Effect
             beat={beat}
             look={look}
+            chrome={chrome}
             local={local}
             length={length}
             width={width}

@@ -23,6 +23,7 @@ export const magnifierCaptionSchema = z.object({
     wordFrames: zSlider({ min: 1, max: 60 }),
     charFade: zSlider({ min: 1, max: 20 }),
     underline: zSlider({ min: 0, max: 12, step: 0.5 }),
+    underlineFrames: zSlider({ min: 1, max: 90 }),
   }),
   field: z.object({
     decoys: zMultiline(),
@@ -33,6 +34,7 @@ export const magnifierCaptionSchema = z.object({
     word: zColor(),
     lineWidth: zSlider({ min: 1, max: 12, step: 0.5 }),
     wordSize: zSlider({ min: 20, max: 80 }),
+    wordWeight: zSlider({ min: 300, max: 800, step: 100 }),
     blur: zSlider({ min: 0, max: 20, step: 0.5 }),
     minRadius: zSlider({ min: 30, max: 200 }),
     maxRadius: zSlider({ min: 80, max: 320 }),
@@ -74,7 +76,7 @@ export const magnifierCaptionSchema = z.object({
   }),
   timing: z.object({
     firstWord: zSlider({ min: 0, max: 120 }),
-    wordInterval: zSlider({ min: 12, max: 90 }),
+    wordInterval: zSlider({ min: 12, max: 90, step: 0.05 }),
     travelFrames: zSlider({ min: 6, max: 80 }),
     firstMove: zSlider({ min: -30, max: 120 }),
     moveInterval: zSlider({ min: 12, max: 90, step: 0.05 }),
@@ -114,6 +116,7 @@ export const magnifierCaptionDefaults: MagnifierCaptionProps = {
     wordFrames: 14,
     charFade: 6,
     underline: 4,
+    underlineFrames: 26,
   },
   field: {
     decoys: [
@@ -142,6 +145,7 @@ export const magnifierCaptionDefaults: MagnifierCaptionProps = {
     word: '#26335f',
     lineWidth: 5,
     wordSize: 54,
+    wordWeight: 400,
     blur: 7,
     minRadius: 52,
     maxRadius: 170,

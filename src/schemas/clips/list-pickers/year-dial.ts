@@ -11,9 +11,14 @@ import {
 import { FONT_WEIGHT, lookSchema, motionSchema, promoMeta } from '../../promo-common';
 import type { ClipMeta } from '../../registry';
 
+export const YEAR_DIAL_EASINGS = ['smooth', 'settle', 'linear'] as const;
+
 export const yearDialSchema = z.object({
   label: z.string(),
+  labelColor: zColor(),
   firstYear: zSlider({ min: 1900, max: 2100 }),
+  yearStep: zSlider({ min: 1, max: 100 }),
+  countDown: z.boolean(),
   yearType: z.object({
     font: z.enum(PICKER_FONTS),
     size: zSlider({ min: 20, max: 240 }),
@@ -26,6 +31,7 @@ export const yearDialSchema = z.object({
     text: zColor(),
     width: zSlider({ min: 60, max: 800 }),
     height: zSlider({ min: 30, max: 400 }),
+    radius: zSlider({ min: 0, max: 200 }),
   }),
   pointer: z.object({
     color: zColor(),
@@ -58,7 +64,9 @@ export const yearDialSchema = z.object({
     drift: zSlider({ min: 0, max: 1, step: 0.01 }),
   }),
   entryFrames: zSlider({ min: 6, max: 60 }),
+  entryTurn: zSlider({ min: 0, max: 6, step: 0.1 }),
   steps: stepsSchema,
+  turnEasing: z.enum(YEAR_DIAL_EASINGS),
   aura: auraSchema,
   look: lookSchema,
   motion: motionSchema,
@@ -68,9 +76,12 @@ export type YearDialProps = z.infer<typeof yearDialSchema>;
 
 export const yearDialDefaults: YearDialProps = {
   label: 'Journey',
+  labelColor: '#111a2e',
   firstYear: 2027,
+  yearStep: 1,
+  countDown: false,
   yearType: { font: 'lexend', size: 92, weight: 600, labelSize: 78, labelWeight: 600 },
-  highlight: { color: '#2f66e0', text: '#ffffff', width: 350, height: 176 },
+  highlight: { color: '#2f66e0', text: '#ffffff', width: 350, height: 176, radius: 0 },
   pointer: { color: '#2f66e0', size: 64, gap: 22 },
   dial: { radius: 580, slot: 23.5, fadeStart: 4.5, range: 7, textFollow: 0 },
   ticks: {
@@ -84,7 +95,9 @@ export const yearDialDefaults: YearDialProps = {
   },
   camera: { perspective: 1700, tilt: 56, spin: -16, x: 620, y: -200, scale: 1.15, drift: 0.6 },
   entryFrames: 24,
+  entryTurn: 1.5,
   steps: steps({ delay: 26, interval: 27, moveFrames: 21 }),
+  turnEasing: 'smooth',
   aura: { blobs: [], drift: 0.5 },
   look: pickerLook({
     background: '#f2f4f8',

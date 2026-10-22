@@ -19,7 +19,7 @@ export const SummitIcon = ({ props }: { props: PuzzleSuccessProps }) => {
       transform={`translate(${props.block.centerX - icon.size / 2} ${icon.y - 36 * scale}) scale(${scale})`}
       fill="none"
       stroke={icon.color}
-      strokeWidth={2.6}
+      strokeWidth={icon.lineWidth}
       strokeLinecap="round"
       strokeLinejoin="round"
     >
@@ -63,13 +63,13 @@ export const Wordmark = ({ props }: { props: PuzzleSuccessProps }) => {
         fontFamily: displayFont,
         fontWeight: 600,
         fontSize: type.wordmarkSize,
-        letterSpacing: '0.34em',
+        letterSpacing: `${type.wordmarkSpacing}em`,
         color: type.wordmarkColor,
         lineHeight: 1,
       }}
     >
       {copy.mark ? <Diamond size={diamond} color={type.markColor} /> : null}
-      <span style={{ marginRight: '-0.34em' }}>{copy.wordmark}</span>
+      <span style={{ marginRight: `-${type.wordmarkSpacing}em` }}>{copy.wordmark}</span>
       {copy.mark ? <Diamond size={diamond} color={type.markColor} /> : null}
     </div>
   );

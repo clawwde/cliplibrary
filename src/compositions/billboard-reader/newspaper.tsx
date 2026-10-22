@@ -34,8 +34,13 @@ const drawFront = (context: CanvasRenderingContext2D, hero: ReaderHero) => {
   context.fillRect(24, 88, TEXTURE_WIDTH - 48, 4);
   context.font = `600 40px "${condensedFont}"`;
   context.textAlign = 'left';
-  context.fillText('CAPED READER', 24, 142, TEXTURE_WIDTH - 48);
-  context.fillText('SPOTTED AT DUSK', 24, 186, TEXTURE_WIDTH - 48);
+  hero.frontHeadline
+    .split('\n')
+    .filter((line) => line.length > 0)
+    .slice(0, 2)
+    .forEach((line, index) => {
+      context.fillText(line, 24, 142 + index * 44, TEXTURE_WIDTH - 48);
+    });
   const photo = context.createLinearGradient(0, 210, 0, 400);
   photo.addColorStop(0, '#8a8680');
   photo.addColorStop(1, '#4a4743');

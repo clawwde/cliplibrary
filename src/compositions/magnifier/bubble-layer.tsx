@@ -9,6 +9,7 @@ export interface BubbleStyle {
   word: string;
   lineWidth: number;
   wordSize: number;
+  wordWeight: number;
   font: string;
 }
 
@@ -97,7 +98,7 @@ const Label = ({
   return (
     <>
       {amount < 1 ? (
-        <text {...shared} fill={style.word} fontWeight={400} opacity={1 - amount}>
+        <text {...shared} fill={style.word} fontWeight={style.wordWeight} opacity={1 - amount}>
           {bubble.word}
         </text>
       ) : null}

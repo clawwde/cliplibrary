@@ -37,8 +37,21 @@ const reelWindows = ({
 };
 
 const ChalkBadgesReel = (props: ChalkBadgesReelProps) => {
-  const { title, grid, badges, soloFrames, soloScale, caption, outro, chalk, look, motion } = props;
-  const frame = useCurrentFrame() * motion.speed;
+  const {
+    title,
+    grid,
+    badges,
+    soloFrames,
+    soloScale,
+    caption,
+    captionSize,
+    captionColor,
+    outro,
+    chalk,
+    look,
+    motion,
+  } = props;
+  const frame = useCurrentFrame();
   const { gridFrom, soloFrom, soloEnd, outroFrom } = reelWindows(props);
   const layer = { ...look, showBackdrop: false };
   const still = { ...motion, speed: 1 };
@@ -53,6 +66,9 @@ const ChalkBadgesReel = (props: ChalkBadgesReelProps) => {
             {...chalkTitleDefaults}
             left={title.left}
             right={title.right}
+            wordSize={title.size}
+            wordColor={title.color}
+            center={title.badge}
             eraseAt={
               title.frames - chalkTitleDefaults.delay - chalkTitleDefaults.eraseFrames - TAIL
             }
@@ -67,6 +83,8 @@ const ChalkBadgesReel = (props: ChalkBadgesReelProps) => {
           <ChalkBadgeGrid
             {...chalkBadgeGridDefaults}
             badges={badges}
+            columns={grid.columns}
+            scale={grid.scale}
             timing={{
               ...gridTiming,
               eraseAt:
@@ -106,8 +124,8 @@ const ChalkBadgesReel = (props: ChalkBadgesReelProps) => {
       ))}
       <Caption
         text={caption}
-        size={chalkBadgeDefaults.captionSize}
-        color={chalkBadgeDefaults.captionColor}
+        size={captionSize}
+        color={captionColor}
         frame={frame}
         start={soloFrom}
         end={soloEnd - CAPTION_LETTER_FRAMES * caption.length * 0.5 - TAIL}
@@ -118,7 +136,15 @@ const ChalkBadgesReel = (props: ChalkBadgesReelProps) => {
           <ChunkyTypeStack
             {...chunkyTypeStackDefaults}
             lines={outro.lines}
+            color={outro.color}
+            bar={{ ...chunkyTypeStackDefaults.bar, color: outro.barColor }}
+            burst={{
+              ...chunkyTypeStackDefaults.burst,
+              text: outro.burstText,
+              color: outro.burstColor,
+            }}
             endTag={outro.endTag}
+            endTagColor={outro.endTagColor}
             look={layer}
             motion={still}
           />

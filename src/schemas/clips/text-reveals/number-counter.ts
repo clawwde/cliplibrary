@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { zSlider } from '../../control';
+import { zColor, zSlider } from '../../control';
 import {
   defaultMotion,
   FONT_WEIGHT,
@@ -17,6 +17,9 @@ export const numberCounterSchema = z.object({
   to: zSlider({ min: 0, max: 9999 }),
   prefix: z.string(),
   suffix: z.string(),
+  separator: z.string(),
+  affixScale: zSlider({ min: 0.3, max: 1, step: 0.05 }),
+  affixColor: zColor(),
   size: zSlider({ min: 80, max: 480 }),
   weight: zSlider(FONT_WEIGHT),
   delay: zSlider({ min: 0, max: 90 }),
@@ -24,6 +27,7 @@ export const numberCounterSchema = z.object({
   roll: zSlider({ min: 0, max: 1, step: 0.05 }),
   glow: zSlider({ min: 0, max: 1, step: 0.01 }),
   bloom: zSlider({ min: 0, max: 1, step: 0.01 }),
+  glowColor: zColor(),
   placement: placementSchema,
   look: lookSchema,
   motion: motionSchema,
@@ -36,6 +40,9 @@ export const numberCounterDefaults: NumberCounterProps = {
   to: 12,
   prefix: '',
   suffix: '',
+  separator: '',
+  affixScale: 1,
+  affixColor: '#f1f1f1',
   size: 330,
   weight: 700,
   delay: 2,
@@ -43,6 +50,7 @@ export const numberCounterDefaults: NumberCounterProps = {
   roll: 0,
   glow: 0.25,
   bloom: 1,
+  glowColor: '#f1f1f1',
   placement: placement('center', 'center', { width: 1400 }),
   look: kineticLook(),
   motion: defaultMotion({ exit: 'blur', exitFrames: 14 }),

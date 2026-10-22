@@ -26,6 +26,7 @@ export const HandwrittenNote = ({
   jitter,
   underline,
   burst,
+  erase,
   eraseFrames,
   seed,
   ink,
@@ -34,6 +35,7 @@ export const HandwrittenNote = ({
 }: HandwrittenNoteProps) => {
   const frame = useCurrentFrame() * motion.speed;
   const { durationInFrames } = useVideoConfig();
+  const end = durationInFrames * motion.speed;
   return (
     <PromoLayer look={look} motion={motion}>
       <div style={placementFrame(placement)}>
@@ -62,7 +64,7 @@ export const HandwrittenNote = ({
             ink={ink}
             underline={underline}
             burst={burst}
-            eraseStart={durationInFrames * motion.speed - eraseFrames - ERASE_MARGIN}
+            eraseStart={erase ? end - eraseFrames - ERASE_MARGIN : end}
             eraseFrames={eraseFrames}
             seed={seed}
           />

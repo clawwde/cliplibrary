@@ -10,9 +10,12 @@ export const EchoStack = ({
   accentRow,
   size,
   weight,
+  tracking,
   lineHeight,
   delay,
   rowStagger,
+  rowFrames,
+  travel,
   exitAt,
   placement,
   look,
@@ -25,16 +28,16 @@ export const EchoStack = ({
       {Array.from({ length: rows }, (_, row) => {
         const start = delay + row * rowStagger;
         const leave = exitAt + row * rowStagger;
-        const rise = land(frame, [start, start + 8], [size * 0.6, 0]);
-        const drop = launch(frame, [leave, leave + 8], [0, pitch * 0.8]);
+        const rise = land(frame, [start, start + rowFrames], [size * 0.6 * travel, 0]);
+        const drop = launch(frame, [leave, leave + rowFrames], [0, pitch * 0.8 * travel]);
         const opacity =
-          tween(frame, [start, start + 6], [0, 1], settle) *
-          (1 - tween(frame, [leave, leave + 7], [0, 1], smooth));
+          tween(frame, [start, start + rowFrames * 0.75], [0, 1], settle) *
+          (1 - tween(frame, [leave, leave + rowFrames * 0.875], [0, 1], smooth));
         return (
           <div
             key={row}
             style={{
-              ...displayType(size, weight, -0.01),
+              ...displayType(size, weight, tracking),
               height: pitch,
               lineHeight: `${pitch}px`,
               color: row + 1 === accentRow ? look.accent : look.ink,

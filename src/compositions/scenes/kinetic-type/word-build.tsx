@@ -12,7 +12,6 @@ import {
 import { highlightSet, linesOf, normalize } from '../../promo/words';
 import type { SceneModule } from '../../scene-module';
 
-const EXIT_STAGGER = 3;
 const FALL_FRAMES = 14;
 const linear = (t: number): number => t;
 
@@ -28,11 +27,11 @@ export const WordBuild = (props: WordBuildProps) => {
   const windows = bigWindows(entry, bigCount, delay, wordFrames);
   const bigEnd = windows.at(-1)?.end ?? delay;
   const exitPad = props.bigExit === 'fall' ? FALL_FRAMES : props.bigExit === 'squeeze' ? 2 : 0;
-  const sentenceStart = bigEnd + exitPad;
+  const sentenceStart = bigEnd + exitPad + props.lineDelay;
   const order = (index: number) => (props.buildFrom === 'left' ? index : words.length - 1 - index);
   const appearOf = (index: number) => sentenceStart + order(index) * props.buildFrames;
   const lastAppear = sentenceStart + (words.length - 1) * props.buildFrames;
-  const exitStart = durationInFrames - motion.exitFrames - words.length * EXIT_STAGGER - 4;
+  const exitStart = durationInFrames - motion.exitFrames - words.length * props.exitStagger - 4;
   const isWalking = (index: number) => {
     if (!props.walkHighlight) {
       return false;
@@ -42,20 +41,19 @@ export const WordBuild = (props: WordBuildProps) => {
       appear === lastAppear ? appear + props.buildFrames + 4 : appear + props.buildFrames;
     return frame >= appear && frame < until;
   };
-  const colorOf = (word: string, index: number) =>
-    isWalking(index) || (!props.walkHighlight && accented.has(normalize(word)))
-      ? look.accent
-      : look.ink;
+  const isLit = (word: string, index: number) =>
+    isWalking(index) || (!props.walkHighlight && accented.has(normalize(word)));
+  const colorOf = (word: string, index: number) => (isLit(word, index) ? look.accent : look.ink);
 
   const bigLayer = (
     <BigWordLayer
-      props={props}
+      props={{ ...props, look: { ...look, ink: props.bigColor } }}
       frame={frame}
       width={width}
       windows={windows}
       words={bigList}
       exitPad={exitPad}
-      accentFor={(word) => colorOf(word, -1)}
+      accentFor={(word) => (isLit(word, -1) ? look.accent : props.bigColor)}
     />
   );
 
@@ -73,7 +71,7 @@ export const WordBuild = (props: WordBuildProps) => {
         key={`${lineIndex}:${line.join(' ')}`}
         style={{
           ...displayType(size, weight),
-          lineHeight: 1.1,
+          lineHeight: props.lineHeight,
           transform: centeringShift(hiddenChars, props.buildFrom),
         }}
       >
@@ -86,7 +84,7 @@ export const WordBuild = (props: WordBuildProps) => {
           const leave = props.exitByWord
             ? tween(
                 frame,
-                [exitStart + index * EXIT_STAGGER, exitStart + index * EXIT_STAGGER + 6],
+                [exitStart + index * props.exitStagger, exitStart + index * props.exitStagger + 6],
                 [0, 1],
                 linear,
               )

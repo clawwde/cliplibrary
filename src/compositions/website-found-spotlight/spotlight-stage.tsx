@@ -87,7 +87,7 @@ export const SpotlightStage = ({
       <ambientLight color={palette.lamp} intensity={camera.ambient} />
       <directionalLight
         position={[-4, 7, 2.5]}
-        color="#dcefeb"
+        color={camera.fillColor}
         intensity={camera.fill}
         castShadow
         shadow-mapSize={[2048, 2048]}

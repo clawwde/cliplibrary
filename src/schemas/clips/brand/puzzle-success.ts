@@ -51,11 +51,13 @@ export const puzzleSuccessSchema = z.object({
     labelGlow: unit(),
     wordColor: zColor(),
     wordSize: zSlider({ min: 40, max: 180 }),
+    wordSpacing: zSlider({ min: 0, max: 0.4, step: 0.01 }),
     wordGlow: zColor(),
     wordGlowStrength: unit(2),
     wordmarkColor: zColor(),
     wordmarkSize: zSlider({ min: 16, max: 90 }),
     wordmarkY: zSlider({ min: 0, max: 1920 }),
+    wordmarkSpacing: zSlider({ min: 0, max: 0.8, step: 0.01 }),
     markColor: zColor(),
   }),
   neon: z.object({
@@ -103,6 +105,7 @@ export const puzzleSuccessSchema = z.object({
     color: zColor(),
     size: zSlider({ min: 40, max: 320 }),
     y: zSlider({ min: 0, max: 1920 }),
+    lineWidth: zSlider({ min: 0.5, max: 8, step: 0.1 }),
   }),
   timing: z.object({
     stepStart: zSlider({ min: 0, max: 40 }),
@@ -203,11 +206,13 @@ export const puzzleSuccessDefaults: PuzzleSuccessProps = {
     labelGlow: 0.6,
     wordColor: '#ffffff',
     wordSize: 92,
+    wordSpacing: 0.06,
     wordGlow: '#ffe0b8',
     wordGlowStrength: 1,
     wordmarkColor: '#fff3e6',
     wordmarkSize: 34,
     wordmarkY: 1625,
+    wordmarkSpacing: 0.34,
     markColor: '#ff9a3c',
   },
   neon: {
@@ -255,6 +260,7 @@ export const puzzleSuccessDefaults: PuzzleSuccessProps = {
     color: '#46303f',
     size: 136,
     y: 337,
+    lineWidth: 2.6,
   },
   timing: {
     stepStart: 0,

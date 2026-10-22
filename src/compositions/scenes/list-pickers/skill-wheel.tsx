@@ -11,8 +11,6 @@ import { pickerFonts } from '../../promo/fonts';
 import { pixelTween, settle, smooth, tween } from '../../promo/timing';
 import type { SceneModule } from '../../scene-module';
 
-const ENTRY_TURN = 1.5;
-
 const TickRing = ({
   ticks,
   center,
@@ -88,7 +86,8 @@ const SkillWheel = ({
   const frame = useCurrentFrame() * motion.speed;
   const { width } = useVideoConfig();
   const entry = tween(frame, [0, entryFrames * 1.6], [0, 1], settle);
-  const progress = stepState(frame, steps).progress - (1 - entry) * ENTRY_TURN;
+  const progress = stepState(frame, steps).progress - (1 - entry) * wheel.entryTurn;
+  const turn = wheel.direction === 'down' ? 1 : -1;
   const reveal = tween(frame, [0, entryFrames], [0, 1], settle);
   const rise = pixelTween(frame, [0, entryFrames + 8], [heading.size * 0.4, 0], settle);
   const reach = Math.ceil(wheel.range / wheel.spacing) + 1;
@@ -101,11 +100,11 @@ const SkillWheel = ({
           <TickRing
             ticks={ticks}
             center={center}
-            rotation={progress * wheel.spacing * ticks.speed + frame * ticks.idle}
+            rotation={turn * (progress * wheel.spacing * ticks.speed + frame * ticks.idle)}
           />
         ) : null}
         {slots.map((slot) => {
-          const angle = (progress - slot) * wheel.spacing;
+          const angle = turn * (progress - slot) * wheel.spacing;
           const distance = Math.abs(angle);
           if (distance > wheel.range) {
             return null;
@@ -165,24 +164,32 @@ const SkillWheel = ({
         >
           {title}
         </div>
-        <div style={{ fontSize: heading.subtitleSize, fontWeight: heading.subtitleWeight }}>
+        <div
+          style={{
+            fontSize: heading.subtitleSize,
+            fontWeight: heading.subtitleWeight,
+            color: look.muted,
+          }}
+        >
           {subtitle}
         </div>
       </div>
-      <svg
-        width={pointer.size}
-        height={pointer.size}
-        viewBox="0 0 100 100"
-        style={{
-          position: 'absolute',
-          left: center.x + pointer.offset,
-          top: center.y - pointer.size / 2,
-          opacity: reveal,
-        }}
-        aria-hidden="true"
-      >
-        <path d="M8 8 L94 50 L8 92 L30 50 Z" fill={pointer.color} />
-      </svg>
+      {pointer.show ? (
+        <svg
+          width={pointer.size}
+          height={pointer.size}
+          viewBox="0 0 100 100"
+          style={{
+            position: 'absolute',
+            left: center.x + pointer.offset,
+            top: center.y - pointer.size / 2,
+            opacity: reveal,
+          }}
+          aria-hidden="true"
+        >
+          <path d="M8 8 L94 50 L8 92 L30 50 Z" fill={pointer.color} />
+        </svg>
+      ) : null}
     </PickerLayer>
   );
 };

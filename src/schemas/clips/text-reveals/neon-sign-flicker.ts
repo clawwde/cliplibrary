@@ -58,6 +58,7 @@ export const neonSignFlickerSchema = z.object({
     swayPeriod: zSlider({ min: 30, max: 600 }),
   }),
   subtitle: z.object({
+    show: z.boolean(),
     color: zColor(),
     size: zSlider({ min: 20, max: 120 }),
     weight: zSlider({ min: 300, max: 800, step: 100 }),
@@ -69,6 +70,7 @@ export const neonSignFlickerSchema = z.object({
   }),
   brand: z.object({
     show: z.boolean(),
+    showMark: z.boolean(),
     color: zColor(),
     accent: zColor(),
     size: zSlider({ min: 20, max: 140 }),
@@ -149,6 +151,7 @@ export const neonSignFlickerDefaults: NeonSignFlickerProps = {
     swayPeriod: 170,
   },
   subtitle: {
+    show: true,
     color: '#f7ecf6',
     size: 50,
     weight: 500,
@@ -160,6 +163,7 @@ export const neonSignFlickerDefaults: NeonSignFlickerProps = {
   },
   brand: {
     show: true,
+    showMark: true,
     color: '#f7ecf6',
     accent: '#ff4fae',
     size: 50,

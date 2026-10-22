@@ -124,7 +124,7 @@ export const paperCues = (props: CrumpledPaperRevealProps, frame: number) => {
     ),
   );
   const lerp = THREE.MathUtils.lerp;
-  const lookX = lerp(lerp(camera.startX, 0, move), camera.endX, push);
+  const lookX = lerp(lerp(camera.startX, camera.midX, move), camera.endX, push);
   const lookY = lerp(lerp(camera.startY, camera.midY, move), camera.endY, push);
   return {
     state: { unfold, scale: Math.max(0.001, appear) },

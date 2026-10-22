@@ -28,6 +28,8 @@ export const ChalkTitle = ({
   right,
   wordSize,
   wordColor,
+  wordFont,
+  wordTilt,
   gap,
   centerScale,
   center,
@@ -85,10 +87,10 @@ export const ChalkTitle = ({
         {words.map((entry) => (
           <WordView
             key={entry.anchor}
-            part={word('script', wordSize, [0, 1], {
+            part={word(wordFont, wordSize, [0, 1], {
               x: entry.x,
               y: 6,
-              rotate: -3,
+              rotate: wordTilt,
               reveal: 'wipe',
               anchor: entry.anchor,
               unwrite: true,

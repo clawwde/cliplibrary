@@ -14,7 +14,7 @@ import {
 import { Slider } from '@/components/ui/slider';
 import { Switch } from '@/components/ui/switch';
 import { Textarea } from '@/components/ui/textarea';
-import type { ControlDescriptor } from '@/core';
+import { type ControlDescriptor, humanizeKey } from '@/core';
 import { cn } from '@/lib/utils';
 
 type LeafDescriptor = Extract<
@@ -207,7 +207,7 @@ const EnumField = ({
     <SelectContent>
       {descriptor.options.map((option) => (
         <SelectItem key={option} value={option}>
-          {option}
+          {humanizeKey(option)}
         </SelectItem>
       ))}
     </SelectContent>

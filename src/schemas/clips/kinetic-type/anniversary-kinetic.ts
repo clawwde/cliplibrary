@@ -6,6 +6,7 @@ import {
   anniversaryLogoSchema,
   anniversaryLookSchema,
 } from '../../anniversary-common';
+import { zColor, zSlider } from '../../control';
 import { defaultMotion, motionSchema, promoMeta } from '../../promo-common';
 import type { ClipMeta } from '../../registry';
 
@@ -13,10 +14,33 @@ export const anniversaryKineticSchema = z.object({
   beats: z.array(anniversaryBeatSchema).min(1).max(40),
   logo: anniversaryLogoSchema,
   look: anniversaryLookSchema,
+  band: z.object({
+    tilt: zSlider({ min: -30, max: 30, step: 0.5 }),
+    edge: zSlider({ min: 0, max: 30 }),
+  }),
+  sparkles: z.object({
+    size: zSlider({ min: 2, max: 40 }),
+    opacity: zSlider({ min: 0, max: 1, step: 0.05 }),
+    speed: zSlider({ min: 0, max: 4, step: 0.05 }),
+  }),
+  chrome: z.object({
+    topStart: zColor(),
+    topEnd: zColor(),
+    middleStart: zColor(),
+    middleEnd: zColor(),
+    bottomStart: zColor(),
+    bottomEnd: zColor(),
+  }),
   motion: motionSchema,
 });
 
 export type AnniversaryKineticProps = z.infer<typeof anniversaryKineticSchema>;
+
+export type AnniversaryBand = AnniversaryKineticProps['band'];
+
+export type AnniversarySparkles = AnniversaryKineticProps['sparkles'];
+
+export type AnniversaryChrome = AnniversaryKineticProps['chrome'];
 
 const PAPER_INK = '#1d1428';
 
@@ -188,6 +212,16 @@ export const anniversaryKineticDefaults: AnniversaryKineticProps = {
     blurFrames: 5,
   },
   look,
+  band: { tilt: -6, edge: 6 },
+  sparkles: { size: 9, opacity: 0.9, speed: 1 },
+  chrome: {
+    topStart: '#7a7a7a',
+    topEnd: '#c9c9c9',
+    middleStart: '#d9d9d9',
+    middleEnd: '#f4f4f4',
+    bottomStart: '#f6f6f6',
+    bottomEnd: '#9c9c9c',
+  },
   motion: defaultMotion({ exit: 'none', exitFrames: 12, float: 0 }),
 };
 

@@ -65,35 +65,37 @@ export const RollingOrb = ({
           boxShadow: `0 0 ${(10 * glow).toFixed(1)}px ${tint(orb.color, 0.8)}, 0 0 ${(30 * glow).toFixed(1)}px ${tint(orb.color, 0.45)}`,
         }}
       >
-        <div
-          style={{
-            position: 'absolute',
-            inset: 0,
-            transform: `rotate(${((spin * 180) / Math.PI).toFixed(3)}deg)`,
-          }}
-        >
+        {orb.stripes ? (
           <div
             style={{
               position: 'absolute',
-              left: -2,
-              right: -2,
-              top: radius - band / 2,
-              height: band,
-              background: tint(orb.stripeColor, 0.92),
+              inset: 0,
+              transform: `rotate(${((spin * 180) / Math.PI).toFixed(3)}deg)`,
             }}
-          />
-          <div
-            style={{
-              position: 'absolute',
-              left: radius * 0.32,
-              top: radius * 0.32,
-              width: radius * 0.26,
-              height: radius * 0.26,
-              borderRadius: '50%',
-              background: tint(orb.stripeColor, 0.92),
-            }}
-          />
-        </div>
+          >
+            <div
+              style={{
+                position: 'absolute',
+                left: -2,
+                right: -2,
+                top: radius - band / 2,
+                height: band,
+                background: tint(orb.stripeColor, 0.92),
+              }}
+            />
+            <div
+              style={{
+                position: 'absolute',
+                left: radius * 0.32,
+                top: radius * 0.32,
+                width: radius * 0.26,
+                height: radius * 0.26,
+                borderRadius: '50%',
+                background: tint(orb.stripeColor, 0.92),
+              }}
+            />
+          </div>
+        ) : null}
         <div
           style={{
             position: 'absolute',

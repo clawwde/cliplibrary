@@ -13,14 +13,13 @@ import { smooth } from '../../promo/timing';
 import type { SceneModule } from '../../scene-module';
 
 const FILTER_ID = 'chunky-stack-ink';
-const overshoot = Easing.out(Easing.back(1.9));
-const LETTER_EXIT_STAGGER = 0.5;
 
 const clamp01 = (value: number): number => Math.min(1, Math.max(0, value));
 
 const Letter = ({
   letter,
   pop,
+  bounce,
   gone,
   tilt,
   lift,
@@ -28,11 +27,13 @@ const Letter = ({
 }: {
   letter: string;
   pop: number;
+  bounce: number;
   gone: number;
   tilt: number;
   lift: number;
   grow: number;
 }) => {
+  const overshoot = Easing.out(Easing.back(bounce));
   const scale = (0.25 + 0.75 * overshoot(pop)) * (1 - smooth(gone)) * grow;
   return (
     <span
@@ -51,25 +52,30 @@ const Letter = ({
 export const ChunkyTypeStack = ({
   lines,
   color,
+  font,
   lineGap,
   jitter,
   seed,
   delay,
   letterFrames,
   popFrames,
+  popBounce,
   bar,
   exitAt,
   exitFrames,
   lineStagger,
+  exitLetterStagger,
   burst,
   endTag,
   endTagSize,
   endTagColor,
+  endTagSpacing,
   chalk,
   look,
   motion,
 }: ChunkyTypeStackProps) => {
   const frame = useCurrentFrame() * motion.speed;
+  const fontFamily = CONNECTOR_FONTS[font];
   let cursor = 0;
   const laidOut = lines.map((line) =>
     [...line.text].map((letter) => {
@@ -83,7 +89,7 @@ export const ChunkyTypeStack = ({
   const typedEnd = delay + cursor * letterFrames + popFrames * 0.5;
   const longest = Math.max(...lines.map((line) => line.text.length));
   const exitEnd =
-    exitAt + (lines.length - 1) * lineStagger + (longest - 1) * LETTER_EXIT_STAGGER + exitFrames;
+    exitAt + (lines.length - 1) * lineStagger + (longest - 1) * exitLetterStagger + exitFrames;
   const burstStart = exitEnd - 2;
   const burstProgress = clamp01((frame - burstStart) / burst.frames);
   const tagStart = burstStart + burst.frames * 0.95;
@@ -97,7 +103,7 @@ export const ChunkyTypeStack = ({
           flexDirection: 'column',
           alignItems: 'center',
           justifyContent: 'center',
-          fontFamily: CONNECTOR_FONTS.chunky,
+          fontFamily,
           color,
           filter: chalkFilterStyle(FILTER_ID, chalk),
         }}
@@ -128,7 +134,8 @@ export const ChunkyTypeStack = ({
                   key={`${index.toString()}${letter}`}
                   letter={letter}
                   pop={clamp01((frame - delay - order * letterFrames) / popFrames)}
-                  gone={clamp01((frame - exitStart - index * LETTER_EXIT_STAGGER) / exitFrames)}
+                  bounce={popBounce}
+                  gone={clamp01((frame - exitStart - index * exitLetterStagger) / exitFrames)}
                   tilt={signedHash(seed, order) * 6 * jitter}
                   lift={signedHash(seed + 1, order) * 0.05 * jitter}
                   grow={1 + signedHash(seed + 2, order) * 0.07 * jitter}
@@ -161,7 +168,7 @@ export const ChunkyTypeStack = ({
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            fontFamily: CONNECTOR_FONTS.chunky,
+            fontFamily,
             fontSize: burst.size,
             lineHeight: 1,
             color: burst.color,
@@ -180,9 +187,9 @@ export const ChunkyTypeStack = ({
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          fontFamily: CONNECTOR_FONTS.chunky,
+          fontFamily,
           fontSize: endTagSize,
-          letterSpacing: '0.06em',
+          letterSpacing: `${endTagSpacing}em`,
           color: endTagColor,
           filter: chalkFilterStyle(FILTER_ID, chalk),
         }}
@@ -192,6 +199,7 @@ export const ChunkyTypeStack = ({
             key={`${index.toString()}${letter}`}
             letter={letter}
             pop={clamp01((frame - tagStart - index * letterFrames * 0.6) / popFrames)}
+            bounce={popBounce}
             gone={0}
             tilt={0}
             lift={0}

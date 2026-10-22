@@ -26,6 +26,7 @@ export const dotWordmarkRevealSchema = z.object({
     badgeCorner: zSlider({ min: 0, max: 1, step: 0.01 }),
     glow: zSlider({ min: 0, max: 0.6, step: 0.01 }),
     pulse: zSlider({ min: 0, max: 1, step: 0.01 }),
+    monogramDot: z.boolean(),
   }),
   type: z.object({
     taglineSize: zSlider({ min: 20, max: 90 }),
@@ -72,6 +73,7 @@ export const dotWordmarkRevealSchema = z.object({
     rollFrames: frames(4, 40),
   }),
   roll: z.object({
+    away: z.boolean(),
     spin: zSlider({ min: 0, max: 1, step: 0.01 }),
     blur: zSlider({ min: 0, max: 30, step: 0.5 }),
     streaks: z.boolean(),
@@ -102,6 +104,7 @@ export const dotWordmarkRevealDefaults: DotWordmarkRevealProps = {
     badgeCorner: 0.46,
     glow: 0.16,
     pulse: 0.85,
+    monogramDot: true,
   },
   type: {
     taglineSize: 42,
@@ -148,6 +151,7 @@ export const dotWordmarkRevealDefaults: DotWordmarkRevealProps = {
     rollFrames: 15,
   },
   roll: {
+    away: true,
     spin: 0.35,
     blur: 9,
     streaks: true,

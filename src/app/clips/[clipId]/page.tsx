@@ -1,10 +1,13 @@
 import { notFound } from 'next/navigation';
 import { ClipTimelineEditor } from '@/components/clip-timeline/clip-timeline-editor';
-import { type ControlDescriptor, describeSchema, seedProjectForClip } from '@/core';
-import { CLIP_IDS, CLIP_SCHEMAS, getClipMeta, isClipId } from '@/schemas';
+import { type ControlSectionView, resolveClipControls, seedProjectForClip } from '@/core';
+import { clipPreviewVideo } from '@/lib/clips';
+import { CLIP_MODULES, getClipMeta, isClipId } from '@/schemas';
 
-const descriptorsByClip = (): Record<string, ControlDescriptor[]> =>
-  Object.fromEntries(CLIP_IDS.map((id) => [id, describeSchema(CLIP_SCHEMAS[id])]));
+const controlsByClip = (): Record<string, ControlSectionView[]> =>
+  Object.fromEntries(
+    CLIP_MODULES.map((module) => [module.id, resolveClipControls(module.schema, module.controls)]),
+  );
 
 const ClipEditorPage = async ({ params }: { params: Promise<{ clipId: string }> }) => {
   const { clipId } = await params;
@@ -15,8 +18,9 @@ const ClipEditorPage = async ({ params }: { params: Promise<{ clipId: string }> 
   return (
     <ClipTimelineEditor
       title={getClipMeta(clipId).title}
-      descriptorsByClip={descriptorsByClip()}
+      controlsByClip={controlsByClip()}
       initialProject={seedProjectForClip(clipId)}
+      demoSrc={clipPreviewVideo(clipId)}
     />
   );
 };

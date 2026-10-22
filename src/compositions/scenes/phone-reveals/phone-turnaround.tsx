@@ -12,8 +12,6 @@ import { Stage } from '../../promo/stage';
 import { glide, settle, smooth, TAU, track, tween } from '../../promo/timing';
 import type { SceneModule } from '../../scene-module';
 
-const RISE_FRAMES = 66;
-
 export const PhoneTurnaround = ({
   phone,
   position,
@@ -21,10 +19,16 @@ export const PhoneTurnaround = ({
   entry,
   entryYaw,
   entryFrames,
+  riseFrames,
+  riseYaw,
+  riseTilt,
   turnAt,
   rise: riseDistance,
   turnFrames,
+  driftYaw,
+  pushIn,
   secondScreen,
+  secondCustomScreen,
   secondTurnAt,
   secondTurnFrames,
   travelX,
@@ -37,10 +41,10 @@ export const PhoneTurnaround = ({
   const { durationInFrames } = useVideoConfig();
   const turn = Math.round(durationInFrames * turnAt);
   const turnIn = entry === 'turn-in';
-  const rise = turnIn ? 1 : tween(frame, [0, RISE_FRAMES], [0, 1], settle);
-  const turnStart = Math.max(0, Math.min(RISE_FRAMES - 48, turn - 72));
+  const rise = turnIn ? 1 : tween(frame, [0, riseFrames], [0, 1], settle);
+  const turnStart = Math.max(0, Math.min(riseFrames - 48, turn - 72));
   const turned = Math.max(turnStart + turnFrames, turn + turnFrames);
-  const twice = secondScreen !== 'none';
+  const twice = secondScreen !== 'none' || secondCustomScreen.length > 0;
   const secondFrom = turnIn ? secondTurnAt : Math.max(turned + 1, secondTurnAt);
   const secondEnd = secondFrom + secondTurnFrames;
   const settleYaw = twice
@@ -53,9 +57,9 @@ export const PhoneTurnaround = ({
         ],
         glide,
       )
-    : tween(frame, [turned, Math.max(durationInFrames, turned + 1)], [0, 0.47]);
+    : tween(frame, [turned, Math.max(durationInFrames, turned + 1)], [0, driftYaw]);
   const rotateY =
-    tween(frame, [0, RISE_FRAMES], [Math.PI + 1.1, Math.PI], settle) +
+    tween(frame, [0, riseFrames], [Math.PI + riseYaw, Math.PI], settle) +
     tween(frame, [turnStart, turned], [0, Math.PI - 0.25]) +
     settleYaw;
   const second = twice ? tween(frame, [secondFrom, secondEnd], [0, 1]) : 0;
@@ -63,7 +67,9 @@ export const PhoneTurnaround = ({
   const growEnd = twice ? secondEnd : durationInFrames;
   const grow = turnIn
     ? scale
-    : scale * (0.85 + rise * 0.15) * tween(frame, [RISE_FRAMES, growEnd], [1, 1.05]);
+    : scale *
+      (0.85 + rise * 0.15) *
+      tween(frame, [riseFrames, Math.max(growEnd, riseFrames + 1)], [1, pushIn]);
   const arrive = tween(frame, [0, entryFrames], [0, 1], smooth);
   const spin = twice
     ? track(
@@ -80,7 +86,11 @@ export const PhoneTurnaround = ({
     : rotateY - TAU;
   const shown: PromoPhone =
     twice && frame >= secondFrom + secondTurnFrames / 2
-      ? { ...phone, screen: secondScreen }
+      ? {
+          ...phone,
+          screen: secondScreen === 'none' ? phone.screen : secondScreen,
+          customScreen: secondCustomScreen,
+        }
       : phone;
   return (
     <PromoLayer look={look} motion={motion}>
@@ -91,7 +101,7 @@ export const PhoneTurnaround = ({
             position.y + (1 - rise) * -riseDistance + Math.sin(frame / 30) * motion.float * calm,
             position.z,
           ]}
-          rotation={[0.05 + (1 - rise) * 0.6, yaw, 0.03]}
+          rotation={[0.05 + (1 - rise) * riseTilt, yaw, 0.03]}
           scale={grow}
         >
           <PhoneModel

@@ -12,7 +12,6 @@ const ADVANCE: Record<PageFont, number> = {
 };
 
 const TEXT_MARGIN = 0.86;
-const CAPTION_SHARE = 0.022;
 const CAPTION_TRACKING = 0.24;
 
 const ABSOLUTE = /^(https?:|data:|blob:|\/)/;
@@ -56,7 +55,7 @@ const PageText = ({ page, pageWidth, pageHeight }: PagePart) => {
 };
 
 const PageCaption = ({ page, pageWidth, pageHeight }: PagePart) => {
-  const size = pageWidth * CAPTION_SHARE;
+  const size = pageWidth * page.captionSize;
   const y = pageHeight * page.captionY;
   const width = page.caption.length * size * (0.62 + CAPTION_TRACKING);
   return (

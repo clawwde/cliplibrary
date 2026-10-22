@@ -6,19 +6,20 @@ mock.module('@/components/clip-timeline/clip-preview', () => ({
 
 import { fireEvent, render, screen } from '@testing-library/react';
 import { ClipTimelineEditor } from '@/components/clip-timeline/clip-timeline-editor';
-import { describeSchema, seedProjectForClip } from '@/core';
-import { CLIP_IDS, CLIP_SCHEMAS } from '@/schemas';
+import { resolveClipControls, seedProjectForClip } from '@/core';
+import { CLIP_MODULES } from '@/schemas';
 
-const descriptorsByClip = Object.fromEntries(
-  CLIP_IDS.map((id) => [id, describeSchema(CLIP_SCHEMAS[id])]),
+const controlsByClip = Object.fromEntries(
+  CLIP_MODULES.map((module) => [module.id, resolveClipControls(module.schema, module.controls)]),
 );
 
 const renderEditor = () =>
   render(
     <ClipTimelineEditor
       title="Phone Spin In"
-      descriptorsByClip={descriptorsByClip}
+      controlsByClip={controlsByClip}
       initialProject={seedProjectForClip('phone-spin-in')}
+      demoSrc={null}
     />,
   );
 

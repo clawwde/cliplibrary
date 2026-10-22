@@ -13,7 +13,6 @@ const FALLEN = Math.PI / 2 - CUP_SIDE_ANGLE;
 const RELEASE = 0.42;
 const TIP_POWER = 2.4;
 const BOUNCE_FRAMES = 12;
-const EXIT_FRAMES = 48;
 const CONTACT_GAP = 0.07;
 
 export interface SpillMotion {
@@ -113,7 +112,7 @@ const handPath = (props: SpillRevealProps, frame: number) => {
     };
   }
   const released = attached(RELEASE);
-  const leave = tween(frame, [marks.release, marks.release + EXIT_FRAMES], [0, 1], smooth);
+  const leave = tween(frame, [marks.release, marks.release + timing.leaveFrames], [0, 1], smooth);
   const exitTo = released.position.clone().add(new THREE.Vector3(3.2, 1.6, 1.6));
   return {
     palm:

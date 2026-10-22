@@ -7,11 +7,16 @@ import { pickerFonts } from '../../promo/fonts';
 import { pixelTween, settle, smooth, tween } from '../../promo/timing';
 import type { SceneModule } from '../../scene-module';
 
-const VISIBLE_SLOTS = 3;
+const FADE_SPAN = 0.9;
 
 const smoothstep = (value: number): number => {
   const t = Math.min(1, Math.max(0, value));
   return t * t * (3 - 2 * t);
+};
+
+const shadowTint = (hex: string, alpha: number): string => {
+  const channel = (start: number): number => Number.parseInt(hex.slice(start, start + 2), 16);
+  return `rgba(${channel(1)}, ${channel(3)}, ${channel(5)}, ${alpha.toFixed(3)})`;
 };
 
 const glass = (fill: string, alpha: number): string =>
@@ -44,9 +49,10 @@ const MindMap = ({
   const lineDraw = tween(frame, [entrance.frames * 0.4, entrance.frames * 1.2], [0, 1], smooth);
   const lineStart = layout.rootX + 240;
   const lineEnd = layout.arcX - 18;
-  const first = Math.floor(progress) - VISIBLE_SLOTS;
-  const slots = Array.from({ length: VISIBLE_SLOTS * 2 + 2 }, (_, offset) => first + offset);
-  const shadow = `0 14px 34px rgba(150, 30, 40, ${(style.shadow * 0.45).toFixed(3)})`;
+  const visibleSlots = Math.ceil(style.reach + FADE_SPAN);
+  const first = Math.floor(progress) - visibleSlots;
+  const slots = Array.from({ length: visibleSlots * 2 + 2 }, (_, offset) => first + offset);
+  const shadow = `0 14px 34px ${shadowTint(style.shadowColor, style.shadow * 0.45)}`;
   return (
     <PickerLayer look={look} aura={aura} motion={motion} focusX={60}>
       <AbsoluteFill>
@@ -94,14 +100,14 @@ const MindMap = ({
           const start = 4 + order * entrance.stagger;
           const appear = tween(frame, [start, start + entrance.frames], [0, 1], settle);
           const rise = pixelTween(frame, [start, start + entrance.frames], [36, 0], settle);
-          const fade = 1 - tween(distance, [1.6, 2.5], [0, 1], smooth);
+          const fade = 1 - tween(distance, [style.reach, style.reach + FADE_SPAN], [0, 1], smooth);
           const dim = 1 - style.sideFade * Math.min(1, distance);
           const opacity = appear * fade * dim;
           if (opacity <= 0.001) {
             return null;
           }
           const fill = `color-mix(in oklab, ${style.activeFill} ${(focus * 100).toFixed(1)}%, ${style.nodeFill})`;
-          const alpha = style.nodeOpacity + (0.94 - style.nodeOpacity) * focus;
+          const alpha = style.nodeOpacity + (style.activeOpacity - style.nodeOpacity) * focus;
           const scale = 1 + (style.activeScale - 1) * focus;
           return (
             <div
@@ -122,6 +128,9 @@ const MindMap = ({
                 titleSize={type.title}
                 subtitleSize={type.subtitle}
                 ink={type.ink}
+                subtitleInk={type.subtitleInk}
+                showIcon={style.showIcon}
+                iconColor={style.iconColor}
                 padding={layout.padding}
                 style={{
                   background: glass(fill, alpha),
@@ -148,6 +157,9 @@ const MindMap = ({
             titleSize={type.rootTitle}
             subtitleSize={type.rootSubtitle}
             ink={type.ink}
+            subtitleInk={type.subtitleInk}
+            showIcon={style.showIcon}
+            iconColor={style.iconColor}
             padding={layout.padding * 1.2}
             style={{
               background: `linear-gradient(180deg, color-mix(in oklab, ${style.rootFill}, #ffffff 14%), ${style.rootFill})`,

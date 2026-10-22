@@ -31,7 +31,8 @@ const backdropGlow = (look: GoingLiveTeaserProps['look']): string => {
 };
 
 const GoingLiveTeaser = (props: GoingLiveTeaserProps) => {
-  const { copy, wall, look, type, zoom, glitch, echo, smoke, logo, timing, motion } = props;
+  const { copy, wall, look, type, zoom, glitch, echo, smoke, logo, endCard, timing, motion } =
+    props;
   const frame = useCurrentFrame() * motion.speed;
   const base = { weight: type.weight, tracking: type.tracking };
   const word = { ...base, size: type.wordSize };
@@ -156,17 +157,19 @@ const GoingLiveTeaser = (props: GoingLiveTeaserProps) => {
         type={{ ...base, size: type.urlSize }}
         color={look.ink}
       />
-      <Monogram
-        frame={frame}
-        start={timing.logoStart}
-        square={timing.logoSquare}
-        drawn={timing.logoDrawn}
-        stroke={logo.stroke}
-        scale={logo.scale}
-        centerY={logo.y}
-        color={look.logo}
-      />
-      <EndCard frame={frame} copy={copy} type={type} look={look} timing={timing} />
+      {logo.show ? (
+        <Monogram
+          frame={frame}
+          start={timing.logoStart}
+          square={timing.logoSquare}
+          drawn={timing.logoDrawn}
+          stroke={logo.stroke}
+          scale={logo.scale}
+          centerY={logo.y}
+          color={look.logo}
+        />
+      ) : null}
+      <EndCard frame={frame} copy={copy} type={type} look={look} timing={timing} layout={endCard} />
     </TransitionFrame>
   );
 };

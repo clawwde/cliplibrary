@@ -50,6 +50,7 @@ export const menuStackSchema = z.object({
     gap: zSlider({ min: 0, max: 120 }),
   }),
   icon: z.object({
+    show: z.boolean(),
     size: zSlider({ min: 20, max: 200 }),
     radius: zSlider({ min: 0, max: 60 }),
     color: zColor(),
@@ -57,6 +58,7 @@ export const menuStackSchema = z.object({
     glyphStroke: zSlider({ min: 1, max: 16, step: 0.5 }),
   }),
   pointer: z.object({
+    show: z.boolean(),
     width: zSlider({ min: 10, max: 200 }),
     height: zSlider({ min: 10, max: 200 }),
     notch: zSlider({ min: 0, max: 0.9, step: 0.01 }),
@@ -106,8 +108,8 @@ export const menuStackDefaults: MenuStackProps = {
     padding: 34,
     gap: 44,
   },
-  icon: { size: 80, radius: 40, color: '#3fa79c', glyph: '#ffffff', glyphStroke: 5 },
-  pointer: { width: 80, height: 88, notch: 0.32, color: '#3fa79c' },
+  icon: { show: true, size: 80, radius: 40, color: '#3fa79c', glyph: '#ffffff', glyphStroke: 5 },
+  pointer: { show: true, width: 80, height: 88, notch: 0.32, color: '#3fa79c' },
   aura: { blobs: [blob('#ffffff', 52, 46, 70, 0.35)], drift: 0.4 },
   look: pickerLook({
     background: '#e8edf0',

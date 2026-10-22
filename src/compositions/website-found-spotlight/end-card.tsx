@@ -95,7 +95,12 @@ export const EndCard = ({
           style={{ marginTop: 120, textAlign: 'center', lineHeight: 1.06 }}
         >
           <div
-            style={{ color: card.ink, fontSize: 62, fontWeight: 600, letterSpacing: '-0.025em' }}
+            style={{
+              color: card.ink,
+              fontSize: card.headlineSize,
+              fontWeight: 600,
+              letterSpacing: '-0.025em',
+            }}
           >
             {card.headline}
           </div>
@@ -103,7 +108,7 @@ export const EndCard = ({
             style={{
               color: card.accent,
               fontFamily: didoneFont,
-              fontSize: 84,
+              fontSize: card.sublineSize,
               fontWeight: 500,
               letterSpacing: '-0.02em',
               marginTop: 6,
@@ -112,15 +117,17 @@ export const EndCard = ({
             {card.subline}
           </div>
         </Rise>
-        <Rise elapsed={elapsed} delay={at(2)} style={{ marginTop: 84 }}>
-          <CodeTile
-            size={290}
-            seed={card.codeSeed}
-            frameFrom={card.accent}
-            frameTo={`color-mix(in oklab, ${card.accent} 60%, #ff8a3d)`}
-            ink="#0c1b1f"
-          />
-        </Rise>
+        {card.showCode ? (
+          <Rise elapsed={elapsed} delay={at(2)} style={{ marginTop: 84 }}>
+            <CodeTile
+              size={290}
+              seed={card.codeSeed}
+              frameFrom={card.accent}
+              frameTo={`color-mix(in oklab, ${card.accent} 60%, #ff8a3d)`}
+              ink="#0c1b1f"
+            />
+          </Rise>
+        ) : null}
         <Rise
           elapsed={elapsed}
           delay={at(3)}

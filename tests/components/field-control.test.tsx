@@ -122,9 +122,9 @@ describe('FieldControl enum select', () => {
     options: ['slow', 'medium', 'fast'],
   };
 
-  it('shows the current selection on the trigger', () => {
+  it('shows the current selection humanized on the trigger', () => {
     renderControl(descriptor, 'medium');
-    expect(screen.getByRole('combobox').textContent).toContain('medium');
+    expect(screen.getByRole('combobox').textContent).toContain('Medium');
   });
 
   it('coerces a nullish selection to an empty string', () => {

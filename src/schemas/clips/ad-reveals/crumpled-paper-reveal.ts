@@ -2,6 +2,7 @@ import { z } from 'zod';
 import { zColor, zMultiline, zSlider } from '../../control';
 import { defaultMotion, lightLook, lookSchema, motionSchema, promoMeta } from '../../promo-common';
 import type { ClipMeta } from '../../registry';
+import { ARM_STYLES } from '../desk-scenes/laptop-wipe-reveal';
 
 const unit = (max = 1, step = 0.01) => zSlider({ min: 0, max, step });
 
@@ -11,9 +12,13 @@ export const crumpledPaperRevealSchema = z.object({
   print: z.object({
     headline: zMultiline(),
     footer: z.string(),
+    footerSize: zSlider({ min: 0.05, max: 0.3, step: 0.01 }),
+    footerY: unit(),
     ink: zColor(),
     paper: zColor(),
     size: zSlider({ min: 120, max: 420 }),
+    lineHeight: zSlider({ min: 0.6, max: 1.4, step: 0.01 }),
+    condense: zSlider({ min: 0.5, max: 1.2, step: 0.01 }),
     tilt: zSlider({ min: -0.4, max: 0.4, step: 0.01 }),
     indent: unit(),
     centerX: unit(),
@@ -63,6 +68,8 @@ export const crumpledPaperRevealSchema = z.object({
     thumbCurl: zSlider({ min: -0.5, max: 1.5, step: 0.01 }),
     watch: z.boolean(),
     watchColor: zColor(),
+    sleeve: z.enum(ARM_STYLES),
+    sleeveColor: zColor(),
   }),
   room: z.object({
     wall: zColor(),
@@ -75,6 +82,7 @@ export const crumpledPaperRevealSchema = z.object({
     endDistance: zSlider({ min: 2, max: 14, step: 0.05 }),
     startX: zSlider({ min: -2, max: 2, step: 0.01 }),
     startY: zSlider({ min: -2, max: 2, step: 0.01 }),
+    midX: zSlider({ min: -2, max: 2, step: 0.01 }),
     midY: zSlider({ min: -2, max: 2, step: 0.01 }),
     endX: zSlider({ min: -2, max: 2, step: 0.01 }),
     endY: zSlider({ min: -2, max: 2, step: 0.01 }),
@@ -113,9 +121,13 @@ export const crumpledPaperRevealDefaults: CrumpledPaperRevealProps = {
   print: {
     headline: 'ALMOST\nHERE',
     footer: 'AUTUMN EDIT',
+    footerSize: 0.13,
+    footerY: 0.9,
     ink: '#22304a',
     paper: '#f0e8da',
     size: 280,
+    lineHeight: 0.86,
+    condense: 0.8,
     tilt: -0.13,
     indent: 0.3,
     centerX: 0.5,
@@ -165,6 +177,8 @@ export const crumpledPaperRevealDefaults: CrumpledPaperRevealProps = {
     thumbCurl: 0.3,
     watch: true,
     watchColor: '#cfae74',
+    sleeve: 'bare',
+    sleeveColor: '#4a5263',
   },
   room: {
     wall: '#a3ae9b',
@@ -177,6 +191,7 @@ export const crumpledPaperRevealDefaults: CrumpledPaperRevealProps = {
     endDistance: 4.3,
     startX: 0.4,
     startY: -0.15,
+    midX: 0,
     midY: 0,
     endX: -0.04,
     endY: 0.05,

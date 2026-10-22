@@ -53,9 +53,9 @@ const FromBehind = ({
 
 export const PhonePair = (props: PhonePairProps) => {
   const { phones, position, scale, gap, angle, stagger, entrance } = props;
-  const { look, stage, motion } = props;
+  const { arriveFrames, arriveSwing, look, stage, motion } = props;
   const frame = useCurrentFrame() * motion.speed;
-  const arrive = tween(frame, [0, 66], [0, 1], settle);
+  const arrive = tween(frame, [0, arriveFrames], [0, 1], settle);
   const { width, height } = useVideoConfig();
   const halfWidth =
     Math.tan((stage.fieldOfView * Math.PI) / 360) * stage.cameraDistance * (width / height);
@@ -83,7 +83,7 @@ export const PhonePair = (props: PhonePairProps) => {
                     Math.sin(frame / 26 + index * 1.6) * motion.float,
                   position.z + (index === 0 ? 0.3 : -0.5),
                 ]}
-                rotation={[0.05, -side * (angle + (1 - arrive) * 0.9), side * -0.04]}
+                rotation={[0.05, -side * (angle + (1 - arrive) * arriveSwing), side * -0.04]}
                 scale={scale}
               >
                 <PhoneModel phone={entry} reflections={stage.reflections} />

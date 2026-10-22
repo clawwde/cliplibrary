@@ -141,13 +141,13 @@ export const Watermark = ({
     </div>
   );
 
-const SendIcon = ({ size }: { size: number }) => (
+const SendIcon = ({ size, color }: { size: number; color: string }) => (
   <svg width={size} height={size} viewBox="0 0 48 48" style={{ display: 'block' }}>
     <title>send</title>
     <path
       d="M24 36V13M14 22l10-10 10 10"
       fill="none"
-      stroke="#ffffff"
+      stroke={color}
       strokeWidth={5}
       strokeLinecap="round"
       strokeLinejoin="round"
@@ -163,6 +163,7 @@ export interface PillLook {
   fieldY: number;
   hint: string;
   accent: string;
+  iconInk: string;
 }
 
 export const MessagePill = ({
@@ -170,6 +171,7 @@ export const MessagePill = ({
   text,
   caret,
   placeholder,
+  placeholderText,
   fade,
   sent,
   pulse,
@@ -178,6 +180,7 @@ export const MessagePill = ({
   text: string;
   caret: number;
   placeholder: number;
+  placeholderText: string;
   fade: number[];
   sent: number;
   pulse: number;
@@ -229,9 +232,9 @@ export const MessagePill = ({
             transform: `translateY(${Math.round(-sent * size * 0.9)}px)`,
           }}
         >
-          {placeholder > 0 ? (
+          {placeholder > 0 && placeholderText !== '' ? (
             <span style={{ position: 'absolute', color: look.hint, opacity: placeholder }}>
-              Message
+              {placeholderText}
             </span>
           ) : null}
           {[...text].map((char, index) => (
@@ -270,7 +273,7 @@ export const MessagePill = ({
           transform: `scale(${(1 + pulse * 0.14).toFixed(3)})`,
         }}
       >
-        <SendIcon size={button * 0.6} />
+        <SendIcon size={button * 0.6} color={look.iconInk} />
       </div>
     </div>
   );

@@ -1,4 +1,4 @@
-import { AbsoluteFill, Easing, useVideoConfig } from 'remotion';
+import { AbsoluteFill, Easing, Img, useVideoConfig } from 'remotion';
 import type { ScrollerWallProps } from '@/schemas';
 import { smooth, tween } from '../promo/timing';
 import { wallFont } from './fonts';
@@ -12,8 +12,18 @@ const WAVE = 'M-38 0 q19 -20 38 0 t38 0';
 
 const RING_FADES = [1, 0.7, 0.42];
 
-const WaveMark = ({ ink, accent, paper }: { ink: string; accent: string; paper: string }) => (
-  <svg width={170} height={170} viewBox="-75 -75 150 150" aria-hidden="true">
+const WaveMark = ({
+  ink,
+  accent,
+  paper,
+  size,
+}: {
+  ink: string;
+  accent: string;
+  paper: string;
+  size: number;
+}) => (
+  <svg width={size} height={size} viewBox="-75 -75 150 150" aria-hidden="true">
     <rect x={-66} y={-66} width={132} height={132} rx={40} fill={accent} />
     <g fill="none" stroke={paper} strokeWidth={11} strokeLinecap="round">
       <path d={WAVE} transform="translate(0 -14)" />
@@ -23,7 +33,42 @@ const WaveMark = ({ ink, accent, paper }: { ink: string; accent: string; paper: 
   </svg>
 );
 
-const Logo = ({ card, ink, accent }: { card: Card; ink: string; accent: string }) => (
+const Mark = ({
+  card,
+  ink,
+  accent,
+  tinted,
+}: {
+  card: Card;
+  ink: string;
+  accent: string;
+  tinted: boolean;
+}) => {
+  if (card.logoImage === '') {
+    return <WaveMark ink={ink} accent={accent} paper={card.disc} size={card.logoSize} />;
+  }
+  if (tinted) {
+    return <div style={{ width: card.logoSize, height: card.logoSize }} />;
+  }
+  return (
+    <Img
+      src={card.logoImage}
+      style={{ width: card.logoSize, height: card.logoSize, objectFit: 'contain' }}
+    />
+  );
+};
+
+const Logo = ({
+  card,
+  ink,
+  accent,
+  tinted,
+}: {
+  card: Card;
+  ink: string;
+  accent: string;
+  tinted: boolean;
+}) => (
   <div
     style={{
       display: 'flex',
@@ -33,11 +78,11 @@ const Logo = ({ card, ink, accent }: { card: Card; ink: string; accent: string }
       lineHeight: 1,
     }}
   >
-    <WaveMark ink={ink} accent={accent} paper={card.disc} />
+    <Mark card={card} ink={ink} accent={accent} tinted={tinted} />
     <span
       style={{
         marginTop: 24,
-        fontSize: 58,
+        fontSize: card.brandTopSize,
         fontWeight: 700,
         letterSpacing: '0.03em',
         color: ink,
@@ -48,7 +93,7 @@ const Logo = ({ card, ink, accent }: { card: Card; ink: string; accent: string }
     <span
       style={{
         marginTop: 14,
-        fontSize: 28,
+        fontSize: card.brandBottomSize,
         fontWeight: 600,
         letterSpacing: '0.6em',
         marginRight: '-0.6em',
@@ -156,9 +201,9 @@ export const EndCard = ({
         }}
       >
         <div style={{ position: 'relative' }}>
-          <Logo card={card} ink={card.logoInk} accent={card.logoAccent} />
+          <Logo card={card} ink={card.logoInk} accent={card.logoAccent} tinted={false} />
           <div style={{ position: 'absolute', inset: 0, opacity: tint }}>
-            <Logo card={card} ink={card.tint} accent={card.tint} />
+            <Logo card={card} ink={card.tint} accent={card.tint} tinted />
           </div>
         </div>
       </div>

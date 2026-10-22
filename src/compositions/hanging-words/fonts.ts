@@ -1,5 +1,6 @@
 import { loadFont as loadMontserrat } from '@remotion/google-fonts/Montserrat';
 import { loadFont as loadSaira } from '@remotion/google-fonts/Saira';
+import type { HangingFont } from '@/schemas';
 
 const saira = loadSaira('normal', {
   weights: ['400', '500', '600', '700', '800', '900'],
@@ -11,6 +12,5 @@ const montserrat = loadMontserrat('normal', {
   subsets: ['latin'],
 });
 
-export const squareFont = saira.fontFamily;
-
-export const heavyFont = montserrat.fontFamily;
+export const fontFamily = (font: HangingFont): string =>
+  font === 'square' ? saira.fontFamily : montserrat.fontFamily;

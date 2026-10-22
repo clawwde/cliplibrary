@@ -75,12 +75,16 @@ export const FooterLink = ({ footer }: { footer: DominoWordsProps['footer'] }) =
         letterSpacing: '0.14em',
       }}
     >
-      <div
-        style={{ width: footer.size * 2.2, height: 1, background: footer.color, opacity: 0.5 }}
-      />
+      {footer.lines ? (
+        <div
+          style={{ width: footer.size * 2.2, height: 1, background: footer.color, opacity: 0.5 }}
+        />
+      ) : null}
       {footer.text}
-      <div
-        style={{ width: footer.size * 2.2, height: 1, background: footer.color, opacity: 0.5 }}
-      />
+      {footer.lines ? (
+        <div
+          style={{ width: footer.size * 2.2, height: 1, background: footer.color, opacity: 0.5 }}
+        />
+      ) : null}
     </div>
   ) : null;

@@ -18,6 +18,7 @@ export const DoodleArrows = ({
   headSize,
   eraseFrames,
   eraseStagger,
+  breakApart,
   seed,
   ink,
   look,
@@ -26,6 +27,10 @@ export const DoodleArrows = ({
   const frame = useCurrentFrame() * motion.speed;
   const { width, height, durationInFrames } = useVideoConfig();
   const end = durationInFrames * motion.speed - ERASE_MARGIN;
+  const eraseStartFor = (index: number) =>
+    breakApart
+      ? end - eraseFrames - (arrows.length - 1 - index) * eraseStagger
+      : durationInFrames * motion.speed;
   return (
     <PromoLayer look={look} motion={motion}>
       <svg
@@ -51,7 +56,7 @@ export const DoodleArrows = ({
               seed={seed + index * 97}
               drawStart={delay + arrow.delay}
               drawFrames={drawFrames}
-              eraseStart={end - eraseFrames - (arrows.length - 1 - index) * eraseStagger}
+              eraseStart={eraseStartFor(index)}
               eraseFrames={eraseFrames}
             />
           </g>

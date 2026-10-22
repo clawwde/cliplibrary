@@ -37,6 +37,7 @@ export const wordPickerSchema = z.object({
     fade: zSlider({ min: 0.2, max: 2, step: 0.05 }),
   }),
   frame: z.object({
+    show: z.boolean(),
     width: zSlider({ min: 200, max: 1700 }),
     height: zSlider({ min: 60, max: 400 }),
     fill: zColor(),
@@ -45,6 +46,7 @@ export const wordPickerSchema = z.object({
     lineWidth: zSlider({ min: 1, max: 12, step: 0.5 }),
     overhang: zSlider({ min: 0, max: 80 }),
     dot: zSlider({ min: 0, max: 30, step: 0.5 }),
+    drawStart: zSlider({ min: 0, max: 120 }),
     drawFrames: zSlider({ min: 4, max: 60 }),
   }),
   offsetX: zSlider({ min: -800, max: 800 }),
@@ -85,6 +87,7 @@ export const wordPickerDefaults: WordPickerProps = {
     fade: 0.8,
   },
   frame: {
+    show: true,
     width: 920,
     height: 180,
     fill: '#4a5bd8',
@@ -93,6 +96,7 @@ export const wordPickerDefaults: WordPickerProps = {
     lineWidth: 3.5,
     overhang: 22,
     dot: 11,
+    drawStart: 0,
     drawFrames: 22,
   },
   offsetX: 0,

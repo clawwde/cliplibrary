@@ -22,3 +22,18 @@ export type ControlDescriptor =
       item: ControlDescriptor[];
     }
   | { kind: 'object'; path: string[]; label: string; fields: ControlDescriptor[] };
+
+export type AddressableDescriptor = Exclude<ControlDescriptor, { kind: 'object' }>;
+
+export type ControlEntry = {
+  id: string;
+  descriptor: AddressableDescriptor;
+  hint: string | null;
+  targets: string[][];
+};
+
+export type ControlSectionView = {
+  title: string;
+  fields: ControlEntry[];
+  more: ControlEntry[];
+};

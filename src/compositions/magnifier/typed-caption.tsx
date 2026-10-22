@@ -29,7 +29,7 @@ const Underline = ({
 }) => {
   const { caption, timing, glow } = props;
   const drawFrom = start + caption.wordFrames * 0.4;
-  const drawn = tween(frame, [drawFrom, drawFrom + 26], [0, 1], glide);
+  const drawn = tween(frame, [drawFrom, drawFrom + caption.underlineFrames], [0, 1], glide);
   const fade = tween(
     frame,
     [

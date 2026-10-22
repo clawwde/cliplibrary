@@ -1,7 +1,8 @@
 import { existsSync } from 'node:fs';
 import { join } from 'node:path';
 import { seedProjectForClip } from '@/core';
-import { CLIP_REGISTRY, isClipId } from '@/schemas';
+import { CLIP_REGISTRY, CLIP_UPDATED_AT, isClipId } from '@/schemas';
+import { stampClipUpdatedAt } from './clip-updated-at';
 import { galleryPreviewsDir } from './paths';
 import { galleryPreviewFileNames, renderGalleryPreview } from './render-gallery-preview';
 
@@ -25,6 +26,9 @@ const main = async (): Promise<void> => {
   for (const meta of clips) {
     console.info(`Rendering ${meta.id}...`);
     await renderGalleryPreview(seedProjectForClip(meta.id), galleryPreviewsDir, meta.id);
+    if (only.includes(meta.id) || CLIP_UPDATED_AT[meta.id] === undefined) {
+      await stampClipUpdatedAt([meta.id], new Date());
+    }
     console.info(`  done ${meta.id}`);
   }
 

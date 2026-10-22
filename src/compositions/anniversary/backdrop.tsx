@@ -1,5 +1,5 @@
 import { AbsoluteFill } from 'remotion';
-import type { AnniversaryBackdrop, AnniversaryLook } from '@/schemas';
+import type { AnniversaryBackdrop, AnniversaryBand, AnniversaryLook } from '@/schemas';
 import { ProceduralTexture } from './texture';
 
 const FLAT: Record<Exclude<AnniversaryBackdrop, 'texture' | 'band'>, keyof AnniversaryLook> = {
@@ -17,11 +17,7 @@ const SLICES = [
 
 const FLASH = [1, 0.7, 0.45];
 
-const BAND_SLANT = -6;
-
 const BAND_OVERHANG = 0.15;
-
-const BAND_EDGE = 6;
 
 const FLASH_FLOOR = 0.06;
 
@@ -39,6 +35,7 @@ const flashLight = (local: number): number => {
 export const BeatBackdrop = ({
   kind,
   look,
+  band: bandStyle,
   local,
   index,
   width,
@@ -46,6 +43,7 @@ export const BeatBackdrop = ({
 }: {
   kind: AnniversaryBackdrop;
   look: AnniversaryLook;
+  band: AnniversaryBand;
   local: number;
   index: number;
   width: number;
@@ -81,9 +79,9 @@ export const BeatBackdrop = ({
             width: span,
             height: band,
             overflow: 'hidden',
-            transform: `rotate(${BAND_SLANT}deg)`,
-            borderTop: `${BAND_EDGE}px solid ${look.gradientFrom}`,
-            borderBottom: `${BAND_EDGE}px solid ${look.gradientTo}`,
+            transform: `rotate(${bandStyle.tilt}deg)`,
+            borderTop: `${bandStyle.edge}px solid ${look.gradientFrom}`,
+            borderBottom: `${bandStyle.edge}px solid ${look.gradientTo}`,
           }}
         >
           <div

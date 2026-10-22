@@ -46,7 +46,7 @@ const Studio = () => (
   </Environment>
 );
 
-const useLabel = (text: string) => {
+const useLabel = (text: string, color: string) => {
   useCanvasFont(`700 120px "${bodyFont}"`, bodyFontReady);
   return useMemo(() => {
     const canvas = document.createElement('canvas');
@@ -57,7 +57,7 @@ const useLabel = (text: string) => {
       context.font = `700 120px "${bodyFont}"`;
       context.textAlign = 'center';
       context.textBaseline = 'middle';
-      context.fillStyle = '#ffffff';
+      context.fillStyle = color;
       context.shadowColor = 'rgba(80,0,0,0.35)';
       context.shadowBlur = 8;
       context.fillText(text, 512, 132);
@@ -66,11 +66,11 @@ const useLabel = (text: string) => {
     texture.colorSpace = THREE.SRGBColorSpace;
     texture.anisotropy = 8;
     return texture;
-  }, [text]);
+  }, [text, color]);
 };
 
 const Puzzle = ({ card, frame, y }: { card: Card; frame: number; y: number }) => {
-  const label = useLabel(card.solution);
+  const label = useLabel(card.solution, card.labelInk);
   const grow = tween(frame, [0, 18], [0.08, 1], settle);
   const arrive = tween(frame, [4, 24], [0, 1], settle);
   const bob = Math.sin(frame / 14) * 0.04;

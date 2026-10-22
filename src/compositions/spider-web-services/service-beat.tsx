@@ -133,13 +133,13 @@ export const ServiceBeat = (beat: BeatProps) => {
               />
             ))
           : null}
-        {layer === 'front' ? (
+        {layer === 'front' && props.spider.show ? (
           <Spider
             x={pose.x}
             y={pose.y}
             heading={pose.heading}
             gait={pose.gait}
-            scale={SPIDER_SCALE}
+            scale={SPIDER_SCALE * props.spider.size}
             body={service.spiderBody}
             marks={service.spiderMarks}
           />

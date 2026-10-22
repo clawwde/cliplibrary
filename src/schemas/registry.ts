@@ -1,5 +1,6 @@
 import type { z } from 'zod';
 import type { ClipId } from './clip-props';
+import type { ClipControls } from './control-layout';
 import type { ClipCategory, ClipTag, ClipTheme } from './taxonomy';
 
 export type ClipMeta = {
@@ -22,4 +23,5 @@ export type ClipModule = {
   schema: z.ZodType;
   defaults: unknown;
   meta: ClipMeta;
+  controls: ClipControls;
 };

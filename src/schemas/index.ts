@@ -1,5 +1,6 @@
 export * from './anniversary-common';
 export * from './clip-props';
+export * from './clip-updated-at';
 export * from './clips';
 export * from './clips/ad-reveals/battery-charge-success';
 export * from './clips/ad-reveals/billboard-reader';
@@ -75,6 +76,8 @@ export * from './clips/text-reveals/typewriter';
 export * from './clips/transitions/scene-transition';
 export * from './connector-common';
 export * from './control';
+export * from './control-layout';
+export * from './control-presets';
 export * from './doodle-common';
 export * from './easing';
 export * from './picker-common';

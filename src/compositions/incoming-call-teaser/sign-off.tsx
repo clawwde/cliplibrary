@@ -107,7 +107,7 @@ export const SignOff = ({ outro, frame }: { outro: Outro; frame: number }) => (
         left: 0,
         right: 0,
         top: outro.centerY,
-        transform: 'translateY(-50%) rotate(-4deg)',
+        transform: `translateY(-50%) rotate(${outro.tilt}deg)`,
         textAlign: 'center',
         fontFamily: TEASER_FONTS.script,
         fontSize: outro.size,

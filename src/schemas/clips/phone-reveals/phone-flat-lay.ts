@@ -15,6 +15,10 @@ import {
 } from '../../promo-common';
 import type { ClipMeta } from '../../registry';
 
+export const FLAT_LAY_EASES = ['settle', 'smooth', 'linear'] as const;
+
+export type FlatLayEase = (typeof FLAT_LAY_EASES)[number];
+
 export const phoneFlatLaySchema = z.object({
   phone: phoneSchema,
   position: positionSchema,
@@ -40,6 +44,8 @@ export const phoneFlatLaySchema = z.object({
     turnFrom: zSlider({ min: -1.57, max: 1.57, step: 0.01 }),
     turnTo: zSlider({ min: -1.57, max: 1.57, step: 0.01 }),
     frames: zSlider({ min: 20, max: 400 }),
+    delay: zSlider({ min: 0, max: 300 }),
+    ease: z.enum(FLAT_LAY_EASES),
     lightX: zSlider({ min: -20, max: 20, step: 0.5 }),
     lightY: zSlider({ min: -20, max: 20, step: 0.5 }),
     lightZ: zSlider({ min: 1, max: 30, step: 0.5 }),
@@ -76,6 +82,8 @@ export const phoneFlatLayDefaults: PhoneFlatLayProps = {
     turnFrom: 0.5,
     turnTo: 0,
     frames: 200,
+    delay: 0,
+    ease: 'settle',
     lightX: -6,
     lightY: 7,
     lightZ: 12,

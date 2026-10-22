@@ -73,7 +73,7 @@ const Desk = ({ blurred, ...props }: ProblemStrikeoutProps & { blurred: boolean 
       }}
       light={light}
       frame={frame}
-      lens={lens}
+      lens={{ ...lens, screenGlow: 0 }}
       blurred={blurred}
       focus={[shot.focus.x, shot.focus.y, shot.focus.z]}
     >

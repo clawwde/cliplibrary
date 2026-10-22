@@ -10,10 +10,12 @@ import {
   type ClipTheme,
   categoryKeywords,
   categoryLabel,
+  clipUpdatedAt,
 } from '@/schemas';
 
 export const SORT_OPTIONS = [
   { id: 'relevance', label: 'Best match' },
+  { id: 'updated', label: 'Recently updated' },
   { id: 'name-asc', label: 'Name, A to Z' },
   { id: 'name-desc', label: 'Name, Z to A' },
   { id: 'shortest', label: 'Shortest first' },
@@ -162,10 +164,11 @@ const matches = (
 
 type Comparator = (left: ClipMeta, right: ClipMeta) => number;
 
-const byCategory: Comparator = (left, right) =>
-  CATEGORY_IDS.indexOf(left.category) - CATEGORY_IDS.indexOf(right.category);
+const byUpdated: Comparator = (left, right) =>
+  clipUpdatedAt(right.id).localeCompare(clipUpdatedAt(left.id));
 
 const COMPARATORS: Record<Exclude<SortId, 'relevance'>, Comparator> = {
+  updated: byUpdated,
   'name-asc': (left, right) => left.title.localeCompare(right.title),
   'name-desc': (left, right) => right.title.localeCompare(left.title),
   shortest: (left, right) => left.durationInFrames / left.fps - right.durationInFrames / right.fps,
@@ -177,7 +180,7 @@ const comparator = (sort: SortId, scores: SearchScores): Comparator => {
     return COMPARATORS[sort];
   }
   if (scores === null) {
-    return byCategory;
+    return byUpdated;
   }
   return (left, right) => (scores.get(right.id) ?? 0) - (scores.get(left.id) ?? 0);
 };

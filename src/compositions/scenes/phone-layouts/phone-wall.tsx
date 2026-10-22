@@ -6,17 +6,20 @@ import { Stage } from '../../promo/stage';
 import { settle, tween } from '../../promo/timing';
 import type { SceneModule } from '../../scene-module';
 
-const COLUMN_GAP = 1.95;
-const ROW_GAP = 3.7;
-
 export const PhoneWall = ({
   screens,
   finish,
   rows,
   columns,
+  columnGap,
+  rowGap,
   tilt,
+  turn,
   twist,
   drift,
+  arriveFrames,
+  stagger,
+  arriveDrop,
   look,
   stage,
   motion,
@@ -31,20 +34,20 @@ export const PhoneWall = ({
   return (
     <PromoLayer look={look} motion={motion}>
       <Stage stage={stage} dark={isDarkLook(look)} backdropZ={-7}>
-        <group rotation={[tilt, 0.18, twist]} position={[0, 0, -1]}>
+        <group rotation={[tilt, turn, twist]} position={[0, 0, -1]}>
           {Array.from({ length: rowCount }, (_row, row) => {
             const direction = row % 2 === 0 ? 1 : -1;
-            const y = ((rowCount - 1) / 2 - row) * ROW_GAP;
+            const y = ((rowCount - 1) / 2 - row) * rowGap;
             return Array.from({ length: columnCount }, (_cell, column) => {
-              const delay = (Math.abs(column - middle) + row) * 2.5;
-              const arrive = tween(frame, [0, 56 + delay], [0, 1], settle);
+              const delay = (Math.abs(column - middle) + row) * stagger;
+              const arrive = tween(frame, [0, arriveFrames + delay], [0, 1], settle);
               const screen = screens[(row * 5 + column) % screens.length] ?? 'home';
               return (
                 <group
                   key={`${row}:${column}`}
                   position={[
-                    (column - middle) * COLUMN_GAP + direction * travel,
-                    y - (1 - arrive) * 2.2,
+                    (column - middle) * columnGap + direction * travel,
+                    y - (1 - arrive) * arriveDrop,
                     (1 - arrive) * -3,
                   ]}
                   rotation={[(1 - arrive) * 0.45, (1 - arrive) * 0.3, 0]}
