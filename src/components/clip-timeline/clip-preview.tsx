@@ -126,7 +126,6 @@ export const ClipPreview = ({
                 aria-label="Demo video"
                 className="block w-full"
                 autoPlay
-                controls
                 loop
                 muted
                 playsInline

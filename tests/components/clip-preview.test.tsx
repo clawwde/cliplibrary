@@ -37,6 +37,7 @@ describe('ClipPreview', () => {
       'src',
       '/previews/phone-spin-in.mp4',
     );
+    expect(screen.getByLabelText('Demo video')).not.toHaveAttribute('controls');
     expect(pause).toHaveBeenCalled();
     expect(screen.getByTestId('player').parentElement).toHaveAttribute('data-state', 'inactive');
   });
