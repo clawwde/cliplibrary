@@ -1,8 +1,14 @@
-import { describe, expect, it } from 'bun:test';
+import { describe, expect, it, mock } from 'bun:test';
+
+mock.module('@/compositions/project/elements/composition-element', () => ({
+  CompositionElementView: () => null,
+}));
+
 import { Thumbnail } from '@remotion/player';
 import { render } from '@testing-library/react';
-import { ProjectComposition } from '@/compositions/project/project-composition';
 import { createTextElement, createTrack, type Project } from '@/project';
+
+const { ProjectComposition } = await import('@/compositions/project/project-composition');
 
 const trackWith = (content: string) => {
   const track = createTrack(content);

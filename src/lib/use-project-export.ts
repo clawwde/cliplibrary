@@ -3,12 +3,10 @@
 import {
   getDefaultContainerForCodec,
   getEncodableVideoCodecs,
-  renderMediaOnWeb,
   type WebRendererQuality,
   type WebRendererVideoCodec,
 } from '@remotion/web-renderer';
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { ProjectComposition } from '@/compositions/project/project-composition';
 import type { Project } from '@/project';
 
 export type ExportState = 'idle' | 'rendering' | 'done' | 'error';
@@ -56,6 +54,10 @@ const renderProjectToBlob = async (
   settings: ExportSettings,
   onProgress: (value: number) => void,
 ): Promise<Blob> => {
+  const [{ renderMediaOnWeb }, { ProjectComposition }] = await Promise.all([
+    import('@remotion/web-renderer'),
+    import('@/compositions/project/project-composition'),
+  ]);
   const result = await renderMediaOnWeb({
     composition: {
       id: 'project',
