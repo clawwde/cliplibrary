@@ -13,12 +13,12 @@ export const circlePopControls = defineControls<CirclePopProps>({
         {
           path: 'word.startSize',
           label: 'Size on the disc',
-          hint: 'Font size in pixels while the word sits on the disc',
+          hint: 'Largest font size in pixels while the word sits on the disc. Longer words shrink to fit inside it',
         },
         {
           path: 'word.endSize',
           label: 'Size after the flood',
-          hint: 'Font size in pixels once the frame is white. The word never wraps, so lower it for longer words',
+          hint: 'Largest font size in pixels once the frame is white. Longer words shrink to stay inside the frame width',
         },
         { path: 'word.weight', label: 'Font weight' },
         {
@@ -58,7 +58,7 @@ export const circlePopControls = defineControls<CirclePopProps>({
         {
           path: 'pop.fadeFrames',
           label: 'Fade-in length',
-          hint: 'In frames. The disc and word fade in as they grow, so nothing pops in',
+          hint: 'In frames. The disc and word fade in as they grow, so nothing pops in. Never longer than the pop',
         },
         {
           path: 'disc.offsetX',
@@ -152,7 +152,11 @@ export const circlePopControls = defineControls<CirclePopProps>({
           label: 'Sub-line',
           hint: 'A small line under the word that rises in after the flood. Leave empty to hide it',
         },
-        { path: 'subline.size', label: 'Sub-line size', hint: 'Font size in pixels' },
+        {
+          path: 'subline.size',
+          label: 'Sub-line size',
+          hint: 'Largest font size in pixels. Longer lines shrink to stay inside the frame width',
+        },
         { path: 'subline.delay', label: 'Sub-line delay', hint: AFTER_FLOOD_STARTS },
       ],
       more: [
@@ -165,7 +169,7 @@ export const circlePopControls = defineControls<CirclePopProps>({
         {
           path: 'subline.gap',
           label: 'Gap under the word',
-          hint: 'In pixels below the bottom of the word, measured from its descenders at the size after the flood',
+          hint: 'In pixels below the lowest point of the word at its size after the flood',
         },
         { path: 'subline.weight', label: 'Sub-line weight' },
         { path: 'subline.tracking', label: 'Sub-line letter spacing', hint: 'In em' },
@@ -182,22 +186,23 @@ export const circlePopControls = defineControls<CirclePopProps>({
         {
           path: 'inverted',
           label: 'Invert colors',
-          hint: 'Swaps every color for its opposite, so a dark disc floods a white frame',
+          hint: 'Swaps the background, disc, word and sub-line colors for their opposites, so a dark disc floods a white frame. The spotlight glow stays white',
         },
-        { ...LOOK.background, hint: 'Shows around the disc until the flood covers it' },
+        {
+          link: ['look.background', 'look.backgroundEdge'],
+          label: 'Background color',
+          hint: 'Shows around the disc until the flood covers it. Sets the center and the corners together',
+        },
         {
           ...LOOK.grain,
           hint: 'Off by default for a clean black. Shows on the background only, never on the flood',
         },
       ],
       more: [
+        { ...LOOK.background, label: 'Background center' },
         LOOK.backgroundEdge,
         LOOK.spotlight,
-        LOOK.liveGrain,
-        LOOK.paper,
-        LOOK.paperLine,
-        LOOK.paperSpacing,
-        LOOK.paperMargin,
+        { ...LOOK.liveGrain, hint: 'Film grain only. Off holds one grain pattern' },
       ],
     },
     {
@@ -207,11 +212,19 @@ export const circlePopControls = defineControls<CirclePopProps>({
         MOTION.exit,
         {
           ...MOTION.speed,
-          hint: 'Scales the pop, wobble, flood and tilt timing. The entrance and exit keep their length',
+          hint: 'Scales the pop, wobble, flood and tilt timing. If the word would not land and hold for 8 frames before the exit starts, the motion plays faster so it always does, which limits how far it can slow down. The entrance and exit keep their length',
         },
       ],
       more: [MOTION.enterFrames, MOTION.exitFrames],
     },
   ],
-  hidden: ['look.muted', 'look.accent', 'motion.float'],
+  hidden: [
+    'look.muted',
+    'look.accent',
+    'look.paper',
+    'look.paperLine',
+    'look.paperSpacing',
+    'look.paperMargin',
+    'motion.float',
+  ],
 });
