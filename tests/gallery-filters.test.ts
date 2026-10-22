@@ -8,7 +8,7 @@ import {
   parseFilters,
   serializeFilters,
 } from '@/lib/gallery-filters';
-import { CLIP_REGISTRY, type ClipMeta } from '@/schemas';
+import { CLIP_REGISTRY, type ClipMeta, clipUpdatedAt } from '@/schemas';
 
 const items = CLIP_REGISTRY.map((meta) => ({ meta }));
 const ids = (list: { meta: ClipMeta }[]) => list.map((item) => item.meta.id);
@@ -69,10 +69,15 @@ describe('gallery filters', () => {
     expect(search('counter')[0]).toBe('number-counter');
   });
 
-  it('orders by category when there is no search to rank by', () => {
-    const order = filterClips(items, DEFAULT_FILTERS).map((item) => item.meta.category);
-    const categories = [...new Set(order)];
-    expect(order).toEqual(categories.flatMap((category) => order.filter((c) => c === category)));
+  it('puts the most recently updated clips first when there is no search to rank by', () => {
+    const newestFirst = (list: { meta: ClipMeta }[]) =>
+      list.map((item) => clipUpdatedAt(item.meta.id));
+    const order = newestFirst(filterClips(items, DEFAULT_FILTERS));
+    expect(order).toEqual([...order].sort((left, right) => right.localeCompare(left)));
+    expect(newestFirst(filterClips(items, { ...DEFAULT_FILTERS, sort: 'updated' }))).toEqual(order);
+    const ranked = filterClips(items, { ...DEFAULT_FILTERS, query: 'phone', sort: 'updated' });
+    const rankedOrder = newestFirst(ranked);
+    expect(rankedOrder).toEqual([...rankedOrder].sort((left, right) => right.localeCompare(left)));
   });
 
   it('filters by category, every selected tag and theme together', () => {
