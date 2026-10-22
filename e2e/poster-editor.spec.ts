@@ -1,10 +1,12 @@
 import { expect, test } from '@playwright/test';
 
 test('opens a poster from the library grid in the editor', async ({ page }) => {
-  await page.goto('/?type=poster');
-  await expect(page.getByText('Hiring Spotlight')).toBeVisible();
-  await page.getByRole('button', { name: 'Next poster' }).first().click({ force: true });
-  await page.getByRole('link', { name: /Edit Hiring Spotlight, poster 2/ }).click();
+  await page.goto(`/?${new URLSearchParams({ type: 'poster', q: 'hiring' })}`);
+  const card = page.getByRole('article').filter({ hasText: 'Hiring Spotlight' });
+  await expect(card).toBeVisible();
+  await card.hover();
+  await card.getByRole('button', { name: 'Next poster' }).click();
+  await card.getByRole('link', { name: /Edit Hiring Spotlight, poster 2/ }).click();
   await expect(page).toHaveURL(/\/posters\/hiring-spotlight\?page=2/);
   await expect(page.getByTestId('design-canvas').locator('canvas').first()).toBeVisible();
   await expect(page.getByLabel('Design title')).toHaveValue('Hiring Spotlight');
