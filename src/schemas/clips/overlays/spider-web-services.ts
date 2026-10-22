@@ -61,6 +61,10 @@ export const spiderWebServicesSchema = z.object({
     twist: zSlider({ min: 8, max: 80 }),
   }),
   services: z.array(webServiceSchema).min(1).max(6),
+  spider: z.object({
+    show: z.boolean(),
+    size: zSlider({ min: 0.5, max: 2, step: 0.05 }),
+  }),
   title: z.object({
     face: zColor(),
     faceShade: zColor(),
@@ -91,6 +95,7 @@ export const spiderWebServicesSchema = z.object({
     pillInk: zColor(),
     icons: zColor(),
     showSocials: z.boolean(),
+    showButton: z.boolean(),
     web: zColor(),
     dew: zColor(),
     webWidth: zSlider({ min: 300, max: 1080 }),
@@ -102,6 +107,7 @@ export const spiderWebServicesSchema = z.object({
     glow: zColor(),
     glowStrength: unit(),
     grid: zColor(),
+    gridOpacity: unit(),
     gridSpacing: zSlider({ min: 20, max: 160 }),
     floor: zColor(),
     floorEdge: zColor(),
@@ -223,6 +229,10 @@ export const spiderWebServicesDefaults: SpiderWebServicesProps = {
       seed: 31,
     }),
   ],
+  spider: {
+    show: true,
+    size: 1,
+  },
   title: {
     face: '#ffe6b8',
     faceShade: '#ffa95c',
@@ -253,6 +263,7 @@ export const spiderWebServicesDefaults: SpiderWebServicesProps = {
     pillInk: '#241006',
     icons: '#cfeee7',
     showSocials: true,
+    showButton: true,
     web: '#bfe8df',
     dew: '#fff4dc',
     webWidth: 740,
@@ -264,6 +275,7 @@ export const spiderWebServicesDefaults: SpiderWebServicesProps = {
     glow: '#127a72',
     glowStrength: 0.55,
     grid: '#6fd8c8',
+    gridOpacity: 0.2,
     gridSpacing: 48,
     floor: '#08292e',
     floorEdge: '#051e22',

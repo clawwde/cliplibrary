@@ -1,4 +1,5 @@
 import { Composition, useCurrentFrame } from 'remotion';
+import { DoubleSide } from 'three';
 import {
   type FloatingCardsProps,
   floatingCardsDefaults,
@@ -6,14 +7,53 @@ import {
   floatingCardsSchema,
 } from '@/schemas';
 import { isDarkLook, PromoLayer } from '../../promo/promo-layer';
+import { resolveCustom } from '../../promo/screen-assets';
 import { FloatingCard, Stage } from '../../promo/stage';
 import { settle, tween } from '../../promo/timing';
+import { useTexture } from '../../promo/use-texture';
 import type { SceneModule } from '../../scene-module';
+
+type FloatingCardItem = FloatingCardsProps['cards'][number];
+
+const CARD_ASPECT = 340 / 720;
+
+const imageAspect = (image: unknown): number =>
+  image instanceof HTMLImageElement && image.naturalWidth > 0
+    ? image.naturalHeight / image.naturalWidth
+    : CARD_ASPECT;
+
+const CustomCard = ({ url, width, opacity }: { url: string; width: number; opacity: number }) => {
+  const map = useTexture(url);
+  return (
+    <mesh>
+      <planeGeometry args={[width, width * imageAspect(map.image)]} />
+      <meshBasicMaterial
+        map={map}
+        transparent
+        opacity={opacity}
+        toneMapped={false}
+        depthWrite={false}
+        side={DoubleSide}
+      />
+    </mesh>
+  );
+};
+
+const CardFace = ({ card, opacity }: { card: FloatingCardItem; opacity: number }) =>
+  card.image.length > 0 ? (
+    <CustomCard url={resolveCustom(card.image)} width={card.size} opacity={opacity} />
+  ) : (
+    <FloatingCard card={card.kind} width={card.size} opacity={opacity} />
+  );
 
 export const FloatingCards = ({
   cards,
   delay,
   stagger,
+  popFrames,
+  popLift,
+  popScale,
+  bobSpeed,
   look,
   stage,
   motion,
@@ -24,19 +64,21 @@ export const FloatingCards = ({
       <Stage stage={{ ...stage, shadow: 0 }} dark={isDarkLook(look)}>
         {cards.map((card, index) => {
           const start = delay + index * stagger;
-          const pop = tween(frame, [start, start + 32], [0, 1], settle);
+          const pop = tween(frame, [start, start + popFrames], [0, 1], settle);
           return (
             <group
               key={`${index}:${card.kind}`}
               position={[
                 card.x,
-                card.y - (1 - pop) * 0.4 + Math.sin(frame / 24 + index * 1.7) * motion.float,
+                card.y -
+                  (1 - pop) * popLift +
+                  Math.sin((frame / 24) * bobSpeed + index * 1.7) * motion.float,
                 card.z,
               ]}
               rotation={[0.03, card.turn, 0]}
-              scale={0.6 + pop * 0.4}
+              scale={popScale + pop * (1 - popScale)}
             >
-              <FloatingCard card={card.kind} width={card.size} opacity={pop} />
+              <CardFace card={card} opacity={pop} />
             </group>
           );
         })}

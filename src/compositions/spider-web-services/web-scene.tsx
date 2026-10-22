@@ -130,7 +130,7 @@ export const WebScene = ({ props, frame }: { props: SpiderWebServicesProps; fram
           frame={frame}
         />
         <EndCard props={props} top={cardTop} frame={frame} settled={settled} />
-        {descent > 0 && frame < panStart(timeline, 0) + timeline.panFrames ? (
+        {props.spider.show && descent > 0 && frame < panStart(timeline, 0) + timeline.panFrames ? (
           <svg
             width={1080}
             height={1920}
@@ -143,7 +143,7 @@ export const WebScene = ({ props, frame }: { props: SpiderWebServicesProps; fram
                 y={tip - camera + 30}
                 heading={180}
                 gait={frame * 0.9}
-                scale={1.2}
+                scale={1.2 * props.spider.size}
                 body={props.services[0]?.spiderBody ?? '#b4572e'}
                 marks={props.services[0]?.spiderMarks ?? '#3d1606'}
               />

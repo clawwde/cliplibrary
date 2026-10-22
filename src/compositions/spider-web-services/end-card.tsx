@@ -156,48 +156,50 @@ export const EndCard = ({
             <SocialRow color={card.icons} size={32} frame={frame} start={socialsAt} />
           </div>
         ) : null}
-        <div
-          style={{
-            marginTop: card.statementSize * 0.1,
-            filter: `drop-shadow(0 0 16px color-mix(in srgb, ${card.pill} 45%, transparent))`,
-            opacity: Math.min(1, pill * 4),
-          }}
-        >
+        {card.showButton ? (
           <div
             style={{
-              height: 64,
-              minWidth: 340,
-              clipPath: `inset(0 calc((50% - 32px) * ${(1 - pill).toFixed(4)}) round 32px)`,
-              borderRadius: 32,
-              background: `linear-gradient(to right, ${card.pill}, ${card.pillShade})`,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              gap: 22,
-              padding: '0 8px 0 32px',
-              fontFamily: titleFont,
-              fontWeight: 600,
-              fontSize: 24,
-              color: card.pillInk,
+              marginTop: card.statementSize * 0.1,
+              filter: `drop-shadow(0 0 16px color-mix(in srgb, ${card.pill} 45%, transparent))`,
+              opacity: Math.min(1, pill * 4),
             }}
           >
-            <span style={{ opacity: pillText }}>{brand.url}</span>
-            <span
+            <div
               style={{
-                opacity: pillText,
-                width: 48,
-                height: 48,
-                borderRadius: 24,
-                background: card.pillInk,
+                height: 64,
+                minWidth: 340,
+                clipPath: `inset(0 calc((50% - 32px) * ${(1 - pill).toFixed(4)}) round 32px)`,
+                borderRadius: 32,
+                background: `linear-gradient(to right, ${card.pill}, ${card.pillShade})`,
                 display: 'flex',
                 alignItems: 'center',
-                justifyContent: 'center',
+                justifyContent: 'space-between',
+                gap: 22,
+                padding: '0 8px 0 32px',
+                fontFamily: titleFont,
+                fontWeight: 600,
+                fontSize: 24,
+                color: card.pillInk,
               }}
             >
-              <Arrow color={card.pill} />
-            </span>
+              <span style={{ opacity: pillText }}>{brand.url}</span>
+              <span
+                style={{
+                  opacity: pillText,
+                  width: 48,
+                  height: 48,
+                  borderRadius: 24,
+                  background: card.pillInk,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
+              >
+                <Arrow color={card.pill} />
+              </span>
+            </div>
           </div>
-        </div>
+        ) : null}
       </div>
     </div>
   );

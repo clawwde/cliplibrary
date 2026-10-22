@@ -83,7 +83,7 @@ export const WebBackdrop = ({
       </AbsoluteFill>
       <AbsoluteFill
         style={{
-          opacity: 0.2,
+          opacity: backdrop.gridOpacity,
           backgroundImage: `radial-gradient(circle at center, ${backdrop.grid} 1.6px, transparent 2.4px)`,
           backgroundSize: `${backdrop.gridSpacing}px ${backdrop.gridSpacing}px`,
           backgroundPosition: `${backdrop.gridSpacing / 2}px ${gridOffset}px`,
