@@ -5,7 +5,11 @@ import type { DesignEditorState } from '../use-design-editor';
 import { ActionsBar, ArrangeSection } from './arrange-section';
 import { Section } from './fields';
 import { FillEditor } from './fill-editor';
+import { IconSection } from './icon-section';
+import { ImageSection } from './image-section';
+import { ShadowSection } from './shadow-section';
 import { LineSection, ShapeSection } from './shape-section';
+import { TextSection } from './text-section';
 
 const TYPE_LABELS: Record<DesignElement['type'], string> = {
   text: 'Text',
@@ -29,9 +33,11 @@ const TypeSection = ({
 }) => {
   switch (element.type) {
     case 'text':
+      return <TextSection element={element} onChange={onChange} onCommit={onCommit} />;
     case 'image':
+      return <ImageSection element={element} onChange={onChange} onCommit={onCommit} />;
     case 'icon':
-      return null;
+      return <IconSection element={element} onChange={onChange} onCommit={onCommit} />;
     case 'line':
       return <LineSection element={element} onChange={onChange} onCommit={onCommit} />;
     default:
@@ -75,6 +81,9 @@ export const PropertiesPanel = ({ editor }: { editor: DesignEditorState }) => {
         <TypeSection element={single} onChange={editor.replaceElement} onCommit={editor.seal} />
       )}
       <ArrangeSection editor={editor} element={single} onChange={editor.replaceElement} />
+      {single === null ? null : (
+        <ShadowSection element={single} onChange={editor.replaceElement} onCommit={editor.seal} />
+      )}
     </div>
   );
 };

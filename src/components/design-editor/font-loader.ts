@@ -205,7 +205,7 @@ const FONT_MODULES: Record<FontFamilyName, () => Promise<unknown>> = {
 
 const loads = new Map<string, Promise<void>>();
 
-const loadFontFamily = (family: string): Promise<void> => {
+export const loadFontFamily = (family: string): Promise<void> => {
   if (!isKnownFont(family)) {
     return Promise.resolve();
   }

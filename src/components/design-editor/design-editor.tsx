@@ -1,6 +1,6 @@
 'use client';
 
-import { Image as ImageIcon, Layers, PaintBucket } from 'lucide-react';
+import { Image as ImageIcon, Layers, PaintBucket, Shapes, Type, Upload } from 'lucide-react';
 import { type ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
   createEllipse,
@@ -24,7 +24,10 @@ import { PropertiesPanel } from './panels/properties-panel';
 import { type LoadedImage, readImageFile } from './read-image-file';
 import { isEditableTarget, type ShortcutAction, shortcutFor } from './shortcuts';
 import { BackgroundPanel } from './sidebar/background-panel';
+import { ElementsPanel } from './sidebar/elements-panel';
 import { LayersPanel } from './sidebar/layers-panel';
+import { TextPanel } from './sidebar/text-panel';
+import { UploadsPanel } from './sidebar/uploads-panel';
 import { type DesignEditorState, useDesignEditor } from './use-design-editor';
 import type { Viewport } from './use-workspace-viewport';
 
@@ -77,6 +80,7 @@ export const DesignEditor = ({
   const { design } = editor;
   const [viewport, setViewport] = useState<Viewport>({ width: 0, height: 0 });
   const [userZoom, setUserZoom] = useState<number | null>(null);
+  const [uploads, setUploads] = useState<LoadedImage[]>([]);
   const restored = useRef(false);
 
   const fitZoom =
@@ -138,11 +142,17 @@ export const DesignEditor = ({
     [design.height, design.width],
   );
 
+  const placeImage = useCallback(
+    (image: LoadedImage) => editor.addMany([imageElement(image)]),
+    [editor.addMany, imageElement],
+  );
+
   const addImageFiles = useCallback(
     (files: File[], point?: Point) => {
       Promise.all(files.map(readImageFile))
         .then((loaded) => {
           const images = loaded.filter((image): image is LoadedImage => image !== null);
+          setUploads((current) => [...images, ...current]);
           editor.addMany(images.map((image, index) => imageElement(image, point, index)));
         })
         .catch(() => undefined);
@@ -155,6 +165,8 @@ export const DesignEditor = ({
       setUserZoom(direction === 'fit' ? null : stepZoom(zoom, direction)),
     [zoom],
   );
+
+  const addElement = useCallback((element: DesignElement) => editor.addElement(element), [editor]);
 
   const runShortcut = useCallback(
     (action: ShortcutAction) => {
@@ -247,6 +259,25 @@ export const DesignEditor = ({
 
   const panels: SidebarPanel[] = [
     ...extraPanels.map((panel) => ({ ...panel, render: () => panel.render(editor) })),
+    {
+      id: 'elements',
+      label: 'Elements',
+      Icon: Shapes,
+      render: () => <ElementsPanel onAdd={addElement} />,
+    },
+    { id: 'text', label: 'Text', Icon: Type, render: () => <TextPanel onAdd={addElement} /> },
+    {
+      id: 'uploads',
+      label: 'Uploads',
+      Icon: Upload,
+      render: () => (
+        <UploadsPanel
+          uploads={uploads}
+          onFiles={(files) => addImageFiles(files)}
+          onPlace={(image) => placeImage(image)}
+        />
+      ),
+    },
     {
       id: 'placeholder',
       label: 'Frame',
