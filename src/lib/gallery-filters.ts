@@ -1,34 +1,16 @@
 import MiniSearch from 'minisearch';
 import {
+  CLIP_CATEGORY_IDS,
+  CLIP_TAGS,
   CLIP_THEMES,
+  type ClipCategory,
+  type ClipId,
   type ClipMeta,
+  type ClipTag,
   type ClipTheme,
   categoryKeywords,
   categoryLabel,
-  GALLERY_CATEGORY_IDS,
-  GALLERY_TAGS,
-  type GalleryCategory,
-  type GalleryTag,
 } from '@/schemas';
-
-export const GALLERY_KINDS = [
-  { id: 'video', label: 'Videos' },
-  { id: 'poster', label: 'Posters' },
-] as const;
-
-export type GalleryKind = (typeof GALLERY_KINDS)[number]['id'];
-
-export interface GalleryMeta {
-  id: string;
-  kind: GalleryKind;
-  title: string;
-  description: string;
-  category: GalleryCategory;
-  tags: readonly GalleryTag[];
-  theme: ClipTheme;
-  durationInFrames: number;
-  fps: number;
-}
 
 export const SORT_OPTIONS = [
   { id: 'relevance', label: 'Best match' },
@@ -42,16 +24,14 @@ export type SortId = (typeof SORT_OPTIONS)[number]['id'];
 
 export interface GalleryFilters {
   query: string;
-  kind: GalleryKind | 'all';
-  category: GalleryCategory | 'all';
-  tags: GalleryTag[];
+  category: ClipCategory | 'all';
+  tags: ClipTag[];
   theme: ClipTheme | 'all';
   sort: SortId;
 }
 
 export const DEFAULT_FILTERS: GalleryFilters = {
   query: '',
-  kind: 'all',
   category: 'all',
   tags: [],
   theme: 'all',
@@ -59,26 +39,22 @@ export const DEFAULT_FILTERS: GalleryFilters = {
 };
 
 const SORT_IDS: readonly string[] = SORT_OPTIONS.map((option) => option.id);
-const CATEGORY_IDS: readonly string[] = GALLERY_CATEGORY_IDS;
-const TAGS: readonly string[] = GALLERY_TAGS;
-const KIND_IDS: readonly string[] = GALLERY_KINDS.map((kind) => kind.id);
+const CATEGORY_IDS: readonly string[] = CLIP_CATEGORY_IDS;
+const TAGS: readonly string[] = CLIP_TAGS;
 const THEMES: readonly string[] = CLIP_THEMES;
 
-const isCategory = (value: string): value is GalleryCategory => CATEGORY_IDS.includes(value);
-const isTag = (value: string): value is GalleryTag => TAGS.includes(value);
-const isKind = (value: string): value is GalleryKind => KIND_IDS.includes(value);
+const isCategory = (value: string): value is ClipCategory => CATEGORY_IDS.includes(value);
+const isTag = (value: string): value is ClipTag => TAGS.includes(value);
 const isTheme = (value: string): value is ClipTheme => THEMES.includes(value);
 const isSort = (value: string): value is SortId => SORT_IDS.includes(value);
 
 export const parseFilters = (params: URLSearchParams): GalleryFilters => {
-  const kind = params.get('type') ?? '';
   const category = params.get('category') ?? '';
   const theme = params.get('theme') ?? '';
   const sort = params.get('sort') ?? '';
   const tags = (params.get('tags') ?? '').split(',').filter(isTag);
   return {
     query: params.get('q') ?? '',
-    kind: isKind(kind) ? kind : 'all',
     category: isCategory(category) ? category : 'all',
     tags: [...new Set(tags)],
     theme: isTheme(theme) ? theme : 'all',
@@ -90,9 +66,6 @@ export const serializeFilters = (filters: GalleryFilters): string => {
   const params = new URLSearchParams();
   if (filters.query.trim().length > 0) {
     params.set('q', filters.query.trim());
-  }
-  if (filters.kind !== 'all') {
-    params.set('type', filters.kind);
   }
   if (filters.category !== 'all') {
     params.set('category', filters.category);
@@ -112,13 +85,12 @@ export const serializeFilters = (filters: GalleryFilters): string => {
 
 export const hasActiveFilters = (filters: GalleryFilters): boolean =>
   filters.query.trim().length > 0 ||
-  filters.kind !== 'all' ||
   filters.category !== 'all' ||
   filters.tags.length > 0 ||
   filters.theme !== 'all';
 
 interface SearchDocument {
-  id: string;
+  id: ClipId;
   title: string;
   tags: string;
   category: string;
@@ -127,7 +99,7 @@ interface SearchDocument {
   description: string;
 }
 
-const toSearchDocument = (meta: GalleryMeta): SearchDocument => ({
+const toSearchDocument = (meta: ClipMeta): SearchDocument => ({
   id: meta.id,
   title: meta.title,
   tags: meta.tags.join(' '),
@@ -141,9 +113,9 @@ const SEARCH_FIELDS = ['title', 'tags', 'category', 'keywords', 'theme', 'descri
 
 const FUZZY_MIN_LENGTH = 6;
 
-const indexes = new WeakMap<readonly { meta: GalleryMeta }[], MiniSearch<SearchDocument>>();
+const indexes = new WeakMap<readonly { meta: ClipMeta }[], MiniSearch<SearchDocument>>();
 
-const indexFor = (items: readonly { meta: GalleryMeta }[]): MiniSearch<SearchDocument> => {
+const indexFor = (items: readonly { meta: ClipMeta }[]): MiniSearch<SearchDocument> => {
   const cached = indexes.get(items);
   if (cached !== undefined) {
     return cached;
@@ -162,34 +134,33 @@ const indexFor = (items: readonly { meta: GalleryMeta }[]): MiniSearch<SearchDoc
   return index;
 };
 
-type SearchScores = ReadonlyMap<string, number> | null;
+type SearchScores = ReadonlyMap<ClipId, number> | null;
 
-const searchScores = (items: readonly { meta: GalleryMeta }[], query: string): SearchScores => {
+const searchScores = (items: readonly { meta: ClipMeta }[], query: string): SearchScores => {
   if (query.trim().length === 0) {
     return null;
   }
   return new Map(
     indexFor(items)
       .search(query)
-      .map((result) => [String(result.id), result.score]),
+      .map((result) => [result.id as ClipId, result.score]),
   );
 };
 
-type Facet = 'kind' | 'category' | 'tags' | 'theme';
+type Facet = 'category' | 'tags' | 'theme';
 
 const matches = (
-  meta: GalleryMeta,
+  meta: ClipMeta,
   filters: GalleryFilters,
   scores: SearchScores,
   ignore?: Facet,
 ): boolean =>
   (scores === null || scores.has(meta.id)) &&
-  (ignore === 'kind' || filters.kind === 'all' || meta.kind === filters.kind) &&
   (ignore === 'category' || filters.category === 'all' || meta.category === filters.category) &&
   (ignore === 'tags' || filters.tags.every((tag) => meta.tags.includes(tag))) &&
   (ignore === 'theme' || filters.theme === 'all' || meta.theme === filters.theme);
 
-type Comparator = (left: GalleryMeta, right: GalleryMeta) => number;
+type Comparator = (left: ClipMeta, right: ClipMeta) => number;
 
 const byCategory: Comparator = (left, right) =>
   CATEGORY_IDS.indexOf(left.category) - CATEGORY_IDS.indexOf(right.category);
@@ -211,7 +182,7 @@ const comparator = (sort: SortId, scores: SearchScores): Comparator => {
   return (left, right) => (scores.get(right.id) ?? 0) - (scores.get(left.id) ?? 0);
 };
 
-export const filterClips = <Item extends { meta: GalleryMeta }>(
+export const filterClips = <Item extends { meta: ClipMeta }>(
   items: readonly Item[],
   filters: GalleryFilters,
 ): Item[] => {
@@ -223,10 +194,10 @@ export const filterClips = <Item extends { meta: GalleryMeta }>(
 };
 
 export const facetCounts = <Key extends string>(
-  items: readonly { meta: GalleryMeta }[],
+  items: readonly { meta: ClipMeta }[],
   filters: GalleryFilters,
   facet: Facet,
-  keysOf: (meta: GalleryMeta) => readonly Key[],
+  keysOf: (meta: ClipMeta) => readonly Key[],
 ): Map<Key, number> => {
   const scores = searchScores(items, filters.query);
   const counts = new Map<Key, number>();
@@ -240,9 +211,7 @@ export const facetCounts = <Key extends string>(
   return counts;
 };
 
-export const videoMeta = (meta: ClipMeta): GalleryMeta => ({ ...meta, kind: 'video' });
-
-export const formatDuration = (meta: GalleryMeta): string => {
+export const formatDuration = (meta: ClipMeta): string => {
   const seconds = meta.durationInFrames / meta.fps;
   return Number.isInteger(seconds) ? `${seconds}s` : `${seconds.toFixed(1)}s`;
 };
