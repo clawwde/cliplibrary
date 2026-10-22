@@ -17,6 +17,8 @@ import {
   chunkyTypeStackSchema,
 } from './chunky-type-stack';
 import { chunkyTypeStackControls } from './chunky-type-stack-controls';
+import { circlePopDefaults, circlePopMeta, circlePopSchema } from './circle-pop';
+import { circlePopControls } from './circle-pop-controls';
 import {
   comingSoonFlipsDefaults,
   comingSoonFlipsMeta,
@@ -39,6 +41,8 @@ import {
   outlineMarqueeSchema,
 } from './outline-marquee';
 import { outlineMarqueeControls } from './outline-marquee-controls';
+import { ribbonWordsDefaults, ribbonWordsMeta, ribbonWordsSchema } from './ribbon-words';
+import { ribbonWordsControls } from './ribbon-words-controls';
 import {
   scrollerCalloutDefaults,
   scrollerCalloutMeta,
@@ -49,12 +53,16 @@ import { scrollerWallDefaults, scrollerWallMeta, scrollerWallSchema } from './sc
 import { scrollerWallControls } from './scroller-wall-controls';
 import { stickerStackDefaults, stickerStackMeta, stickerStackSchema } from './sticker-stack';
 import { stickerStackControls } from './sticker-stack-controls';
+import { textRingsDefaults, textRingsMeta, textRingsSchema } from './text-rings';
+import { textRingsControls } from './text-rings-controls';
 import { wordBuildDefaults, wordBuildMeta, wordBuildSchema } from './word-build';
 import { wordBuildControls } from './word-build-controls';
 import { wordFieldDefaults, wordFieldMeta, wordFieldSchema } from './word-field';
 import { wordFieldControls } from './word-field-controls';
 import { wordPunchDefaults, wordPunchMeta, wordPunchSchema } from './word-punch';
 import { wordPunchControls } from './word-punch-controls';
+import { wordStreamsDefaults, wordStreamsMeta, wordStreamsSchema } from './word-streams';
+import { wordStreamsControls } from './word-streams-controls';
 
 export const kineticTypeClips: ClipModule[] = [
   {
@@ -70,6 +78,13 @@ export const kineticTypeClips: ClipModule[] = [
     defaults: wordPunchDefaults,
     meta: wordPunchMeta,
     controls: wordPunchControls,
+  },
+  {
+    id: 'word-streams',
+    schema: wordStreamsSchema,
+    defaults: wordStreamsDefaults,
+    meta: wordStreamsMeta,
+    controls: wordStreamsControls,
   },
   {
     id: 'outline-marquee',
@@ -128,6 +143,13 @@ export const kineticTypeClips: ClipModule[] = [
     controls: chunkyTypeStackControls,
   },
   {
+    id: 'circle-pop',
+    schema: circlePopSchema,
+    defaults: circlePopDefaults,
+    meta: circlePopMeta,
+    controls: circlePopControls,
+  },
+  {
     id: 'branding-is-ticker',
     schema: brandingIsTickerSchema,
     defaults: brandingIsTickerDefaults,
@@ -156,6 +178,13 @@ export const kineticTypeClips: ClipModule[] = [
     controls: scrollerWallControls,
   },
   {
+    id: 'ribbon-words',
+    schema: ribbonWordsSchema,
+    defaults: ribbonWordsDefaults,
+    meta: ribbonWordsMeta,
+    controls: ribbonWordsControls,
+  },
+  {
     id: 'anniversary-kinetic',
     schema: anniversaryKineticSchema,
     defaults: anniversaryKineticDefaults,
@@ -168,5 +197,12 @@ export const kineticTypeClips: ClipModule[] = [
     defaults: comingSoonFlipsDefaults,
     meta: comingSoonFlipsMeta,
     controls: comingSoonFlipsControls,
+  },
+  {
+    id: 'text-rings',
+    schema: textRingsSchema,
+    defaults: textRingsDefaults,
+    meta: textRingsMeta,
+    controls: textRingsControls,
   },
 ];
