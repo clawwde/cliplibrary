@@ -11,6 +11,8 @@ const items: GalleryItem[] = CLIP_REGISTRY.map((meta) => ({
   meta: videoMeta(meta),
   video: null,
   firstFrame: null,
+  width: meta.width,
+  height: meta.height,
 }));
 
 const StubTile = ({ meta }: GalleryItem) => <article>{meta.title}</article>;
@@ -32,7 +34,15 @@ const Harness = ({ initial = DEFAULT_FILTERS }: { initial?: GalleryFilters }) =>
 
 describe('ClipGallery', () => {
   it('lists every clip in one flat grid but only mounts the tiles near the viewport', () => {
+    const width = Object.getOwnPropertyDescriptor(HTMLElement.prototype, 'clientWidth');
+    Object.defineProperty(HTMLElement.prototype, 'clientWidth', {
+      configurable: true,
+      value: 1200,
+    });
     render(<Harness />);
+    if (width !== undefined) {
+      Object.defineProperty(HTMLElement.prototype, 'clientWidth', width);
+    }
     expect(screen.queryByRole('heading')).not.toBeInTheDocument();
     expect(screen.getByText(`${items.length} items`)).toBeInTheDocument();
     const mounted = screen.getAllByRole('article').length;

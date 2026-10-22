@@ -17,4 +17,6 @@ export const listClips = (): VideoGalleryItem[] =>
     meta: videoMeta(meta),
     video: clipPreviewVideo(meta.id),
     firstFrame: previewUrl(`${meta.id}.first-frame.jpg`),
+    width: meta.width,
+    height: meta.height,
   }));

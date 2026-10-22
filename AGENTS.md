@@ -56,7 +56,8 @@ Everything lives in one package. Modules import each other through the `@/` alia
 - `bun run render [clipId...]` - gallery previews: a half-size mp4 plus a 48px first-frame jpg per
   clip in `public/previews`. The previews are committed, so the deployed build never renders:
   the homepage is prerendered at build time with the first screen of cards server-rendered, then
-  virtualizes the grid (`@tanstack/react-virtual`, only rows near the viewport stay mounted), lazily
+  lays the cards out as a virtualized masonry grid (`@tanstack/react-virtual` lanes, each card at its
+  clip or poster aspect ratio, only cards near the viewport stay mounted), lazily
   loads each card's first frame as a blurred background and plays the mp4 over it once the card
   nears the viewport. Every new clip,
   and every clip whose rendered output changes, must commit its re-rendered preview; `tests/render/gallery-previews.test.ts`
