@@ -1,4 +1,4 @@
-import { OffthreadVideo } from 'remotion';
+import { Video } from '@remotion/media';
 import type { VideoElement } from '@/project';
 import { MediaPlaceholder } from './media-placeholder';
 
@@ -7,9 +7,10 @@ export const VideoElementView = ({ element }: { element: VideoElement }) => {
     return <MediaPlaceholder label="video" />;
   }
   return (
-    <OffthreadVideo
+    <Video
       src={element.src}
-      style={{ maxWidth: 1200, maxHeight: 900, objectFit: 'contain', borderRadius: 16 }}
+      objectFit="contain"
+      style={{ maxWidth: 1200, maxHeight: 900, borderRadius: 16 }}
     />
   );
 };

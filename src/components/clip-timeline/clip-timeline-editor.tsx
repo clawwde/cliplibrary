@@ -8,7 +8,7 @@ import { TimelineToolbar } from '@/components/timeline/timeline-toolbar';
 import { Skeleton } from '@/components/ui/skeleton';
 import type { ControlDescriptor } from '@/core';
 import { clampPxPerFrame, DEFAULT_PX_PER_FRAME, fitPxPerFrame } from '@/lib/timeline-geometry';
-import { useProjectExport } from '@/lib/use-project-export';
+import { DEFAULT_EXPORT_SETTINGS, useProjectExport } from '@/lib/use-project-export';
 import { useUndoable, useUndoRedoKeys } from '@/lib/use-undoable';
 import {
   addElement,
@@ -73,6 +73,12 @@ const runModifierShortcut = (event: KeyboardEvent, exportProject: () => void): b
   return true;
 };
 
+const toFileName = (title: string): string =>
+  title
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '') || 'export';
+
 const ANIMATION_OPTIONS = CLIP_REGISTRY.map((meta) => ({ id: meta.id, title: meta.title }));
 
 interface ClipTimelineEditorProps {
@@ -97,6 +103,7 @@ export const ClipTimelineEditor = ({
   } = editor;
   useUndoRedoKeys(undo, redo);
   const exporter = useProjectExport();
+  const fileName = toFileName(title);
 
   const playerRef = useRef<PlayerRef | null>(null);
   const [currentFrame, setCurrentFrame] = useState(0);
@@ -159,14 +166,7 @@ export const ClipTimelineEditor = ({
   );
 
   const exportShortcut = useRef<() => void>(() => undefined);
-  exportShortcut.current = () =>
-    exporter.run(project, {
-      codec: 'h264',
-      crf: 18,
-      scale: 1,
-      fps: null,
-      proResProfile: null,
-    });
+  exportShortcut.current = () => exporter.run(project, DEFAULT_EXPORT_SETTINGS, fileName);
 
   useEffect(() => {
     const onGestureEnd = () => sealProject();
@@ -227,7 +227,8 @@ export const ClipTimelineEditor = ({
           canRedo={editor.canRedo}
           exportState={exporter.state}
           exportProgress={exporter.progress}
-          downloadUrl={exporter.downloadUrl}
+          download={exporter.download}
+          exportError={exporter.error}
           animations={ANIMATION_OPTIONS}
           onAddElement={handleAddElement}
           onAddAnimation={handleAddAnimation}
@@ -239,7 +240,7 @@ export const ClipTimelineEditor = ({
           onTogglePlay={() => playerRef.current?.toggle()}
           onUndo={undo}
           onRedo={redo}
-          onExport={(settings) => exporter.run(project, settings)}
+          onExport={(settings) => exporter.run(project, settings, fileName)}
         />
         <div className="min-h-0 flex-1">
           <Timeline

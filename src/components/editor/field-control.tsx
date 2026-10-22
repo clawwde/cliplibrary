@@ -24,17 +24,6 @@ type LeafDescriptor = Extract<
 
 type MediaKind = 'image' | 'video';
 
-const uploadMedia = async (file: File): Promise<string> => {
-  const body = new FormData();
-  body.set('file', file);
-  const response = await fetch('/api/upload', { method: 'POST', body });
-  if (!response.ok) {
-    throw new Error('upload failed');
-  }
-  const data = (await response.json()) as { url: string };
-  return data.url;
-};
-
 const MediaPreview = ({ kind, value }: { kind: MediaKind; value: string }) =>
   kind === 'video' ? (
     <video
@@ -64,17 +53,11 @@ const MediaField = ({
 }) => {
   const inputRef = useRef<HTMLInputElement>(null);
   const [dragging, setDragging] = useState(false);
-  const [busy, setBusy] = useState(false);
 
   const receive = (file: File | undefined) => {
-    if (file === undefined) {
-      return;
+    if (file !== undefined) {
+      onChange(URL.createObjectURL(file));
     }
-    setBusy(true);
-    uploadMedia(file)
-      .then(onChange)
-      .catch(() => undefined)
-      .finally(() => setBusy(false));
   };
 
   const onDrop = (event: DragEvent<HTMLButtonElement>) => {
@@ -104,7 +87,7 @@ const MediaField = ({
         ) : (
           <span className="flex flex-col items-center gap-1">
             <Upload className="size-5" />
-            {busy ? 'Uploading' : `Drop ${kind} or click to upload`}
+            {`Drop ${kind} or click to choose`}
           </span>
         )}
       </button>

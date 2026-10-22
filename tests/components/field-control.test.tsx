@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, mock } from 'bun:test';
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { FieldControl } from '@/components/editor/field-control';
 import type { ControlDescriptor } from '@/core';
@@ -138,7 +138,7 @@ describe('FieldControl image', () => {
 
   it('renders an empty drop-zone with a url input when there is no value', () => {
     renderControl(descriptor, '');
-    expect(screen.getByText('Drop image or click to upload')).toBeInTheDocument();
+    expect(screen.getByText('Drop image or click to choose')).toBeInTheDocument();
     expect((screen.getByRole('textbox') as HTMLInputElement).value).toBe('');
   });
 
@@ -158,24 +158,22 @@ describe('FieldControl image', () => {
   });
 });
 
-describe('FieldControl media upload', () => {
+describe('FieldControl local media', () => {
   const descriptor: LeafDescriptor = { kind: 'image', path: ['image1'], label: 'Image' };
-  const originalFetch = globalThis.fetch;
+  const originalCreateObjectURL = URL.createObjectURL;
 
   afterEach(() => {
-    globalThis.fetch = originalFetch;
+    URL.createObjectURL = originalCreateObjectURL;
   });
 
-  const mockUpload = (url: string) => {
-    const fetchMock = mock(() =>
-      Promise.resolve({ ok: true, json: () => Promise.resolve({ url }) } as Response),
-    );
-    globalThis.fetch = fetchMock as unknown as typeof fetch;
-    return fetchMock;
+  const mockObjectUrl = (url: string) => {
+    const createMock = mock(() => url);
+    URL.createObjectURL = createMock;
+    return createMock;
   };
 
-  it('uploads a picked file and sets the field to the returned url', async () => {
-    const fetchMock = mockUpload('/uploads/picked.png');
+  it('loads a picked file locally and sets the field to its object url', () => {
+    const createMock = mockObjectUrl('blob:picked');
     const onChange = mock();
     const { container } = render(
       <FieldControl descriptor={descriptor} value="" onChange={onChange} />,
@@ -185,22 +183,19 @@ describe('FieldControl media upload', () => {
     ) as HTMLInputElement;
     const file = new File(['x'], 'a.png', { type: 'image/png' });
     fireEvent.change(input, { target: { files: [file] } });
-    await waitFor(() => expect(onChange).toHaveBeenCalledWith('/uploads/picked.png'));
-    expect(fetchMock).toHaveBeenCalledWith(
-      '/api/upload',
-      expect.objectContaining({ method: 'POST' }),
-    );
+    expect(createMock).toHaveBeenCalledWith(file);
+    expect(onChange).toHaveBeenCalledWith('blob:picked');
   });
 
-  it('uploads a dropped file', async () => {
-    mockUpload('/uploads/dropped.png');
+  it('loads a dropped file locally', () => {
+    mockObjectUrl('blob:dropped');
     const onChange = mock();
     render(<FieldControl descriptor={descriptor} value="" onChange={onChange} />);
     const file = new File(['x'], 'b.png', { type: 'image/png' });
     fireEvent.drop(screen.getByRole('button', { name: /drop image/i }), {
       dataTransfer: { files: [file] },
     });
-    await waitFor(() => expect(onChange).toHaveBeenCalledWith('/uploads/dropped.png'));
+    expect(onChange).toHaveBeenCalledWith('blob:dropped');
   });
 });
 
@@ -209,7 +204,7 @@ describe('FieldControl video', () => {
 
   it('renders an empty drop-zone prompting for a video', () => {
     renderControl(descriptor, '');
-    expect(screen.getByText('Drop video or click to upload')).toBeInTheDocument();
+    expect(screen.getByText('Drop video or click to choose')).toBeInTheDocument();
   });
 
   it('emits the pasted url through the text field', () => {

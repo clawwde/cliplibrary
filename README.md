@@ -13,11 +13,26 @@ text, colors, timing and layers on a timeline, and export the result to video.
 - Properties panels generated from each clip's Zod schema, with color, slider,
   multiline, image and easing controls.
 - Undo and redo that collapse a whole drag or slider gesture into one step.
-- Export to H.264, H.265, VP9, ProRes or GIF at a chosen scale, frame rate and
-  quality, rendered with `@remotion/renderer`.
+- Export to MP4 (H.264, H.265 or AV1) or WebM (VP9) at a chosen scale and
+  quality, rendered in your browser with `@remotion/web-renderer`. Use a
+  recent Chrome, Edge or Firefox; the format list shows what your browser can
+  encode.
 
 Edits live in the browser session. Nothing you change is written back to the
-server, so reloading a clip starts from its defaults.
+server, so reloading a clip starts from its defaults. Images and videos you
+pick are loaded locally and never uploaded. The app has no backend, so it runs
+on any static-friendly host such as Netlify.
+
+## Export fidelity
+
+The browser renderer redraws the DOM onto a canvas and skips some CSS:
+radial gradients, blend modes, backdrop filters and 3D perspective. Chrome's
+HTML-in-canvas capture renders those faithfully. It is used automatically when
+the browser supports it, which today means Chrome with the origin trial or the
+`chrome://flags/#canvas-draw-element` flag. To enable the trial for a
+deployment, register the site for the HTML-in-Canvas origin trial and set the
+token as `HTML_IN_CANVAS_ORIGIN_TRIAL_TOKEN` at build time; it is sent as an
+`Origin-Trial` header.
 
 ## Requirements
 
@@ -44,8 +59,8 @@ anything. After adding or changing a clip, re-render its preview with
 - `src/project`: the layered project model and its pure reducers.
 - `src/core`: domain types, the clip project seed and schema-to-control
   introspection.
-- `src/render`: Bun render scripts built on `@remotion/bundler` and
-  `@remotion/renderer`.
+- `src/render`: Bun scripts built on `@remotion/bundler` and
+  `@remotion/renderer` that render the committed gallery previews.
 - `tests`, `e2e`: unit and component tests, and the Playwright suite.
 
 ## Common commands

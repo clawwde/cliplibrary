@@ -1,20 +1,9 @@
 'use client';
 
 import { Upload } from 'lucide-react';
-import { useRef, useState } from 'react';
+import { useRef } from 'react';
 import { Input } from '@/components/ui/input';
 import { PanelRow } from './fields';
-
-const uploadMedia = async (file: File): Promise<string> => {
-  const body = new FormData();
-  body.set('file', file);
-  const response = await fetch('/api/upload', { method: 'POST', body });
-  if (!response.ok) {
-    throw new Error('upload failed');
-  }
-  const data = (await response.json()) as { url: string };
-  return data.url;
-};
 
 interface MediaFieldProps {
   label: string;
@@ -25,17 +14,11 @@ interface MediaFieldProps {
 
 export const MediaField = ({ label, accept, value, onChange }: MediaFieldProps) => {
   const inputRef = useRef<HTMLInputElement>(null);
-  const [busy, setBusy] = useState(false);
 
   const receive = (file: File | undefined): void => {
-    if (file === undefined) {
-      return;
+    if (file !== undefined) {
+      onChange(URL.createObjectURL(file));
     }
-    setBusy(true);
-    uploadMedia(file)
-      .then(onChange)
-      .catch(() => undefined)
-      .finally(() => setBusy(false));
   };
 
   return (
@@ -47,7 +30,7 @@ export const MediaField = ({ label, accept, value, onChange }: MediaFieldProps) 
           className="flex items-center justify-center gap-2 rounded-md bg-muted p-2 text-muted-foreground text-xs"
         >
           <Upload className="size-4" />
-          {busy ? 'Uploading' : 'Upload'}
+          Choose file
         </button>
         <Input
           type="text"

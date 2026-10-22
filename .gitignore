@@ -19,9 +19,6 @@ test-results
 public/exports/*
 !public/exports/.gitkeep
 
-public/uploads/*
-!public/uploads/.gitkeep
-
 settings.local.json
 *.tsbuildinfo
 

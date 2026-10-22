@@ -3,7 +3,7 @@
 import { Layers, Maximize2, Pause, Play, Redo2, Undo2, ZoomIn, ZoomOut } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { MAX_PX_PER_FRAME, MIN_PX_PER_FRAME, ZOOM_STEP } from '@/lib/timeline-geometry';
-import type { ExportSettings, ExportState } from '@/lib/use-project-export';
+import type { ExportDownload, ExportSettings, ExportState } from '@/lib/use-project-export';
 import type { ElementType } from '@/project';
 import { ExportControls } from './export-controls';
 
@@ -19,7 +19,8 @@ interface TimelineToolbarProps {
   canRedo: boolean;
   exportState: ExportState;
   exportProgress: number;
-  downloadUrl: string | null;
+  download: ExportDownload | null;
+  exportError: string | null;
   animations: readonly AnimationOption[];
   onAddElement: (type: ElementType) => void;
   onAddAnimation: (clipId: string) => void;
@@ -41,7 +42,8 @@ export const TimelineToolbar = ({
   canRedo,
   exportState,
   exportProgress,
-  downloadUrl,
+  download,
+  exportError,
   animations,
   onAddElement,
   onAddAnimation,
@@ -145,7 +147,8 @@ export const TimelineToolbar = ({
       <ExportControls
         state={exportState}
         progress={exportProgress}
-        downloadUrl={downloadUrl}
+        download={download}
+        error={exportError}
         onExport={onExport}
       />
     </div>

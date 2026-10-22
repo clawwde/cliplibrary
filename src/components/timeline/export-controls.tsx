@@ -1,7 +1,7 @@
 'use client';
 
 import { Download } from 'lucide-react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
@@ -21,17 +21,30 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { Slider } from '@/components/ui/slider';
-import { MAX_CRF, MIN_CRF, PRORES_PROFILES } from '@/lib/render-options';
-import type { ExportSettings, ExportState } from '@/lib/use-project-export';
+import {
+  DEFAULT_EXPORT_SETTINGS,
+  EXPORT_QUALITIES,
+  type ExportCodec,
+  type ExportDownload,
+  type ExportSettings,
+  type ExportState,
+  listEncodableCodecs,
+} from '@/lib/use-project-export';
 
-const FORMATS: { value: ExportSettings['codec']; label: string }[] = [
-  { value: 'h264', label: 'MP4 (H.264)' },
-  { value: 'h265', label: 'MP4 (H.265 / HEVC)' },
-  { value: 'vp9', label: 'WebM (VP9)' },
-  { value: 'prores', label: 'ProRes (MOV)' },
-  { value: 'gif', label: 'GIF' },
-];
+const FORMAT_LABELS: Record<ExportCodec, string> = {
+  h264: 'MP4 (H.264)',
+  h265: 'MP4 (H.265 / HEVC)',
+  vp9: 'WebM (VP9)',
+  av1: 'MP4 (AV1)',
+};
+
+const QUALITY_LABELS: Record<ExportSettings['quality'], string> = {
+  'very-low': 'Very low',
+  low: 'Low',
+  medium: 'Medium',
+  high: 'High',
+  'very-high': 'Very high',
+};
 
 const SCALES: { value: string; label: string }[] = [
   { value: '0.25', label: '0.25x' },
@@ -42,45 +55,88 @@ const SCALES: { value: string; label: string }[] = [
   { value: '2', label: '2x' },
 ];
 
-const FRAME_RATES: { value: string; label: string }[] = [
-  { value: 'source', label: 'Source' },
-  { value: '24', label: '24 fps' },
-  { value: '30', label: '30 fps' },
-  { value: '60', label: '60 fps' },
-];
-
-const DEFAULT_SETTINGS: ExportSettings = {
-  codec: 'h264',
-  crf: 18,
-  scale: 1,
-  fps: null,
-  proResProfile: null,
-};
-
 const STATUS_LABEL: Record<ExportState, string> = {
-  idle: 'Ready to render.',
+  idle: 'Renders in this browser tab. Keep it in the foreground.',
   rendering: 'Rendering',
   done: 'Render complete.',
-  error: 'Render failed. Try again.',
+  error: 'Render failed.',
 };
 
-const qualityWord = (crf: number): string =>
-  crf <= 18 ? 'high' : crf <= 28 ? 'balanced' : 'small file';
+const useEncodableCodecs = (open: boolean): ExportCodec[] | null => {
+  const [codecs, setCodecs] = useState<ExportCodec[] | null>(null);
+  useEffect(() => {
+    if (!open || codecs !== null) {
+      return;
+    }
+    listEncodableCodecs()
+      .then(setCodecs)
+      .catch(() => setCodecs([]));
+  }, [open, codecs]);
+  return codecs;
+};
+
+const resolveCodec = (codecs: ExportCodec[] | null, preferred: ExportCodec): ExportCodec =>
+  codecs === null || codecs.includes(preferred) ? preferred : (codecs[0] ?? preferred);
+
+const statusMessage = (state: ExportState, error: string | null, unsupported: boolean): string => {
+  if (unsupported) {
+    return 'This browser cannot encode video. Use a recent Chrome, Edge or Firefox.';
+  }
+  if (state === 'error' && error !== null) {
+    return `${STATUS_LABEL.error} ${error}`;
+  }
+  return STATUS_LABEL[state];
+};
+
+interface ExportStatusProps {
+  state: ExportState;
+  percent: number;
+  error: string | null;
+  unsupported: boolean;
+}
+
+const ExportStatus = ({ state, percent, error, unsupported }: ExportStatusProps) =>
+  state === 'rendering' ? (
+    <div className="flex flex-col gap-2">
+      <Progress value={percent} />
+      <span className="text-muted-foreground text-xs">
+        {STATUS_LABEL.rendering} {percent}%
+      </span>
+    </div>
+  ) : (
+    <span
+      className={
+        state === 'error' || unsupported
+          ? 'text-destructive text-xs'
+          : 'text-muted-foreground text-xs'
+      }
+    >
+      {statusMessage(state, error, unsupported)}
+    </span>
+  );
 
 interface ExportControlsProps {
   state: ExportState;
   progress: number;
-  downloadUrl: string | null;
+  download: ExportDownload | null;
+  error: string | null;
   onExport: (settings: ExportSettings) => void;
 }
 
-export const ExportControls = ({ state, progress, downloadUrl, onExport }: ExportControlsProps) => {
+export const ExportControls = ({
+  state,
+  progress,
+  download,
+  error,
+  onExport,
+}: ExportControlsProps) => {
   const [open, setOpen] = useState(false);
-  const [settings, setSettings] = useState<ExportSettings>(DEFAULT_SETTINGS);
+  const [settings, setSettings] = useState<ExportSettings>(DEFAULT_EXPORT_SETTINGS);
+  const codecs = useEncodableCodecs(open);
   const rendering = state === 'rendering';
   const percent = Math.round(progress * 100);
-  const supportsQuality = settings.codec !== 'gif' && settings.codec !== 'prores';
-  const isProRes = settings.codec === 'prores';
+  const unsupported = codecs !== null && codecs.length === 0;
+  const codec = resolveCodec(codecs, settings.codec);
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -99,18 +155,19 @@ export const ExportControls = ({ state, progress, downloadUrl, onExport }: Expor
           <div className="flex flex-col gap-2">
             <Label htmlFor="export-format">Format</Label>
             <Select
-              value={settings.codec}
+              value={codec}
+              disabled={unsupported}
               onValueChange={(value) =>
-                setSettings((current) => ({ ...current, codec: value as ExportSettings['codec'] }))
+                setSettings((current) => ({ ...current, codec: value as ExportCodec }))
               }
             >
               <SelectTrigger id="export-format" aria-label="Format">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                {FORMATS.map((format) => (
-                  <SelectItem key={format.value} value={format.value}>
-                    {format.label}
+                {(codecs ?? [settings.codec]).map((option) => (
+                  <SelectItem key={option} value={option}>
+                    {FORMAT_LABELS[option]}
                   </SelectItem>
                 ))}
               </SelectContent>
@@ -140,23 +197,23 @@ export const ExportControls = ({ state, progress, downloadUrl, onExport }: Expor
             </div>
 
             <div className="flex flex-col gap-2">
-              <Label htmlFor="export-fps">Frame rate</Label>
+              <Label htmlFor="export-quality">Quality</Label>
               <Select
-                value={settings.fps === null ? 'source' : String(settings.fps)}
+                value={settings.quality}
                 onValueChange={(value) =>
                   setSettings((current) => ({
                     ...current,
-                    fps: value === 'source' ? null : Number(value),
+                    quality: value as ExportSettings['quality'],
                   }))
                 }
               >
-                <SelectTrigger id="export-fps" aria-label="Frame rate">
+                <SelectTrigger id="export-quality" aria-label="Quality">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  {FRAME_RATES.map((rate) => (
-                    <SelectItem key={rate.value} value={rate.value}>
-                      {rate.label}
+                  {EXPORT_QUALITIES.map((quality) => (
+                    <SelectItem key={quality} value={quality}>
+                      {QUALITY_LABELS[quality]}
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -164,77 +221,21 @@ export const ExportControls = ({ state, progress, downloadUrl, onExport }: Expor
             </div>
           </div>
 
-          {isProRes ? (
-            <div className="flex flex-col gap-2">
-              <Label htmlFor="export-prores">ProRes profile</Label>
-              <Select
-                value={settings.proResProfile ?? 'hq'}
-                onValueChange={(value) =>
-                  setSettings((current) => ({ ...current, proResProfile: value }))
-                }
-              >
-                <SelectTrigger id="export-prores" aria-label="ProRes profile">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {PRORES_PROFILES.map((profile) => (
-                    <SelectItem key={profile} value={profile}>
-                      {profile}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-          ) : null}
-
-          {supportsQuality ? (
-            <div className="flex flex-col gap-2">
-              <div className="flex items-center justify-between">
-                <Label>Quality</Label>
-                <span className="text-muted-foreground text-xs">
-                  crf {settings.crf} ({qualityWord(settings.crf)})
-                </span>
-              </div>
-              <Slider
-                aria-label="Quality"
-                min={MIN_CRF}
-                max={MAX_CRF}
-                step={1}
-                value={[settings.crf]}
-                onValueChange={([value]) =>
-                  setSettings((current) => ({ ...current, crf: value ?? current.crf }))
-                }
-              />
-              <span className="text-muted-foreground text-xs">
-                Lower is higher quality and a larger file.
-              </span>
-            </div>
-          ) : null}
-
-          {rendering ? (
-            <div className="flex flex-col gap-2">
-              <Progress value={percent} />
-              <span className="text-muted-foreground text-xs">
-                {STATUS_LABEL.rendering} {percent}%
-              </span>
-            </div>
-          ) : (
-            <span
-              className={
-                state === 'error' ? 'text-destructive text-xs' : 'text-muted-foreground text-xs'
-              }
-            >
-              {STATUS_LABEL[state]}
-            </span>
-          )}
+          <ExportStatus state={state} percent={percent} error={error} unsupported={unsupported} />
         </div>
         <DialogFooter>
-          {state === 'done' && downloadUrl !== null ? (
+          {state === 'done' && download !== null ? (
             <Button type="button" variant="outline" asChild>
-              <a href={downloadUrl}>Download</a>
+              <a href={download.url} download={download.fileName}>
+                Download
+              </a>
             </Button>
           ) : null}
-          <Button type="button" disabled={rendering} onClick={() => onExport(settings)}>
+          <Button
+            type="button"
+            disabled={rendering || unsupported}
+            onClick={() => onExport({ ...settings, codec })}
+          >
             {rendering ? 'Rendering' : state === 'error' ? 'Retry render' : 'Render'}
           </Button>
         </DialogFooter>

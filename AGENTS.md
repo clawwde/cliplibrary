@@ -11,8 +11,13 @@ Everything lives in one package. Modules import each other through the `@/` alia
 - `src/app`, `src/components`, `src/lib` - Next.js App Router UI: clip gallery and per-clip
   editor (live `@remotion/player` preview, schema-driven properties panel, timeline, in-memory
   undo/redo and export). The editor never writes project state to the server.
-- `src/render` - Bun render scripts (`@remotion/bundler` + `@remotion/renderer`) that produce
-  mp4 + poster for a clip and props snapshot. The API routes spawn them from the project root.
+- `src/render` - Bun render scripts (`@remotion/bundler` + `@remotion/renderer`) for the
+  committed gallery previews. They run locally only; the app has no API routes.
+- Editor export runs in the browser (`src/lib/use-project-export.ts`, `renderMediaOnWeb`), and
+  picked media becomes an object URL. Keep compositions within what `@remotion/web-renderer`
+  can draw: no `z-index`, `OffthreadVideo` or `Html5Video`, and prefer linear gradients over
+  radial ones, blend modes, backdrop filters and 3D perspective, which only render when Chrome's
+  HTML-in-canvas capture is available (`HTML_IN_CANVAS_ORIGIN_TRIAL_TOKEN`).
 - `src/schemas` - per-clip Zod schemas, typed defaults, inferred types, the `ClipId` union and clip
   registry metadata. Pure, no React, no Node.
 - `src/compositions` - the Remotion scenes, motion kit, `Root`, and the `registerRoot` entry.
@@ -101,8 +106,9 @@ and every element is independently selectable, movable, trimmable and animatable
 editor.
 
 - Stacking order: the FIRST track in `tracks` is the TOP visual layer and the TOP row of the
-  timeline. `ProjectComposition` paints tracks with a descending `zIndex` (`tracks.length - index`)
-  so earlier tracks sit on top; within a track, later elements paint over earlier ones. The
+  timeline. `ProjectComposition` renders tracks in reverse DOM order, never `z-index` (the browser
+  renderer ignores it), so earlier tracks sit on top; within a track, later elements paint over
+  earlier ones. Project videos use `<Video>` from `@remotion/media`, not `OffthreadVideo`. The
   timeline UI, `moveTrack` (up = toward the top layer) and the render stay consistent with this.
 - Pure reducers in `src/project/mutations.ts`: `moveElementToTrack` (reassign an element's
   layer, optionally re-clamping `from`), `moveTrack` (restack a whole track up/down) and
