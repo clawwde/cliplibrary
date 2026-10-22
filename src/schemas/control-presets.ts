@@ -24,7 +24,11 @@ export const MOTION = {
   exit: { path: 'motion.exit', label: 'Exit' },
   exitFrames: { path: 'motion.exitFrames', label: 'Exit length', hint: 'In frames' },
   float: { path: 'motion.float', label: 'Idle float', hint: 'Gentle drift while on screen' },
-  speed: { path: 'motion.speed', label: 'Playback speed' },
+  speed: {
+    path: 'motion.speed',
+    label: 'Animation speed',
+    hint: 'Speeds up the scene itself; the entrance and exit keep their own length',
+  },
 } as const;
 
 export const PLACEMENT = {

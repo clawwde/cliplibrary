@@ -71,11 +71,13 @@ const FieldShell = ({
   label,
   hint,
   linked,
+  mixed = false,
   children,
 }: {
   label: string;
   hint: string | null;
   linked: number;
+  mixed?: boolean;
   children: ReactNode;
 }) => (
   <div className="mb-3.5 flex flex-col gap-1.5">
@@ -87,6 +89,11 @@ const FieldShell = ({
     </Label>
     {children}
     {hint === null ? null : <p className="text-[11px] text-muted-foreground/80">{hint}</p>}
+    {mixed ? (
+      <p className="text-[11px] text-muted-foreground/80">
+        Currently mixed. Changing this sets all {linked} to the same value.
+      </p>
+    ) : null}
   </div>
 );
 
@@ -95,22 +102,31 @@ const LeafRow = ({
   descriptor,
   values,
   onChange,
-}: { entry: ControlEntry; descriptor: LeafDescriptor } & PanelProps) => (
-  <FieldShell label={descriptor.label} hint={entry.hint} linked={entry.targets.length}>
-    <FieldControl
-      descriptor={descriptor}
-      value={getAtPath(values, descriptor.path)}
-      onChange={(next) =>
-        onChange(
-          entry.targets.reduce<Values>(
-            (current, target) => setAtPath(current, target, next) as Values,
-            values,
-          ),
-        )
-      }
-    />
-  </FieldShell>
-);
+}: { entry: ControlEntry; descriptor: LeafDescriptor } & PanelProps) => {
+  const current = getAtPath(values, descriptor.path);
+  const mixed = entry.targets.some((target) => getAtPath(values, target) !== current);
+  return (
+    <FieldShell
+      label={descriptor.label}
+      hint={entry.hint}
+      linked={entry.targets.length}
+      mixed={mixed}
+    >
+      <FieldControl
+        descriptor={descriptor}
+        value={current}
+        onChange={(next) =>
+          onChange(
+            entry.targets.reduce<Values>(
+              (accumulated, target) => setAtPath(accumulated, target, next) as Values,
+              values,
+            ),
+          )
+        }
+      />
+    </FieldShell>
+  );
+};
 
 const ArrayRow = ({
   entry,

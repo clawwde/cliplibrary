@@ -72,6 +72,19 @@ describe('PropertiesPanel', () => {
     });
   });
 
+  it('flags a linked control whose targets currently differ', () => {
+    render(
+      <PropertiesPanel
+        sections={sections}
+        values={{ ...values, colors: { title: '#ffffff', subtitle: '#cccccc', bg: '#000000' } }}
+        onChange={mock()}
+      />,
+    );
+    expect(
+      screen.getByText('Currently mixed. Changing this sets all 2 to the same value.'),
+    ).toBeInTheDocument();
+  });
+
   it('reveals the more options of a section on demand', () => {
     renderPanel();
     expect(screen.queryByText('Subtitle')).toBeInTheDocument();
