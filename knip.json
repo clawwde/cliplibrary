@@ -3,7 +3,7 @@
   "playwright": false,
   "entry": [
     "scripts/*.ts",
-    "src/{schemas,project,core,compositions}/index.ts",
+    "src/{schemas,project,core,compositions,design}/index.ts",
     "src/compositions/entry.ts",
     "playwright.config.ts",
     "e2e/**/*.spec.ts"
