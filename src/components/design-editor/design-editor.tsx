@@ -3,11 +3,7 @@
 import { Image as ImageIcon, Layers, PaintBucket, Shapes, Type, Upload } from 'lucide-react';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
-  createEllipse,
   createImage,
-  createLine,
-  createRect,
-  createText,
   type Design,
   type DesignElement,
   designSchema,
@@ -15,6 +11,7 @@ import {
   type Point,
 } from '@/design';
 import { CanvasWorkspace } from './canvas-workspace';
+import { EditorContextMenu } from './context-menu';
 import { EditorHeader } from './editor-header';
 import { EditorSidebar, type SidebarPanel } from './editor-sidebar';
 import { exportPages } from './export-design';
@@ -22,13 +19,15 @@ import { useFontsVersion } from './font-loader';
 import { PagesStrip } from './pages-strip';
 import { PropertiesPanel } from './panels/properties-panel';
 import { type LoadedImage, readImageFile } from './read-image-file';
-import { isEditableTarget, type ShortcutAction, shortcutFor } from './shortcuts';
+import { ShortcutsDialog } from './shortcuts-dialog';
 import { BackgroundPanel } from './sidebar/background-panel';
 import { ElementsPanel } from './sidebar/elements-panel';
 import { LayersPanel } from './sidebar/layers-panel';
 import { TextPanel } from './sidebar/text-panel';
 import { UploadsPanel } from './sidebar/uploads-panel';
 import { useDesignEditor } from './use-design-editor';
+import { useEditorShortcuts, type ZoomDirection } from './use-editor-shortcuts';
+import { useSelectionActions } from './use-selection-actions';
 import type { Viewport } from './use-workspace-viewport';
 
 const ZOOM_STEPS = [0.05, 0.1, 0.15, 0.2, 0.25, 0.33, 0.5, 0.67, 0.75, 1, 1.25, 1.5, 2, 3, 4, 6, 8];
@@ -156,101 +155,37 @@ export const DesignEditor = ({
   );
 
   const onZoom = useCallback(
-    (direction: 'in' | 'out' | 'fit') =>
-      setUserZoom(direction === 'fit' ? null : stepZoom(zoom, direction)),
+    (direction: ZoomDirection) => {
+      if (direction === 'fit') {
+        setUserZoom(null);
+      } else {
+        setUserZoom(direction === 'actual' ? 1 : stepZoom(zoom, direction));
+      }
+    },
     [zoom],
   );
 
   const addElement = useCallback((element: DesignElement) => editor.addElement(element), [editor]);
 
-  const runShortcut = useCallback(
-    (action: ShortcutAction) => {
-      const handlers: Record<ShortcutAction['type'], () => void> = {
-        undo: editor.undo,
-        redo: editor.redo,
-        delete: editor.removeSelected,
-        duplicate: editor.duplicateSelected,
-        copy: editor.copySelected,
-        cut: editor.cutSelected,
-        'select-all': editor.selectAll,
-        group: editor.groupSelected,
-        ungroup: editor.ungroupSelected,
-        escape: editor.clearSelection,
-        'edit-text': () => {
-          const [only] = editor.selectedElements;
-          if (editor.selectedElements.length === 1 && only?.type === 'text') {
-            editor.setEditingId(only.id);
-          }
-        },
-        layer: () => action.type === 'layer' && editor.reorderSelected(action.move),
-        nudge: () => action.type === 'nudge' && editor.nudgeSelected(action.dx, action.dy),
-        zoom: () => action.type === 'zoom' && onZoom(action.direction),
-        add: () => {
-          if (action.type !== 'add') {
-            return;
-          }
-          const factories = {
-            text: () => createText(),
-            rect: () => createRect(),
-            ellipse: () => createEllipse(),
-            line: () => createLine(),
-          };
-          editor.addElement(factories[action.element]());
-        },
-        export: () => exportPages(design, [editor.pageId], 'png', 1).catch(() => undefined),
-      };
-      handlers[action.type]();
-    },
-    [design, editor, onZoom],
-  );
+  const actions = useSelectionActions(editor);
+  const [helpOpen, setHelpOpen] = useState(false);
+  const [contextPoint, setContextPoint] = useState<Point | null>(null);
+  const [view, setView] = useState({ grid: false, snap: true });
+  const [savedAt, setSavedAt] = useState<number | null>(null);
 
-  useEffect(() => {
-    const onKeyDown = (event: KeyboardEvent) => {
-      if (isEditableTarget(event.target) || editor.editingId !== null) {
-        return;
-      }
-      const action = shortcutFor(event);
-      if (action === null) {
-        return;
-      }
-      if (
-        (action.type === 'nudge' ||
-          action.type === 'delete' ||
-          action.type === 'edit-text' ||
-          action.type === 'layer' ||
-          action.type === 'group' ||
-          action.type === 'ungroup' ||
-          action.type === 'duplicate' ||
-          action.type === 'cut' ||
-          action.type === 'copy') &&
-        editor.selectedIds.length === 0
-      ) {
-        return;
-      }
-      event.preventDefault();
-      runShortcut(action);
-    };
-    const onPaste = (event: ClipboardEvent) => {
-      if (isEditableTarget(event.target)) {
-        return;
-      }
-      const files = [...(event.clipboardData?.files ?? [])].filter((file) =>
-        file.type.startsWith('image/'),
-      );
-      event.preventDefault();
-      if (files.length > 0) {
-        addImageFiles(files);
-      } else {
-        editor.paste();
-      }
-    };
-    window.addEventListener('keydown', onKeyDown);
-    window.addEventListener('paste', onPaste);
-    return () => {
-      window.removeEventListener('keydown', onKeyDown);
-      window.removeEventListener('paste', onPaste);
-    };
-  }, [addImageFiles, editor, runShortcut]);
+  const closeContextMenu = useCallback(() => setContextPoint(null), []);
+
+  useEditorShortcuts({
+    editor,
+    actions,
+    onZoom,
+    onHelp: () => setHelpOpen(true),
+    onSave: () => setSavedAt(Date.now()),
+    onExport: () => {
+      exportPages(design, [editor.pageId], 'png', 1).catch(() => undefined);
+    },
+    onPasteFiles: (files) => addImageFiles(files),
+  });
 
   const panels: SidebarPanel[] = [
     {
@@ -309,6 +244,10 @@ export const DesignEditor = ({
         backHref={backHref}
         onZoom={onZoom}
         onOpen={(next) => editor.load(next)}
+        savedAt={savedAt}
+        view={view}
+        onViewChange={setView}
+        onHelp={() => setHelpOpen(true)}
         onReset={() => {
           forgetSaved(storageKey);
           editor.load(
@@ -333,6 +272,9 @@ export const DesignEditor = ({
             onZoomChange={setUserZoom}
             onViewportChange={setViewport}
             onDropFiles={(files, point) => addImageFiles(files, point)}
+            onContextMenu={setContextPoint}
+            snapEnabled={view.snap}
+            showGrid={view.grid}
           />
           <PagesStrip editor={editor} />
         </div>
@@ -343,6 +285,13 @@ export const DesignEditor = ({
           <PropertiesPanel editor={editor} />
         </aside>
       </div>
+      <ShortcutsDialog open={helpOpen} onOpenChange={setHelpOpen} />
+      <EditorContextMenu
+        point={contextPoint}
+        editor={editor}
+        actions={actions}
+        onClose={closeContextMenu}
+      />
     </div>
   );
 };

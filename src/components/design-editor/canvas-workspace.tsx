@@ -4,16 +4,15 @@ import type Konva from 'konva';
 import type { KonvaEventObject } from 'konva/lib/Node';
 import { type DragEvent as ReactDragEvent, useCallback, useEffect, useRef, useState } from 'react';
 import { Group, Layer, Rect, Stage } from 'react-konva';
-import { type Box, boxesIntersect, type DesignElement, type Point, snapAxis } from '@/design';
-import { ELEMENT_NODE_NAME, type ElementInteraction } from './element-node';
+import { type Box, boxesIntersect, type Point } from '@/design';
+import { ELEMENT_NODE_NAME } from './element-node';
 import { PAGE_BACKGROUND_NAME, PageContent } from './page-content';
 import { SelectionTransformer } from './selection-transformer';
 import { TextEditOverlay } from './text-edit-overlay';
 import type { DesignEditorState } from './use-design-editor';
+import { blurActiveElement, useElementInteractions } from './use-element-interactions';
 import { useSpaceHeld, useViewportSize, type Viewport } from './use-workspace-viewport';
 import { type Guides, NO_GUIDES, WorkspaceOverlays } from './workspace-overlays';
-
-const SNAP_PX = 6;
 
 interface CanvasWorkspaceProps {
   editor: DesignEditorState;
@@ -22,6 +21,9 @@ interface CanvasWorkspaceProps {
   onZoomChange: (zoom: number) => void;
   onViewportChange: (viewport: Viewport) => void;
   onDropFiles: (files: File[], point: Point) => void;
+  onContextMenu: (point: Point) => void;
+  snapEnabled: boolean;
+  showGrid: boolean;
 }
 
 export const CanvasWorkspace = ({
@@ -31,6 +33,9 @@ export const CanvasWorkspace = ({
   onZoomChange,
   onViewportChange,
   onDropFiles,
+  onContextMenu,
+  snapEnabled,
+  showGrid,
 }: CanvasWorkspaceProps) => {
   const { design, page, selectedIds, selectedElements, editingId } = editor;
   const containerRef = useRef<HTMLDivElement>(null);
@@ -47,7 +52,6 @@ export const CanvasWorkspace = ({
   const spaceHeld = useSpaceHeld();
   const marqueeStart = useRef<Point | null>(null);
   const panStart = useRef<{ pointer: Point; pan: Point } | null>(null);
-  const snapTargets = useRef<{ x: number[]; y: number[] }>({ x: [], y: [] });
 
   const offset = {
     x: (viewport.width - design.width * zoom) / 2 + pan.x,
@@ -95,97 +99,20 @@ export const CanvasWorkspace = ({
     return { x: (pointer.x - offset.x) / zoom, y: (pointer.y - offset.y) / zoom };
   }, [offset.x, offset.y, zoom]);
 
-  const collectSnapTargets = useCallback(
-    (movingIds: readonly string[]) => {
-      const xs = [0, design.width / 2, design.width];
-      const ys = [0, design.height / 2, design.height];
-      for (const element of page.elements) {
-        if (movingIds.includes(element.id) || element.hidden) {
-          continue;
-        }
-        const node = findNode(element.id);
-        const box = node === undefined ? null : localBox(node);
-        if (box !== null) {
-          xs.push(box.x, box.x + box.width / 2, box.x + box.width);
-          ys.push(box.y, box.y + box.height / 2, box.y + box.height);
-        }
-      }
-      snapTargets.current = { x: xs, y: ys };
-    },
-    [design.height, design.width, findNode, localBox, page.elements],
-  );
-
-  const interactionFor = useCallback(
-    (element: DesignElement): ElementInteraction => {
-      const onPress = (event: KonvaEventObject<MouseEvent | TouchEvent>) => {
-        if (spaceHeld) {
-          return;
-        }
-        event.cancelBubble = true;
-        const additive = 'shiftKey' in event.evt && (event.evt.shiftKey || event.evt.metaKey);
-        if (additive || !selectedIds.includes(element.id)) {
-          editor.select([element.id], additive);
-        }
-      };
-      const onEdit = () => {
-        if (element.type === 'text' && !element.locked) {
-          editor.select([element.id]);
-          editor.setEditingId(element.id);
-        }
-      };
-      return {
-        draggable: !(element.locked || spaceHeld),
-        onMouseDown: onPress,
-        onTouchStart: onPress,
-        onDblClick: onEdit,
-        onDblTap: onEdit,
-        onDragStart: () => {
-          setHoverBox(null);
-          collectSnapTargets(selectedIds.includes(element.id) ? selectedIds : [element.id]);
-        },
-        onDragMove: (event) => {
-          const node = event.target;
-          if (selectedIds.length > 1) {
-            return;
-          }
-          const box = localBox(node);
-          if (box === null) {
-            return;
-          }
-          const threshold = SNAP_PX / zoom;
-          const snapX = snapAxis(
-            [box.x, box.x + box.width / 2, box.x + box.width],
-            snapTargets.current.x,
-            threshold,
-          );
-          const snapY = snapAxis(
-            [box.y, box.y + box.height / 2, box.y + box.height],
-            snapTargets.current.y,
-            threshold,
-          );
-          node.x(node.x() + snapX.delta);
-          node.y(node.y() + snapY.delta);
-          setGuides({ vertical: snapX.guide, horizontal: snapY.guide });
-        },
-        onDragEnd: () => {
-          setGuides(NO_GUIDES);
-          const ids = selectedIds.includes(element.id) ? selectedIds : [element.id];
-          const updates = new Map<string, DesignElement>();
-          for (const id of ids) {
-            const node = findNode(id);
-            const current = page.elements.find((item) => item.id === id);
-            if (node !== undefined && current !== undefined) {
-              updates.set(id, { ...current, x: node.x(), y: node.y() });
-            }
-          }
-          editor.updateMany(updates);
-        },
-      };
-    },
-    [collectSnapTargets, editor, findNode, localBox, page.elements, selectedIds, spaceHeld, zoom],
-  );
+  const interactionFor = useElementInteractions({
+    editor,
+    zoom,
+    spaceHeld,
+    snapEnabled,
+    findNode,
+    localBox,
+    onHover: setHoverBox,
+    onGuides: setGuides,
+    onContextMenu: (_element, point) => onContextMenu(point),
+  });
 
   const onStageDown = (event: KonvaEventObject<MouseEvent | TouchEvent>) => {
+    blurActiveElement();
     const target = event.target;
     const onEmpty = target === target.getStage() || target.hasName(PAGE_BACKGROUND_NAME);
     const pointer = stageRef.current?.getPointerPosition() ?? null;
@@ -319,6 +246,10 @@ export const CanvasWorkspace = ({
           onTouchEnd={onStageUp}
           onMouseLeave={() => setHoverBox(null)}
           onWheel={onWheel}
+          onContextMenu={(event) => {
+            event.evt.preventDefault();
+            onContextMenu({ x: event.evt.clientX, y: event.evt.clientY });
+          }}
         >
           <Layer>
             <Rect
@@ -356,6 +287,7 @@ export const CanvasWorkspace = ({
                 guides={guides}
                 marquee={marquee}
                 zoom={zoom}
+                grid={showGrid ? { width: design.width, height: design.height } : null}
               />
             </Group>
             <SelectionTransformer

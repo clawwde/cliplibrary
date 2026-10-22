@@ -315,6 +315,7 @@ export interface ElementInteraction {
   onTouchStart?: (event: KonvaEventObject<MouseEvent | TouchEvent>) => void;
   onDblClick?: (event: KonvaEventObject<MouseEvent>) => void;
   onDblTap?: (event: KonvaEventObject<Event>) => void;
+  onContextMenu?: (event: KonvaEventObject<PointerEvent>) => void;
   onDragStart?: (event: KonvaEventObject<DragEvent>) => void;
   onDragMove?: (event: KonvaEventObject<DragEvent>) => void;
   onDragEnd?: (event: KonvaEventObject<DragEvent>) => void;

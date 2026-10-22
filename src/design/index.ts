@@ -8,3 +8,4 @@ export * from './geometry';
 export * from './icons';
 export * from './image-fit';
 export * from './mutations';
+export * from './style';

@@ -354,6 +354,7 @@ export const useDesignEditor = (initial: Design, initialPageIndex = 0) => {
     clearSelection,
     selectAll,
     setEditingId,
+    transformPage: editPage,
     addElement,
     addMany,
     replaceElement,

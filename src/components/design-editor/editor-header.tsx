@@ -2,8 +2,11 @@
 
 import {
   ChevronLeft,
+  CloudCheck,
   Download,
   FolderOpen,
+  Keyboard,
+  LayoutGrid,
   Loader2,
   Maximize2,
   Minus,
@@ -18,6 +21,7 @@ import { useRef, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
+  DropdownMenuCheckboxItem,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
@@ -35,6 +39,15 @@ interface EditorHeaderProps {
   onZoom: (direction: 'in' | 'out' | 'fit') => void;
   onOpen: (design: Design) => void;
   onReset: () => void;
+  onHelp: () => void;
+  savedAt: number | null;
+  view: EditorView;
+  onViewChange: (view: EditorView) => void;
+}
+
+export interface EditorView {
+  grid: boolean;
+  snap: boolean;
 }
 
 export const EditorHeader = ({
@@ -44,6 +57,10 @@ export const EditorHeader = ({
   onZoom,
   onOpen,
   onReset,
+  onHelp,
+  savedAt,
+  view,
+  onViewChange,
 }: EditorHeaderProps) => {
   const { design } = editor;
   const [busy, setBusy] = useState(false);
@@ -127,7 +144,38 @@ export const EditorHeader = ({
           ))}
         </DropdownMenuContent>
       </DropdownMenu>
+      <span
+        className="hidden items-center gap-1 text-muted-foreground text-xs md:flex"
+        title="Your edits are saved in this browser automatically"
+      >
+        <CloudCheck className="size-4" />
+        {savedAt === null ? 'Saved' : `Saved ${new Date(savedAt).toLocaleTimeString()}`}
+      </span>
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button variant="ghost" size="sm">
+            <LayoutGrid /> View
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="start">
+          <DropdownMenuCheckboxItem
+            checked={view.grid}
+            onCheckedChange={(checked) => onViewChange({ ...view, grid: checked === true })}
+          >
+            Show grid
+          </DropdownMenuCheckboxItem>
+          <DropdownMenuCheckboxItem
+            checked={view.snap}
+            onCheckedChange={(checked) => onViewChange({ ...view, snap: checked === true })}
+          >
+            Snap to smart guides
+          </DropdownMenuCheckboxItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
       <div className="ml-auto flex items-center gap-1">
+        <Button variant="ghost" size="icon-sm" aria-label="Keyboard shortcuts" onClick={onHelp}>
+          <Keyboard />
+        </Button>
         <div className="hidden items-center gap-0.5 rounded-md bg-muted px-1 sm:flex">
           <Button
             variant="ghost"
