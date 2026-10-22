@@ -1,7 +1,7 @@
 # cliplibrary
 
-A single Next.js project for a library of Remotion animation clips with a deep, schema-driven
-in-browser editor.
+A single Next.js project for a library of Remotion animation clips and editable poster packs,
+with a deep, schema-driven video editor and a canvas image editor in the browser.
 
 ## Layout
 
@@ -22,6 +22,15 @@ Everything lives in one package. Modules import each other through the `@/` alia
   registry metadata. Pure, no React, no Node.
 - `src/compositions` - the Remotion scenes, motion kit, `Root`, and the `registerRoot` entry.
 - `src/project` - the layered `Project` model and its pure reducers.
+- `src/design` - the image editor's typed `Design` model (pages of text, shape, path, line, image
+  and icon elements, gradients, filters), pure mutations, geometry, the font catalog and the
+  curated lucide icon set. Pure, no React.
+- `src/components/design-editor` - the Konva image editor: canvas workspace, panels, shortcuts,
+  offscreen page rendering and PNG, JPG, PDF and JSON export. Edits autosave to `localStorage`.
+- `src/posters` - poster packs. Each pack (`packs/<category>/<pack-id>/`) is one multi-page
+  `Design` built with the authoring kit in `src/posters/kit` (elements, blocks, devices,
+  templates and shared listing slides). `photos.ts` lists the bundled Unsplash photos in
+  `public/design-assets/photos`.
 - `src/core` - domain types, the clip project seed and the Zod-schema-to-control introspection.
 - `tests` - `bun test` suites, mirroring `src` (`tests/schemas`, `tests/core`, ...); top-level
   files and `tests/components` cover the UI. `e2e` holds the Playwright suite.
@@ -57,6 +66,13 @@ Everything lives in one package. Modules import each other through the `@/` alia
   `tests/schemas/clip-updated-at.test.ts` fails when a clip has no timestamp.
 - `bun run render --new` - same, but only clips whose preview files are missing from
   `public/previews` (`-new` also works).
+- `bun run render:posters [packId...]` - renders poster previews (480px jpgs, one per page) into
+  `public/poster-previews/<pack>/` with the editor's own renderer in headless Chromium, and stamps
+  the pack in `src/posters/poster-updated-at.json` when it is named or has no entry yet, so the
+  grid sorts posters and clips together by last update. `--pack-file <path> --out <dir> --width
+  <px>` renders an unregistered pack to any folder for review. `tests/posters/posters.test.ts`
+  fails when a pack has no preview, no timestamp, or uses a font, icon or photo outside the
+  bundled sets.
 
 ## Rules
 
@@ -150,3 +166,19 @@ editor.
 - The `@/schemas` scenes are reusable building blocks: the timeline
   toolbar's "Animation" picker inserts one as a `composition` element (its `clipId` is a schema
   `ClipId`, rendered through `CLIP_COMPONENTS`), layerable alongside the primitive elements.
+
+## Poster packs and the image editor
+
+The home grid lists clips and poster packs together. A pack card shows a carousel of its pages,
+and clicking a page opens `/posters/<pack>?page=<n>` in the image editor.
+
+To add a pack:
+
+1. Create `src/posters/packs/<category>/<pack-id>/` (categories are `POSTER_CATEGORIES` in
+   `src/schemas/taxonomy.ts`) with a `posts.ts` of `Template`s and an `index.ts` that exports
+   `definePack({...})` with one page thunk per page.
+2. Add it to that category's `index.ts`.
+3. Run `bun run render:posters <pack-id>` and commit the previews and the timestamp.
+
+Keep every template element inside the template's own bounds (use `poly` for diagonal bands), and
+only use the bundled fonts, icons and photos.

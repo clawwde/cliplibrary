@@ -4,19 +4,22 @@ import {
   facetCounts,
   filterClips,
   formatDuration,
+  type GalleryMeta,
   hasActiveFilters,
   parseFilters,
   serializeFilters,
+  videoMeta,
 } from '@/lib/gallery-filters';
-import { CLIP_REGISTRY, type ClipMeta, clipUpdatedAt } from '@/schemas';
+import { CLIP_REGISTRY } from '@/schemas';
 
-const items = CLIP_REGISTRY.map((meta) => ({ meta }));
-const ids = (list: { meta: ClipMeta }[]) => list.map((item) => item.meta.id);
+const items = CLIP_REGISTRY.map((meta) => ({ meta: videoMeta(meta) }));
+const ids = (list: { meta: GalleryMeta }[]) => list.map((item) => item.meta.id);
 
 describe('gallery filters', () => {
   it('round-trips filters through the URL and drops defaults', () => {
     const filters = {
       query: 'phone',
+      kind: 'video' as const,
       category: 'phone-layouts' as const,
       tags: ['3d' as const, 'grid' as const],
       theme: 'light' as const,
@@ -25,6 +28,33 @@ describe('gallery filters', () => {
     const query = serializeFilters(filters);
     expect(parseFilters(new URLSearchParams(query.slice(1)))).toEqual(filters);
     expect(serializeFilters(DEFAULT_FILTERS)).toBe('');
+  });
+
+  it('filters by kind and sorts posters and videos together by recency', () => {
+    const poster: GalleryMeta = {
+      id: 'hiring-spotlight',
+      kind: 'poster',
+      title: 'Hiring Spotlight',
+      description: 'Recruitment posts',
+      category: 'social-posts',
+      tags: ['hiring'],
+      theme: 'dark',
+      durationInFrames: 0,
+      fps: 30,
+      updatedAt: '2999-01-01T00:00:00.000Z',
+    };
+    const mixed = [...items, { meta: poster }];
+    expect(ids(filterClips(mixed, { ...DEFAULT_FILTERS, kind: 'poster' }))).toEqual([
+      'hiring-spotlight',
+    ]);
+    expect(filterClips(mixed, { ...DEFAULT_FILTERS, kind: 'video' })).toHaveLength(items.length);
+    expect(ids(filterClips(mixed, DEFAULT_FILTERS))[0]).toBe('hiring-spotlight');
+    expect(ids(filterClips(mixed, { ...DEFAULT_FILTERS, query: 'hiring' }))).toContain(
+      'hiring-spotlight',
+    );
+    const kinds = facetCounts(mixed, DEFAULT_FILTERS, 'kind', (meta) => [meta.kind]);
+    expect(kinds.get('poster')).toBe(1);
+    expect(hasActiveFilters({ ...DEFAULT_FILTERS, kind: 'poster' })).toBe(true);
   });
 
   it('ignores unknown values in the URL', () => {
@@ -70,8 +100,7 @@ describe('gallery filters', () => {
   });
 
   it('puts the most recently updated clips first when there is no search to rank by', () => {
-    const newestFirst = (list: { meta: ClipMeta }[]) =>
-      list.map((item) => clipUpdatedAt(item.meta.id));
+    const newestFirst = (list: { meta: GalleryMeta }[]) => list.map((item) => item.meta.updatedAt);
     const order = newestFirst(filterClips(items, DEFAULT_FILTERS));
     expect(order).toEqual([...order].sort((left, right) => right.localeCompare(left)));
     expect(newestFirst(filterClips(items, { ...DEFAULT_FILTERS, sort: 'updated' }))).toEqual(order);
@@ -116,6 +145,6 @@ describe('gallery filters', () => {
     expect(hasActiveFilters(DEFAULT_FILTERS)).toBe(false);
     expect(hasActiveFilters({ ...DEFAULT_FILTERS, query: ' x ' })).toBe(true);
     const meta = CLIP_REGISTRY.find((entry) => entry.id === 'scene-transition');
-    expect(meta === undefined ? '' : formatDuration(meta)).toBe('1.3s');
+    expect(meta === undefined ? '' : formatDuration(videoMeta(meta))).toBe('1.3s');
   });
 });

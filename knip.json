@@ -3,10 +3,12 @@
   "playwright": false,
   "entry": [
     "scripts/*.ts",
-    "src/{schemas,project,core,compositions}/index.ts",
+    "src/{schemas,project,core,compositions,design}/index.ts",
     "src/compositions/entry.ts",
     "playwright.config.ts",
-    "e2e/**/*.spec.ts"
+    "e2e/**/*.spec.ts",
+    "src/render/posters/preview-entry.tsx",
+    "src/posters/{kit/index,pack}.ts"
   ],
   "project": ["src/**/*.{ts,tsx}", "tests/**/*.{ts,tsx}", "e2e/**/*.ts", "scripts/**/*.ts"],
   "ignore": ["src/components/ui/**"],

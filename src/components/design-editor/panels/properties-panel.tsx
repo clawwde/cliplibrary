@@ -1,0 +1,96 @@
+'use client';
+
+import type { DesignElement } from '@/design';
+import type { DesignEditorState } from '../use-design-editor';
+import { ActionsBar, ArrangeSection } from './arrange-section';
+import { Section } from './fields';
+import { FillEditor } from './fill-editor';
+import { IconSection } from './icon-section';
+import { ImageSection } from './image-section';
+import { ShadowSection } from './shadow-section';
+import { LineSection, ShapeSection } from './shape-section';
+import { TextEffectsSection } from './text-effects-section';
+import { TextSection } from './text-section';
+
+const TYPE_LABELS: Record<DesignElement['type'], string> = {
+  text: 'Text',
+  rect: 'Rectangle',
+  ellipse: 'Ellipse',
+  polygon: 'Polygon',
+  star: 'Star',
+  path: 'Shape',
+  line: 'Line',
+  image: 'Image',
+  icon: 'Icon',
+};
+
+const TypeSection = ({
+  element,
+  onChange,
+  onCommit,
+}: {
+  element: DesignElement;
+  onChange: (next: DesignElement, live?: boolean) => void;
+  onCommit: () => void;
+}) => {
+  switch (element.type) {
+    case 'text':
+      return (
+        <>
+          <TextSection element={element} onChange={onChange} onCommit={onCommit} />
+          <TextEffectsSection element={element} onChange={onChange} onCommit={onCommit} />
+        </>
+      );
+    case 'image':
+      return <ImageSection element={element} onChange={onChange} onCommit={onCommit} />;
+    case 'icon':
+      return <IconSection element={element} onChange={onChange} onCommit={onCommit} />;
+    case 'line':
+      return <LineSection element={element} onChange={onChange} onCommit={onCommit} />;
+    default:
+      return <ShapeSection element={element} onChange={onChange} onCommit={onCommit} />;
+  }
+};
+
+export const PropertiesPanel = ({ editor }: { editor: DesignEditorState }) => {
+  const { selectedElements, design, page } = editor;
+  const single = selectedElements.length === 1 ? (selectedElements[0] ?? null) : null;
+
+  if (selectedElements.length === 0) {
+    return (
+      <div className="flex flex-col">
+        <div className="border-b px-4 py-3 font-medium text-sm">Page</div>
+        <Section title="Background">
+          <FillEditor
+            label="Background"
+            fill={page.background}
+            onChange={editor.setPageBackground}
+            onCommit={editor.seal}
+          />
+        </Section>
+        <Section title="Size">
+          <p className="text-muted-foreground text-xs">
+            {design.width} × {design.height} px · {design.pages.length}{' '}
+            {design.pages.length === 1 ? 'page' : 'pages'}
+          </p>
+        </Section>
+      </div>
+    );
+  }
+
+  return (
+    <div className="flex flex-col">
+      <div className="border-b px-4 py-3 font-medium text-sm">
+        {single === null ? `${selectedElements.length} elements` : TYPE_LABELS[single.type]}
+      </div>
+      <ActionsBar editor={editor} />
+      {single === null ? null : (
+        <TypeSection element={single} onChange={editor.replaceElement} onCommit={editor.seal} />
+      )}
+      <ArrangeSection editor={editor} element={single} onChange={editor.replaceElement} />
+      {single === null ? null : (
+        <ShadowSection element={single} onChange={editor.replaceElement} onCommit={editor.seal} />
+      )}
+    </div>
+  );
+};

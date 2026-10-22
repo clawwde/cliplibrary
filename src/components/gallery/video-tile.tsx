@@ -4,25 +4,8 @@ import Link from 'next/link';
 import { useEffect, useRef, useState } from 'react';
 import { formatDuration } from '@/lib/gallery-filters';
 import { categoryLabel } from '@/schemas';
-import type { GalleryItem } from './clip-gallery';
-
-const useInView = <Node extends HTMLElement>() => {
-  const ref = useRef<Node>(null);
-  const [inView, setInView] = useState(false);
-  useEffect(() => {
-    const node = ref.current;
-    if (node === null) {
-      return;
-    }
-    const observer = new IntersectionObserver(
-      ([entry]) => setInView(entry?.isIntersecting ?? false),
-      { rootMargin: '200px 0px' },
-    );
-    observer.observe(node);
-    return () => observer.disconnect();
-  }, []);
-  return { ref, inView };
-};
+import type { VideoGalleryItem } from './clip-gallery';
+import { useInView } from './use-in-view';
 
 const ClipVideo = ({ src, inView }: { src: string; inView: boolean }) => {
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -61,7 +44,7 @@ const ClipVideo = ({ src, inView }: { src: string; inView: boolean }) => {
   );
 };
 
-export const VideoTile = ({ meta, video, firstFrame }: GalleryItem) => {
+export const VideoTile = ({ meta, video, firstFrame }: VideoGalleryItem) => {
   const { ref, inView } = useInView<HTMLAnchorElement>();
 
   return (

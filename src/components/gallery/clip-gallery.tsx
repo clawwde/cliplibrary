@@ -3,27 +3,38 @@
 import { SearchX } from 'lucide-react';
 import type { ComponentType } from 'react';
 import { Button } from '@/components/ui/button';
+import type { GalleryMeta } from '@/lib/gallery-filters';
 import {
   DEFAULT_FILTERS,
   facetCounts,
   filterClips,
   type GalleryFilters,
 } from '@/lib/gallery-filters';
-import type { ClipMeta } from '@/schemas';
 import { FilterBar } from './filter-bar';
 
-export interface GalleryItem {
-  meta: ClipMeta;
+export interface VideoGalleryItem {
+  kind: 'video';
+  meta: GalleryMeta;
   video: string | null;
   firstFrame: string | null;
 }
+
+export interface PosterGalleryItem {
+  kind: 'poster';
+  meta: GalleryMeta;
+  previews: readonly string[];
+  width: number;
+  height: number;
+}
+
+export type GalleryItem = VideoGalleryItem | PosterGalleryItem;
 
 type GalleryTile = ComponentType<GalleryItem>;
 
 const Grid = ({ items, Tile }: { items: GalleryItem[]; Tile: GalleryTile }) => (
   <div className="grid grid-cols-[repeat(auto-fill,minmax(min(100%,18rem),1fr))] gap-5">
     {items.map((item) => (
-      <Tile key={item.meta.id} {...item} />
+      <Tile key={`${item.kind}-${item.meta.id}`} {...item} />
     ))}
   </div>
 );
@@ -48,6 +59,7 @@ export const ClipGallery = ({
   const effective = { ...filters, query };
   const visible = filterClips(items, effective);
   const counts = {
+    kinds: facetCounts(items, effective, 'kind', (meta) => [meta.kind]),
     categories: facetCounts(items, effective, 'category', (meta) => [meta.category]),
     tags: facetCounts(items, effective, 'tags', (meta) => meta.tags),
     themes: facetCounts(items, effective, 'theme', (meta) => [meta.theme]),
@@ -67,7 +79,7 @@ export const ClipGallery = ({
       {visible.length === 0 ? (
         <div className="flex flex-col items-center gap-3 rounded-xl bg-muted/40 px-6 py-16 text-center">
           <SearchX className="size-6 text-muted-foreground" />
-          <p className="font-medium text-sm">No clips match these filters.</p>
+          <p className="font-medium text-sm">Nothing matches these filters.</p>
           <Button
             variant="secondary"
             size="sm"
