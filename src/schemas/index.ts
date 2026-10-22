@@ -1,5 +1,6 @@
 export * from './anniversary-common';
 export * from './clip-props';
+export * from './clip-updated-at';
 export * from './clips';
 export * from './clips/ad-reveals/battery-charge-success';
 export * from './clips/ad-reveals/billboard-reader';

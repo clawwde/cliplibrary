@@ -6,3 +6,6 @@ export const compositionsEntry = fileURLToPath(
   new URL('../compositions/entry.ts', import.meta.url),
 );
 export const galleryPreviewsDir = fileURLToPath(new URL('../../public/previews/', import.meta.url));
+export const clipUpdatedAtFile = fileURLToPath(
+  new URL('../schemas/clip-updated-at.json', import.meta.url),
+);
