@@ -36,6 +36,9 @@ export const AppIconReveal = ({
   );
   const flip = tween(frame, [reveal.flipAt, reveal.flipAt + reveal.flipFrames], [0, 1], turn);
   const lift = Math.sin(Math.PI * flip) * reveal.lift;
+  const turned = Math.PI * (1 + 2 * reveal.spins) * (1 - flip);
+  const sideways = reveal.flipFrom === 'right' || reveal.flipFrom === 'left';
+  const sign = reveal.flipFrom === 'right' || reveal.flipFrom === 'bottom' ? 1 : -1;
   const bob = Math.sin(frame / 32) * motion.float;
   const shown = (index: number): number => {
     const start = reveal.typeAt + index * reveal.letterFrames;
@@ -62,14 +65,18 @@ export const AppIconReveal = ({
             </mesh>
             <group
               position={[0, icon.y + bob, icon.z + icon.depth / 2 + lift]}
-              rotation={[0.1 * lift, Math.PI * (1 - flip), 0]}
+              rotation={[
+                0.1 * lift + (sideways ? 0 : sign * turned),
+                sideways ? sign * turned : 0,
+                0,
+              ]}
             >
               <AppIconTile
                 size={icon.size}
                 depth={icon.depth}
                 color={icon.faceColor}
                 backColor={icon.color}
-                glyphColor="#ffffff"
+                glyphColor={icon.artTint}
                 glyph={artUrl(icon.art)}
                 glyphScale={icon.artScale}
                 roughness={icon.roughness}

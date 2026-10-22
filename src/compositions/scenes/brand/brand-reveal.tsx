@@ -19,6 +19,19 @@ export const BrandReveal = ({
   showMark,
   markColor,
   wordmarkSize,
+  wordmarkWeight,
+  wordmarkTracking,
+  markScale,
+  markGap,
+  markStart,
+  eyebrowSize,
+  taglineSize,
+  eyebrowGap,
+  taglineGap,
+  wordmarkStart,
+  letterStagger,
+  letterRise,
+  taglineStart,
   look,
   motion,
 }: BrandRevealProps) => {
@@ -27,11 +40,11 @@ export const BrandReveal = ({
   return (
     <PromoLayer look={look} motion={motion}>
       <AbsoluteFill style={{ alignItems: 'center', justifyContent: 'center' }}>
-        <FadeIn start={0} delay={2} style={{ marginBottom: 34 }}>
+        <FadeIn start={0} delay={2} style={{ marginBottom: eyebrowGap }}>
           <div
             style={{
               fontFamily: bodyFont,
-              fontSize: 22,
+              fontSize: eyebrowSize,
               fontWeight: 500,
               letterSpacing: '0.32em',
               textTransform: 'uppercase',
@@ -41,23 +54,30 @@ export const BrandReveal = ({
             {eyebrow}
           </div>
         </FadeIn>
-        <div style={{ display: 'flex', alignItems: 'center', gap: wordmarkSize * 0.16 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: wordmarkSize * markGap }}>
           {showMark ? (
-            <BrandMark color={markColor} frame={frame} size={wordmarkSize * 0.78} />
+            <BrandMark
+              color={markColor}
+              frame={frame}
+              size={wordmarkSize * markScale}
+              start={markStart}
+            />
           ) : null}
           <div
             style={{
               display: 'flex',
               fontFamily: displayFont,
-              fontWeight: 600,
+              fontWeight: wordmarkWeight,
               fontSize: wordmarkSize,
-              letterSpacing: '-0.055em',
+              letterSpacing: `${wordmarkTracking}em`,
               lineHeight: 1,
               color: look.ink,
             }}
           >
             {letters.map((letter, index) => {
-              const reveal = tween(frame, [14 + index * 3, 40 + index * 3], [0, 1], settle);
+              const revealStart = wordmarkStart + index * letterStagger;
+              const revealWindow: [number, number] = [revealStart, revealStart + letterRise];
+              const reveal = tween(frame, revealWindow, [0, 1], settle);
               return (
                 <span
                   key={`${index}:${letter}`}
@@ -65,7 +85,7 @@ export const BrandReveal = ({
                     display: 'inline-block',
                     whiteSpace: 'pre',
                     opacity: reveal,
-                    transform: `translateY(${pixelTween(frame, [14 + index * 3, 40 + index * 3], [0.35 * wordmarkSize, 0], settle)}px)`,
+                    transform: `translateY(${pixelTween(frame, revealWindow, [0.35 * wordmarkSize, 0], settle)}px)`,
                   }}
                 >
                   {letter}
@@ -74,11 +94,11 @@ export const BrandReveal = ({
             })}
           </div>
         </div>
-        <FadeIn start={44} style={{ marginTop: 34 }}>
+        <FadeIn start={taglineStart / motion.speed} style={{ marginTop: taglineGap }}>
           <div
             style={{
               fontFamily: bodyFont,
-              fontSize: 34,
+              fontSize: taglineSize,
               fontWeight: 400,
               letterSpacing: '-0.01em',
               color: look.muted,

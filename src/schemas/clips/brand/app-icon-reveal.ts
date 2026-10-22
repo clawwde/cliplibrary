@@ -13,12 +13,15 @@ import type { ClipMeta } from '../../registry';
 
 export const WORDMARK_WEIGHTS = ['500', '600', '700', '800'] as const;
 
+export const APP_ICON_FLIP_FROM = ['right', 'left', 'top', 'bottom'] as const;
+
 export const appIconRevealSchema = z.object({
   brandName: z.string(),
   icon: z.object({
     color: zColor(),
     faceColor: zColor(),
     art: zImage(),
+    artTint: zColor(),
     artScale: zSlider({ min: 0.2, max: 1.6, step: 0.01 }),
     size: zSlider({ min: 0.3, max: 3, step: 0.01 }),
     depth: zSlider({ min: 0.04, max: 0.6, step: 0.01 }),
@@ -29,6 +32,8 @@ export const appIconRevealSchema = z.object({
   reveal: z.object({
     flipAt: zSlider({ min: 0, max: 120 }),
     flipFrames: zSlider({ min: 6, max: 120 }),
+    flipFrom: z.enum(APP_ICON_FLIP_FROM),
+    spins: zSlider({ min: 0, max: 3 }),
     lift: zSlider({ min: 0, max: 2, step: 0.01 }),
     typeAt: zSlider({ min: 0, max: 200 }),
     letterFrames: zSlider({ min: 1, max: 10 }),
@@ -67,6 +72,7 @@ export const appIconRevealDefaults: AppIconRevealProps = {
     color: '#b1b1af',
     faceColor: '#b4b4b2',
     art: '',
+    artTint: '#ffffff',
     artScale: 0.86,
     size: 1.25,
     depth: 0.26,
@@ -74,7 +80,16 @@ export const appIconRevealDefaults: AppIconRevealProps = {
     y: 0.18,
     z: 0,
   },
-  reveal: { flipAt: 12, flipFrames: 16, lift: 0.25, typeAt: 16, letterFrames: 2, letterFade: 6 },
+  reveal: {
+    flipAt: 12,
+    flipFrames: 16,
+    flipFrom: 'right',
+    spins: 0,
+    lift: 0.25,
+    typeAt: 16,
+    letterFrames: 2,
+    letterFade: 6,
+  },
   wordmark: { color: '#2e3744', height: 0.42, weight: '600', tracking: 0.01, gap: 0.2 },
   camera: {
     pushIn: 0.12,
