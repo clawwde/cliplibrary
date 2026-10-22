@@ -10,6 +10,7 @@ import { cobaltBeforeAfterPack } from './cobalt-before-after';
 import { cobaltLessonTipsPack } from './cobalt-lesson-tips';
 import { cobaltValuePropositionPack } from './cobalt-value-proposition';
 import { copperSaasFoundersPack } from './copper-saas-founders';
+import { copperSignalAiPostsPack } from './copper-signal-ai-posts';
 import { coralBrandContentPack } from './coral-brand-content';
 import { coralClientReviewsPack } from './coral-client-reviews';
 import { emberDeviceMockupsPack } from './ember-device-mockups';
@@ -19,17 +20,21 @@ import { graphiteSaasFoundersPack } from './graphite-saas-founders';
 import { harborB2bMarketingPack } from './harbor-b2b-marketing';
 import { harborCoralMarketingPack } from './harbor-coral-marketing';
 import { hiringSpotlightPack } from './hiring-spotlight';
+import { irisFlowAiPostsPack } from './iris-flow-ai-posts';
 import { jadeEventCalendarPack } from './jade-event-calendar';
 import { lagoonSaasStatsPack } from './lagoon-saas-stats';
 import { limeB2bBundlePack } from './lime-b2b-bundle';
 import { magentaGrowthPostsPack } from './magenta-growth-posts';
 import { magentaMiniGamesPack } from './magenta-mini-games';
+import { meridianNavyCorporatePack } from './meridian-navy-corporate';
+import { mintCircuitTechPostsPack } from './mint-circuit-tech-posts';
 import { mintSignalMarketingPack } from './mint-signal-marketing';
 import { nightSignalPodcastPack } from './night-signal-podcast';
 import { pineSaasReviewsPack } from './pine-saas-reviews';
 import { pixelQuestArcadePack } from './pixel-quest-arcade';
 import { plumProofReviewsPack } from './plum-proof-reviews';
 import { rosequartzAiEnterprisePack } from './rosequartz-ai-enterprise';
+import { rosewireTechPostsPack } from './rosewire-tech-posts';
 import { rosewoodTechEventsPack } from './rosewood-tech-events';
 import { rubyKeyStatsPack } from './ruby-key-stats';
 import { saffronLaunchEventsPack } from './saffron-launch-events';
@@ -56,6 +61,7 @@ export const SOCIAL_POST_PACKS: PosterPack[] = [
   cobaltLessonTipsPack,
   cobaltValuePropositionPack,
   copperSaasFoundersPack,
+  copperSignalAiPostsPack,
   coralBrandContentPack,
   coralClientReviewsPack,
   emberDeviceMockupsPack,
@@ -65,17 +71,21 @@ export const SOCIAL_POST_PACKS: PosterPack[] = [
   harborB2bMarketingPack,
   harborCoralMarketingPack,
   hiringSpotlightPack,
+  irisFlowAiPostsPack,
   jadeEventCalendarPack,
   lagoonSaasStatsPack,
   limeB2bBundlePack,
   magentaGrowthPostsPack,
   magentaMiniGamesPack,
+  meridianNavyCorporatePack,
+  mintCircuitTechPostsPack,
   mintSignalMarketingPack,
   nightSignalPodcastPack,
   pineSaasReviewsPack,
   pixelQuestArcadePack,
   plumProofReviewsPack,
   rosequartzAiEnterprisePack,
+  rosewireTechPostsPack,
   rosewoodTechEventsPack,
   rubyKeyStatsPack,
   saffronLaunchEventsPack,
