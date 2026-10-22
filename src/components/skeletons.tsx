@@ -49,9 +49,7 @@ const GalleryGridSkeleton = () => (
 );
 
 export const GalleryPageSkeleton = () => (
-  <div className="w-full px-4 py-8 sm:px-6 lg:px-10">
-    <Skeleton className="h-7 w-28" />
-    <Skeleton className="mt-2 mb-6 h-4 w-72 max-w-full" />
+  <div className="w-full px-4 pt-4 pb-8 sm:px-6 sm:pt-6 lg:px-10">
     <GalleryGridSkeleton />
   </div>
 );

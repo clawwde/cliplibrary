@@ -4,7 +4,7 @@ const search = (query: string) => `/?${new URLSearchParams({ q: query })}`;
 
 test('lists animations and opens the editor', async ({ page }) => {
   await page.goto(search('phone spin'));
-  await expect(page.getByRole('heading', { name: 'Library' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Library' })).toBeAttached();
   await expect(page.getByText('Phone Spin In')).toBeVisible();
 
   await expect(async () => {
