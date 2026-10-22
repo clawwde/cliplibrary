@@ -1,4 +1,4 @@
-import { describe, expect, it, mock } from 'bun:test';
+import { beforeEach, describe, expect, it, mock } from 'bun:test';
 
 const pause = mock(() => undefined);
 const fakePlayer = {
@@ -12,7 +12,7 @@ mock.module('@remotion/player', () => ({
 }));
 
 import type { PlayerRef } from '@remotion/player';
-import { render, screen } from '@testing-library/react';
+import { cleanup, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { ClipPreview } from '@/components/clip-timeline/clip-preview';
 import { seedProjectForClip } from '@/core';
@@ -29,6 +29,17 @@ const renderPreview = (demoSrc: string | null) =>
   );
 
 describe('ClipPreview', () => {
+  beforeEach(() => localStorage.clear());
+
+  it('remembers the demo view as a preference for the next clip', async () => {
+    renderPreview('/previews/phone-spin-in.mp4');
+    await userEvent.click(screen.getByRole('tab', { name: 'Demo' }));
+    expect(localStorage.getItem('cliplibrary-preview-view')).toBe('"demo"');
+    cleanup();
+    renderPreview('/previews/phone-spin-in.mp4');
+    expect(await screen.findByLabelText('Demo video')).toBeInTheDocument();
+  });
+
   it('switches to the rendered demo video and pauses the editor player', async () => {
     renderPreview('/previews/phone-spin-in.mp4');
     expect(screen.queryByLabelText('Demo video')).toBeNull();

@@ -18,6 +18,11 @@ const DEVICES = [
 
 type DeviceKey = (typeof DEVICES)[number]['key'];
 
+type PreviewView = 'editor' | 'demo';
+
+const isPreviewView = (value: string): value is PreviewView =>
+  value === 'editor' || value === 'demo';
+
 const frameWidth = (maxWidth: number | null, aspect: number): string =>
   `min(100%, ${maxWidth === null ? '' : `${maxWidth}px, `}${aspect * 100}cqh)`;
 
@@ -40,6 +45,8 @@ export const ClipPreview = ({
 }: ClipPreviewProps) => {
   const [device, setDevice] = usePersistedState<DeviceKey>('cliplibrary-device', 'desktop');
   const active = DEVICES.find((entry) => entry.key === device) ?? DEVICES[2];
+  const [view, setView] = usePersistedState<PreviewView>('cliplibrary-preview-view', 'editor');
+  const shownView: PreviewView = demoSrc === null ? 'editor' : view;
 
   useEffect(() => {
     const player = playerRef.current;
@@ -61,11 +68,15 @@ export const ClipPreview = ({
 
   return (
     <Tabs
-      defaultValue="editor"
-      onValueChange={(view) => {
-        if (view === 'demo') {
+      value={shownView}
+      onValueChange={(next) => {
+        if (!isPreviewView(next)) {
+          return;
+        }
+        if (next === 'demo') {
           playerRef.current?.pause();
         }
+        setView(next);
       }}
       className="h-full gap-0"
     >
