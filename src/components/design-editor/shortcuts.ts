@@ -130,8 +130,20 @@ const plainShortcut = (input: KeyInput, key: string): ShortcutAction | null => {
   return add === undefined ? null : { type: 'add', element: add };
 };
 
+const ASCII_KEY = /^[\x20-\x7e]$/;
+
+const keyName = (input: KeyInput & { code?: string }): string => {
+  if (input.key.length !== 1) {
+    return input.key;
+  }
+  if (ASCII_KEY.test(input.key) || !input.code?.startsWith('Key')) {
+    return input.key.toLowerCase();
+  }
+  return input.code.slice(3).toLowerCase();
+};
+
 export const shortcutFor = (input: KeyInput & { code?: string }): ShortcutAction | null => {
-  const key = input.key.length === 1 ? input.key.toLowerCase() : input.key;
+  const key = keyName(input);
   return input.metaKey || input.ctrlKey ? modifiedShortcut(input, key) : plainShortcut(input, key);
 };
 
@@ -157,11 +169,17 @@ export const isEditableTarget = (target: EventTarget | null): boolean => {
 
 const CLIPBOARD_ACTIONS = new Set<ShortcutAction['type']>(['copy', 'cut', 'select-all']);
 
+const isHistoryAction = (action: ShortcutAction): boolean =>
+  action.type === 'undo' || action.type === 'redo';
+
 export const shouldHandleShortcut = (
   action: ShortcutAction,
   input: KeyInput,
   target: EventTarget | null,
 ): boolean => {
+  if (isHistoryAction(action)) {
+    return true;
+  }
   if (isTextEntry(target)) {
     return false;
   }

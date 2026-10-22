@@ -52,17 +52,35 @@ describe('rich shortcuts', () => {
     expect(shortcutFor(key('s', { metaKey: true }))).toEqual({ type: 'save' });
   });
 
-  it('lets undo through from colour and number inputs but not from text fields', () => {
+  it('maps undo and redo from any letter case or keyboard layout', () => {
+    expect(shortcutFor(key('Z', { metaKey: true }))).toEqual({ type: 'undo' });
+    expect(shortcutFor(key('Z', { metaKey: true, shiftKey: true }))).toEqual({ type: 'redo' });
+    expect(shortcutFor(key('y', { ctrlKey: true }))).toEqual({ type: 'redo' });
+    expect(shortcutFor({ ...key('я', { metaKey: true }), code: 'KeyZ' })).toEqual({
+      type: 'undo',
+    });
+    expect(shortcutFor({ ...key('н', { metaKey: true }), code: 'KeyY' })).toEqual({
+      type: 'redo',
+    });
+  });
+
+  it('sends undo and redo to the design from every field', () => {
     const undo = { type: 'undo' } as const;
+    const redo = { type: 'redo' } as const;
     const colour = document.createElement('input');
     colour.type = 'color';
     const field = document.createElement('input');
     field.type = 'text';
+    const textarea = document.createElement('textarea');
     expect(shouldHandleShortcut(undo, key('z', { metaKey: true }), colour)).toBe(true);
-    expect(shouldHandleShortcut(undo, key('z', { metaKey: true }), field)).toBe(false);
-    expect(
-      shouldHandleShortcut(undo, key('z', { metaKey: true }), document.createElement('textarea')),
-    ).toBe(false);
+    expect(shouldHandleShortcut(undo, key('z', { metaKey: true }), field)).toBe(true);
+    expect(shouldHandleShortcut(redo, key('y', { metaKey: true }), field)).toBe(true);
+    expect(shouldHandleShortcut(redo, key('z', { metaKey: true, shiftKey: true }), textarea)).toBe(
+      true,
+    );
+    expect(shouldHandleShortcut({ type: 'select-all' }, key('a', { metaKey: true }), field)).toBe(
+      false,
+    );
     expect(shouldHandleShortcut({ type: 'copy' }, key('c', { metaKey: true }), colour)).toBe(false);
     expect(shouldHandleShortcut({ type: 'delete' }, key('Backspace'), colour)).toBe(false);
     expect(shouldHandleShortcut({ type: 'delete' }, key('Backspace'), document.body)).toBe(true);

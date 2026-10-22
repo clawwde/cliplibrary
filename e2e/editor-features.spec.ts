@@ -27,6 +27,24 @@ test('undo and redo work after editing a panel field', async ({ page }) => {
   await expect.poll(() => layerCount(page)).toBe(before + 1);
 });
 
+test('undo and redo reach the design while a text field has focus', async ({ page }) => {
+  await openPoster(page);
+  await page.getByRole('button', { name: 'Layers', exact: true }).click();
+  const before = await layerCount(page);
+  await page.keyboard.press('r');
+  const fill = page.getByLabel('Fill', { exact: true });
+  const original = await fill.inputValue();
+  await fill.fill('#ff0000');
+  await page.keyboard.press(`${MOD}+z`);
+  await expect(fill).toHaveValue(original);
+  await page.keyboard.press(`${MOD}+z`);
+  await expect.poll(() => layerCount(page)).toBe(before);
+  await page.keyboard.press(`${MOD}+y`);
+  await expect.poll(() => layerCount(page)).toBe(before + 1);
+  await page.keyboard.press(`${MOD}+y`);
+  await expect(fill).toHaveValue('#ff0000');
+});
+
 test('right-click menu, shortcut sheet and floating toolbar', async ({ page }) => {
   await openPoster(page);
   await page.keyboard.press('r');
