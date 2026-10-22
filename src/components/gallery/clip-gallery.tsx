@@ -11,6 +11,7 @@ import {
   type GalleryFilters,
 } from '@/lib/gallery-filters';
 import { FilterBar } from './filter-bar';
+import { VirtualGrid } from './virtual-grid';
 
 export interface VideoGalleryItem {
   kind: 'video';
@@ -31,13 +32,7 @@ export type GalleryItem = VideoGalleryItem | PosterGalleryItem;
 
 type GalleryTile = ComponentType<GalleryItem>;
 
-const Grid = ({ items, Tile }: { items: GalleryItem[]; Tile: GalleryTile }) => (
-  <div className="grid grid-cols-[repeat(auto-fill,minmax(min(100%,18rem),1fr))] gap-5">
-    {items.map((item) => (
-      <Tile key={`${item.kind}-${item.meta.id}`} {...item} />
-    ))}
-  </div>
-);
+const galleryItemKey = (item: GalleryItem): string => `${item.kind}-${item.meta.id}`;
 
 interface ClipGalleryProps {
   items: GalleryItem[];
@@ -92,7 +87,7 @@ export const ClipGallery = ({
           </Button>
         </div>
       ) : (
-        <Grid items={visible} Tile={Tile} />
+        <VirtualGrid items={visible} itemKey={galleryItemKey} Tile={Tile} />
       )}
     </div>
   );

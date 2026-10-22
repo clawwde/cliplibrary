@@ -16,7 +16,7 @@ const TOOLS = [
 ];
 const PAGES = ['first', 'second', 'third', 'fourth'] as const;
 
-export const GalleryGridSkeleton = () => (
+const GalleryGridSkeleton = () => (
   <div className="flex flex-col gap-6" role="status" aria-busy aria-label="Loading the library">
     <div className="flex flex-col gap-3">
       <div className="flex flex-wrap items-center gap-2">

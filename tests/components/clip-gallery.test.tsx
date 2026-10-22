@@ -31,10 +31,13 @@ const Harness = ({ initial = DEFAULT_FILTERS }: { initial?: GalleryFilters }) =>
 };
 
 describe('ClipGallery', () => {
-  it('shows every clip in one flat grid without category headings', () => {
+  it('lists every clip in one flat grid but only mounts the tiles near the viewport', () => {
     render(<Harness />);
     expect(screen.queryByRole('heading')).not.toBeInTheDocument();
-    expect(screen.getAllByRole('article')).toHaveLength(items.length);
+    expect(screen.getByText(`${items.length} items`)).toBeInTheDocument();
+    const mounted = screen.getAllByRole('article').length;
+    expect(mounted).toBeGreaterThan(0);
+    expect(mounted).toBeLessThan(items.length);
   });
 
   it('narrows the grid as you type a search', () => {
@@ -52,7 +55,7 @@ describe('ClipGallery', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Remove filter #phone' }));
     expect(screen.getAllByRole('article').length).toBeGreaterThan(0);
     fireEvent.click(screen.getByRole('button', { name: 'Clear all' }));
-    expect(screen.getAllByRole('article')).toHaveLength(items.length);
+    expect(screen.getByText(`${items.length} items`)).toBeInTheDocument();
   });
 
   it('orders the grid by name when sorted by name', () => {

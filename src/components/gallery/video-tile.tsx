@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import Link from 'next/link';
 import { useEffect, useRef, useState } from 'react';
 import { formatDuration } from '@/lib/gallery-filters';
@@ -55,10 +56,12 @@ export const VideoTile = ({ meta, video, firstFrame }: VideoGalleryItem) => {
     >
       <div className="relative aspect-video overflow-hidden bg-muted">
         {firstFrame === null ? null : (
-          <div
-            aria-hidden
-            className="absolute inset-0 scale-110 bg-center bg-cover blur-sm"
-            style={{ backgroundImage: `url(${firstFrame})` }}
+          <Image
+            src={firstFrame}
+            alt=""
+            fill
+            unoptimized
+            className="scale-110 object-cover blur-sm"
           />
         )}
         {video === null ? (

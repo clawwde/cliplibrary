@@ -2,8 +2,8 @@ import { ClipGalleryRoute } from '@/components/gallery/gallery-route';
 import { listClips } from '@/lib/clips';
 import { listPosters } from '@/lib/posters';
 
-const HomePage = async () => {
-  const clips = await listClips();
+const HomePage = () => {
+  const clips = listClips();
 
   return (
     <div className="w-full px-4 py-8 sm:px-6 lg:px-10">
