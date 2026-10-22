@@ -4,22 +4,32 @@ import type { WordStreamsProps } from './word-streams';
 
 const PER_FRAME = 'In pixels per frame';
 
+const MAY_SHRINK =
+  'The word and swell shrink together if the streams would touch each other or the side margins';
+
+const LIGHT_ONLY_EDGE =
+  'Color the background fades to at the corners. In Dark look the corners darken by the same step';
+
 export const wordStreamsControls = defineControls<WordStreamsProps>({
   sections: [
     {
       title: 'Word',
       fields: [
-        { path: 'word.text', label: 'Word', hint: 'Repeated end to end along every stream' },
+        {
+          path: 'word.text',
+          label: 'Word',
+          hint: 'Repeated along every stream. Short words keep the type largest',
+        },
         {
           path: 'word.size',
           label: 'Word size',
-          hint: 'In pixels, for the copies between swells',
+          hint: `In pixels, for the copies between swells. ${MAY_SHRINK}`,
         },
         { path: 'word.weight', label: 'Font weight' },
         {
           path: 'word.spacing',
           label: 'Copy spacing',
-          hint: 'Gap from one copy to the next along the curve, as a multiple of its size. Lower packs them tighter',
+          hint: 'Gap between neighboring copies, as a share of the word size. 0 lets them just touch at the tightest bend; the measured word height and width are always allowed for',
         },
       ],
       more: [{ path: 'word.tracking', label: 'Letter spacing', hint: 'In em' }],
@@ -27,23 +37,20 @@ export const wordStreamsControls = defineControls<WordStreamsProps>({
     {
       title: 'Streams',
       fields: [
-        { path: 'streams.count', label: 'Streams' },
         {
-          path: 'streams.gap',
-          label: 'Stream spacing',
-          hint: 'In pixels between the centers of neighboring streams',
+          path: 'streams.count',
+          label: 'Streams',
+          hint: 'Spread evenly across the frame between the side margins',
+        },
+        {
+          path: 'streams.margin',
+          label: 'Side margins',
+          hint: 'Smallest gap in pixels between the outer streams and the frame edges, at every frame',
         },
         {
           path: 'streams.phaseStep',
           label: 'Curve offset',
-          hint: 'In degrees. Shifts each stream along the wave from its left neighbor; 0 keeps them parallel',
-        },
-      ],
-      more: [
-        {
-          path: 'streams.offsetX',
-          label: 'Side shift',
-          hint: 'Moves every stream sideways, in pixels from center',
+          hint: 'In degrees between neighboring streams, mirrored around the center. 180 swings neighbors in opposite directions; 0 keeps them parallel',
         },
       ],
     },
@@ -53,7 +60,7 @@ export const wordStreamsControls = defineControls<WordStreamsProps>({
         {
           path: 'wave.amplitude',
           label: 'Curve width',
-          hint: 'How far each stream swings to the side, in pixels. 0 runs them straight',
+          hint: `How far each stream swings to the side, in pixels. 0 runs them straight. ${MAY_SHRINK}`,
         },
         {
           path: 'wave.length',
@@ -63,7 +70,7 @@ export const wordStreamsControls = defineControls<WordStreamsProps>({
         {
           path: 'wave.sway',
           label: 'Sway speed',
-          hint: `${PER_FRAME} the bends slide down the frame; negative slides them up, 0 holds the curves still`,
+          hint: `${PER_FRAME} the bends slide down the frame; negative slides them up, 0 holds the curves still. Scaled by Animation speed`,
         },
       ],
     },
@@ -73,7 +80,7 @@ export const wordStreamsControls = defineControls<WordStreamsProps>({
         {
           path: 'swell.peak',
           label: 'Swell size',
-          hint: 'Size of the biggest copy in each swell, in pixels. Set it to the word size for no swell',
+          hint: `Size of the biggest copy in each swell, in pixels. Set it to the word size for no swell. ${MAY_SHRINK}`,
         },
         {
           path: 'swell.length',
@@ -83,7 +90,7 @@ export const wordStreamsControls = defineControls<WordStreamsProps>({
         {
           path: 'swell.offset',
           label: 'Swell offset',
-          hint: 'Share of a swell each stream is shifted from its left neighbor',
+          hint: 'Share of a swell between neighboring streams, mirrored around the center. 0.5 alternates big and small',
         },
       ],
       more: [
@@ -95,7 +102,7 @@ export const wordStreamsControls = defineControls<WordStreamsProps>({
         {
           path: 'swell.drift',
           label: 'Swell overtake speed',
-          hint: `${PER_FRAME}. 0 carries the swell along with the copies. Above 0 it runs ahead, so copies grow and shrink as it passes and their speed varies slightly`,
+          hint: `${PER_FRAME}. 0 carries the swell along with the copies. Above 0 it runs ahead, so copies grow and shrink as it passes and their speed varies slightly. Scaled by Animation speed`,
         },
         {
           path: 'swell.outline',
@@ -105,7 +112,7 @@ export const wordStreamsControls = defineControls<WordStreamsProps>({
         {
           path: 'swell.outlineFrom',
           label: 'Outline from',
-          hint: 'Share of the swell where copies turn to outline, blending softly. Lower outlines more of each swell. Outline the swell only',
+          hint: 'Share of the swell from which copies are outlined. Lower outlines more of each swell. With an overtake speed the change blends over a short band. Outline the swell only',
         },
         {
           path: 'swell.outlineWidth',
@@ -120,7 +127,7 @@ export const wordStreamsControls = defineControls<WordStreamsProps>({
         {
           path: 'flow.speed',
           label: 'Flow speed',
-          hint: `${PER_FRAME} along the curve, always whole pixels so the type never judders. 0 parks the copies`,
+          hint: `${PER_FRAME} along the curve, always whole pixels so the type never judders. 0 parks the copies. Not scaled by Animation speed`,
         },
         {
           path: 'flow.direction',
@@ -174,9 +181,17 @@ export const wordStreamsControls = defineControls<WordStreamsProps>({
         LOOK.grain,
       ],
       more: [
-        { ...LOOK.ink, label: 'Word color' },
-        { ...LOOK.accent, label: 'Margin line color', hint: 'Shows when Paper margin line is on' },
-        LOOK.backgroundEdge,
+        {
+          ...LOOK.ink,
+          label: 'Word color',
+          hint: 'With Dark look on, this becomes the background',
+        },
+        {
+          ...LOOK.accent,
+          label: 'Margin line color',
+          hint: 'Shows when Paper margin line is on. In Dark look, a line matching the ink turns light with the type',
+        },
+        { ...LOOK.backgroundEdge, hint: LIGHT_ONLY_EDGE },
         LOOK.spotlight,
         LOOK.liveGrain,
         LOOK.paper,
@@ -191,7 +206,7 @@ export const wordStreamsControls = defineControls<WordStreamsProps>({
         MOTION.exit,
         {
           ...MOTION.speed,
-          hint: 'Speeds up the sway, the slide-in and the swell overtake. Flow speed is set separately; the entrance and exit keep their own length',
+          hint: 'Speeds up the sway and the swell overtake. Flow speed, the slide-in and the fade-in keep their own pace, and so do the entrance and exit',
         },
       ],
       more: [MOTION.exitFrames, MOTION.enter, MOTION.enterFrames],

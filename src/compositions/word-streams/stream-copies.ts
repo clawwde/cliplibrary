@@ -1,16 +1,9 @@
 import type { WordStreamsProps } from '@/schemas';
 import { pixelTween, settle } from '../promo/timing';
-import {
-  pathLength,
-  pointAt,
-  type SwellProfile,
-  streamPath,
-  swellIntegral,
-  swellShape,
-  TAU,
-} from './stream-geometry';
+import { cycleIntegral, pathLength, pointAt, streamPath, swellShape } from './stream-geometry';
+import type { StreamLayout } from './stream-layout';
 
-const MAX_COPIES = 600;
+const EDGE_ALLOWANCE = 40;
 
 export type StreamCopy = {
   key: number;
@@ -23,11 +16,10 @@ export type StreamCopy = {
 
 export type StreamInput = {
   props: WordStreamsProps;
-  profile: SwellProfile;
+  layout: StreamLayout;
   index: number;
   rawFrame: number;
   frame: number;
-  width: number;
   height: number;
 };
 
@@ -38,66 +30,55 @@ const flowSign = ({ flow }: WordStreamsProps, index: number): number => {
 
 export const streamCopies = ({
   props,
-  profile,
+  layout,
   index,
   rawFrame,
   frame,
-  width,
   height,
 }: StreamInput): StreamCopy[] => {
-  const { word, streams, wave, swell, flow } = props;
-  const largest = Math.max(word.size, swell.peak);
-  const margin = largest * Math.max(1, word.text.length * 0.4) + 40;
-  const waveNumber = TAU / wave.length;
+  const { wave, swell, flow } = props;
+  const { ink, base, peak, pitch } = layout;
+  const largest = Math.max(base, peak);
+  const margin = (largest * Math.hypot(ink.width, ink.height)) / 2 + EDGE_ALLOWANCE;
   const path = streamPath(
     {
-      centerX: width / 2 + streams.offsetX + (index - (streams.count - 1) / 2) * streams.gap,
+      centerX: layout.centers[index] ?? 0,
       amplitude: wave.amplitude,
-      waveNumber,
-      phase: (index * streams.phaseStep * Math.PI) / 180 - waveNumber * wave.sway * frame,
+      waveNumber: layout.waveNumber,
+      phase: (layout.phases[index] ?? 0) - layout.waveNumber * wave.sway * frame,
     },
     -margin,
     height + margin,
   );
   const length = pathLength(path);
   const sign = flowSign(props, index);
-  const swing = swell.peak - word.size;
-  const meanSize = word.size + swing * profile.mean;
-  const lead = (-sign * swell.drift * frame) / (word.spacing * meanSize);
-  const offset = index * swell.offset;
+  const offset = layout.offsets[index] ?? 0;
+  const lead = (-sign * swell.drift * frame) / pitch.total;
   const phaseOf = (copy: number) => (copy + lead) / swell.length + offset;
-  const integral = (copy: number) =>
-    word.size * (copy + lead) +
-    swing * swell.length * (swellIntegral(profile, phaseOf(copy)) - swellIntegral(profile, offset));
+  const origin = cycleIntegral(pitch, offset);
   const rise =
     flow.riseFrames > 0
       ? pixelTween(
-          frame,
+          rawFrame,
           [0, flow.riseFrames + index * flow.riseStagger],
           [flow.riseDistance, 0],
           settle,
         )
       : 0;
   const shift = sign * (flow.speed * rawFrame + swell.drift * frame - rise);
-  const arcOf = (copy: number) => word.spacing * integral(copy) + shift;
-  let first = 0;
-  while (first > -MAX_COPIES && arcOf(first - 1) >= 0) {
-    first--;
-  }
-  while (first < MAX_COPIES && arcOf(first) < 0) {
-    first++;
+  const arcOf = (copy: number) =>
+    swell.length * (cycleIntegral(pitch, phaseOf(copy)) - origin) + shift;
+  let current = Math.floor(-shift / pitch.total - lead) - 2 * Math.ceil(swell.length) - 2;
+  while (arcOf(current) < 0) {
+    current++;
   }
   const copies: StreamCopy[] = [];
-  for (let copy = first; copy < first + MAX_COPIES; copy++) {
-    const arc = arcOf(copy);
-    if (arc > length) {
-      break;
-    }
-    const share = swellShape(phaseOf(copy), swell.sharpness);
+  for (let arc = arcOf(current); arc <= length; arc = arcOf(++current)) {
+    const share = swellShape(phaseOf(current), swell.sharpness);
     copies.push({
-      key: copy,
+      key: current,
       ...pointAt(path, arc),
-      size: word.size + swing * share,
+      size: base + (peak - base) * share,
       swell: share,
     });
   }

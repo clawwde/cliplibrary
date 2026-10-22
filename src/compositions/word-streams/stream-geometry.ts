@@ -4,51 +4,46 @@ const PROFILE_SAMPLES = 512;
 
 const ARC_STEP = 4;
 
-export type SwellProfile = {
+export type CycleProfile = {
   cumulative: Float64Array;
-  mean: number;
-  sharpness: number;
+  total: number;
 };
 
 export const swellShape = (phase: number, sharpness: number): number =>
   ((1 + Math.cos(TAU * phase)) / 2) ** sharpness;
 
-export const swellProfile = (sharpness: number): SwellProfile => {
+export const cycleProfile = (valueAt: (phase: number) => number): CycleProfile => {
   const cumulative = new Float64Array(PROFILE_SAMPLES + 1);
   for (let index = 1; index <= PROFILE_SAMPLES; index++) {
-    const from = swellShape((index - 1) / PROFILE_SAMPLES, sharpness);
-    const to = swellShape(index / PROFILE_SAMPLES, sharpness);
+    const from = valueAt((index - 1) / PROFILE_SAMPLES);
+    const to = valueAt(index / PROFILE_SAMPLES);
     cumulative[index] = (cumulative[index - 1] ?? 0) + (from + to) / (2 * PROFILE_SAMPLES);
   }
-  return { cumulative, mean: cumulative[PROFILE_SAMPLES] ?? 0, sharpness };
+  return { cumulative, total: cumulative[PROFILE_SAMPLES] ?? 0 };
 };
 
-export const swellIntegral = (profile: SwellProfile, phase: number): number => {
+export const cycleIntegral = (profile: CycleProfile, phase: number): number => {
   const whole = Math.floor(phase);
   const position = (phase - whole) * PROFILE_SAMPLES;
   const index = Math.floor(position);
   const low = profile.cumulative[index] ?? 0;
   const high = profile.cumulative[Math.min(index + 1, PROFILE_SAMPLES)] ?? low;
-  return whole * profile.mean + low + (high - low) * (position - index);
+  return whole * profile.total + low + (high - low) * (position - index);
 };
 
-export type StreamPath = {
-  top: number;
-  arcs: Float64Array;
+export type StreamWave = {
   centerX: number;
   amplitude: number;
   waveNumber: number;
   phase: number;
 };
 
-const slopeAt = (path: Omit<StreamPath, 'arcs' | 'top'>, y: number): number =>
-  path.amplitude * path.waveNumber * Math.cos(path.waveNumber * y + path.phase);
+export type StreamPath = StreamWave & { top: number; arcs: Float64Array };
 
-export const streamPath = (
-  wave: Omit<StreamPath, 'arcs' | 'top'>,
-  top: number,
-  bottom: number,
-): StreamPath => {
+const slopeAt = (wave: StreamWave, y: number): number =>
+  wave.amplitude * wave.waveNumber * Math.cos(wave.waveNumber * y + wave.phase);
+
+export const streamPath = (wave: StreamWave, top: number, bottom: number): StreamPath => {
   const samples = Math.ceil((bottom - top) / ARC_STEP);
   const arcs = new Float64Array(samples + 1);
   for (let index = 1; index <= samples; index++) {

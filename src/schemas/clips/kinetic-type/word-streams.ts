@@ -1,8 +1,5 @@
 import { z } from 'zod';
 import { zSlider } from '../../control';
-
-export const STREAM_DIRECTIONS = ['up', 'down'] as const;
-
 import {
   defaultMotion,
   FONT_WEIGHT,
@@ -13,18 +10,19 @@ import {
 } from '../../promo-common';
 import type { ClipMeta } from '../../registry';
 
+export const STREAM_DIRECTIONS = ['up', 'down'] as const;
+
 export const wordStreamsSchema = z.object({
   word: z.object({
     text: z.string(),
     size: zSlider({ min: 30, max: 400 }),
     weight: zSlider(FONT_WEIGHT),
     tracking: zSlider({ min: -0.1, max: 0.2, step: 0.005 }),
-    spacing: zSlider({ min: 0.5, max: 1.6, step: 0.01 }),
+    spacing: zSlider({ min: -0.3, max: 1, step: 0.01 }),
   }),
   streams: z.object({
     count: zSlider({ min: 1, max: 5 }),
-    gap: zSlider({ min: 100, max: 700 }),
-    offsetX: zSlider({ min: -500, max: 500 }),
+    margin: zSlider({ min: 0, max: 300 }),
     phaseStep: zSlider({ min: 0, max: 360, step: 5 }),
   }),
   wave: z.object({
@@ -66,24 +64,23 @@ export const wordStreamsDefaults: WordStreamsProps = {
     size: 104,
     weight: 600,
     tracking: -0.03,
-    spacing: 0.88,
+    spacing: 0.08,
   },
   streams: {
     count: 3,
-    gap: 320,
-    offsetX: 0,
-    phaseStep: 70,
+    margin: 48,
+    phaseStep: 90,
   },
   wave: {
-    amplitude: 80,
-    length: 1300,
+    amplitude: 60,
+    length: 1400,
     sway: 2,
   },
   swell: {
     peak: 210,
     length: 12,
     sharpness: 2,
-    offset: 0.33,
+    offset: 0.5,
     drift: 0,
     outline: false,
     outlineFrom: 0.5,
