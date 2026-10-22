@@ -47,6 +47,11 @@ Everything lives in one package. Modules import each other through the `@/` alia
   background and lazily plays the mp4 over it once the card nears the viewport. Every new or
   changed clip must commit its re-rendered preview; `tests/render/gallery-previews.test.ts`
   fails when one is missing.
+- The gallery lists the most recently updated clips first, from the per-clip ISO timestamps in
+  `src/schemas/clip-updated-at.json`. `bun run render` stamps a clip there when it is named on
+  the command line or has no entry yet, so a new or changed clip lands on top once its preview is
+  re-rendered; a bare full re-render keeps existing timestamps.
+  `tests/schemas/clip-updated-at.test.ts` fails when a clip has no timestamp.
 - `bun run render --new` - same, but only clips whose preview files are missing from
   `public/previews` (`-new` also works).
 
