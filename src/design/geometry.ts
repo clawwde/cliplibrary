@@ -78,6 +78,9 @@ export const elementBounds = (element: DesignElement, measuredHeight?: number): 
     element.rotation,
   );
 
+export const boxesIntersect = (a: Box, b: Box): boolean =>
+  a.x < b.x + b.width && a.x + a.width > b.x && a.y < b.y + b.height && a.y + a.height > b.y;
+
 export const unionBox = (boxes: readonly Box[]): Box | null => {
   if (boxes.length === 0) {
     return null;

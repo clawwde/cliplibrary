@@ -2,6 +2,7 @@ import { describe, expect, it } from 'bun:test';
 import {
   alignOffsets,
   boundingBox,
+  boxesIntersect,
   createLine,
   createRect,
   createText,
@@ -45,6 +46,12 @@ describe('bounds', () => {
     expect(elementBounds(text, 90).height).toBeCloseTo(90);
     expect(elementBounds(text).height).toBeCloseTo(64 * 1.15);
     expect(elementBounds(createLine({ strokeWidth: 6 })).height).toBe(6);
+  });
+
+  it('detects overlapping boxes', () => {
+    const a = { x: 0, y: 0, width: 10, height: 10 };
+    expect(boxesIntersect(a, { x: 5, y: 5, width: 10, height: 10 })).toBe(true);
+    expect(boxesIntersect(a, { x: 20, y: 0, width: 5, height: 5 })).toBe(false);
   });
 
   it('union covers every box and is null when empty', () => {

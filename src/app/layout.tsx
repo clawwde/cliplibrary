@@ -28,7 +28,13 @@ const RootLayout = ({ children }: { children: ReactNode }) => (
             <span className="size-4 rounded-[5px] bg-foreground" />
             clip library
           </Link>
-          <nav className="flex items-center gap-3 text-sm text-muted-foreground">
+          <nav className="flex items-center gap-4 text-sm text-muted-foreground">
+            <Link href="/" className="hover:text-foreground">
+              Animations
+            </Link>
+            <Link href="/designs/new" className="hover:text-foreground">
+              New design
+            </Link>
             <ThemeToggle />
           </nav>
         </header>
