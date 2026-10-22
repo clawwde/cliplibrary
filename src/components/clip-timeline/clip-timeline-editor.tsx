@@ -7,6 +7,7 @@ import { ClipPreviewSkeleton } from '@/components/skeletons';
 import { Timeline } from '@/components/timeline/timeline';
 import { TimelineToolbar } from '@/components/timeline/timeline-toolbar';
 import { preloadProjectScenes } from '@/compositions/scene-loader';
+import { createFrameStore } from '@/lib/frame-store';
 import { clampPxPerFrame, DEFAULT_PX_PER_FRAME, fitPxPerFrame } from '@/lib/timeline-geometry';
 import { DEFAULT_EXPORT_SETTINGS, useProjectExport } from '@/lib/use-project-export';
 import { useUndoable, useUndoRedoKeys } from '@/lib/use-undoable';
@@ -104,7 +105,7 @@ export const ClipTimelineEditor = ({ title, initialProject, demoSrc }: ClipTimel
   const fileName = toFileName(title);
 
   const playerRef = useRef<PlayerRef | null>(null);
-  const [currentFrame, setCurrentFrame] = useState(0);
+  const [frames] = useState(createFrameStore);
   const [playing, setPlaying] = useState(false);
   const [selectedId, setSelectedId] = useState<string | null>(
     () => project.tracks[0]?.elements[0]?.id ?? null,
@@ -138,16 +139,19 @@ export const ClipTimelineEditor = ({ title, initialProject, demoSrc }: ClipTimel
     ).catch(() => undefined);
   }, [initialProject]);
 
-  const seek = useCallback((frame: number) => {
-    playerRef.current?.seekTo(frame);
-    setCurrentFrame(frame);
-  }, []);
+  const seek = useCallback(
+    (frame: number) => {
+      playerRef.current?.seekTo(frame);
+      frames.set(frame);
+    },
+    [frames],
+  );
 
   const handleAddElement = (type: ElementType): void => {
     if (activeTrack === null) {
       return;
     }
-    const element = makeElement(type, currentFrame);
+    const element = makeElement(type, frames.get());
     setProject(addElement(project, activeTrack, element));
     setSelectedId(element.id);
   };
@@ -160,7 +164,7 @@ export const ClipTimelineEditor = ({ title, initialProject, demoSrc }: ClipTimel
     const element = createCompositionElement(
       sceneId,
       CLIP_DEFAULTS[sceneId] as Record<string, unknown>,
-      { from: currentFrame, durationInFrames: getClipMeta(sceneId).durationInFrames },
+      { from: frames.get(), durationInFrames: getClipMeta(sceneId).durationInFrames },
     );
     setProject(addElement(project, activeTrack, element));
     setSelectedId(element.id);
@@ -220,7 +224,7 @@ export const ClipTimelineEditor = ({ title, initialProject, demoSrc }: ClipTimel
             project={project}
             demoSrc={demoSrc}
             playerRef={playerRef}
-            onFrameChange={setCurrentFrame}
+            onFrameChange={frames.set}
             onPlayingChange={setPlaying}
           />
         </section>
@@ -271,7 +275,7 @@ export const ClipTimelineEditor = ({ title, initialProject, demoSrc }: ClipTimel
           <Timeline
             project={project}
             pxPerFrame={pxPerFrame}
-            currentFrame={currentFrame}
+            frames={frames}
             selectedId={selectedId}
             activeTrackId={activeTrack}
             onSeek={seek}

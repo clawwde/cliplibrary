@@ -7,6 +7,7 @@ import {
   useRef,
   useState,
 } from 'react';
+import { type FrameStore, useFrame } from '@/lib/frame-store';
 import { frameToPx, LABEL_WIDTH, pxToFrame } from '@/lib/timeline-geometry';
 import type { Project } from '@/project';
 import type { BlockDragMode } from './element-block';
@@ -24,7 +25,7 @@ interface DragState {
 interface TimelineProps {
   project: Project;
   pxPerFrame: number;
-  currentFrame: number;
+  frames: FrameStore;
   selectedId: string | null;
   activeTrackId: string | null;
   onSeek: (frame: number) => void;
@@ -37,6 +38,18 @@ interface TimelineProps {
   onMoveTrack: (trackId: string, direction: 'up' | 'down') => void;
   onRemoveTrack: (trackId: string) => void;
 }
+
+const Playhead = ({ frames, pxPerFrame }: { frames: FrameStore; pxPerFrame: number }) => {
+  const frame = useFrame(frames);
+  return (
+    <div
+      aria-hidden
+      data-testid="playhead"
+      className="pointer-events-none absolute top-0 bottom-0 left-0 z-20 w-0.5 bg-red-500 will-change-transform"
+      style={{ transform: `translateX(${LABEL_WIDTH + frameToPx(frame, pxPerFrame)}px)` }}
+    />
+  );
+};
 
 const trackIdAt = (target: EventTarget | null): string | null => {
   if (!(target instanceof HTMLElement)) {
@@ -67,7 +80,7 @@ const originTrackFor = (project: Project, elementId: string): string => {
 export const Timeline = ({
   project,
   pxPerFrame,
-  currentFrame,
+  frames,
   selectedId,
   activeTrackId,
   onSeek,
@@ -190,11 +203,7 @@ export const Timeline = ({
               />
             ))}
           </div>
-          <div
-            aria-hidden
-            className="pointer-events-none absolute top-0 bottom-0 z-20 w-0.5 bg-red-500"
-            style={{ left: LABEL_WIDTH + frameToPx(currentFrame, pxPerFrame) }}
-          />
+          <Playhead frames={frames} pxPerFrame={pxPerFrame} />
         </div>
       </div>
     </div>

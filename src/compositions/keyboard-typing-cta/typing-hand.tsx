@@ -1,7 +1,7 @@
 import { ThreeCanvas } from '@remotion/three';
-import { getRemotionEnvironment } from 'remotion';
 import * as THREE from 'three';
 import type { KeyboardTypingCtaProps } from '@/schemas';
+import { useCanvasPixelRatio } from '../kit/pixel-ratio';
 import { forearmAim } from '../promo/desk/arm';
 import {
   HAND_UNITS,
@@ -200,46 +200,49 @@ export interface SideCue {
 
 const mirrored = (cue: HandCue): HandCue => ({ ...cue, tip: [WIDTH - cue.tip[0], cue.tip[1]] });
 
-export const TypingHand = ({ look, hands }: { look: HandLook; hands: SideCue[] }) => (
-  <ThreeCanvas
-    width={WIDTH}
-    height={HEIGHT}
-    shadows="variance"
-    dpr={getRemotionEnvironment().isRendering ? 1.5 : 1}
-    gl={{ antialias: true, alpha: true, preserveDrawingBuffer: true }}
-    camera={{ fov: FOV, position: [0, 0, CAMERA_Z], near: 1, far: 60 }}
-    style={{ position: 'absolute', inset: 0 }}
-  >
-    <hemisphereLight args={['#fff6ea', '#a89482', 0.6]} />
-    <directionalLight
-      position={[look.lightX, look.lightY, 8]}
-      intensity={3.2}
-      color="#fff1e2"
-      castShadow
-      shadow-mapSize={[2048, 2048]}
-      shadow-radius={look.shadowSoftness}
-      shadow-blurSamples={24}
-      shadow-bias={-0.0006}
-      shadow-camera-left={-7}
-      shadow-camera-right={7}
-      shadow-camera-top={7}
-      shadow-camera-bottom={-7}
-      shadow-camera-near={1}
-      shadow-camera-far={30}
-    />
-    <directionalLight position={[-4, -2, 6]} intensity={0.45} color="#f3e8ff" />
-    <mesh receiveShadow>
-      <planeGeometry args={[30, 30]} />
-      <shadowMaterial opacity={look.shadow} transparent />
-    </mesh>
-    {hands.map(({ side, cue }) =>
-      side === 'left' ? (
-        <group key={side} scale={[-1, 1, 1]}>
-          <PlacedHand look={look} cue={mirrored(cue)} bracelet={false} />
-        </group>
-      ) : (
-        <PlacedHand key={side} look={look} cue={cue} bracelet />
-      ),
-    )}
-  </ThreeCanvas>
-);
+export const TypingHand = ({ look, hands }: { look: HandLook; hands: SideCue[] }) => {
+  const pixelRatio = useCanvasPixelRatio(1.5);
+  return (
+    <ThreeCanvas
+      width={WIDTH}
+      height={HEIGHT}
+      shadows="variance"
+      dpr={pixelRatio}
+      gl={{ antialias: true, alpha: true, preserveDrawingBuffer: true }}
+      camera={{ fov: FOV, position: [0, 0, CAMERA_Z], near: 1, far: 60 }}
+      style={{ position: 'absolute', inset: 0 }}
+    >
+      <hemisphereLight args={['#fff6ea', '#a89482', 0.6]} />
+      <directionalLight
+        position={[look.lightX, look.lightY, 8]}
+        intensity={3.2}
+        color="#fff1e2"
+        castShadow
+        shadow-mapSize={[2048, 2048]}
+        shadow-radius={look.shadowSoftness}
+        shadow-blurSamples={24}
+        shadow-bias={-0.0006}
+        shadow-camera-left={-7}
+        shadow-camera-right={7}
+        shadow-camera-top={7}
+        shadow-camera-bottom={-7}
+        shadow-camera-near={1}
+        shadow-camera-far={30}
+      />
+      <directionalLight position={[-4, -2, 6]} intensity={0.45} color="#f3e8ff" />
+      <mesh receiveShadow>
+        <planeGeometry args={[30, 30]} />
+        <shadowMaterial opacity={look.shadow} transparent />
+      </mesh>
+      {hands.map(({ side, cue }) =>
+        side === 'left' ? (
+          <group key={side} scale={[-1, 1, 1]}>
+            <PlacedHand look={look} cue={mirrored(cue)} bracelet={false} />
+          </group>
+        ) : (
+          <PlacedHand key={side} look={look} cue={cue} bracelet />
+        ),
+      )}
+    </ThreeCanvas>
+  );
+};

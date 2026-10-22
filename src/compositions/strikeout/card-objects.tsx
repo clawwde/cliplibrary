@@ -5,6 +5,7 @@ import { useMemo } from 'react';
 import { useVideoConfig } from 'remotion';
 import * as THREE from 'three';
 import type { ProblemStrikeoutProps } from '@/schemas';
+import { useCanvasPixelRatio } from '../kit/pixel-ratio';
 import { useCanvasFont } from '../promo/desk/canvas-texture';
 import { bodyFont, bodyFontReady } from '../promo/fonts';
 import { memo } from '../promo/phone-geometry';
@@ -203,11 +204,13 @@ export const CardObjects = ({
   const { width, height } = useVideoConfig();
   const unit = pixelsPerUnit(height);
   const toWorld = (pixelY: number) => (height / 2 - pixelY) / unit;
+  const pixelRatio = useCanvasPixelRatio(1);
   return (
     <ThreeCanvas
       width={width}
       height={height}
       shadows="variance"
+      dpr={pixelRatio}
       gl={{ antialias: true, alpha: true, preserveDrawingBuffer: true }}
       style={{ position: 'absolute', inset: 0 }}
     >
