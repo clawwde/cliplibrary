@@ -33,12 +33,17 @@ const TYPE_ICONS: Record<DesignElement['type'], typeof Type> = {
   icon: Smile,
 };
 
+const DEFAULT_TEXT_NAMES = new Set(['Text', 'Heading', 'Subheading', 'Body']);
+
 const layerLabel = (element: DesignElement): string =>
-  element.type === 'text' ? element.text.split('\n')[0]?.slice(0, 40) || 'Text' : element.name;
+  element.type === 'text' && DEFAULT_TEXT_NAMES.has(element.name)
+    ? element.text.split('\n')[0]?.slice(0, 40) || 'Text'
+    : element.name;
 
 export const LayersPanel = ({ editor }: { editor: DesignEditorState }) => {
   const { page, selectedIds } = editor;
   const [dragId, setDragId] = useState<string | null>(null);
+  const [renamingId, setRenamingId] = useState<string | null>(null);
   const layers = [...page.elements].reverse();
 
   if (layers.length === 0) {
@@ -59,7 +64,7 @@ export const LayersPanel = ({ editor }: { editor: DesignEditorState }) => {
           <li
             key={element.id}
             className={cn(
-              'group flex h-10 items-center gap-2 rounded-lg px-2 text-sm transition-colors',
+              'group relative flex h-10 items-center gap-2 rounded-lg px-2 text-sm transition-colors',
               selected ? 'bg-violet-500/15' : 'hover:bg-accent',
               element.hidden && 'opacity-50',
             )}
@@ -80,10 +85,37 @@ export const LayersPanel = ({ editor }: { editor: DesignEditorState }) => {
               }}
               className="flex h-full min-w-0 flex-1 items-center gap-2 text-left"
               onClick={(event) => editor.select([element.id], event.shiftKey || event.metaKey)}
+              onDoubleClick={() => setRenamingId(element.id)}
+              title="Double-click to rename"
             >
               <Icon className="size-4 shrink-0 text-muted-foreground" />
-              <span className="truncate">{layerLabel(element)}</span>
+              {renamingId === element.id ? null : (
+                <span className="truncate">{layerLabel(element)}</span>
+              )}
             </button>
+            {renamingId === element.id ? (
+              <input
+                aria-label="Layer name"
+                defaultValue={layerLabel(element)}
+                ref={(node) => node?.select()}
+                onBlur={(event) => {
+                  const name = event.target.value.trim();
+                  if (name !== '' && name !== element.name) {
+                    editor.replaceElement({ ...element, name });
+                  }
+                  setRenamingId(null);
+                }}
+                onKeyDown={(event) => {
+                  if (event.key === 'Enter') {
+                    event.currentTarget.blur();
+                  }
+                  if (event.key === 'Escape') {
+                    setRenamingId(null);
+                  }
+                }}
+                className="absolute inset-y-1 right-16 left-8 rounded-md bg-background px-2 text-sm outline outline-violet-500"
+              />
+            ) : null}
             <button
               type="button"
               aria-label={element.hidden ? 'Show layer' : 'Hide layer'}

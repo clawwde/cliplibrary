@@ -1,6 +1,15 @@
 'use client';
 
-import { Image as ImageIcon, Layers, PaintBucket, Shapes, Type, Upload } from 'lucide-react';
+import {
+  Camera,
+  Image as ImageIcon,
+  Layers,
+  LayoutTemplate,
+  PaintBucket,
+  Shapes,
+  Type,
+  Upload,
+} from 'lucide-react';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
   createImage,
@@ -24,6 +33,8 @@ import { ShortcutsDialog } from './shortcuts-dialog';
 import { BackgroundPanel } from './sidebar/background-panel';
 import { ElementsPanel } from './sidebar/elements-panel';
 import { LayersPanel } from './sidebar/layers-panel';
+import { PhotosPanel } from './sidebar/photos-panel';
+import { TemplatesPanel } from './sidebar/templates-panel';
 import { TextPanel } from './sidebar/text-panel';
 import { UploadsPanel } from './sidebar/uploads-panel';
 import { useDesignEditor } from './use-design-editor';
@@ -190,12 +201,34 @@ export const DesignEditor = ({
 
   const panels: SidebarPanel[] = [
     {
+      id: 'templates',
+      label: 'Templates',
+      Icon: LayoutTemplate,
+      render: () => (
+        <TemplatesPanel
+          onInsert={(pack, index) => {
+            const source = pack.build();
+            const chosen = source.pages[index];
+            if (chosen !== undefined) {
+              editor.insertPages({ ...source, pages: [chosen] });
+            }
+          }}
+        />
+      ),
+    },
+    {
       id: 'elements',
       label: 'Elements',
       Icon: Shapes,
       render: () => <ElementsPanel onAdd={addElement} />,
     },
     { id: 'text', label: 'Text', Icon: Type, render: () => <TextPanel onAdd={addElement} /> },
+    {
+      id: 'photos',
+      label: 'Photos',
+      Icon: Camera,
+      render: () => <PhotosPanel onPlace={(image) => placeImage(image)} />,
+    },
     {
       id: 'uploads',
       label: 'Uploads',
@@ -277,7 +310,7 @@ export const DesignEditor = ({
             snapEnabled={view.snap}
             showGrid={view.grid}
           />
-          <PagesStrip editor={editor} />
+          <PagesStrip editor={editor} zoom={zoom} onZoomChange={setUserZoom} />
         </div>
         <aside
           className="hidden w-[280px] shrink-0 overflow-y-auto border-l bg-background lg:block"

@@ -3,11 +3,9 @@
 import {
   ChevronLeft,
   CloudCheck,
-  Download,
   FolderOpen,
   Keyboard,
   LayoutGrid,
-  Loader2,
   Maximize2,
   Minus,
   Plus,
@@ -25,11 +23,11 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { DESIGN_FORMATS, type Design } from '@/design';
-import { exportJson, exportPages, exportPdf, parseDesignJson } from './export-design';
+import { DownloadMenu } from './download-menu';
+import { parseDesignJson } from './export-design';
 import type { DesignEditorState } from './use-design-editor';
 
 interface EditorHeaderProps {
@@ -67,7 +65,11 @@ export const EditorHeader = ({
   const [error, setError] = useState<string | null>(null);
   const openRef = useRef<HTMLInputElement>(null);
 
-  const run = async (task: () => Promise<void> | void) => {
+  const run = (task: () => Promise<void> | void) => {
+    runTask(task).catch(() => undefined);
+  };
+
+  const runTask = async (task: () => Promise<void> | void) => {
     setBusy(true);
     setError(null);
     try {
@@ -236,58 +238,7 @@ export const EditorHeader = ({
         <Button variant="ghost" size="sm" onClick={() => openRef.current?.click()}>
           <FolderOpen /> Open
         </Button>
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button
-              size="sm"
-              disabled={busy}
-              className="bg-violet-600 text-white hover:bg-violet-600/90"
-            >
-              {busy ? <Loader2 className="animate-spin" /> : <Download />} Download
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-56">
-            <DropdownMenuLabel>This page</DropdownMenuLabel>
-            <DropdownMenuItem
-              onSelect={() => run(() => exportPages(design, [editor.pageId], 'png', 1))}
-            >
-              PNG
-            </DropdownMenuItem>
-            <DropdownMenuItem
-              onSelect={() => run(() => exportPages(design, [editor.pageId], 'png', 2))}
-            >
-              PNG (2× HD)
-            </DropdownMenuItem>
-            <DropdownMenuItem
-              onSelect={() => run(() => exportPages(design, [editor.pageId], 'jpg', 1))}
-            >
-              JPG
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuLabel>All {design.pages.length} pages</DropdownMenuLabel>
-            <DropdownMenuItem
-              onSelect={() =>
-                run(() =>
-                  exportPages(
-                    design,
-                    design.pages.map((page) => page.id),
-                    'png',
-                    1,
-                  ),
-                )
-              }
-            >
-              PNG files
-            </DropdownMenuItem>
-            <DropdownMenuItem onSelect={() => run(() => exportPdf(design, 1))}>
-              PDF
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem onSelect={() => run(() => exportJson(design))}>
-              Editable design file (.json)
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+        <DownloadMenu design={design} pageId={editor.pageId} busy={busy} run={run} />
       </div>
       {error === null ? null : (
         <p

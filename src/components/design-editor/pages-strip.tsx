@@ -49,7 +49,13 @@ const PageThumb = ({
   );
 };
 
-export const PagesStrip = ({ editor }: { editor: DesignEditorState }) => {
+interface PagesStripProps {
+  editor: DesignEditorState;
+  zoom: number;
+  onZoomChange: (zoom: number) => void;
+}
+
+export const PagesStrip = ({ editor, zoom, onZoomChange }: PagesStripProps) => {
   const { design, pageId } = editor;
   const index = design.pages.findIndex((page) => page.id === pageId);
   return (
@@ -76,6 +82,20 @@ export const PagesStrip = ({ editor }: { editor: DesignEditorState }) => {
         </button>
       </div>
       <div className="flex items-center gap-0.5 text-muted-foreground">
+        <label className="mr-3 hidden items-center gap-2 text-xs md:flex">
+          <span className="sr-only">Zoom</span>
+          <input
+            type="range"
+            aria-label="Zoom level"
+            min={5}
+            max={400}
+            step={1}
+            value={Math.round(zoom * 100)}
+            onChange={(event) => onZoomChange(Number(event.target.value) / 100)}
+            className="w-28 accent-violet-600"
+          />
+          <span className="w-10 tabular-nums">{Math.round(zoom * 100)}%</span>
+        </label>
         <span className="mr-2 text-xs tabular-nums">
           Page {index + 1} / {design.pages.length}
         </span>

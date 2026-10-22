@@ -23,9 +23,14 @@ export const exportPages = async (
   pageIds: readonly string[],
   format: 'png' | 'jpg',
   scale: number,
+  transparent = false,
 ): Promise<void> => {
   const base = designFileName(design.title);
-  const pages = design.pages.filter((page) => pageIds.includes(page.id));
+  const pages = design.pages
+    .filter((page) => pageIds.includes(page.id))
+    .map((page) =>
+      transparent && format === 'png' ? { ...page, background: 'rgba(0,0,0,0)' } : page,
+    );
   await pages.reduce<Promise<void>>(
     (previous, page, index) =>
       previous.then(async () => {
