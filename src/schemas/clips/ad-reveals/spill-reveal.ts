@@ -18,6 +18,7 @@ export const spillRevealSchema = z.object({
     offsetY: coordinate(-0.4, 0.4),
     strength: unit(),
     bleed: unit(),
+    lineSpacing: zSlider({ min: 0.6, max: 1.6, step: 0.01 }),
   }),
   cup: z.object({
     color: zColor(),
@@ -74,6 +75,7 @@ export const spillRevealSchema = z.object({
     soakFrames: zSlider({ min: 20, max: 240 }),
     moveStart: zSlider({ min: 0, max: 260 }),
     moveFrames: zSlider({ min: 10, max: 240 }),
+    leaveFrames: zSlider({ min: 8, max: 120 }),
   }),
   hand: z.object({
     show: z.boolean(),
@@ -150,6 +152,7 @@ export const spillRevealDefaults: SpillRevealProps = {
     offsetY: 0.04,
     strength: 0.75,
     bleed: 0.45,
+    lineSpacing: 0.92,
   },
   cup: {
     color: '#2f5f8c',
@@ -206,6 +209,7 @@ export const spillRevealDefaults: SpillRevealProps = {
     soakFrames: 120,
     moveStart: 96,
     moveFrames: 110,
+    leaveFrames: 48,
   },
   hand: {
     show: true,

@@ -13,6 +13,7 @@ export const readerBoardSchema = z.object({
   brand: zMultiline(),
   paper: zColor(),
   headlineColor: zColor(),
+  highlightLastLine: z.boolean(),
   accentColor: zColor(),
   taglineColor: zColor(),
   brandColor: zColor(),
@@ -41,6 +42,7 @@ export const readerHeroSchema = z.object({
   newsprint: zColor(),
   newsInk: zColor(),
   masthead: z.string(),
+  frontHeadline: zMultiline(),
 });
 
 export type ReaderHero = z.infer<typeof readerHeroSchema>;
@@ -139,6 +141,7 @@ export const billboardReaderDefaults: BillboardReaderProps = {
     brand: 'LEGEND\nWORKS',
     paper: '#16204a',
     headlineColor: '#f7efe4',
+    highlightLastLine: true,
     accentColor: '#ffb347',
     taglineColor: '#b9c4ee',
     brandColor: '#f7efe4',
@@ -164,6 +167,7 @@ export const billboardReaderDefaults: BillboardReaderProps = {
     newsprint: '#ede8f0',
     newsInk: '#2c2a3a',
     masthead: 'THE EVENING LEGEND',
+    frontHeadline: 'CAPED READER\nSPOTTED AT DUSK',
   },
   timing: {
     turnStart: 56,

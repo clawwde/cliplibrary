@@ -53,7 +53,11 @@ export const unveilSkySchema = z.object({
   clouds: zSlider({ min: 0, max: 1, step: 0.01 }),
   cloudDrift: zSlider({ min: 0, max: 2, step: 0.05 }),
   sun: zSlider({ min: 0, max: 4, step: 0.05 }),
+  sunColor: zColor(),
+  sunSide: zSlider({ min: -1, max: 1, step: 0.01 }),
+  sunHeight: zSlider({ min: 0.2, max: 1.2, step: 0.01 }),
   haze: zColor(),
+  fog: zSlider({ min: 0, max: 0.008, step: 0.0001 }),
 });
 
 export type UnveilSky = z.infer<typeof unveilSkySchema>;
@@ -157,7 +161,11 @@ export const helicopterUnveilDefaults: HelicopterUnveilProps = {
     clouds: 0.3,
     cloudDrift: 1,
     sun: 3.2,
+    sunColor: '#fff1dc',
+    sunSide: 0.42,
+    sunHeight: 0.6,
     haze: '#ecd3bf',
+    fog: 0.0021,
   },
   ground: {
     showRoad: true,
