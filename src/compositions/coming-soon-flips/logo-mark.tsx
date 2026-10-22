@@ -67,7 +67,7 @@ export const LogoMark = ({ logo }: { logo: ComingSoonFlipsProps['logo'] }) => {
         x={centerX}
         y={baseline + logo.captionGap + logo.captionSize * CAP_HEIGHT}
         textAnchor="middle"
-        fill={logo.color}
+        fill={logo.captionColor}
         style={{ fontFamily: logoFont, fontWeight: 600, fontSize: logo.captionSize }}
       >
         {logo.caption}

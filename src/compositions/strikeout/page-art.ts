@@ -197,7 +197,7 @@ export const drawStrike = (
     return;
   }
   const last = Math.min(1, progress) * (path.points.length - 1);
-  context.strokeStyle = page.graphite;
+  context.strokeStyle = page.strikeColor;
   context.lineCap = 'round';
   context.globalAlpha = 0.9;
   let previous = path.points[0];

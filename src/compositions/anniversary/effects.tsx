@@ -1,11 +1,12 @@
 import { AbsoluteFill } from 'remotion';
-import type { AnniversaryBeat, AnniversaryLook } from '@/schemas';
+import type { AnniversaryBeat, AnniversaryChrome, AnniversaryLook } from '@/schemas';
 import { land, settle, tween } from '../promo/timing';
 import { centered, clamp01, letters, wordStyle } from './type';
 
 export type EffectProps = {
   beat: AnniversaryBeat;
   look: AnniversaryLook;
+  chrome: AnniversaryChrome;
   local: number;
   length: number;
   width: number;

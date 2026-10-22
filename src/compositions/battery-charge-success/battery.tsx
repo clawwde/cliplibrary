@@ -170,7 +170,7 @@ export const Battery = ({ props, frame, box, level, phase, width, height }: Batt
             style={{ filter: `drop-shadow(0 0 10px ${rgba(glowColor, 0.7 * boltAlpha)})` }}
           />
         ) : null}
-        {percent(look.ink)}
+        {battery.showPercent ? percent(look.ink) : null}
         <path d={back} fill={rgba(mixHex(top, liquid.backTint, 0.35), liquid.backWave)} />
         <path d={front} fill={`url(#battery-fill-${uid})`} />
         <g clipPath={`url(#battery-liquid-${uid})`}>
@@ -178,7 +178,9 @@ export const Battery = ({ props, frame, box, level, phase, width, height }: Batt
             <path d={bolt} fill={rgba(charge.percentInLiquid, 0.42)} />
           ) : null}
         </g>
-        {percent(rgba(charge.percentInLiquid, 0.62), `url(#battery-liquid-${uid})`)}
+        {battery.showPercent
+          ? percent(rgba(charge.percentInLiquid, 0.62), `url(#battery-liquid-${uid})`)
+          : null}
         <Ticks props={props} inner={inner} fillable={fillable} level={level} color={look.ink} />
         <Bubbles props={props} frame={frame} inner={inner} surface={surface} level={level} />
       </g>

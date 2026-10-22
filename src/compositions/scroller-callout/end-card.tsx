@@ -191,7 +191,7 @@ export const EndCard = ({
             fontWeight: end.urlWeight,
             fontSize: end.urlSize,
             letterSpacing: `${end.urlTracking}em`,
-            textTransform: 'uppercase',
+            textTransform: end.urlUppercase ? 'uppercase' : 'none',
           }}
         >
           {end.url}

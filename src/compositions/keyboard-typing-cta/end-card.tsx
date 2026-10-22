@@ -105,7 +105,7 @@ const ArrowGlyph = ({ size, color }: { size: number; color: string }) => (
 
 const RisingLabel = ({ props, frame }: { props: Props; frame: number }) => {
   const { copy, endCard, timing } = props;
-  const glyphs = [...copy.button, 'arrow'];
+  const glyphs = endCard.buttonArrow ? [...copy.button, 'arrow'] : [...copy.button];
   return (
     <div
       style={{
@@ -125,7 +125,7 @@ const RisingLabel = ({ props, frame }: { props: Props; frame: number }) => {
         const start = timing.buttonStart + index * timing.buttonStagger;
         const range: [number, number] = [start, start + timing.buttonFlyFrames];
         const rise = pixelTween(frame, range, [endCard.buttonHeight * 0.55, 0], settle);
-        const isArrow = index === glyphs.length - 1;
+        const isArrow = endCard.buttonArrow && index === glyphs.length - 1;
         return (
           <span
             key={`${index}-${glyph}`}

@@ -1,6 +1,6 @@
 import { AbsoluteFill } from 'remotion';
 import type { HangingWordsProps } from '@/schemas';
-import { heavyFont } from './fonts';
+import { fontFamily } from './fonts';
 import { Streak } from './streak';
 import { TextLine } from './text-line';
 import { CAP_CENTER } from './word-flash';
@@ -76,6 +76,7 @@ export const RepeatStack = ({ props, frame }: { props: HangingWordsProps; frame:
     stack.start + 1 + Math.floor((order * stack.fillFrames) / total);
   const inked = frame >= outro.inkAt;
   const ring = { width: stack.ringStroke, color: palette.night };
+  const font = fontFamily(flash.font);
   return (
     <AbsoluteFill>
       {rise < SCROLL_CLEAR
@@ -97,7 +98,7 @@ export const RepeatStack = ({ props, frame }: { props: HangingWordsProps; frame:
                     key={slot.order}
                     centerY={centerY + slot.offset * stack.pitch}
                     size={stack.size}
-                    font={heavyFont}
+                    font={font}
                     weight={flash.weight}
                     color={palette.light}
                   >
@@ -107,7 +108,7 @@ export const RepeatStack = ({ props, frame }: { props: HangingWordsProps; frame:
               <TextLine
                 centerY={centerY}
                 size={stack.size}
-                font={heavyFont}
+                font={font}
                 weight={flash.weight}
                 color={palette.light}
               >
@@ -126,7 +127,7 @@ export const RepeatStack = ({ props, frame }: { props: HangingWordsProps; frame:
         <TextLine
           centerY={centerY}
           size={stack.size}
-          font={heavyFont}
+          font={font}
           weight={flash.weight}
           color={palette.light}
         >

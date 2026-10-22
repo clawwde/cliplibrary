@@ -26,15 +26,17 @@ export const BrandLockup = ({
         fontFamily: labelFont,
       }}
     >
-      <div
-        style={{
-          width: mark,
-          height: mark,
-          borderRadius: '50%',
-          border: `${Math.max(2, mark * 0.14)}px solid ${brand.accent}`,
-          boxShadow: `0 0 ${mark * 0.4}px ${brand.accent}`,
-        }}
-      />
+      {brand.showMark ? (
+        <div
+          style={{
+            width: mark,
+            height: mark,
+            borderRadius: '50%',
+            border: `${Math.max(2, mark * 0.14)}px solid ${brand.accent}`,
+            boxShadow: `0 0 ${mark * 0.4}px ${brand.accent}`,
+          }}
+        />
+      ) : null}
       <div style={{ display: 'flex', flexDirection: 'column' }}>
         <span
           style={{

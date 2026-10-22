@@ -106,7 +106,7 @@ export const frameState = (
   const scale =
     1 + type.settleScale * tween(frame, [beats.irisStart, beats.settleEnd], [1, 0], smooth);
   const badgeScreenX = canvas.width / 2 + (lockup.badgeX - canvas.width / 2) * scale;
-  const rollDistance = canvas.width + type.badgeSize * 0.75 - badgeScreenX;
+  const rollDistance = roll.away ? canvas.width + type.badgeSize * 0.75 - badgeScreenX : 0;
   const rollAt = (at: number) =>
     rollDistance * tween(at, [beats.rollStart, beats.rollEnd], [0, 1], ROLL_EASE);
   const offsetX = rollAt(frame);
@@ -146,6 +146,6 @@ export const frameState = (
     clip,
     edgeBlur:
       frame < beats.growEnd ? Math.min(4, (growAt(frame + 0.5) - growAt(frame - 0.5)) * 0.05) : 0,
-    showField: frame >= beats.growStart && frame < beats.rollEnd + 2,
+    showField: frame >= beats.growStart && (!roll.away || frame < beats.rollEnd + 2),
   };
 };

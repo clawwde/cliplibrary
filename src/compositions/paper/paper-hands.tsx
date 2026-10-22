@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import type { ArmStyle } from '@/schemas';
 import type { ArmLook } from '../promo/desk/arm';
 import { HandModel, useHandScene } from '../promo/desk/hand-model';
 import { applyHandPose, type HandPose, mixPose } from '../promo/desk/hand-rig';
@@ -17,6 +18,8 @@ export interface HandsLook {
   thumbCurl: number;
   watch: boolean;
   watchColor: string;
+  sleeve: ArmStyle;
+  sleeveColor: string;
 }
 
 export interface HandAim {
@@ -38,9 +41,7 @@ export interface HandCue {
 
 type HandSide = 'top' | 'bottom';
 
-const ARM: ArmLook = {
-  style: 'bare',
-  sleeveColor: '#4a5263',
+const ARM: Omit<ArmLook, 'style' | 'sleeveColor'> = {
   length: 0.8,
   looseness: 0.4,
   knit: 0.004,
@@ -177,10 +178,11 @@ const Hand = ({
   const hand = useHandScene();
   const placement = handPlacement(frame, look, cue, side);
   applyHandPose(hand.rig, placement.handPose);
+  const sleeved: ArmLook = { ...ARM, style: look.sleeve, sleeveColor: look.sleeveColor };
   const arm =
     side === 'bottom'
-      ? { ...ARM, band: look.watch, bandColor: look.watchColor, bandMetal: 0.6 }
-      : ARM;
+      ? { ...sleeved, band: look.watch, bandColor: look.watchColor, bandMetal: 0.6 }
+      : sleeved;
   const model = (
     <HandModel
       hand={hand}

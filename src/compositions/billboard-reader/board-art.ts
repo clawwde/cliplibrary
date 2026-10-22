@@ -62,7 +62,7 @@ const drawHeadline = (context: CanvasRenderingContext2D, board: ReaderBoard): nu
   const blockHeight = lineGap * (lines.length - 1) + size * 0.72;
   const firstBaseline = ART_HEIGHT * 0.52 - blockHeight / 2 + size * 0.72;
   lines.forEach((line, index) => {
-    const accent = lines.length > 1 && index === lines.length - 1;
+    const accent = board.highlightLastLine && lines.length > 1 && index === lines.length - 1;
     context.fillStyle = accent ? board.accentColor : board.headlineColor;
     context.fillText(line, MARGIN - size * 0.03, firstBaseline + index * lineGap);
   });

@@ -5,9 +5,7 @@ import { clamp01, progress } from './beat';
 import { teaserFont } from './fonts';
 
 const CHAR_FRAMES = 10;
-const TAGLINE_Y = 1256;
-const WEB_Y = 1312;
-const ROW_Y = 1408;
+const CONTACT_ROW_GAP = 96;
 const CONTACT_FADE = 16;
 const UNDERLINE_FRAMES = 26;
 
@@ -75,12 +73,14 @@ export const EndCard = ({
   type,
   look,
   timing,
+  layout,
 }: {
   frame: number;
   copy: GoingLiveTeaserProps['copy'];
   type: GoingLiveTeaserProps['type'];
   look: GoingLiveTeaserProps['look'];
   timing: GoingLiveTeaserProps['timing'];
+  layout: GoingLiveTeaserProps['endCard'];
 }) => {
   if (frame < timing.taglineStart) {
     return null;
@@ -102,7 +102,7 @@ export const EndCard = ({
           position: 'absolute',
           left: 0,
           right: 0,
-          top: TAGLINE_Y,
+          top: layout.taglineY,
           transform: 'translateY(-50%)',
           textAlign: 'center',
           whiteSpace: 'pre',
@@ -136,20 +136,20 @@ export const EndCard = ({
                 height: Math.max(3, type.taglineSize * 0.09),
                 width: `calc((100% - ${type.taglineTracking * 0.7}em) * ${underline.toFixed(4)})`,
                 borderRadius: 99,
-                background: look.echoTint,
+                background: look.underline,
               }}
             />
           ) : null}
         </span>
       </div>
-      {contacts > 0 ? (
+      {copy.showContacts && contacts > 0 ? (
         <AbsoluteFill style={{ opacity: contacts, fontWeight: 500 }}>
           <div
             style={{
               position: 'absolute',
               left: 0,
               right: 0,
-              top: WEB_Y,
+              top: layout.contactsY,
               transform: 'translateY(-50%)',
               display: 'flex',
               justifyContent: 'center',
@@ -167,7 +167,7 @@ export const EndCard = ({
               position: 'absolute',
               left: 60,
               right: 60,
-              top: ROW_Y,
+              top: layout.contactsY + CONTACT_ROW_GAP,
               transform: 'translateY(-50%)',
               display: 'flex',
               justifyContent: 'space-between',

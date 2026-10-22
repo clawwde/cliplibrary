@@ -67,6 +67,7 @@ export const MagnifierScene = (props: MagnifierCaptionProps) => {
             word: field.word,
             lineWidth: field.lineWidth,
             wordSize: field.wordSize,
+            wordWeight: field.wordWeight,
             font: bodyFont,
           }}
         />
@@ -90,6 +91,7 @@ export const MagnifierScene = (props: MagnifierCaptionProps) => {
             word: lens.word,
             lineWidth: lens.lineWidth,
             wordSize: field.wordSize,
+            wordWeight: field.wordWeight,
             font: bodyFont,
           }}
         />

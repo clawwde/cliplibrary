@@ -1,6 +1,6 @@
 import { AbsoluteFill } from 'remotion';
 import type { HangingWordsProps } from '@/schemas';
-import { squareFont } from './fonts';
+import { fontFamily } from './fonts';
 import { GlitchWord } from './glitch-word';
 import { dampedSwing, landDistance, launchDistance, launchSpeed, progress } from './physics';
 import { Streak } from './streak';
@@ -73,7 +73,7 @@ export const HangingAct = ({ props, frame }: { props: HangingWordsProps; frame: 
             key={line.order}
             centerY={knot.y + line.offset * greeting.pitch}
             size={greeting.size}
-            font={squareFont}
+            font={fontFamily(greeting.font)}
             weight={greeting.weight}
             tracking={greeting.tracking}
             color={hollow ? 'transparent' : look.ink}
@@ -121,7 +121,7 @@ export const HangingAct = ({ props, frame }: { props: HangingWordsProps; frame: 
             <TextLine
               centerY={topCenter}
               size={hang.topSize}
-              font={squareFont}
+              font={fontFamily(hang.font)}
               weight={hang.weight}
               color={look.accent}
             >
@@ -130,7 +130,7 @@ export const HangingAct = ({ props, frame }: { props: HangingWordsProps; frame: 
             <TextLine
               centerY={bottomCenter}
               size={hang.bottomSize}
-              font={squareFont}
+              font={fontFamily(hang.font)}
               weight={hang.weight}
               color={look.ink}
             >

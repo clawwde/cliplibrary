@@ -86,7 +86,7 @@ export const LoadingWall = ({ wall, frame }: { wall: Wall; frame: number }) => {
         >
           <rect x={-400} y={-900} width={1880} height={800} fill={wall.shelf} />
           <rect x={-400} y={-108} width={1880} height={PANEL_TOP + 108} fill={wall.cabinet} />
-          <rect x={-400} y={PANEL_TOP} width={1880} height={2400} fill="#0b0f1e" />
+          <rect x={-400} y={PANEL_TOP} width={1880} height={2400} fill={wall.slot} />
           <clipPath id={`below-lip-${uid}`}>
             <rect x={-400} y={PANEL_TOP} width={1880} height={2400} />
           </clipPath>

@@ -1,6 +1,6 @@
 import { AbsoluteFill } from 'remotion';
 import type { HangingWordsProps } from '@/schemas';
-import { heavyFont } from './fonts';
+import { fontFamily } from './fonts';
 import { TextLine } from './text-line';
 
 export const CAP_CENTER = 0.36;
@@ -41,10 +41,10 @@ export const WordFlash = ({ props, frame }: { props: HangingWordsProps; frame: n
             key={`${index}:${word.text}`}
             centerY={flash.baseline - word.size * CAP_CENTER}
             size={word.size}
-            font={heavyFont}
+            font={fontFamily(flash.font)}
             weight={flash.weight}
             color={palette.light}
-            style={{ opacity, zIndex: frame >= end ? 0 : 1 }}
+            style={{ opacity }}
           >
             {word.text}
           </TextLine>

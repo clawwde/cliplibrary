@@ -106,7 +106,7 @@ export const CallScreen = ({ call, frame }: { call: Call; frame: number }) => {
   const iconColor = interpolateColors(
     decline,
     [0, 0.1, 0.4],
-    [call.answerColor, call.answerColor, '#ffffff'],
+    [call.answerColor, call.answerColor, call.hangupIcon],
   );
   const iconTurn = tween(frame, [slideEnd + 1, slideEnd + 5], [0, 135]);
   const pillOpacity = tween(frame, [call.slideStart + 1, slideEnd], [1, 0], Easing.linear);
