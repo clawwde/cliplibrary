@@ -1,6 +1,5 @@
 export * from './exports-store';
 export * from './fs-paths';
-export * from './git';
 export * from './history-store';
 export * from './project-seed';
 export * from './project-store';

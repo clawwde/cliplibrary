@@ -3,14 +3,7 @@ import { mkdtemp, rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { z } from 'zod';
-import {
-  buildCommitCommand,
-  type ControlDescriptor,
-  describeSchema,
-  readHistory,
-  readProps,
-  writeProps,
-} from '@/core';
+import { type ControlDescriptor, describeSchema, readHistory, readProps, writeProps } from '@/core';
 import { CLIP_DEFAULTS, CLIP_SCHEMAS, zColor, zMultiline, zSlider } from '@/schemas';
 
 const byPath = (controls: ControlDescriptor[], key: string): ControlDescriptor => {
@@ -104,13 +97,5 @@ describe('props store', () => {
     const root = await makeRoot();
     const bad = { ...CLIP_DEFAULTS['brand-reveal'], markColor: 'nope' };
     await expect(writeProps(root, 'brand-reveal', bad)).rejects.toThrow();
-  });
-});
-
-describe('commit command', () => {
-  it('escapes the message into the template', () => {
-    expect(buildCommitCommand('git commit -m "{{message}}"', "it's done")).toBe(
-      `git commit -m "'it'\\''s done'"`,
-    );
   });
 });

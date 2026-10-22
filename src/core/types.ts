@@ -52,10 +52,3 @@ export interface ExportRecord {
   propsVersionId: string;
   error: string | null;
 }
-
-export interface CommitResult {
-  command: string;
-  exitCode: number;
-  stdout: string;
-  stderr: string;
-}

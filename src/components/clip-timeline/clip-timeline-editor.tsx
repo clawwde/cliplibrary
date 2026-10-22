@@ -3,7 +3,6 @@
 import type { PlayerRef } from '@remotion/player';
 import dynamic from 'next/dynamic';
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { CommitBar } from '@/components/editor/commit-bar';
 import { Timeline } from '@/components/timeline/timeline';
 import { TimelineToolbar } from '@/components/timeline/timeline-toolbar';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -244,7 +243,6 @@ export const ClipTimelineEditor = ({
             onChange={(next) => setProjectLive(replaceElement(project, next))}
             onDelete={handleDelete}
           />
-          <CommitBar />
         </aside>
       </div>
       <div className="flex h-72 shrink-0 flex-col border-border border-t bg-sidebar">
