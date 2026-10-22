@@ -114,7 +114,11 @@ export type ControlCoverage = {
   missing: string[];
   repeated: string[];
   unknown: string[];
+  repeatedTitles: string[];
 };
+
+const duplicates = (values: string[]): string[] =>
+  values.filter((value, index) => values.indexOf(value) !== index);
 
 export const auditClipControls = (schema: z.ZodType, controls: ClipControls): ControlCoverage => {
   const known = describeControlPaths(schema);
@@ -131,10 +135,11 @@ export const auditClipControls = (schema: z.ZodType, controls: ClipControls): Co
   const linked = fields
     .filter((field) => typeof field !== 'string' && 'link' in field)
     .flatMap(fieldPaths);
-  const covered = new Set([...singles, ...linked]);
+  const placed = new Set(singles);
   return {
-    missing: [...known.keys()].filter((path) => !covered.has(path)),
-    repeated: singles.filter((path, index) => singles.indexOf(path) !== index),
-    unknown: [...covered].filter((path) => !known.has(path)),
+    missing: [...known.keys()].filter((path) => !placed.has(path)),
+    repeated: duplicates(singles),
+    unknown: [...new Set([...singles, ...linked])].filter((path) => !known.has(path)),
+    repeatedTitles: duplicates(controls.sections.map((section) => section.title)),
   };
 };
