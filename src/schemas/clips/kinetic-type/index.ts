@@ -39,6 +39,8 @@ import {
   outlineMarqueeSchema,
 } from './outline-marquee';
 import { outlineMarqueeControls } from './outline-marquee-controls';
+import { ribbonWordsDefaults, ribbonWordsMeta, ribbonWordsSchema } from './ribbon-words';
+import { ribbonWordsControls } from './ribbon-words-controls';
 import {
   scrollerCalloutDefaults,
   scrollerCalloutMeta,
@@ -154,6 +156,13 @@ export const kineticTypeClips: ClipModule[] = [
     defaults: scrollerWallDefaults,
     meta: scrollerWallMeta,
     controls: scrollerWallControls,
+  },
+  {
+    id: 'ribbon-words',
+    schema: ribbonWordsSchema,
+    defaults: ribbonWordsDefaults,
+    meta: ribbonWordsMeta,
+    controls: ribbonWordsControls,
   },
   {
     id: 'anniversary-kinetic',

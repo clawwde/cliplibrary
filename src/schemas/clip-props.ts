@@ -30,6 +30,7 @@ import type { GridStackProps } from './clips/kinetic-type/grid-stack';
 import type { HangingWordsProps } from './clips/kinetic-type/hanging-words';
 import type { LensOrbitProps } from './clips/kinetic-type/lens-orbit';
 import type { OutlineMarqueeProps } from './clips/kinetic-type/outline-marquee';
+import type { RibbonWordsProps } from './clips/kinetic-type/ribbon-words';
 import type { ScrollerCalloutProps } from './clips/kinetic-type/scroller-callout';
 import type { ScrollerWallProps } from './clips/kinetic-type/scroller-wall';
 import type { StickerStackProps } from './clips/kinetic-type/sticker-stack';
@@ -126,6 +127,7 @@ export interface ClipPropsMap {
   'domino-words': DominoWordsProps;
   'scroller-callout': ScrollerCalloutProps;
   'scroller-wall': ScrollerWallProps;
+  'ribbon-words': RibbonWordsProps;
   'anniversary-kinetic': AnniversaryKineticProps;
   'coming-soon-flips': ComingSoonFlipsProps;
   'film-dust': FilmDustProps;
