@@ -39,7 +39,7 @@ const applyStatus = (status: StatusResponse | null, context: PollContext): void 
     context.onProgress(status.progress);
   }
   if (status.status === 'done') {
-    context.resolve(`/api/export/${context.exportId}/file?download=1`);
+    context.resolve(`/api/project-export/${context.exportId}/file?download=1`);
     return;
   }
   if (status.status === 'error') {

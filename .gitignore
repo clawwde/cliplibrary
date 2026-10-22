@@ -22,8 +22,6 @@ public/exports/*
 public/uploads/*
 !public/uploads/.gitkeep
 
-/exports/
-
 settings.local.json
 *.tsbuildinfo
 

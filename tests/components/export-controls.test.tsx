@@ -31,7 +31,7 @@ describe('ExportControls', () => {
       <ExportControls
         state="done"
         progress={1}
-        downloadUrl="/api/export/x/file?download=1"
+        downloadUrl="/api/project-export/x/file?download=1"
         onExport={mock()}
       />,
     );

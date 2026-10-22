@@ -1,20 +1,11 @@
 import 'server-only';
-import { existsSync, readdirSync } from 'node:fs';
+import { existsSync } from 'node:fs';
 import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
-import { type ExportRecord, readExports } from '@/core';
 import { CLIP_REGISTRY, type ClipMeta } from '@/schemas';
 import { repoRoot } from './repo-root';
 
 const publicExports = (root: string): string => join(root, 'public', 'exports');
-
-const hasRenderedVideo = (root: string, exportId: string): boolean => {
-  try {
-    return readdirSync(join(publicExports(root), exportId)).some((name) => !name.endsWith('.jpg'));
-  } catch {
-    return false;
-  }
-};
 
 const readFirstFrame = async (root: string, meta: ClipMeta): Promise<string | null> => {
   try {
@@ -41,13 +32,5 @@ export const listClips = (): Promise<ClipListItem[]> => {
         : null,
       firstFrame: await readFirstFrame(root, meta),
     })),
-  );
-};
-
-export const listExports = async (): Promise<ExportRecord[]> => {
-  const root = repoRoot();
-  const records = await readExports(root);
-  return records.filter(
-    (record) => record.status === 'done' && hasRenderedVideo(root, record.exportId),
   );
 };
