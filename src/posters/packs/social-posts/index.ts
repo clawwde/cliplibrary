@@ -14,12 +14,14 @@ import { emeraldSaasLaunchPack } from './emerald-saas-launch';
 import { fuchsiaStartupBundlePack } from './fuchsia-startup-bundle';
 import { graphiteSaasFoundersPack } from './graphite-saas-founders';
 import { harborB2bMarketingPack } from './harbor-b2b-marketing';
+import { harborCoralMarketingPack } from './harbor-coral-marketing';
 import { hiringSpotlightPack } from './hiring-spotlight';
 import { jadeEventCalendarPack } from './jade-event-calendar';
 import { lagoonSaasStatsPack } from './lagoon-saas-stats';
 import { limeB2bBundlePack } from './lime-b2b-bundle';
 import { magentaGrowthPostsPack } from './magenta-growth-posts';
 import { magentaMiniGamesPack } from './magenta-mini-games';
+import { mintSignalMarketingPack } from './mint-signal-marketing';
 import { nightSignalPodcastPack } from './night-signal-podcast';
 import { pineSaasReviewsPack } from './pine-saas-reviews';
 import { pixelQuestArcadePack } from './pixel-quest-arcade';
@@ -27,11 +29,14 @@ import { plumProofReviewsPack } from './plum-proof-reviews';
 import { rosewoodTechEventsPack } from './rosewood-tech-events';
 import { rubyKeyStatsPack } from './ruby-key-stats';
 import { saffronLaunchEventsPack } from './saffron-launch-events';
+import { solarFlareAiPostsPack } from './solar-flare-ai-posts';
 import { sunbeamShopStatsPack } from './sunbeam-shop-stats';
 import { tangerineLinkedinReviewsPack } from './tangerine-linkedin-reviews';
+import { tidelineEnterprisePostsPack } from './tideline-enterprise-posts';
 import { violetAppLaunchPack } from './violet-app-launch';
 import { violetKeyDatesPack } from './violet-key-dates';
 import { violetPulseStatsPack } from './violet-pulse-stats';
+import { voltageBlueAiPostsPack } from './voltage-blue-ai-posts';
 import { willowKeyRealtyPack } from './willow-key-realty';
 
 export const SOCIAL_POST_PACKS: PosterPack[] = [
@@ -50,12 +55,14 @@ export const SOCIAL_POST_PACKS: PosterPack[] = [
   fuchsiaStartupBundlePack,
   graphiteSaasFoundersPack,
   harborB2bMarketingPack,
+  harborCoralMarketingPack,
   hiringSpotlightPack,
   jadeEventCalendarPack,
   lagoonSaasStatsPack,
   limeB2bBundlePack,
   magentaGrowthPostsPack,
   magentaMiniGamesPack,
+  mintSignalMarketingPack,
   nightSignalPodcastPack,
   pineSaasReviewsPack,
   pixelQuestArcadePack,
@@ -63,10 +70,13 @@ export const SOCIAL_POST_PACKS: PosterPack[] = [
   rosewoodTechEventsPack,
   rubyKeyStatsPack,
   saffronLaunchEventsPack,
+  solarFlareAiPostsPack,
   sunbeamShopStatsPack,
   tangerineLinkedinReviewsPack,
+  tidelineEnterprisePostsPack,
   violetAppLaunchPack,
   violetKeyDatesPack,
   violetPulseStatsPack,
+  voltageBlueAiPostsPack,
   willowKeyRealtyPack,
 ];
