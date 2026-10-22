@@ -2,8 +2,9 @@ import { existsSync } from 'node:fs';
 import { mkdir, rm, writeFile } from 'node:fs/promises';
 import { dirname, join, relative, resolve } from 'node:path';
 import { chromium } from '@playwright/test';
-import { POSTER_PACKS } from '@/posters';
+import { POSTER_PACKS, POSTER_UPDATED_AT } from '@/posters';
 import { posterPreviewEntry, posterPreviewsDir, publicDir } from './paths';
+import { stampPosterUpdatedAt } from './posters/poster-updated-at';
 import { posterPreviewFileName } from './posters/preview-file-names';
 
 const PREVIEW_WIDTH = 480;
@@ -35,7 +36,7 @@ const parseOptions = (args: readonly string[]): Options => {
 const qaEntry = async (packFile: string): Promise<string> => {
   const entry = join(dirname(posterPreviewEntry), `qa-${process.pid}.tsx`);
   const source = (await Bun.file(posterPreviewEntry).text()).replace(
-    "import { POSTER_PACKS } from '@/posters';",
+    "import { POSTER_PACKS, POSTER_UPDATED_AT } from '@/posters';",
     `import * as candidates from './${relative(dirname(posterPreviewEntry), packFile).replace(/\.ts$/, '')}';\nconst POSTER_PACKS = Object.values(candidates).filter((value) => typeof value === 'object' && value !== null && 'meta' in value && 'build' in value) as import('@/posters').PosterPack[];`,
   );
   await writeFile(entry, source);
@@ -138,6 +139,13 @@ const main = async (): Promise<void> => {
   } finally {
     await browser.close();
     await server.stop(true);
+  }
+  if (options.outDir === posterPreviewsDir && options.packFile === undefined) {
+    const rendered = [...new Set(jobs.map((job) => job.packId))];
+    await stampPosterUpdatedAt(
+      rendered.filter((id) => options.ids.includes(id) || POSTER_UPDATED_AT[id] === undefined),
+      new Date(),
+    );
   }
   console.info(`Rendered ${jobs.length} poster previews to ${options.outDir}`);
 };

@@ -9,3 +9,13 @@ export const galleryPreviewsDir = fileURLToPath(new URL('../../public/previews/'
 export const clipUpdatedAtFile = fileURLToPath(
   new URL('../schemas/clip-updated-at.json', import.meta.url),
 );
+export const publicDir = fileURLToPath(new URL('../../public/', import.meta.url));
+export const posterPreviewsDir = fileURLToPath(
+  new URL('../../public/poster-previews/', import.meta.url),
+);
+export const posterPreviewEntry = fileURLToPath(
+  new URL('./posters/preview-entry.tsx', import.meta.url),
+);
+export const posterUpdatedAtFile = fileURLToPath(
+  new URL('../posters/poster-updated-at.json', import.meta.url),
+);

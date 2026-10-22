@@ -7,6 +7,7 @@ import {
   POSTER_PACK_META,
   POSTER_PACKS,
   POSTER_PHOTOS,
+  POSTER_UPDATED_AT,
   posterPreviewPath,
 } from '@/posters';
 import { publicDir } from '@/render/paths';
@@ -59,6 +60,12 @@ describe('poster packs', () => {
       return [];
     });
     expect(problems).toEqual([]);
+  });
+
+  it('records exactly one updated-at timestamp per pack', () => {
+    expect(Object.keys(POSTER_UPDATED_AT).sort()).toEqual(
+      POSTER_PACK_META.map((meta) => meta.id).sort(),
+    );
   });
 
   it('ships every bundled photo and a preview for every page', () => {

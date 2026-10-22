@@ -3,6 +3,7 @@ import { POSTER_PACKS } from './packs';
 
 export * from './pack';
 export * from './photos';
+export * from './updated-at';
 export { POSTER_PACKS };
 
 export const POSTER_PACK_META: readonly PosterPackMeta[] = POSTER_PACKS.map((pack) => pack.meta);
