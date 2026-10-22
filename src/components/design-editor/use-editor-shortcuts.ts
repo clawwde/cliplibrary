@@ -113,6 +113,13 @@ const RUNNERS: Record<ShortcutAction['type'], Runner> = {
   export: (_, { onExport }) => onExport(),
 };
 
+const redoInlineText = (event: KeyboardEvent, action: ShortcutAction | null): void => {
+  if (action?.type === 'redo') {
+    event.preventDefault();
+    document.execCommand('redo');
+  }
+};
+
 export const useEditorShortcuts = (handlers: ShortcutHandlers): void => {
   const latest = useRef(handlers);
   latest.current = handlers;
@@ -120,10 +127,11 @@ export const useEditorShortcuts = (handlers: ShortcutHandlers): void => {
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
       const current = latest.current;
+      const action = shortcutFor(event);
       if (current.editor.editingId !== null) {
+        redoInlineText(event, action);
         return;
       }
-      const action = shortcutFor(event);
       if (action === null || !shouldHandleShortcut(action, event, event.target)) {
         return;
       }
