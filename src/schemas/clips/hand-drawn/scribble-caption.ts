@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { zSlider } from '../../control';
+import { zColor, zSlider } from '../../control';
 import {
   defaultMotion,
   FONT_WEIGHT,
@@ -27,12 +27,14 @@ export const scribbleCaptionSchema = z.object({
   spread: zSlider({ min: 0, max: 1, step: 0.05 }),
   reveal: z.enum(CAPTION_REVEALS),
   typeFrames: zSlider({ min: 0.25, max: 4, step: 0.25 }),
+  spreadFrames: zSlider({ min: 8, max: 90 }),
   scribbleAt: z.enum(SCRIBBLE_TIMINGS),
   glowOut: zSlider({ min: 0, max: 1, step: 0.01 }),
   shape: z.enum(SCRIBBLE_SHAPES),
   scribblePlace: z.enum(SCRIBBLE_PLACES),
   scribbleWidth: zSlider({ min: 160, max: 1800 }),
   strokeWidth: zSlider({ min: 1, max: 10, step: 0.5 }),
+  scribbleColor: zColor(),
   keepScribble: z.boolean(),
   delay: zSlider({ min: 0, max: 90 }),
   drawFrames: zSlider({ min: 8, max: 60 }),
@@ -51,12 +53,14 @@ export const scribbleCaptionDefaults: ScribbleCaptionProps = {
   spread: 0.6,
   reveal: 'type',
   typeFrames: 0.75,
+  spreadFrames: 36,
   scribbleAt: 'start',
   glowOut: 0,
   shape: 'loop',
   scribblePlace: 'through',
   scribbleWidth: 640,
   strokeWidth: 3,
+  scribbleColor: '#f1f1f1',
   keepScribble: false,
   delay: 4,
   drawFrames: 22,

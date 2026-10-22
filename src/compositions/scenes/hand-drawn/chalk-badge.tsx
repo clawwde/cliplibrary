@@ -1,4 +1,4 @@
-import { Composition, useCurrentFrame, useVideoConfig } from 'remotion';
+import { AbsoluteFill, Composition, useCurrentFrame, useVideoConfig } from 'remotion';
 import {
   type ChalkBadgeProps,
   chalkBadgeDefaults,
@@ -18,12 +18,14 @@ export const ChalkBadge = ({
   x,
   y,
   scale,
+  tilt,
   delay,
   timing,
   caption,
   captionSize,
   captionColor,
   captionFrames,
+  captionDelay,
   chalk,
   look,
   motion,
@@ -31,6 +33,8 @@ export const ChalkBadge = ({
   const frame = useCurrentFrame() * motion.speed;
   const { width, height, durationInFrames } = useVideoConfig();
   const { draw, erase } = badgePhase(frame, delay, timing);
+  const centerX = (x / 100) * width;
+  const centerY = (y / 100) * height;
   return (
     <ChalkLayer look={look} motion={motion} chalk={chalk} filterId={FILTER_ID}>
       <Caption
@@ -38,21 +42,28 @@ export const ChalkBadge = ({
         size={captionSize}
         color={captionColor}
         frame={frame}
-        start={0}
+        start={captionDelay}
         end={durationInFrames * motion.speed - captionFrames * caption.length * 0.5 - 2}
         letterFrames={captionFrames}
       />
-      <Badge
-        badge={badge}
-        chalk={chalk}
-        draw={draw}
-        erase={erase}
-        x={(x / 100) * width}
-        y={(y / 100) * height}
-        scale={scale}
-        id="chalk-badge"
-        filterId={FILTER_ID}
-      />
+      <AbsoluteFill
+        style={{
+          transform: `rotate(${tilt}deg)`,
+          transformOrigin: `${centerX}px ${centerY}px`,
+        }}
+      >
+        <Badge
+          badge={badge}
+          chalk={chalk}
+          draw={draw}
+          erase={erase}
+          x={centerX}
+          y={centerY}
+          scale={scale}
+          id="chalk-badge"
+          filterId={FILTER_ID}
+        />
+      </AbsoluteFill>
     </ChalkLayer>
   );
 };

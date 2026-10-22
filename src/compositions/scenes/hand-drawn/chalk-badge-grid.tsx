@@ -1,5 +1,6 @@
 import { Composition, useCurrentFrame, useVideoConfig } from 'remotion';
 import {
+  type BadgeGridOrder,
   type ChalkBadgeGridProps,
   chalkBadgeGridDefaults,
   chalkBadgeGridMeta,
@@ -24,6 +25,15 @@ const shuffledRanks = (count: number, seed: number): number[] => {
   return ranks;
 };
 
+const orderRanks = (order: BadgeGridOrder, count: number, seed: number): number[] => {
+  if (order === 'scattered') {
+    return shuffledRanks(count, seed);
+  }
+  return Array.from({ length: count }, (_, index) =>
+    order === 'reverse' ? count - 1 - index : index,
+  );
+};
+
 export const ChalkBadgeGrid = ({
   badges,
   columns,
@@ -32,6 +42,7 @@ export const ChalkBadgeGrid = ({
   insetY,
   delay,
   stagger,
+  order,
   eraseStagger,
   shuffle,
   timing,
@@ -45,7 +56,7 @@ export const ChalkBadgeGrid = ({
   const rows = Math.ceil(badges.length / columnCount);
   const cellWidth = (width - insetX * 2) / columnCount;
   const cellHeight = (height - insetY * 2) / rows;
-  const ranks = shuffledRanks(badges.length, shuffle);
+  const ranks = orderRanks(order, badges.length, shuffle);
   return (
     <ChalkLayer look={look} motion={motion} chalk={chalk} filterId={FILTER_ID}>
       {badges.map((badge, index) => {
