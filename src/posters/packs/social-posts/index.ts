@@ -6,6 +6,7 @@ import { arcticCircuitTechPostsPack } from './arctic-circuit-tech-posts';
 import { azureCommentMagnetsPack } from './azure-comment-magnets';
 import { blushDateEventsPack } from './blush-date-events';
 import { citronScaleAiPostsPack } from './citron-scale-ai-posts';
+import { clayGrowthMarketingPack } from './clay-growth-marketing';
 import { cobaltBeforeAfterPack } from './cobalt-before-after';
 import { cobaltLessonTipsPack } from './cobalt-lesson-tips';
 import { cobaltValuePropositionPack } from './cobalt-value-proposition';
@@ -13,8 +14,10 @@ import { copperSaasFoundersPack } from './copper-saas-founders';
 import { copperSignalAiPostsPack } from './copper-signal-ai-posts';
 import { coralBrandContentPack } from './coral-brand-content';
 import { coralClientReviewsPack } from './coral-client-reviews';
+import { crimsonCorporateEdgePack } from './crimson-corporate-edge';
 import { emberDeviceMockupsPack } from './ember-device-mockups';
 import { emeraldSaasLaunchPack } from './emerald-saas-launch';
+import { fernB2bStrategyPack } from './fern-b2b-strategy';
 import { fuchsiaStartupBundlePack } from './fuchsia-startup-bundle';
 import { graphiteSaasFoundersPack } from './graphite-saas-founders';
 import { harborB2bMarketingPack } from './harbor-b2b-marketing';
@@ -40,12 +43,14 @@ import { rubyKeyStatsPack } from './ruby-key-stats';
 import { saffronLaunchEventsPack } from './saffron-launch-events';
 import { solarFlareAiPostsPack } from './solar-flare-ai-posts';
 import { sunbeamShopStatsPack } from './sunbeam-shop-stats';
+import { sunsetOpsCorporatePack } from './sunset-ops-corporate';
 import { tangerineLinkedinReviewsPack } from './tangerine-linkedin-reviews';
 import { tangerineNavyMarketingPack } from './tangerine-navy-marketing';
 import { tidelineEnterprisePostsPack } from './tideline-enterprise-posts';
 import { violetAppLaunchPack } from './violet-app-launch';
 import { violetKeyDatesPack } from './violet-key-dates';
 import { violetPulseStatsPack } from './violet-pulse-stats';
+import { voltBoldMarketingPack } from './volt-bold-marketing';
 import { voltageBlueAiPostsPack } from './voltage-blue-ai-posts';
 import { willowKeyRealtyPack } from './willow-key-realty';
 
@@ -57,6 +62,7 @@ export const SOCIAL_POST_PACKS: PosterPack[] = [
   azureCommentMagnetsPack,
   blushDateEventsPack,
   citronScaleAiPostsPack,
+  clayGrowthMarketingPack,
   cobaltBeforeAfterPack,
   cobaltLessonTipsPack,
   cobaltValuePropositionPack,
@@ -64,8 +70,10 @@ export const SOCIAL_POST_PACKS: PosterPack[] = [
   copperSignalAiPostsPack,
   coralBrandContentPack,
   coralClientReviewsPack,
+  crimsonCorporateEdgePack,
   emberDeviceMockupsPack,
   emeraldSaasLaunchPack,
+  fernB2bStrategyPack,
   fuchsiaStartupBundlePack,
   graphiteSaasFoundersPack,
   harborB2bMarketingPack,
@@ -91,12 +99,14 @@ export const SOCIAL_POST_PACKS: PosterPack[] = [
   saffronLaunchEventsPack,
   solarFlareAiPostsPack,
   sunbeamShopStatsPack,
+  sunsetOpsCorporatePack,
   tangerineLinkedinReviewsPack,
   tangerineNavyMarketingPack,
   tidelineEnterprisePostsPack,
   violetAppLaunchPack,
   violetKeyDatesPack,
   violetPulseStatsPack,
+  voltBoldMarketingPack,
   voltageBlueAiPostsPack,
   willowKeyRealtyPack,
 ];
