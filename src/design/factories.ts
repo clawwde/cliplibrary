@@ -29,13 +29,14 @@ const base = (prefix: string, name: string) => ({
 });
 
 export const NO_FILTERS: ImageFilters = {
-  brightness: 0,
-  contrast: 0,
-  saturation: 0,
+  brightness: 1,
+  contrast: 1,
+  saturation: 1,
+  hue: 0,
   blur: 0,
-  grayscale: false,
-  sepia: false,
-  invert: false,
+  grayscale: 0,
+  sepia: 0,
+  invert: 0,
 };
 
 export const createText = (overrides: Overrides<TextElement> = {}): TextElement => ({

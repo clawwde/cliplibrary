@@ -99,13 +99,14 @@ export const lineElementSchema = z.object({
 export const IMAGE_FITS = ['cover', 'contain', 'stretch'] as const;
 
 export const imageFiltersSchema = z.object({
-  brightness: z.number().min(-1).max(1),
-  contrast: z.number().min(-100).max(100),
-  saturation: z.number().min(-2).max(10),
+  brightness: z.number().min(0).max(2),
+  contrast: z.number().min(0).max(2),
+  saturation: z.number().min(0).max(3),
+  hue: z.number().min(-180).max(180),
   blur: z.number().min(0).max(40),
-  grayscale: z.boolean(),
-  sepia: z.boolean(),
-  invert: z.boolean(),
+  grayscale: z.number().min(0).max(1),
+  sepia: z.number().min(0).max(1),
+  invert: z.number().min(0).max(1),
 });
 
 export const imageElementSchema = z.object({
