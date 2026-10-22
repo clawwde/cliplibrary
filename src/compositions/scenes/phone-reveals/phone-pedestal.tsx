@@ -20,6 +20,7 @@ export const PhonePedestal = ({
   yaw,
   pitch,
   rock,
+  rockSpeed,
   pedestal,
   entry,
   camera,
@@ -30,7 +31,7 @@ export const PhonePedestal = ({
   const frame = useCurrentFrame() * motion.speed;
   const { durationInFrames } = useVideoConfig();
   const land = tween(frame, [0, entry.frames], [0, 1], settle);
-  const sway = Math.sin((frame - entry.frames * 0.6) / 30) * rock * land;
+  const sway = Math.sin(((frame - entry.frames * 0.6) / 30) * rockSpeed) * rock * land;
   const rise = tween(frame, [0, durationInFrames], [0, camera.rise], (t) => t);
   const tilt = (1 - land) * entry.cameraTilt;
   const orbit = tween(
