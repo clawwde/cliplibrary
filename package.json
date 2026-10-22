@@ -28,7 +28,6 @@
     "test:e2e": "playwright test",
     "render": "bun run src/render/render-all.ts",
     "render-one": "bun run src/render/render-one.ts",
-    "render-project": "bun run src/render/render-project-one.ts",
     "check:comments": "bun run scripts/strip-comments.ts --check",
     "check:em-dashes": "bun run scripts/check-em-dashes.ts",
     "check:repository": "bun run scripts/check-repository.ts",
