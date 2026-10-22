@@ -1,0 +1,47 @@
+import { defineControls } from '../../control-layout';
+import type { WordPunchProps } from './word-punch';
+
+export const wordPunchControls = defineControls<WordPunchProps>({
+  sections: [
+    {
+      title: 'Settings',
+      fields: [
+        'text',
+        'highlight',
+        'style',
+        'size',
+        'shrink',
+        'weight',
+        'delay',
+        'wordFrames',
+        'swapFrames',
+        'typeFrames',
+        'punch',
+        'placement.horizontal',
+        'placement.vertical',
+        'placement.insetX',
+        'placement.insetY',
+        'placement.width',
+        'look.showBackdrop',
+        'look.background',
+        'look.backgroundEdge',
+        'look.ink',
+        'look.muted',
+        'look.accent',
+        'look.grain',
+        'look.liveGrain',
+        'look.spotlight',
+        'look.paper',
+        'look.paperLine',
+        'look.paperSpacing',
+        'look.paperMargin',
+        'motion.enter',
+        'motion.enterFrames',
+        'motion.exit',
+        'motion.exitFrames',
+        'motion.float',
+        'motion.speed',
+      ],
+    },
+  ],
+});

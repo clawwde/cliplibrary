@@ -1,0 +1,47 @@
+import { defineControls } from '../../control-layout';
+import type { ChalkBadgeGridProps } from './chalk-badge-grid';
+
+export const chalkBadgeGridControls = defineControls<ChalkBadgeGridProps>({
+  sections: [
+    {
+      title: 'Settings',
+      fields: [
+        'badges',
+        'columns',
+        'scale',
+        'insetX',
+        'insetY',
+        'delay',
+        'stagger',
+        'eraseStagger',
+        'shuffle',
+        'timing.drawFrames',
+        'timing.eraseAt',
+        'timing.eraseFrames',
+        'chalk.width',
+        'chalk.roughness',
+        'chalk.dryness',
+        'chalk.shadow',
+        'look.showBackdrop',
+        'look.background',
+        'look.backgroundEdge',
+        'look.ink',
+        'look.muted',
+        'look.accent',
+        'look.grain',
+        'look.liveGrain',
+        'look.spotlight',
+        'look.paper',
+        'look.paperLine',
+        'look.paperSpacing',
+        'look.paperMargin',
+        'motion.enter',
+        'motion.enterFrames',
+        'motion.exit',
+        'motion.exitFrames',
+        'motion.float',
+        'motion.speed',
+      ],
+    },
+  ],
+});

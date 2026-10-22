@@ -1,7 +1,7 @@
 'use client';
 
-import { Plus, Trash2 } from 'lucide-react';
-import type { ReactNode } from 'react';
+import { ChevronDown, Link2, Plus, Trash2 } from 'lucide-react';
+import { type ReactNode, useState } from 'react';
 import {
   Accordion,
   AccordionContent,
@@ -10,7 +10,8 @@ import {
 } from '@/components/ui/accordion';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
-import type { ControlDescriptor } from '@/core';
+import type { ControlDescriptor, ControlEntry, ControlSectionView } from '@/core';
+import { cn } from '@/lib/utils';
 import { getAtPath, setAtPath } from '@/lib/value-path';
 import { FieldControl } from './field-control';
 
@@ -19,10 +20,11 @@ type LeafDescriptor = Extract<
   { kind: 'text' | 'color' | 'number' | 'boolean' | 'enum' | 'image' | 'video' }
 >;
 
+type ArrayDescriptor = Extract<ControlDescriptor, { kind: 'array' }>;
+
 type Values = Record<string, unknown>;
 
-interface RowProps {
-  descriptor: ControlDescriptor;
+interface PanelProps {
   values: Values;
   onChange: (next: Values) => void;
 }
@@ -65,28 +67,57 @@ const itemSummary = (fields: ControlDescriptor[], item: unknown): string => {
   return typeof raw === 'string' ? raw : '';
 };
 
-const FieldShell = ({ label, children }: { label: string; children: ReactNode }) => (
+const FieldShell = ({
+  label,
+  hint,
+  linked,
+  children,
+}: {
+  label: string;
+  hint: string | null;
+  linked: number;
+  children: ReactNode;
+}) => (
   <div className="mb-3.5 flex flex-col gap-1.5">
-    <Label className="text-[11px] text-muted-foreground uppercase tracking-wide">{label}</Label>
+    <Label className="flex items-center gap-1.5 text-[11px] text-muted-foreground uppercase tracking-wide">
+      {label}
+      {linked > 1 ? (
+        <Link2 className="size-3" aria-label={`Applies to ${linked} properties`} />
+      ) : null}
+    </Label>
     {children}
+    {hint === null ? null : <p className="text-[11px] text-muted-foreground/80">{hint}</p>}
   </div>
 );
 
-const LeafRow = ({ descriptor, values, onChange }: { descriptor: LeafDescriptor } & RowProps) => (
-  <FieldShell label={descriptor.label}>
+const LeafRow = ({
+  entry,
+  descriptor,
+  values,
+  onChange,
+}: { entry: ControlEntry; descriptor: LeafDescriptor } & PanelProps) => (
+  <FieldShell label={descriptor.label} hint={entry.hint} linked={entry.targets.length}>
     <FieldControl
       descriptor={descriptor}
       value={getAtPath(values, descriptor.path)}
-      onChange={(next) => onChange(setAtPath(values, descriptor.path, next) as Values)}
+      onChange={(next) =>
+        onChange(
+          entry.targets.reduce<Values>(
+            (current, target) => setAtPath(current, target, next) as Values,
+            values,
+          ),
+        )
+      }
     />
   </FieldShell>
 );
 
 const ArrayRow = ({
+  entry,
   descriptor,
   values,
   onChange,
-}: { descriptor: Extract<ControlDescriptor, { kind: 'array' }> } & RowProps) => {
+}: { entry: ControlEntry; descriptor: ArrayDescriptor } & PanelProps) => {
   const items = (getAtPath(values, descriptor.path) as unknown[] | undefined) ?? [];
   const canAdd = descriptor.max === null || items.length < descriptor.max;
   const canRemove = descriptor.min === null || items.length > descriptor.min;
@@ -98,6 +129,9 @@ const ArrayRow = ({
       <div className="mb-2 text-[11px] text-muted-foreground uppercase tracking-wide">
         {descriptor.label}
       </div>
+      {entry.hint === null ? null : (
+        <p className="mb-2 text-[11px] text-muted-foreground/80">{entry.hint}</p>
+      )}
       <Accordion type="multiple" className="flex flex-col gap-1.5">
         {items.map((item, index) => (
           <AccordionItem
@@ -129,7 +163,7 @@ const ArrayRow = ({
               {leafFields.map((field) => {
                 const path = [...descriptor.path, String(index), ...field.path];
                 return (
-                  <FieldShell key={field.path.join('.')} label={field.label}>
+                  <FieldShell key={field.path.join('.')} label={field.label} hint={null} linked={1}>
                     <FieldControl
                       descriptor={field}
                       value={getAtPath(values, path)}
@@ -157,44 +191,64 @@ const ArrayRow = ({
   );
 };
 
-const ControlRow = ({ descriptor, values, onChange }: RowProps) => {
+const EntryRow = ({ entry, values, onChange }: { entry: ControlEntry } & PanelProps) => {
+  const { descriptor } = entry;
   if (descriptor.kind === 'array') {
-    return <ArrayRow descriptor={descriptor} values={values} onChange={onChange} />;
+    return <ArrayRow entry={entry} descriptor={descriptor} values={values} onChange={onChange} />;
   }
-  if (descriptor.kind === 'object') {
-    return (
-      <div className="flex flex-col">
-        {descriptor.fields.map((field) => (
-          <ControlRow
-            key={field.path.join('.')}
-            descriptor={field}
-            values={values}
-            onChange={onChange}
-          />
-        ))}
-      </div>
-    );
-  }
-  return <LeafRow descriptor={descriptor} values={values} onChange={onChange} />;
+  return <LeafRow entry={entry} descriptor={descriptor} values={values} onChange={onChange} />;
+};
+
+const MoreOptions = ({ entries, values, onChange }: { entries: ControlEntry[] } & PanelProps) => {
+  const [open, setOpen] = useState(false);
+  return (
+    <div className="mt-1">
+      <Button
+        type="button"
+        variant="ghost"
+        size="sm"
+        aria-expanded={open}
+        className="h-7 px-0 text-muted-foreground hover:bg-transparent hover:text-foreground"
+        onClick={() => setOpen(!open)}
+      >
+        <ChevronDown className={cn('size-3.5 transition-transform', open && 'rotate-180')} />
+        {open ? 'Fewer options' : `More options (${entries.length})`}
+      </Button>
+      {open ? (
+        <div className="mt-3">
+          {entries.map((entry) => (
+            <EntryRow key={entry.id} entry={entry} values={values} onChange={onChange} />
+          ))}
+        </div>
+      ) : null}
+    </div>
+  );
 };
 
 export const PropertiesPanel = ({
-  descriptors,
+  sections,
   values,
   onChange,
-}: {
-  descriptors: ControlDescriptor[];
-  values: Values;
-  onChange: (next: Values) => void;
-}) => (
-  <div className="flex flex-col">
-    {descriptors.map((descriptor) => (
-      <ControlRow
-        key={descriptor.path.join('.')}
-        descriptor={descriptor}
-        values={values}
-        onChange={onChange}
-      />
+}: { sections: ControlSectionView[] } & PanelProps) => (
+  <Accordion
+    type="multiple"
+    defaultValue={sections.slice(0, 1).map((section) => section.title)}
+    className="flex flex-col"
+  >
+    {sections.map((section) => (
+      <AccordionItem key={section.title} value={section.title} className="border-border border-b">
+        <AccordionTrigger className="py-3 font-semibold hover:no-underline">
+          {section.title}
+        </AccordionTrigger>
+        <AccordionContent className="pb-3">
+          {section.fields.map((entry) => (
+            <EntryRow key={entry.id} entry={entry} values={values} onChange={onChange} />
+          ))}
+          {section.more.length > 0 ? (
+            <MoreOptions entries={section.more} values={values} onChange={onChange} />
+          ) : null}
+        </AccordionContent>
+      </AccordionItem>
     ))}
-  </div>
+  </Accordion>
 );

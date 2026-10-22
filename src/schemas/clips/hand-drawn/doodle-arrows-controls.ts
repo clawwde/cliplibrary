@@ -1,0 +1,45 @@
+import { defineControls } from '../../control-layout';
+import type { DoodleArrowsProps } from './doodle-arrows';
+
+export const doodleArrowsControls = defineControls<DoodleArrowsProps>({
+  sections: [
+    {
+      title: 'Settings',
+      fields: [
+        'arrows',
+        'delay',
+        'drawFrames',
+        'headSize',
+        'eraseFrames',
+        'eraseStagger',
+        'seed',
+        'ink.width',
+        'ink.roughness',
+        'ink.boil',
+        'ink.boilFrames',
+        'ink.lead',
+        'ink.leadOffset',
+        'ink.flecks',
+        'look.showBackdrop',
+        'look.background',
+        'look.backgroundEdge',
+        'look.ink',
+        'look.muted',
+        'look.accent',
+        'look.grain',
+        'look.liveGrain',
+        'look.spotlight',
+        'look.paper',
+        'look.paperLine',
+        'look.paperSpacing',
+        'look.paperMargin',
+        'motion.enter',
+        'motion.enterFrames',
+        'motion.exit',
+        'motion.exitFrames',
+        'motion.float',
+        'motion.speed',
+      ],
+    },
+  ],
+});

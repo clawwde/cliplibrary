@@ -1,0 +1,45 @@
+import { defineControls } from '../../control-layout';
+import type { PhoneWallProps } from './phone-wall';
+
+export const phoneWallControls = defineControls<PhoneWallProps>({
+  sections: [
+    {
+      title: 'Settings',
+      fields: [
+        'screens',
+        'finish',
+        'rows',
+        'columns',
+        'tilt',
+        'twist',
+        'drift',
+        'look.showBackdrop',
+        'look.background',
+        'look.backgroundEdge',
+        'look.ink',
+        'look.muted',
+        'look.accent',
+        'look.grain',
+        'look.liveGrain',
+        'look.spotlight',
+        'look.paper',
+        'look.paperLine',
+        'look.paperSpacing',
+        'look.paperMargin',
+        'stage.cameraDistance',
+        'stage.fieldOfView',
+        'stage.keyLight',
+        'stage.reflections',
+        'stage.shadow',
+        'stage.shadowSoftness',
+        'stage.cameraDrift',
+        'motion.enter',
+        'motion.enterFrames',
+        'motion.exit',
+        'motion.exitFrames',
+        'motion.float',
+        'motion.speed',
+      ],
+    },
+  ],
+});

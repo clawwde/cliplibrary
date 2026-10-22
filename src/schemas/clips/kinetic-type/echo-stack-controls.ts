@@ -1,0 +1,45 @@
+import { defineControls } from '../../control-layout';
+import type { EchoStackProps } from './echo-stack';
+
+export const echoStackControls = defineControls<EchoStackProps>({
+  sections: [
+    {
+      title: 'Settings',
+      fields: [
+        'text',
+        'rows',
+        'accentRow',
+        'size',
+        'weight',
+        'lineHeight',
+        'delay',
+        'rowStagger',
+        'exitAt',
+        'placement.horizontal',
+        'placement.vertical',
+        'placement.insetX',
+        'placement.insetY',
+        'placement.width',
+        'look.showBackdrop',
+        'look.background',
+        'look.backgroundEdge',
+        'look.ink',
+        'look.muted',
+        'look.accent',
+        'look.grain',
+        'look.liveGrain',
+        'look.spotlight',
+        'look.paper',
+        'look.paperLine',
+        'look.paperSpacing',
+        'look.paperMargin',
+        'motion.enter',
+        'motion.enterFrames',
+        'motion.exit',
+        'motion.exitFrames',
+        'motion.float',
+        'motion.speed',
+      ],
+    },
+  ],
+});

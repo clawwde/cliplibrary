@@ -1,0 +1,47 @@
+import { defineControls } from '../../control-layout';
+import type { LetterFlipProps } from './letter-flip';
+
+export const letterFlipControls = defineControls<LetterFlipProps>({
+  sections: [
+    {
+      title: 'Settings',
+      fields: [
+        'text',
+        'size',
+        'weight',
+        'tracking',
+        'startAngle',
+        'slide',
+        'delay',
+        'stagger',
+        'flipFrames',
+        'highlight',
+        'glowOut',
+        'placement.horizontal',
+        'placement.vertical',
+        'placement.insetX',
+        'placement.insetY',
+        'placement.width',
+        'look.showBackdrop',
+        'look.background',
+        'look.backgroundEdge',
+        'look.ink',
+        'look.muted',
+        'look.accent',
+        'look.grain',
+        'look.liveGrain',
+        'look.spotlight',
+        'look.paper',
+        'look.paperLine',
+        'look.paperSpacing',
+        'look.paperMargin',
+        'motion.enter',
+        'motion.enterFrames',
+        'motion.exit',
+        'motion.exitFrames',
+        'motion.float',
+        'motion.speed',
+      ],
+    },
+  ],
+});
