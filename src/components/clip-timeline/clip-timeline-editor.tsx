@@ -3,15 +3,13 @@
 import type { PlayerRef } from '@remotion/player';
 import dynamic from 'next/dynamic';
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { CommitBar } from '@/components/editor/commit-bar';
 import { Timeline } from '@/components/timeline/timeline';
 import { TimelineToolbar } from '@/components/timeline/timeline-toolbar';
 import { Skeleton } from '@/components/ui/skeleton';
-import type { ControlDescriptor, ProjectFile, VersionSnapshot } from '@/core';
+import type { ControlDescriptor } from '@/core';
 import { clampPxPerFrame, DEFAULT_PX_PER_FRAME, fitPxPerFrame } from '@/lib/timeline-geometry';
-import { useClipProject } from '@/lib/use-clip-project';
 import { useProjectExport } from '@/lib/use-project-export';
-import { useUndoRedoKeys } from '@/lib/use-undoable';
+import { useUndoable, useUndoRedoKeys } from '@/lib/use-undoable';
 import {
   addElement,
   addTrack,
@@ -27,6 +25,7 @@ import {
   moveElement,
   moveElementToTrack,
   moveTrack,
+  type Project,
   removeElement,
   removeTrack,
   replaceElement,
@@ -63,22 +62,13 @@ const isEditableTarget = (target: EventTarget | null): boolean => {
   return tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT' || target.isContentEditable;
 };
 
-interface Shortcuts {
-  save: () => void;
-  exportProject: () => void;
-}
-
-const runModifierShortcut = (event: KeyboardEvent, shortcuts: Shortcuts): boolean => {
+const runModifierShortcut = (event: KeyboardEvent, exportProject: () => void): boolean => {
   if (!(event.metaKey || event.ctrlKey)) {
     return false;
   }
-  const key = event.key.toLowerCase();
-  if (key === 's') {
+  if (event.key.toLowerCase() === 'e') {
     event.preventDefault();
-    shortcuts.save();
-  } else if (key === 'e') {
-    event.preventDefault();
-    shortcuts.exportProject();
+    exportProject();
   }
   return true;
 };
@@ -86,22 +76,25 @@ const runModifierShortcut = (event: KeyboardEvent, shortcuts: Shortcuts): boolea
 const ANIMATION_OPTIONS = CLIP_REGISTRY.map((meta) => ({ id: meta.id, title: meta.title }));
 
 interface ClipTimelineEditorProps {
-  clipId: ClipId;
   title: string;
   descriptorsByClip: Record<string, ControlDescriptor[]>;
-  initialProject: ProjectFile;
-  initialHistory: VersionSnapshot[];
+  initialProject: Project;
 }
 
 export const ClipTimelineEditor = ({
-  clipId,
   title,
   descriptorsByClip,
   initialProject,
-  initialHistory,
 }: ClipTimelineEditorProps) => {
-  const editor = useClipProject(clipId, initialProject, initialHistory);
-  const { project, setProject, setProjectLive, sealProject, undo, redo } = editor;
+  const editor = useUndoable<Project>(initialProject);
+  const {
+    value: project,
+    set: setProject,
+    setLive: setProjectLive,
+    seal: sealProject,
+    undo,
+    redo,
+  } = editor;
   useUndoRedoKeys(undo, redo);
   const exporter = useProjectExport();
 
@@ -165,25 +158,15 @@ export const ClipTimelineEditor = ({
     [project, setProject],
   );
 
-  const shortcuts = useRef<Shortcuts>({
-    save: () => undefined,
-    exportProject: () => undefined,
-  });
-  shortcuts.current = {
-    save: () => {
-      if (editor.dirty && !editor.saving) {
-        editor.save();
-      }
-    },
-    exportProject: () =>
-      exporter.run(project, {
-        codec: 'h264',
-        crf: 18,
-        scale: 1,
-        fps: null,
-        proResProfile: null,
-      }),
-  };
+  const exportShortcut = useRef<() => void>(() => undefined);
+  exportShortcut.current = () =>
+    exporter.run(project, {
+      codec: 'h264',
+      crf: 18,
+      scale: 1,
+      fps: null,
+      proResProfile: null,
+    });
 
   useEffect(() => {
     const onGestureEnd = () => sealProject();
@@ -197,7 +180,7 @@ export const ClipTimelineEditor = ({
 
   useEffect(() => {
     const onKey = (event: KeyboardEvent) => {
-      if (runModifierShortcut(event, shortcuts.current)) {
+      if (runModifierShortcut(event, exportShortcut.current)) {
         return;
       }
       if (isEditableTarget(event.target)) {
@@ -227,24 +210,13 @@ export const ClipTimelineEditor = ({
           />
         </section>
         <aside className="flex w-[360px] shrink-0 flex-col overflow-y-auto border-border border-l bg-sidebar">
-          <ClipTimelineHeader
-            title={title}
-            status={editor.status}
-            dirty={editor.dirty}
-            saving={editor.saving}
-            saveFailed={editor.saveFailed}
-            snapshots={editor.snapshots}
-            currentVersionId={editor.currentVersionId}
-            onSave={editor.save}
-            onRevert={editor.revert}
-          />
+          <ClipTimelineHeader title={title} />
           <ClipPropertySidebar
             element={selectedElement}
             descriptorsByClip={descriptorsByClip}
             onChange={(next) => setProjectLive(replaceElement(project, next))}
             onDelete={handleDelete}
           />
-          <CommitBar />
         </aside>
       </div>
       <div className="flex h-72 shrink-0 flex-col border-border border-t bg-sidebar">

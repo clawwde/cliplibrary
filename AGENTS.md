@@ -8,17 +8,16 @@ in-browser editor.
 Everything lives in one package. Modules import each other through the `@/` alias
 (`@/schemas`, `@/project`, `@/core`, `@/compositions`, `@/lib/...`).
 
-- `src/app`, `src/components`, `src/lib` - Next.js App Router UI: clip gallery, per-clip editor
-  (live `@remotion/player` preview, schema-driven properties panel, version history), export and
-  commit surfaces.
+- `src/app`, `src/components`, `src/lib` - Next.js App Router UI: clip gallery and per-clip
+  editor (live `@remotion/player` preview, schema-driven properties panel, timeline, in-memory
+  undo/redo and export). The editor never writes project state to the server.
 - `src/render` - Bun render scripts (`@remotion/bundler` + `@remotion/renderer`) that produce
   mp4 + poster for a clip and props snapshot. The API routes spawn them from the project root.
 - `src/schemas` - per-clip Zod schemas, typed defaults, inferred types, the `ClipId` union and clip
   registry metadata. Pure, no React, no Node.
 - `src/compositions` - the Remotion scenes, motion kit, `Root`, and the `registerRoot` entry.
 - `src/project` - the layered `Project` model, its pure reducers and the clip library.
-- `src/core` - domain types and Node-only stores (props, history, exports, registry), the
-  Zod-schema-to-control introspection, and the commit-command runner.
+- `src/core` - domain types, the clip project seed and the Zod-schema-to-control introspection.
 - `tests` - `bun test` suites, mirroring `src` (`tests/schemas`, `tests/core`, ...); top-level
   files and `tests/components` cover the UI. `e2e` holds the Playwright suite.
 

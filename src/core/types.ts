@@ -1,5 +1,3 @@
-import type { ClipId } from '@/schemas';
-
 export type ControlDescriptor =
   | { kind: 'text'; path: string[]; label: string; multiline: boolean; maxLength: number | null }
   | { kind: 'color'; path: string[]; label: string }
@@ -24,38 +22,3 @@ export type ControlDescriptor =
       item: ControlDescriptor[];
     }
   | { kind: 'object'; path: string[]; label: string; fields: ControlDescriptor[] };
-
-export interface PropsFile {
-  clipId: ClipId;
-  currentVersionId: string;
-  values: unknown;
-  updatedAt: string;
-}
-
-export interface VersionSnapshot {
-  versionId: string;
-  createdAt: string;
-  label: string | null;
-  values: unknown;
-}
-
-export type ExportStatus = 'rendering' | 'done' | 'error';
-
-export interface ExportRecord {
-  exportId: string;
-  clipId: ClipId;
-  mp4: string;
-  poster: string;
-  createdAt: string;
-  status: ExportStatus;
-  progress: number;
-  propsVersionId: string;
-  error: string | null;
-}
-
-export interface CommitResult {
-  command: string;
-  exitCode: number;
-  stdout: string;
-  stderr: string;
-}
