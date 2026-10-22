@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { zSlider } from '../../control';
+import { zColor, zSlider } from '../../control';
 import {
   defaultMotion,
   FONT_WEIGHT,
@@ -27,10 +27,10 @@ export const textRingsSchema = z.object({
   }),
   rings: z.object({
     count: zSlider({ min: 1, max: 14 }),
-    firstAt: zSlider({ min: 0, max: 120 }),
-    interval: zSlider({ min: 4, max: 40 }),
-    spacing: zSlider({ min: 1.1, max: 2.2, step: 0.01 }),
-    spawnRadius: zSlider({ min: 40, max: 400 }),
+    firstAt: zSlider({ min: 0, max: 140 }),
+    lastAt: zSlider({ min: 0, max: 149 }),
+    spacing: zSlider({ min: 1.2, max: 2.2, step: 0.01 }),
+    startGap: zSlider({ min: 0, max: 300 }),
     fadeFrames: zSlider({ min: 1, max: 40 }),
     oddOpacity: zSlider({ min: 0.1, max: 1, step: 0.01 }),
   }),
@@ -57,6 +57,10 @@ export const textRingsSchema = z.object({
     shrinkFrames: zSlider({ min: 10, max: 240 }),
   }),
   inverted: z.boolean(),
+  light: z.object({
+    page: zColor(),
+    ink: zColor(),
+  }),
   look: lookSchema,
   motion: motionSchema,
 });
@@ -77,9 +81,9 @@ export const textRingsDefaults: TextRingsProps = {
   rings: {
     count: 8,
     firstAt: 20,
-    interval: 14,
+    lastAt: 118,
     spacing: 1.38,
-    spawnRadius: 130,
+    startGap: 19,
     fadeFrames: 16,
     oddOpacity: 1,
   },
@@ -99,13 +103,17 @@ export const textRingsDefaults: TextRingsProps = {
     scribbleStroke: 3,
     loops: 5,
     scribbleSize: 0.66,
-    drawAt: 2,
+    drawAt: 0,
     drawFrames: 26,
     scribbleDelay: 6,
     shrinkTo: 0.86,
     shrinkFrames: 110,
   },
   inverted: false,
+  light: {
+    page: '#f1f1f1',
+    ink: '#020202',
+  },
   look: { ...kineticLook('#f1f1f1'), grain: 0, liveGrain: false },
   motion: defaultMotion({ exit: 'fade', exitFrames: 16 }),
 };

@@ -13,17 +13,17 @@ import type { SceneModule } from '../../scene-module';
 import { CenterMark } from '../../text-rings/center-mark';
 import { ringField, ringPath } from '../../text-rings/ring-layout';
 
-const invertLook = (look: PromoLook): PromoLook => ({
+const lightLook = (look: PromoLook, light: TextRingsProps['light']): PromoLook => ({
   ...look,
-  background: look.ink,
-  backgroundEdge: look.ink,
-  ink: look.background,
-  accent: look.accent === look.ink ? look.background : look.accent,
+  background: light.page,
+  backgroundEdge: light.page,
+  ink: light.ink,
+  accent: light.ink,
 });
 
 const TextRings = (props: TextRingsProps) => {
   const { words, rings, mark, motion } = props;
-  const look = props.inverted ? invertLook(props.look) : props.look;
+  const look = props.inverted ? lightLook(props.look, props.light) : props.look;
   const frame = useCurrentFrame() * motion.speed;
   const { width, height } = useVideoConfig();
   const pathId = `text-ring-${useId().replace(/[^a-zA-Z0-9-]/g, '')}`;

@@ -1,3 +1,4 @@
+import { Easing } from 'remotion';
 import type { TextRingsProps } from '@/schemas';
 import { kineticFont } from '../promo/fonts';
 import { pixelTween, settle, smooth, TAU, tween } from '../promo/timing';
@@ -5,6 +6,7 @@ import { pixelTween, settle, smooth, TAU, tween } from '../promo/timing';
 const OVERSHOOT = 0.55;
 const SAMPLES_PER_LOOP = 56;
 const WORD_FRAMES = 26;
+const drawEase = Easing.bezier(0.45, 0, 0.3, 1);
 
 const scribblePath = (loops: number, radius: number): string => {
   const turns = loops + 1;
@@ -42,14 +44,14 @@ export const CenterMark = ({
 }) => {
   const radius = mark.size / 2;
   const circumference = TAU * radius;
-  const ring = tween(frame, [mark.drawAt, mark.drawAt + mark.drawFrames], [0, 1], smooth);
+  const ring = tween(frame, [mark.drawAt, mark.drawAt + mark.drawFrames], [0, 1], drawEase);
   const ringLength = Math.min(1, ring * 1.03);
   const scribbleStart = mark.drawAt + mark.scribbleDelay;
   const scribble = tween(
     frame,
     [scribbleStart, scribbleStart + mark.drawFrames * 1.2],
     [0, 1],
-    smooth,
+    drawEase,
   );
   const scale = tween(frame, [shrinkAt, shrinkAt + mark.shrinkFrames], [1, mark.shrinkTo], smooth);
   if (mark.style === 'none') {

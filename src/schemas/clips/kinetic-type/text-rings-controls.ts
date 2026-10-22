@@ -2,7 +2,8 @@ import { defineControls } from '../../control-layout';
 import { LOOK, MOTION } from '../../control-presets';
 import type { TextRingsProps } from './text-rings';
 
-const FRAMES_AFTER_START = 'In frames, on the scene clock';
+const START_FRAME = 'Frame number where it begins. Animation speed scales it';
+const DARK_ONLY = 'Dark version. The light version uses Light page and Light ink';
 
 export const textRingsControls = defineControls<TextRingsProps>({
   sections: [
@@ -61,24 +62,28 @@ export const textRingsControls = defineControls<TextRingsProps>({
     {
       title: 'Rings',
       fields: [
-        { path: 'rings.count', label: 'Number of rings' },
         {
-          path: 'rings.interval',
-          label: 'Time between rings',
-          hint: 'In frames. Shorter spawns rings faster and makes them expand faster',
+          path: 'rings.count',
+          label: 'Number of rings',
+          hint: 'Spread evenly from First ring to Last ring, so more rings arrive faster and expand faster',
         },
         {
           path: 'rings.spacing',
           label: 'Ring spacing',
-          hint: 'How many times wider each ring is than the next one inside it',
+          hint: 'How many times wider each ring is than the next one inside it. Never tighter than the text size allows',
         },
-        { path: 'rings.firstAt', label: 'First ring at', hint: FRAMES_AFTER_START },
+        { path: 'rings.firstAt', label: 'First ring at', hint: START_FRAME },
+        {
+          path: 'rings.lastAt',
+          label: 'Last ring at',
+          hint: 'Frame number of the last new ring. Rings come a little later if they would expand too fast or collide',
+        },
       ],
       more: [
         {
-          path: 'rings.spawnRadius',
-          label: 'Start radius',
-          hint: 'In pixels from the center, where each ring fades in',
+          path: 'rings.startGap',
+          label: 'Gap outside the circle',
+          hint: 'Pixels between the circle and the words of a new ring. Rings always start outside the circle',
         },
         { path: 'rings.fadeFrames', label: 'Ring fade-in', hint: 'In frames' },
         {
@@ -151,7 +156,7 @@ export const textRingsControls = defineControls<TextRingsProps>({
           label: 'Scribble size',
           hint: 'Share of the circle radius. Scribble style only',
         },
-        { path: 'mark.drawAt', label: 'Draw starts at', hint: FRAMES_AFTER_START },
+        { path: 'mark.drawAt', label: 'Draw starts at', hint: START_FRAME },
         {
           path: 'mark.scribbleDelay',
           label: 'Scribble or word delay',
@@ -175,28 +180,37 @@ export const textRingsControls = defineControls<TextRingsProps>({
         {
           path: 'inverted',
           label: 'Light version',
-          hint: 'Swaps the background and ink: dark words on a light page',
+          hint: 'Draws on Light page with Light ink for the words and the mark',
         },
         {
           link: ['look.ink', 'look.accent'],
           label: 'Ink color',
-          hint: 'Colors the ring words and the center mark together',
+          hint: 'Colors the ring words and the center mark together. Dark version',
+        },
+        { path: 'light.page', label: 'Light page', hint: 'Background in the light version' },
+        {
+          path: 'light.ink',
+          label: 'Light ink',
+          hint: 'Ring words, mark and paper margin line in the light version',
         },
       ],
       more: [
-        { ...LOOK.ink, label: 'Ring words color' },
+        { ...LOOK.ink, label: 'Ring words color', hint: DARK_ONLY },
         {
           ...LOOK.accent,
           label: 'Mark color',
-          hint: 'Colors the circle and scribble. Also the paper margin line',
+          hint: 'Colors the circle, scribble and center word. Also the paper margin line. Dark version',
         },
       ],
     },
     {
       title: 'Background',
-      fields: [LOOK.showBackdrop, LOOK.background, LOOK.grain],
+      fields: [LOOK.showBackdrop, { ...LOOK.background, hint: DARK_ONLY }, LOOK.grain],
       more: [
-        LOOK.backgroundEdge,
+        {
+          ...LOOK.backgroundEdge,
+          hint: 'Color the background fades to at the corners. Dark version only',
+        },
         LOOK.spotlight,
         LOOK.liveGrain,
         LOOK.paper,
