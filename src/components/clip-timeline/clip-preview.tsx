@@ -3,6 +3,7 @@
 import { Player, type PlayerRef } from '@remotion/player';
 import { Maximize, Monitor, Smartphone, Square } from 'lucide-react';
 import { type ComponentType, type RefObject, useEffect } from 'react';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ProjectComposition } from '@/compositions';
 import { usePersistedState } from '@/lib/use-persisted-state';
 import { cn } from '@/lib/utils';
@@ -24,6 +25,7 @@ const Composition = ProjectComposition as ComponentType<Record<string, unknown>>
 
 interface ClipPreviewProps {
   project: Project;
+  demoSrc: string | null;
   playerRef: RefObject<PlayerRef | null>;
   onFrameChange: (frame: number) => void;
   onPlayingChange: (playing: boolean) => void;
@@ -31,6 +33,7 @@ interface ClipPreviewProps {
 
 export const ClipPreview = ({
   project,
+  demoSrc,
   playerRef,
   onFrameChange,
   onPlayingChange,
@@ -57,8 +60,22 @@ export const ClipPreview = ({
   }, [playerRef, onFrameChange, onPlayingChange]);
 
   return (
-    <div className="flex h-full flex-col">
-      <div className="flex items-center justify-center p-3">
+    <Tabs
+      defaultValue="editor"
+      onValueChange={(view) => {
+        if (view === 'demo') {
+          playerRef.current?.pause();
+        }
+      }}
+      className="h-full gap-0"
+    >
+      <div className="flex flex-wrap items-center justify-center gap-3 p-3">
+        <TabsList>
+          <TabsTrigger value="editor">Editor</TabsTrigger>
+          <TabsTrigger value="demo" disabled={demoSrc === null}>
+            Demo
+          </TabsTrigger>
+        </TabsList>
         <div className="inline-flex gap-1 rounded-lg bg-muted p-1">
           {DEVICES.map((entry) => {
             const Icon = entry.icon;
@@ -87,21 +104,37 @@ export const ClipPreview = ({
           className="overflow-hidden rounded-xl bg-black shadow-xl"
           style={{ width: frameWidth(active.maxWidth, project.width / project.height) }}
         >
-          <Player
-            ref={playerRef}
-            component={Composition}
-            inputProps={project as unknown as Record<string, unknown>}
-            durationInFrames={project.durationInFrames}
-            fps={project.fps}
-            compositionWidth={project.width}
-            compositionHeight={project.height}
-            acknowledgeRemotionLicense
-            controls
-            loop
-            style={{ width: '100%' }}
-          />
+          <TabsContent value="editor" forceMount className="data-[state=inactive]:hidden">
+            <Player
+              ref={playerRef}
+              component={Composition}
+              inputProps={project as unknown as Record<string, unknown>}
+              durationInFrames={project.durationInFrames}
+              fps={project.fps}
+              compositionWidth={project.width}
+              compositionHeight={project.height}
+              acknowledgeRemotionLicense
+              controls
+              loop
+              style={{ width: '100%' }}
+            />
+          </TabsContent>
+          {demoSrc === null ? null : (
+            <TabsContent value="demo">
+              <video
+                src={demoSrc}
+                aria-label="Demo video"
+                className="block w-full"
+                autoPlay
+                controls
+                loop
+                muted
+                playsInline
+              />
+            </TabsContent>
+          )}
         </div>
       </div>
-    </div>
+    </Tabs>
   );
 };
