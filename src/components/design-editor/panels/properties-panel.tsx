@@ -17,6 +17,7 @@ const TYPE_LABELS: Record<DesignElement['type'], string> = {
   ellipse: 'Ellipse',
   polygon: 'Polygon',
   star: 'Star',
+  path: 'Shape',
   line: 'Line',
   image: 'Image',
   icon: 'Icon',

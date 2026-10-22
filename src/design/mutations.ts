@@ -205,7 +205,7 @@ export const movePage = (design: Design, pageId: string, toIndex: number): Desig
   return { ...design, pages: [...rest.slice(0, clamped), page, ...rest.slice(clamped)] };
 };
 
-const scaleElement = (
+export const scaleElement = (
   element: DesignElement,
   factor: number,
   shiftX: number,

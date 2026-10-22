@@ -2,6 +2,8 @@ import 'server-only';
 import { existsSync } from 'node:fs';
 import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
+import type { VideoGalleryItem } from '@/components/gallery/clip-gallery';
+import { videoMeta } from '@/lib/gallery-filters';
 import { CLIP_REGISTRY, type ClipMeta } from '@/schemas';
 import { repoRoot } from './repo-root';
 
@@ -16,17 +18,12 @@ const readFirstFrame = async (root: string, meta: ClipMeta): Promise<string | nu
   }
 };
 
-export interface ClipListItem {
-  meta: ClipMeta;
-  video: string | null;
-  firstFrame: string | null;
-}
-
-export const listClips = (): Promise<ClipListItem[]> => {
+export const listClips = (): Promise<VideoGalleryItem[]> => {
   const root = repoRoot();
   return Promise.all(
     CLIP_REGISTRY.map(async (meta) => ({
-      meta,
+      kind: 'video' as const,
+      meta: videoMeta(meta),
       video: existsSync(join(galleryPreviews(root), `${meta.id}.mp4`))
         ? `/previews/${meta.id}.mp4`
         : null,

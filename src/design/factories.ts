@@ -5,6 +5,7 @@ import type {
   ImageElement,
   ImageFilters,
   LineElement,
+  PathElement,
   PolygonElement,
   RectElement,
   StarElement,
@@ -105,6 +106,34 @@ export const createStar = (overrides: Overrides<StarElement> = {}): StarElement 
   innerRatio: 0.45,
   ...overrides,
 });
+
+export const createPath = (overrides: Overrides<PathElement> = {}): PathElement => ({
+  ...base('path', 'Shape'),
+  ...stroke,
+  type: 'path',
+  width: 300,
+  height: 300,
+  fill: '#0ea5e9',
+  data: 'M0 0H100V100H0Z',
+  viewWidth: 100,
+  viewHeight: 100,
+  ...overrides,
+});
+
+export const pathFromPoints = (
+  points: readonly (readonly [number, number])[],
+): Pick<PathElement, 'x' | 'y' | 'width' | 'height' | 'data' | 'viewWidth' | 'viewHeight'> => {
+  const xs = points.map(([px]) => px);
+  const ys = points.map(([, py]) => py);
+  const x = Math.min(...xs);
+  const y = Math.min(...ys);
+  const width = Math.max(1, Math.max(...xs) - x);
+  const height = Math.max(1, Math.max(...ys) - y);
+  const data = `${points
+    .map(([px, py], index) => `${index === 0 ? 'M' : 'L'}${px - x} ${py - y}`)
+    .join(' ')} Z`;
+  return { x, y, width, height, data, viewWidth: width, viewHeight: height };
+};
 
 export const createLine = (overrides: Overrides<LineElement> = {}): LineElement => ({
   ...base('line', 'Line'),

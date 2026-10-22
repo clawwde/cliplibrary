@@ -6,3 +6,10 @@ export const compositionsEntry = fileURLToPath(
   new URL('../compositions/entry.ts', import.meta.url),
 );
 export const galleryPreviewsDir = fileURLToPath(new URL('../../public/previews/', import.meta.url));
+export const publicDir = fileURLToPath(new URL('../../public/', import.meta.url));
+export const posterPreviewsDir = fileURLToPath(
+  new URL('../../public/poster-previews/', import.meta.url),
+);
+export const posterPreviewEntry = fileURLToPath(
+  new URL('./posters/preview-entry.tsx', import.meta.url),
+);

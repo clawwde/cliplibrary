@@ -50,10 +50,12 @@ const centred = (element: DesignElement, design: Design, measure: HeightMeasure)
   };
 };
 
-export const useDesignEditor = (initial: Design) => {
+export const useDesignEditor = (initial: Design, initialPageIndex = 0) => {
   const history = useUndoable<Design>(initial);
   const design = history.value;
-  const [currentPageId, setCurrentPageId] = useState(initial.pages[0]?.id ?? '');
+  const [currentPageId, setCurrentPageId] = useState(
+    initial.pages[initialPageIndex]?.id ?? initial.pages[0]?.id ?? '',
+  );
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [editingId, setEditingId] = useState<string | null>(null);
   const clipboard = useRef<DesignElement[]>([]);
@@ -326,9 +328,9 @@ export const useDesignEditor = (initial: Design) => {
   const rename = useCallback((title: string) => commit({ ...design, title }), [commit, design]);
 
   const load = useCallback(
-    (next: Design) => {
+    (next: Design, pageIndex = 0) => {
       history.reset(next);
-      setCurrentPageId(next.pages[0]?.id ?? '');
+      setCurrentPageId(next.pages[pageIndex]?.id ?? next.pages[0]?.id ?? '');
       setSelectedIds([]);
       setEditingId(null);
     },

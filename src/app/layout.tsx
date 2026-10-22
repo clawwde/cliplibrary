@@ -30,10 +30,7 @@ const RootLayout = ({ children }: { children: ReactNode }) => (
           </Link>
           <nav className="flex items-center gap-4 text-sm text-muted-foreground">
             <Link href="/" className="hover:text-foreground">
-              Animations
-            </Link>
-            <Link href="/designs/new" className="hover:text-foreground">
-              New design
+              Library
             </Link>
             <ThemeToggle />
           </nav>

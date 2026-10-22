@@ -4,7 +4,7 @@ import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { type GalleryFilters, parseFilters, serializeFilters } from '@/lib/gallery-filters';
 import { ClipGallery, type GalleryItem } from './clip-gallery';
-import { VideoTile } from './video-tile';
+import { GalleryTile } from './gallery-tile';
 
 const QUERY_DEBOUNCE_MS = 200;
 
@@ -32,7 +32,7 @@ export const ClipGalleryRoute = ({ items }: { items: GalleryItem[] }) => {
   return (
     <ClipGallery
       items={items}
-      Tile={VideoTile}
+      Tile={GalleryTile}
       filters={filters}
       query={query}
       onQueryChange={setQuery}

@@ -1,7 +1,7 @@
 'use client';
 
 import { Image as ImageIcon, Layers, PaintBucket, Shapes, Type, Upload } from 'lucide-react';
-import { type ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
   createEllipse,
   createImage,
@@ -28,7 +28,7 @@ import { ElementsPanel } from './sidebar/elements-panel';
 import { LayersPanel } from './sidebar/layers-panel';
 import { TextPanel } from './sidebar/text-panel';
 import { UploadsPanel } from './sidebar/uploads-panel';
-import { type DesignEditorState, useDesignEditor } from './use-design-editor';
+import { useDesignEditor } from './use-design-editor';
 import type { Viewport } from './use-workspace-viewport';
 
 const ZOOM_STEPS = [0.05, 0.1, 0.15, 0.2, 0.25, 0.33, 0.5, 0.67, 0.75, 1, 1.25, 1.5, 2, 3, 4, 6, 8];
@@ -38,25 +38,15 @@ const stepZoom = (zoom: number, direction: 'in' | 'out'): number =>
     ? (ZOOM_STEPS.find((step) => step > zoom + 0.001) ?? zoom)
     : ([...ZOOM_STEPS].reverse().find((step) => step < zoom - 0.001) ?? zoom);
 
-export interface ExtraPanel {
-  id: string;
-  label: string;
-  Icon: SidebarPanel['Icon'];
-  render: (editor: DesignEditorState) => ReactNode;
-}
-
 interface DesignEditorProps {
   initialDesign: Design;
   backHref: string;
-  storageKey?: string;
-  extraPanels?: ExtraPanel[];
+  storageKey: string;
+  initialPageIndex?: number;
   initialPanel?: string;
 }
 
-const readSaved = (key: string | undefined): Design | null => {
-  if (key === undefined) {
-    return null;
-  }
+const readSaved = (key: string): Design | null => {
   try {
     const raw = localStorage.getItem(key);
     if (raw === null) {
@@ -69,14 +59,22 @@ const readSaved = (key: string | undefined): Design | null => {
   }
 };
 
+const forgetSaved = (key: string): void => {
+  try {
+    localStorage.removeItem(key);
+  } catch {
+    return;
+  }
+};
+
 export const DesignEditor = ({
   initialDesign,
   backHref,
   storageKey,
-  extraPanels = [],
+  initialPageIndex = 0,
   initialPanel,
 }: DesignEditorProps) => {
-  const editor = useDesignEditor(initialDesign);
+  const editor = useDesignEditor(initialDesign, initialPageIndex);
   const { design } = editor;
   const [viewport, setViewport] = useState<Viewport>({ width: 0, height: 0 });
   const [userZoom, setUserZoom] = useState<number | null>(null);
@@ -108,14 +106,11 @@ export const DesignEditor = ({
     restored.current = true;
     const saved = readSaved(storageKey);
     if (saved !== null) {
-      editor.load(saved);
+      editor.load(saved, initialPageIndex);
     }
-  }, [editor.load, storageKey]);
+  }, [editor.load, initialPageIndex, storageKey]);
 
   useEffect(() => {
-    if (storageKey === undefined) {
-      return;
-    }
     const timer = setTimeout(() => {
       try {
         localStorage.setItem(storageKey, JSON.stringify(design));
@@ -258,7 +253,6 @@ export const DesignEditor = ({
   }, [addImageFiles, editor, runShortcut]);
 
   const panels: SidebarPanel[] = [
-    ...extraPanels.map((panel) => ({ ...panel, render: () => panel.render(editor) })),
     {
       id: 'elements',
       label: 'Elements',
@@ -315,6 +309,16 @@ export const DesignEditor = ({
         backHref={backHref}
         onZoom={onZoom}
         onOpen={(next) => editor.load(next)}
+        onReset={() => {
+          forgetSaved(storageKey);
+          editor.load(
+            initialDesign,
+            Math.max(
+              0,
+              design.pages.findIndex((page) => page.id === editor.pageId),
+            ),
+          );
+        }}
       />
       <div className="flex min-h-0 flex-1">
         <EditorSidebar

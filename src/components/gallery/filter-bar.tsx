@@ -22,23 +22,26 @@ import {
 } from '@/components/ui/select';
 import {
   DEFAULT_FILTERS,
+  GALLERY_KINDS,
   type GalleryFilters,
+  type GalleryKind,
   hasActiveFilters,
   SORT_OPTIONS,
   type SortId,
 } from '@/lib/gallery-filters';
 import {
-  CLIP_CATEGORIES,
-  CLIP_TAGS,
-  type ClipCategory,
-  type ClipTag,
   type ClipTheme,
   categoryLabel,
+  GALLERY_CATEGORIES,
+  GALLERY_TAGS,
+  type GalleryCategory,
+  type GalleryTag,
 } from '@/schemas';
 
 interface FacetCounts {
-  categories: Map<ClipCategory, number>;
-  tags: Map<ClipTag, number>;
+  kinds: Map<GalleryKind, number>;
+  categories: Map<GalleryCategory, number>;
+  tags: Map<GalleryTag, number>;
   themes: Map<ClipTheme, number>;
 }
 
@@ -90,13 +93,13 @@ export const FilterBar = ({
     return () => window.removeEventListener('keydown', onKey);
   }, []);
 
-  const toggleTag = (tag: ClipTag, checked: boolean) =>
+  const toggleTag = (tag: GalleryTag, checked: boolean) =>
     onChange({
       ...filters,
       tags: checked ? [...filters.tags, tag] : filters.tags.filter((item) => item !== tag),
     });
 
-  const availableTags = CLIP_TAGS.filter(
+  const availableTags = GALLERY_TAGS.filter(
     (tag) => (counts.tags.get(tag) ?? 0) > 0 || filters.tags.includes(tag),
   );
 
@@ -110,8 +113,8 @@ export const FilterBar = ({
             type="search"
             value={query}
             onChange={(event) => onQueryChange(event.target.value)}
-            placeholder="Search by name, motion or tag: phone, typing, logo"
-            aria-label="Search clips"
+            placeholder="Search by name, motion or tag: phone, hiring, stats"
+            aria-label="Search the library"
             className="h-9 pr-16 pl-9 [&::-webkit-search-cancel-button]:hidden"
           />
           {query.length > 0 ? (
@@ -131,6 +134,26 @@ export const FilterBar = ({
         </div>
 
         <Select
+          value={filters.kind}
+          onValueChange={(value) => onChange({ ...filters, kind: value as GalleryFilters['kind'] })}
+        >
+          <SelectTrigger aria-label="Type" className="min-w-[8.5rem]">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">Videos & posters</SelectItem>
+            {GALLERY_KINDS.map((kind) => (
+              <SelectItem key={kind.id} value={kind.id}>
+                {kind.label}
+                <span className="ml-auto pl-3 text-muted-foreground text-xs">
+                  {counts.kinds.get(kind.id) ?? 0}
+                </span>
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+
+        <Select
           value={filters.category}
           onValueChange={(value) =>
             onChange({ ...filters, category: value as GalleryFilters['category'] })
@@ -141,7 +164,7 @@ export const FilterBar = ({
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="all">All categories</SelectItem>
-            {CLIP_CATEGORIES.map((category) => (
+            {GALLERY_CATEGORIES.map((category) => (
               <SelectItem key={category.id} value={category.id}>
                 {category.label}
                 <span className="ml-auto pl-3 text-muted-foreground text-xs">
@@ -236,7 +259,13 @@ export const FilterBar = ({
       </div>
 
       <div className="flex min-h-7 flex-wrap items-center gap-2 text-muted-foreground text-sm">
-        <span>{shown === total ? `${total} clips` : `${shown} of ${total} clips`}</span>
+        <span>{shown === total ? `${total} items` : `${shown} of ${total} items`}</span>
+        {filters.kind === 'all' ? null : (
+          <ActiveChip
+            label={GALLERY_KINDS.find((kind) => kind.id === filters.kind)?.label ?? filters.kind}
+            onRemove={() => onChange({ ...filters, kind: 'all' })}
+          />
+        )}
         {filters.category === 'all' ? null : (
           <ActiveChip
             label={categoryLabel(filters.category)}

@@ -3,6 +3,7 @@
 import type {
   EllipseElement,
   LineElement,
+  PathElement,
   PolygonElement,
   RectElement,
   StarElement,
@@ -10,7 +11,7 @@ import type {
 import { ColorInput, Section, SliderRow, ToggleButton } from './fields';
 import { FillEditor } from './fill-editor';
 
-type FilledShape = RectElement | EllipseElement | PolygonElement | StarElement;
+type FilledShape = RectElement | EllipseElement | PolygonElement | StarElement | PathElement;
 
 interface ShapeSectionProps<T> {
   element: T;

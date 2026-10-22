@@ -9,6 +9,7 @@ import {
   Minus,
   Plus,
   Redo2,
+  RotateCcw,
   Scaling,
   Undo2,
 } from 'lucide-react';
@@ -33,9 +34,17 @@ interface EditorHeaderProps {
   backHref: string;
   onZoom: (direction: 'in' | 'out' | 'fit') => void;
   onOpen: (design: Design) => void;
+  onReset: () => void;
 }
 
-export const EditorHeader = ({ editor, zoom, backHref, onZoom, onOpen }: EditorHeaderProps) => {
+export const EditorHeader = ({
+  editor,
+  zoom,
+  backHref,
+  onZoom,
+  onOpen,
+  onReset,
+}: EditorHeaderProps) => {
   const { design } = editor;
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -168,6 +177,14 @@ export const EditorHeader = ({ editor, zoom, backHref, onZoom, onOpen }: EditorH
             onOpen(parsed);
           }}
         />
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={onReset}
+          title="Discard your edits and restore the original poster"
+        >
+          <RotateCcw /> Reset
+        </Button>
         <Button variant="ghost" size="sm" onClick={() => openRef.current?.click()}>
           <FolderOpen /> Open
         </Button>

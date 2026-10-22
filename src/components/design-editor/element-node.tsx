@@ -3,7 +3,7 @@
 import type Konva from 'konva';
 import type { KonvaEventObject } from 'konva/lib/Node';
 import { memo, type ReactNode, useLayoutEffect, useRef } from 'react';
-import { Arrow, Ellipse, Group, Image, Line, Rect, Text } from 'react-konva';
+import { Arrow, Ellipse, Group, Image, Line, Path, Rect, Text } from 'react-konva';
 import {
   containBox,
   coverCrop,
@@ -265,6 +265,21 @@ const ShapeContent = ({ element }: { element: DesignElement }): ReactNode => {
           strokeWidth={element.strokeWidth}
           dash={dashFor(element.dashed, element.strokeWidth)}
           {...konvaFill(element.fill, element.width, element.height)}
+          {...shadowProps(element.shadow)}
+        />
+      );
+    case 'path':
+      return (
+        <Path
+          data={element.data}
+          scaleX={element.width / element.viewWidth}
+          scaleY={element.height / element.viewHeight}
+          strokeScaleEnabled={false}
+          stroke={element.stroke}
+          strokeEnabled={element.strokeWidth > 0}
+          strokeWidth={element.strokeWidth}
+          dash={dashFor(element.dashed, element.strokeWidth)}
+          {...konvaFill(element.fill, element.viewWidth, element.viewHeight)}
           {...shadowProps(element.shadow)}
         />
       );

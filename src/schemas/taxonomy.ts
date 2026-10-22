@@ -160,9 +160,112 @@ export const CLIP_THEMES = ['light', 'dark'] as const;
 
 export type ClipTheme = (typeof CLIP_THEMES)[number];
 
-const categoryById = (id: ClipCategory) => CLIP_CATEGORIES.find((category) => category.id === id);
+export const POSTER_CATEGORIES = [
+  {
+    id: 'social-posts',
+    label: 'Social Posts',
+    keywords: [
+      'poster',
+      'instagram',
+      'linkedin',
+      'facebook',
+      'post',
+      'story',
+      'social media',
+      'marketing',
+    ],
+  },
+  {
+    id: 'carousels',
+    label: 'Carousels',
+    keywords: ['poster', 'carousel', 'slides', 'swipe', 'linkedin', 'instagram'],
+  },
+  {
+    id: 'pitch-decks',
+    label: 'Pitch Decks',
+    keywords: ['poster', 'presentation', 'slides', 'deck', 'powerpoint', 'investor', 'startup'],
+  },
+  {
+    id: 'resumes',
+    label: 'Resumes & Cards',
+    keywords: ['poster', 'cv', 'resume', 'cover letter', 'business card', 'job', 'portfolio'],
+  },
+  {
+    id: 'sports',
+    label: 'Sports',
+    keywords: ['poster', 'game day', 'basketball', 'hockey', 'football', 'team', 'score', 'match'],
+  },
+  {
+    id: 'seasonal',
+    label: 'Seasonal',
+    keywords: ['poster', 'holiday', 'autumn', 'fall', 'halloween', 'black friday', 'sale'],
+  },
+  {
+    id: 'lifestyle',
+    label: 'Lifestyle',
+    keywords: ['poster', 'yoga', 'wellness', 'self care', 'real estate', 'podcast', 'fitness'],
+  },
+] as const;
 
-export const categoryLabel = (id: ClipCategory): string => categoryById(id)?.label ?? id;
+export type PosterCategory = (typeof POSTER_CATEGORIES)[number]['id'];
 
-export const categoryKeywords = (id: ClipCategory): readonly string[] =>
+export const POSTER_TAGS = [
+  'poster',
+  'instagram',
+  'story',
+  'linkedin',
+  'carousel',
+  'hiring',
+  'stats',
+  'review',
+  'event',
+  'sale',
+  'quote',
+  'tips',
+  'comparison',
+  'quiz',
+  'product',
+  'mockup',
+  'pitch-deck',
+  'resume',
+  'business-card',
+  'saas',
+  'ai',
+  'b2b',
+  'freelance',
+  'small-business',
+  'corporate',
+  'sports',
+  'holiday',
+  'wellness',
+  'real-estate',
+  'podcast',
+  'retro',
+  'gradient',
+  'photo',
+  'neon',
+] as const;
+
+export type PosterTag = (typeof POSTER_TAGS)[number] | ClipTag;
+
+export const GALLERY_CATEGORIES = [...CLIP_CATEGORIES, ...POSTER_CATEGORIES];
+
+export type GalleryCategory = ClipCategory | PosterCategory;
+
+export const GALLERY_CATEGORY_IDS: readonly GalleryCategory[] = GALLERY_CATEGORIES.map(
+  (category) => category.id,
+);
+
+export const GALLERY_TAGS: readonly (ClipTag | PosterTag)[] = [
+  ...new Set<ClipTag | PosterTag>([...CLIP_TAGS, ...POSTER_TAGS]),
+];
+
+export type GalleryTag = ClipTag | PosterTag;
+
+const categoryById = (id: GalleryCategory) =>
+  GALLERY_CATEGORIES.find((category) => category.id === id);
+
+export const categoryLabel = (id: GalleryCategory): string => categoryById(id)?.label ?? id;
+
+export const categoryKeywords = (id: GalleryCategory): readonly string[] =>
   categoryById(id)?.keywords ?? [];

@@ -5,6 +5,7 @@ import {
   type EllipseElement,
   firstFillColor,
   type LineElement,
+  type PathElement,
   type PolygonElement,
   polygonPoints,
   type RectElement,
@@ -80,6 +81,17 @@ const BoxPreview = ({ element }: { element: RectElement | EllipseElement }) => {
   );
 };
 
+const PathPreview = ({ element }: { element: PathElement }) => (
+  <svg
+    width={SIZE}
+    height={SIZE}
+    viewBox={`0 0 ${element.viewWidth} ${element.viewHeight}`}
+    aria-hidden="true"
+  >
+    <path d={element.data} fill={firstFillColor(element.fill)} />
+  </svg>
+);
+
 export const ShapePreview = ({ element }: { element: DesignElement }) => {
   switch (element.type) {
     case 'line':
@@ -90,6 +102,8 @@ export const ShapePreview = ({ element }: { element: DesignElement }) => {
     case 'rect':
     case 'ellipse':
       return <BoxPreview element={element} />;
+    case 'path':
+      return <PathPreview element={element} />;
     default:
       return null;
   }

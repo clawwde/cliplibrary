@@ -2,7 +2,7 @@ import { expect, test } from '@playwright/test';
 
 test('lists animations and opens the editor', async ({ page }) => {
   await page.goto('/');
-  await expect(page.getByRole('heading', { name: 'Animations' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Library' })).toBeVisible();
   await expect(page.getByText('Phone Spin In')).toBeVisible();
 
   await expect(async () => {

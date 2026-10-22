@@ -86,6 +86,16 @@ export const starElementSchema = z.object({
   innerRatio: z.number().min(0.1).max(0.95),
 });
 
+export const pathElementSchema = z.object({
+  ...boxShape,
+  ...strokeShape,
+  type: z.literal('path'),
+  fill: fillSchema,
+  data: z.string().min(1),
+  viewWidth: z.number().positive(),
+  viewHeight: z.number().positive(),
+});
+
 export const lineElementSchema = z.object({
   ...baseShape,
   type: z.literal('line'),
@@ -136,6 +146,7 @@ export const designElementSchema = z.discriminatedUnion('type', [
   ellipseElementSchema,
   polygonElementSchema,
   starElementSchema,
+  pathElementSchema,
   lineElementSchema,
   imageElementSchema,
   iconElementSchema,
@@ -150,6 +161,7 @@ export type RectElement = z.infer<typeof rectElementSchema>;
 export type EllipseElement = z.infer<typeof ellipseElementSchema>;
 export type PolygonElement = z.infer<typeof polygonElementSchema>;
 export type StarElement = z.infer<typeof starElementSchema>;
+export type PathElement = z.infer<typeof pathElementSchema>;
 export type LineElement = z.infer<typeof lineElementSchema>;
 export type ImageElement = z.infer<typeof imageElementSchema>;
 export type IconElement = z.infer<typeof iconElementSchema>;
