@@ -19,6 +19,7 @@ const renderEditor = () =>
       title="Phone Spin In"
       controlsByClip={controlsByClip}
       initialProject={seedProjectForClip('phone-spin-in')}
+      demoSrc={null}
     />,
   );
 

@@ -85,12 +85,14 @@ interface ClipTimelineEditorProps {
   title: string;
   controlsByClip: Record<string, ControlSectionView[]>;
   initialProject: Project;
+  demoSrc: string | null;
 }
 
 export const ClipTimelineEditor = ({
   title,
   controlsByClip,
   initialProject,
+  demoSrc,
 }: ClipTimelineEditorProps) => {
   const editor = useUndoable<Project>(initialProject);
   const {
@@ -204,6 +206,7 @@ export const ClipTimelineEditor = ({
         <section className="flex min-h-0 flex-1 flex-col bg-muted/30">
           <ClipPreview
             project={project}
+            demoSrc={demoSrc}
             playerRef={playerRef}
             onFrameChange={setCurrentFrame}
             onPlayingChange={setPlaying}
