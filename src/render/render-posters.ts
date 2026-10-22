@@ -36,7 +36,7 @@ const parseOptions = (args: readonly string[]): Options => {
 const qaEntry = async (packFile: string): Promise<string> => {
   const entry = join(dirname(posterPreviewEntry), `qa-${process.pid}.tsx`);
   const source = (await Bun.file(posterPreviewEntry).text()).replace(
-    "import { POSTER_PACKS, POSTER_UPDATED_AT } from '@/posters';",
+    "import { POSTER_PACKS } from '@/posters';",
     `import * as candidates from './${relative(dirname(posterPreviewEntry), packFile).replace(/\.ts$/, '')}';\nconst POSTER_PACKS = Object.values(candidates).filter((value) => typeof value === 'object' && value !== null && 'meta' in value && 'build' in value) as import('@/posters').PosterPack[];`,
   );
   await writeFile(entry, source);
