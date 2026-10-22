@@ -4,9 +4,10 @@ import type Konva from 'konva';
 import type { KonvaEventObject } from 'konva/lib/Node';
 import { type DragEvent as ReactDragEvent, useCallback, useEffect, useRef, useState } from 'react';
 import { Group, Layer, Rect, Stage } from 'react-konva';
-import { type Box, boxesIntersect, type Point } from '@/design';
+import { type Box, boxesIntersect, type Point, unionBox } from '@/design';
 import { ELEMENT_NODE_NAME } from './element-node';
 import { PAGE_BACKGROUND_NAME, PageContent } from './page-content';
+import { SelectionToolbar } from './selection-toolbar';
 import { SelectionTransformer } from './selection-transformer';
 import { TextEditOverlay } from './text-edit-overlay';
 import type { DesignEditorState } from './use-design-editor';
@@ -49,6 +50,7 @@ export const CanvasWorkspace = ({
   const [guides, setGuides] = useState<Guides>(NO_GUIDES);
   const [marquee, setMarquee] = useState<Box | null>(null);
   const [hoverBox, setHoverBox] = useState<Box | null>(null);
+  const [moving, setMoving] = useState(false);
   const spaceHeld = useSpaceHeld();
   const marqueeStart = useRef<Point | null>(null);
   const panStart = useRef<{ pointer: Point; pan: Point } | null>(null);
@@ -109,7 +111,27 @@ export const CanvasWorkspace = ({
     onHover: setHoverBox,
     onGuides: setGuides,
     onContextMenu: (_element, point) => onContextMenu(point),
+    onDragging: setMoving,
   });
+
+  const selectionBox = (() => {
+    if (moving || editingId !== null || marquee !== null) {
+      return null;
+    }
+    const boxes = selectedIds
+      .map(findNode)
+      .map((node) => (node === undefined ? null : localBox(node)))
+      .filter((box): box is Box => box !== null);
+    const union = unionBox(boxes);
+    return union === null
+      ? null
+      : {
+          x: offset.x + union.x * zoom,
+          y: offset.y + union.y * zoom,
+          width: union.width * zoom,
+          height: union.height * zoom,
+        };
+  })();
 
   const onStageDown = (event: KonvaEventObject<MouseEvent | TouchEvent>) => {
     blurActiveElement();
@@ -295,10 +317,14 @@ export const CanvasWorkspace = ({
               selected={selectedElements}
               elements={page.elements}
               onCommit={editor.updateMany}
+              onTransforming={setMoving}
             />
           </Layer>
         </Stage>
       ) : null}
+      {selectionBox === null || viewport.width === 0 ? null : (
+        <SelectionToolbar editor={editor} box={selectionBox} onMore={onContextMenu} />
+      )}
       {editingElement?.type === 'text' ? (
         <TextEditOverlay
           element={editingElement}

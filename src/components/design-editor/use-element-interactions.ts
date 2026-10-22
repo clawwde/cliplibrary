@@ -26,6 +26,7 @@ interface InteractionOptions {
   onHover: (box: Box | null) => void;
   onGuides: (guides: Guides) => void;
   onContextMenu: (element: DesignElement, point: Point) => void;
+  onDragging: (dragging: boolean) => void;
 }
 
 export const useElementInteractions = ({
@@ -38,6 +39,7 @@ export const useElementInteractions = ({
   onHover,
   onGuides,
   onContextMenu,
+  onDragging,
 }: InteractionOptions) => {
   const { design, page, selectedIds } = editor;
   const snapTargets = useRef<{ x: number[]; y: number[] }>({ x: [], y: [] });
@@ -102,8 +104,11 @@ export const useElementInteractions = ({
         }
       };
       const onEdit = () => {
-        if (element.type === 'text' && !element.locked) {
-          editor.select([element.id]);
+        if (element.locked) {
+          return;
+        }
+        editor.focusElement(element.id);
+        if (element.type === 'text') {
           editor.setEditingId(element.id);
         }
       };
@@ -123,6 +128,7 @@ export const useElementInteractions = ({
         },
         onDragStart: (event) => {
           onHover(null);
+          onDragging(true);
           dragOrigin.current = { x: event.target.x(), y: event.target.y() };
           const ids = moving();
           collectSnapTargets(ids);
@@ -149,6 +155,7 @@ export const useElementInteractions = ({
         },
         onDragEnd: () => {
           onGuides(NO_GUIDES);
+          onDragging(false);
           dragOrigin.current = null;
           const updates = new Map<string, DesignElement>();
           for (const id of moving()) {
@@ -167,6 +174,7 @@ export const useElementInteractions = ({
       editor,
       findNode,
       onContextMenu,
+      onDragging,
       onGuides,
       onHover,
       page.elements,

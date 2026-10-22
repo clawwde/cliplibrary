@@ -81,6 +81,7 @@ interface SelectionTransformerProps {
   selected: readonly DesignElement[];
   elements: readonly DesignElement[];
   onCommit: (updates: Map<string, DesignElement>) => void;
+  onTransforming: (transforming: boolean) => void;
 }
 
 export const SelectionTransformer = ({
@@ -88,6 +89,7 @@ export const SelectionTransformer = ({
   selected,
   elements,
   onCommit,
+  onTransforming,
 }: SelectionTransformerProps) => {
   const anyLocked = selected.some((element) => element.locked);
   return (
@@ -111,7 +113,9 @@ export const SelectionTransformer = ({
       boundBoxFunc={(previous, next) =>
         Math.abs(next.width) < 4 || Math.abs(next.height) < 4 ? previous : next
       }
+      onTransformStart={() => onTransforming(true)}
       onTransformEnd={(event) => {
+        onTransforming(false);
         const transformer = event.currentTarget as Konva.Transformer;
         const anchor = transformer.getActiveAnchor();
         const updates = new Map<string, DesignElement>();

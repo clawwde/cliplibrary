@@ -7,6 +7,7 @@ import {
   LayoutTemplate,
   PaintBucket,
   Shapes,
+  SlidersHorizontal,
   Type,
   Upload,
 } from 'lucide-react';
@@ -19,6 +20,7 @@ import {
   fitInside,
   type Point,
 } from '@/design';
+import { cn } from '@/lib/utils';
 import { CanvasWorkspace } from './canvas-workspace';
 import { EditorContextMenu } from './context-menu';
 import { DocumentColorsProvider } from './document-colors';
@@ -181,6 +183,7 @@ export const DesignEditor = ({
 
   const actions = useSelectionActions(editor);
   const [helpOpen, setHelpOpen] = useState(false);
+  const [propertiesOpen, setPropertiesOpen] = useState(false);
   const [contextPoint, setContextPoint] = useState<Point | null>(null);
   const [view, setView] = useState({ grid: false, snap: true });
   const [savedAt, setSavedAt] = useState<number | null>(null);
@@ -312,8 +315,19 @@ export const DesignEditor = ({
           />
           <PagesStrip editor={editor} zoom={zoom} onZoomChange={setUserZoom} />
         </div>
+        <button
+          type="button"
+          onClick={() => setPropertiesOpen((open) => !open)}
+          aria-expanded={propertiesOpen}
+          className="fixed right-4 bottom-28 z-30 inline-flex items-center gap-2 rounded-full bg-violet-600 px-4 py-2 font-medium text-sm text-white shadow-lg lg:hidden"
+        >
+          <SlidersHorizontal className="size-4" /> {propertiesOpen ? 'Close' : 'Properties'}
+        </button>
         <aside
-          className="hidden w-[280px] shrink-0 overflow-y-auto border-l bg-background lg:block"
+          className={cn(
+            'w-[280px] shrink-0 overflow-y-auto border-l bg-background lg:static lg:block lg:shadow-none',
+            propertiesOpen ? 'fixed top-28 right-0 bottom-0 z-20 block shadow-2xl' : 'hidden',
+          )}
           aria-label="Properties"
         >
           <DocumentColorsProvider design={design}>

@@ -95,6 +95,8 @@ export const useDesignEditor = (initial: Design, initialPageIndex = 0) => {
     [page],
   );
 
+  const focusElement = useCallback((id: string) => setSelectedIds([id]), []);
+
   const clearSelection = useCallback(() => {
     setSelectedIds([]);
     setEditingId(null);
@@ -351,6 +353,7 @@ export const useDesignEditor = (initial: Design, initialPageIndex = 0) => {
     redo: history.redo,
     seal: history.seal,
     select,
+    focusElement,
     clearSelection,
     selectAll,
     setEditingId,
