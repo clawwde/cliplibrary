@@ -14,6 +14,7 @@ import { listEntranceSchema } from './word-picker';
 
 export const headingListSchema = z.object({
   heading: z.string(),
+  headingColor: zColor(),
   items: z.array(z.string()).min(1).max(24),
   loop: z.boolean(),
   stops: zSlider({ min: 1, max: 40 }),
@@ -58,6 +59,7 @@ export type HeadingListProps = z.infer<typeof headingListSchema>;
 
 export const headingListDefaults: HeadingListProps = {
   heading: 'Explore',
+  headingColor: '#1e3529',
   items: [
     'Overview',
     'Library',

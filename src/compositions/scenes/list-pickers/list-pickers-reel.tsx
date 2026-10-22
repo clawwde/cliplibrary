@@ -34,7 +34,10 @@ const REEL_SCENES: Record<ReelClipId, SceneModule> = {
   'product-cards': productCardsScene,
 };
 
-const POP_ORDER = [4, 0, 8, 2, 6, 1, 7, 3, 5];
+const POP_ORDERS: Record<ListPickersReelProps['intro']['popOrder'], readonly number[]> = {
+  'center-first': [4, 0, 8, 2, 6, 1, 7, 3, 5],
+  'row-by-row': [0, 1, 2, 3, 4, 5, 6, 7, 8],
+};
 
 const EMBEDDED_MOTION: Partial<PromoMotion> = { exit: 'none', exitFrames: 0, enterFrames: 0 };
 
@@ -66,11 +69,11 @@ const tileBoxes = (width: number, height: number, gap: number): TileBox[] => {
   }));
 };
 
-const popStart = (index: number, stagger: number): number =>
-  Math.max(0, POP_ORDER.indexOf(index)) * stagger;
+const popStart = (index: number, intro: ListPickersReelProps['intro']): number =>
+  Math.max(0, POP_ORDERS[intro.popOrder].indexOf(index)) * intro.stagger;
 
 const tileFrom = (index: number, intro: ListPickersReelProps['intro']): number =>
-  popStart(index, intro.stagger) - intro.lead;
+  popStart(index, intro) - intro.lead;
 
 const IntroGrid = ({
   intro,
@@ -104,9 +107,9 @@ const IntroGrid = ({
           if (box === undefined) {
             return null;
           }
-          const start = popStart(index, intro.stagger);
+          const start = popStart(index, intro);
           const shown = tween(frame, [start, start + intro.popFrames], [0, 1], settle);
-          const grow = 0.86 + 0.14 * shown;
+          const grow = intro.popScale + (1 - intro.popScale) * shown;
           return (
             <div
               key={index}

@@ -50,6 +50,7 @@ const ColorPills = ({
   size,
   weight,
   textColor,
+  dotColor,
   layout,
   active,
   cursor,
@@ -81,6 +82,7 @@ const ColorPills = ({
   const left = width / 2 + layout.x;
   const top = height / 2 + layout.y - ((count - 1) * layout.pitch) / 2;
   const family = pickerFonts[font];
+  const radius = (layout.height / 2) * layout.roundness;
   const cursorX =
     left +
     pixelTween(state.local, span, [offsetAt(pills, fromSlot), offsetAt(pills, toSlot)], smooth) +
@@ -121,10 +123,10 @@ const ColorPills = ({
                 style={{
                   position: 'absolute',
                   inset: 0,
-                  borderRadius: layout.height / 2,
+                  borderRadius: radius,
                   background: pill.color,
                   filter: `blur(${layout.glow}px)`,
-                  opacity: 0.8,
+                  opacity: layout.glowStrength,
                 }}
               />
               <div
@@ -135,9 +137,9 @@ const ColorPills = ({
                   gap: layout.dot * 0.9,
                   height: layout.height,
                   padding: `0 ${layout.paddingX * 1.3}px 0 ${layout.paddingX}px`,
-                  borderRadius: layout.height / 2,
+                  borderRadius: radius,
                   background: pill.color,
-                  boxShadow: `inset 0 0 ${layout.glow * 1.6}px rgba(255, 255, 255, 0.45)`,
+                  boxShadow: `inset 0 0 ${layout.glow * 1.6}px rgba(255, 255, 255, ${layout.shine})`,
                   color: textColor,
                   fontFamily: family,
                   fontWeight: weight,
@@ -152,7 +154,7 @@ const ColorPills = ({
                       width: layout.dot,
                       height: layout.dot,
                       borderRadius: '50%',
-                      background: textColor,
+                      background: dotColor,
                       flexShrink: 0,
                     }}
                   />
@@ -172,7 +174,7 @@ const ColorPills = ({
             borderRadius: '50%',
             opacity: visible,
             background: cursor.color,
-            boxShadow: `0 0 0 ${(cursor.size * 0.16).toFixed(2)}px color-mix(in oklab, ${cursor.halo} 55%, transparent), 0 0 ${(cursor.size * 0.6).toFixed(2)}px ${cursor.halo}`,
+            boxShadow: `0 0 0 ${(cursor.size * 0.16 * cursor.haloSize).toFixed(2)}px color-mix(in oklab, ${cursor.halo} 55%, transparent), 0 0 ${(cursor.size * 0.6 * cursor.haloSize).toFixed(2)}px ${cursor.halo}`,
             transform: `translate(${Math.round(cursorX)}px, ${Math.round(top + cursorY - cursor.size / 2)}px)`,
           }}
         />

@@ -64,7 +64,7 @@ const PillFan = ({
             fontFamily: pickerFonts[labelType.font],
             fontSize: labelType.size,
             fontWeight: labelType.weight,
-            letterSpacing: '-0.02em',
+            letterSpacing: `${labelType.tracking}em`,
             lineHeight: 1,
             whiteSpace: 'nowrap',
             color: look.ink,
@@ -102,7 +102,6 @@ const PillFan = ({
                 transform: `rotate(${pose.angle.toFixed(3)}deg)`,
                 transformOrigin: `${radius}px ${radius}px`,
                 boxShadow: `0 ${(pill.height * 0.18).toFixed(1)}px ${(pill.height * 0.32).toFixed(1)}px ${mixColor('transparent', mixColor('#000000', pill.color, 0.29), pill.shadow * 0.4)}`,
-                zIndex: slot + 1000,
               }}
             >
               {words[wrapIndex(slot, words.length)]}

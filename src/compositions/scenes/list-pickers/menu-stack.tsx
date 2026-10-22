@@ -77,6 +77,14 @@ const MenuStack = ({
   const labelBox = Math.round(type.labelSize * 1.3);
   const lead = entranceOf(frame, { ...entrance, rise: 0 }, 0);
   const pointerSlide = Math.round((1 - lead.opacity) * -40);
+  const stackedSlots = visibleSlots(state.progress, card.reach, items.length, loop)
+    .map((slot) => {
+      const along = slot * pitch - offset;
+      const distance = Math.abs(along / pitch);
+      return { slot, along, distance, depth: Math.round(1000 - distance * 100) };
+    })
+    .filter(({ distance }) => distance <= card.reach)
+    .sort((a, b) => a.depth - b.depth);
   return (
     <PickerLayer look={look} aura={aura} motion={motion} focusX={(layout.cardX / width) * 100}>
       <AbsoluteFill>
@@ -97,22 +105,19 @@ const MenuStack = ({
         >
           {label}
         </div>
-        <div
-          style={{
-            position: 'absolute',
-            left: layout.pointerX + pointerSlide,
-            top: centerY - pointer.height / 2,
-            opacity: lead.opacity,
-          }}
-        >
-          <Pointer pointer={pointer} />
-        </div>
-        {visibleSlots(state.progress, card.reach, items.length, loop).map((slot) => {
-          const along = slot * pitch - offset;
-          const distance = Math.abs(along / pitch);
-          if (distance > card.reach) {
-            return null;
-          }
+        {pointer.show ? (
+          <div
+            style={{
+              position: 'absolute',
+              left: layout.pointerX + pointerSlide,
+              top: centerY - pointer.height / 2,
+              opacity: lead.opacity,
+            }}
+          >
+            <Pointer pointer={pointer} />
+          </div>
+        ) : null}
+        {stackedSlots.map(({ slot, along, distance }) => {
           const enter = entranceOf(frame, entrance, Math.abs(slot - timing.start) + 1);
           const scale = Math.max(0.1, 1 - card.shrink * distance);
           const fade = tween(distance, [card.reach - card.fade, card.reach], [1, 0]);
@@ -136,10 +141,9 @@ const MenuStack = ({
                 boxShadow: `0 ${card.shadowY}px ${card.shadowBlur}px rgba(0, 0, 0, ${(card.shadow * visible).toFixed(4)}), 0 2px 6px rgba(0, 0, 0, ${(card.shadow * 0.3 * visible).toFixed(4)})`,
                 opacity: Math.min(1, visible * 4),
                 transform: `scale(${scale.toFixed(4)})`,
-                zIndex: Math.round(1000 - distance * 100),
               }}
             >
-              <ChevronIcon icon={icon} opacity={visible} />
+              {icon.show ? <ChevronIcon icon={icon} opacity={visible} /> : null}
               <span
                 style={{
                   opacity: visible,

@@ -31,13 +31,14 @@ const SelectionFrame = ({
 }) => {
   const { width, height } = useVideoConfig();
   const draw = settings.drawFrames;
+  const local = frameNumber - settings.drawStart;
   const left = centerX - settings.width / 2;
   const right = centerX + settings.width / 2;
   const top = centerY - settings.height / 2;
   const bottom = centerY + settings.height / 2;
-  const dot = tween(frameNumber, [0, draw * 0.55], [0, 1], settle);
-  const line = tween(frameNumber, [draw * 0.15, draw], [0, 1], settle);
-  const fill = tween(frameNumber, [draw * 0.3, draw * 1.2], [0, 1], settle);
+  const dot = tween(local, [0, draw * 0.55], [0, 1], settle);
+  const line = tween(local, [draw * 0.15, draw], [0, 1], settle);
+  const fill = tween(local, [draw * 0.3, draw * 1.2], [0, 1], settle);
   const reach = settings.height + settings.overhang;
   return (
     <svg
@@ -124,7 +125,9 @@ const WordPicker = ({
   const lineBox = Math.round(type.activeSize * 1.3);
   return (
     <PickerLayer look={look} aura={aura} motion={motion} focusX={50 + (offsetX / width) * 100}>
-      <SelectionFrame frame={selection} frameNumber={frame} centerX={centerX} centerY={centerY} />
+      {selection.show ? (
+        <SelectionFrame frame={selection} frameNumber={frame} centerX={centerX} centerY={centerY} />
+      ) : null}
       <AbsoluteFill>
         {visibleSlots(state.progress, type.reach, items.length, loop).map((slot) => {
           const along = slot * pitch - offset;

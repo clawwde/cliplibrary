@@ -4,16 +4,20 @@ import { type YearDialProps, yearDialDefaults, yearDialMeta, yearDialSchema } fr
 import { PickerLayer } from '../../pickers/picker-layer';
 import { stepState } from '../../pickers/steps';
 import { pickerFonts } from '../../promo/fonts';
-import { settle, tween } from '../../promo/timing';
+import { settle, smooth, tween } from '../../promo/timing';
 import type { SceneModule } from '../../scene-module';
-
-const ENTRY_TURN = 1.5;
 
 const LABEL_ROOM = 820;
 
 const DRIFT_SPIN = 0.03;
 
 const DRIFT_SHIFT = 0.9;
+
+const TURN_EASINGS: Record<YearDialProps['turnEasing'], (t: number) => number> = {
+  smooth,
+  settle,
+  linear: (t) => t,
+};
 
 const DialTicks = ({ ticks, rotation }: { ticks: YearDialProps['ticks']; rotation: number }) => {
   const count = Math.floor(360 / ticks.spacing);
@@ -72,7 +76,10 @@ const YearLabels = ({ slots, fill }: { slots: YearSlot[]; fill: string }) => (
 
 const YearDial = ({
   label,
+  labelColor,
   firstYear,
+  yearStep,
+  countDown,
   yearType,
   highlight,
   pointer,
@@ -80,7 +87,9 @@ const YearDial = ({
   ticks,
   camera,
   entryFrames,
+  entryTurn,
   steps,
+  turnEasing,
   aura,
   look,
   motion,
@@ -88,7 +97,8 @@ const YearDial = ({
   const frame = useCurrentFrame() * motion.speed;
   const { width, height } = useVideoConfig();
   const entry = tween(frame, [0, entryFrames * 1.6], [0, 1], settle);
-  const progress = stepState(frame, steps).progress - (1 - entry) * ENTRY_TURN;
+  const progress =
+    stepState(frame, steps, TURN_EASINGS[turnEasing]).progress - (1 - entry) * entryTurn;
   const reveal = tween(frame, [0, entryFrames], [0, 1], settle);
   const half = ticks.radius + LABEL_ROOM;
   const size = half * 2;
@@ -100,6 +110,7 @@ const YearDial = ({
   const tickOuter = ticks.radius + ticks.length / 2;
   const pointerTip = tickOuter + pointer.gap;
   const font = pickerFonts[yearType.font];
+  const yearsPerSlot = countDown ? -yearStep : yearStep;
   const clipId = `year-dial-${useId().replace(/[^a-zA-Z0-9]/g, '')}`;
   const yearSlots: YearSlot[] = slots.flatMap((slot) => {
     const offset = slot - progress;
@@ -111,7 +122,7 @@ const YearDial = ({
     return [
       {
         key: slot,
-        text: String(firstYear + slot),
+        text: String(firstYear + slot * yearsPerSlot),
         transform: `rotate(${angle.toFixed(4)}) translate(${dial.radius} 0) rotate(${(-angle + (angle - 180) * dial.textFollow).toFixed(4)})`,
         opacity: tween(distance, [dial.fadeStart, dial.range], [1, 0]),
         font,
@@ -145,6 +156,7 @@ const YearDial = ({
               y={-highlight.height / 2}
               width={highlight.width}
               height={highlight.height}
+              rx={highlight.radius}
               fill={highlight.color}
             />
             <YearLabels slots={yearSlots} fill={look.ink} />
@@ -154,6 +166,7 @@ const YearDial = ({
                 y={-highlight.height / 2}
                 width={highlight.width}
                 height={highlight.height}
+                rx={highlight.radius}
               />
             </clipPath>
             <g clipPath={`url(#${clipId})`}>
@@ -172,7 +185,7 @@ const YearDial = ({
               fontFamily={font}
               fontSize={yearType.labelSize}
               fontWeight={yearType.labelWeight}
-              fill={look.ink}
+              fill={labelColor}
             >
               {label}
             </text>
