@@ -14,6 +14,7 @@ import { ribbonWordsScene } from './ribbon-words';
 import { scrollerCalloutScene } from './scroller-callout';
 import { scrollerWallScene } from './scroller-wall';
 import { stickerStackScene } from './sticker-stack';
+import { textRingsScene } from './text-rings';
 import { wordBuildScene } from './word-build';
 import { wordFieldScene } from './word-field';
 import { wordPunchScene } from './word-punch';
@@ -37,4 +38,5 @@ export const kineticTypeScenes: SceneModule[] = [
   ribbonWordsScene,
   anniversaryKineticScene,
   comingSoonFlipsScene,
+  textRingsScene,
 ];

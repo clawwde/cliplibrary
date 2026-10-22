@@ -39,6 +39,7 @@ export * from './clips/kinetic-type/ribbon-words';
 export * from './clips/kinetic-type/scroller-callout';
 export * from './clips/kinetic-type/scroller-wall';
 export * from './clips/kinetic-type/sticker-stack';
+export * from './clips/kinetic-type/text-rings';
 export * from './clips/kinetic-type/word-build';
 export * from './clips/kinetic-type/word-field';
 export * from './clips/kinetic-type/word-punch';

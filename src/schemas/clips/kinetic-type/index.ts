@@ -53,6 +53,8 @@ import { scrollerWallDefaults, scrollerWallMeta, scrollerWallSchema } from './sc
 import { scrollerWallControls } from './scroller-wall-controls';
 import { stickerStackDefaults, stickerStackMeta, stickerStackSchema } from './sticker-stack';
 import { stickerStackControls } from './sticker-stack-controls';
+import { textRingsDefaults, textRingsMeta, textRingsSchema } from './text-rings';
+import { textRingsControls } from './text-rings-controls';
 import { wordBuildDefaults, wordBuildMeta, wordBuildSchema } from './word-build';
 import { wordBuildControls } from './word-build-controls';
 import { wordFieldDefaults, wordFieldMeta, wordFieldSchema } from './word-field';
@@ -186,5 +188,12 @@ export const kineticTypeClips: ClipModule[] = [
     defaults: comingSoonFlipsDefaults,
     meta: comingSoonFlipsMeta,
     controls: comingSoonFlipsControls,
+  },
+  {
+    id: 'text-rings',
+    schema: textRingsSchema,
+    defaults: textRingsDefaults,
+    meta: textRingsMeta,
+    controls: textRingsControls,
   },
 ];

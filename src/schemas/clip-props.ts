@@ -35,6 +35,7 @@ import type { RibbonWordsProps } from './clips/kinetic-type/ribbon-words';
 import type { ScrollerCalloutProps } from './clips/kinetic-type/scroller-callout';
 import type { ScrollerWallProps } from './clips/kinetic-type/scroller-wall';
 import type { StickerStackProps } from './clips/kinetic-type/sticker-stack';
+import type { TextRingsProps } from './clips/kinetic-type/text-rings';
 import type { WordBuildProps } from './clips/kinetic-type/word-build';
 import type { WordFieldProps } from './clips/kinetic-type/word-field';
 import type { WordPunchProps } from './clips/kinetic-type/word-punch';
@@ -132,6 +133,7 @@ export interface ClipPropsMap {
   'ribbon-words': RibbonWordsProps;
   'anniversary-kinetic': AnniversaryKineticProps;
   'coming-soon-flips': ComingSoonFlipsProps;
+  'text-rings': TextRingsProps;
   'film-dust': FilmDustProps;
   'spider-web-services': SpiderWebServicesProps;
   'brand-reveal': BrandRevealProps;
