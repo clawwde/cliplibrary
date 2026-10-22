@@ -3,7 +3,7 @@
 import { ChevronLeft, ChevronRight, Images } from 'lucide-react';
 import Link from 'next/link';
 import { useState } from 'react';
-import { categoryLabel } from '@/schemas';
+import { categoryLabel } from '@/schemas/taxonomy';
 import type { PosterGalleryItem } from './clip-gallery';
 import { useInView } from './use-in-view';
 

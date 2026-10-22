@@ -8,8 +8,8 @@ import {
   hasActiveFilters,
   parseFilters,
   serializeFilters,
-  videoMeta,
 } from '@/lib/gallery-filters';
+import { videoMeta } from '@/lib/video-meta';
 import { CLIP_REGISTRY } from '@/schemas';
 
 const items = CLIP_REGISTRY.map((meta) => ({ meta: videoMeta(meta) }));

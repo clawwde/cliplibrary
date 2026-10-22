@@ -1,17 +1,42 @@
-import type { FC } from 'react';
-import { AbsoluteFill } from 'remotion';
+import { type FC, useEffect, useState } from 'react';
+import { AbsoluteFill, useDelayRender } from 'remotion';
 import type { CompositionElement } from '@/project';
-import { isClipId } from '@/schemas';
-import { CLIP_COMPONENTS } from '../../clip-components';
+import { type ClipId, isClipId } from '@/schemas';
+import { loadedSceneComponent, loadSceneComponent } from '../../scene-loader';
+
+const LazyScene = ({ clipId, props }: { clipId: ClipId; props: Record<string, unknown> }) => {
+  const { delayRender, continueRender, cancelRender } = useDelayRender();
+  const [Component, setComponent] = useState<FC<Record<string, unknown>> | null>(() =>
+    loadedSceneComponent(clipId),
+  );
+  const [handle] = useState(() =>
+    Component === null ? delayRender(`Loading the ${clipId} scene`) : null,
+  );
+
+  useEffect(() => {
+    if (Component !== null) {
+      return;
+    }
+    loadSceneComponent(clipId)
+      .then(() => {
+        setComponent(() => loadedSceneComponent(clipId));
+        if (handle !== null) {
+          continueRender(handle);
+        }
+      })
+      .catch((error: unknown) => cancelRender(error));
+  }, [Component, cancelRender, clipId, continueRender, handle]);
+
+  return Component === null ? null : <Component {...props} />;
+};
 
 export const CompositionElementView = ({ element }: { element: CompositionElement }) => {
   if (!isClipId(element.clipId)) {
     return null;
   }
-  const Component = CLIP_COMPONENTS[element.clipId] as FC<Record<string, unknown>>;
   return (
     <AbsoluteFill>
-      <Component {...element.props} />
+      <LazyScene key={element.clipId} clipId={element.clipId} props={element.props} />
     </AbsoluteFill>
   );
 };

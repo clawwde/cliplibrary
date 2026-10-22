@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { useEffect, useRef, useState } from 'react';
 import { formatDuration } from '@/lib/gallery-filters';
-import { categoryLabel } from '@/schemas';
+import { categoryLabel } from '@/schemas/taxonomy';
 import type { VideoGalleryItem } from './clip-gallery';
 import { useInView } from './use-in-view';
 

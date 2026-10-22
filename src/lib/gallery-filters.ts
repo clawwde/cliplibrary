@@ -1,16 +1,14 @@
 import MiniSearch from 'minisearch';
 import {
   CLIP_THEMES,
-  type ClipMeta,
   type ClipTheme,
   categoryKeywords,
   categoryLabel,
-  clipUpdatedAt,
   GALLERY_CATEGORY_IDS,
   GALLERY_TAGS,
   type GalleryCategory,
   type GalleryTag,
-} from '@/schemas';
+} from '@/schemas/taxonomy';
 
 export const GALLERY_KINDS = [
   { id: 'video', label: 'Videos' },
@@ -242,12 +240,6 @@ export const facetCounts = <Key extends string>(
   }
   return counts;
 };
-
-export const videoMeta = (meta: ClipMeta): GalleryMeta => ({
-  ...meta,
-  kind: 'video',
-  updatedAt: clipUpdatedAt(meta.id),
-});
 
 export const formatDuration = (meta: GalleryMeta): string => {
   const seconds = meta.durationInFrames / meta.fps;

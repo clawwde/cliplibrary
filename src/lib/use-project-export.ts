@@ -1,11 +1,6 @@
 'use client';
 
-import {
-  getDefaultContainerForCodec,
-  getEncodableVideoCodecs,
-  type WebRendererQuality,
-  type WebRendererVideoCodec,
-} from '@remotion/web-renderer';
+import type { WebRendererQuality, WebRendererVideoCodec } from '@remotion/web-renderer';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import type { Project } from '@/project';
 
@@ -41,6 +36,7 @@ export interface ExportDownload {
 }
 
 export const listEncodableCodecs = async (): Promise<ExportCodec[]> => {
+  const { getEncodableVideoCodecs } = await import('@remotion/web-renderer');
   const [mp4, webm] = await Promise.all([
     getEncodableVideoCodecs('mp4'),
     getEncodableVideoCodecs('webm'),
@@ -49,15 +45,27 @@ export const listEncodableCodecs = async (): Promise<ExportCodec[]> => {
   return EXPORT_CODECS.filter((codec) => encodable.has(codec));
 };
 
+const projectClipIds = (project: Project): string[] =>
+  project.tracks.flatMap((track) =>
+    track.elements.flatMap((element) => (element.type === 'composition' ? [element.clipId] : [])),
+  );
+
 const renderProjectToBlob = async (
   project: Project,
   settings: ExportSettings,
   onProgress: (value: number) => void,
-): Promise<Blob> => {
-  const [{ renderMediaOnWeb }, { ProjectComposition }] = await Promise.all([
+): Promise<{ blob: Blob; extension: string }> => {
+  const [
+    { renderMediaOnWeb, getDefaultContainerForCodec },
+    { ProjectComposition },
+    { preloadProjectScenes },
+  ] = await Promise.all([
     import('@remotion/web-renderer'),
     import('@/compositions/project/project-composition'),
+    import('@/compositions/scene-loader'),
   ]);
+  await preloadProjectScenes(projectClipIds(project));
+  const container = getDefaultContainerForCodec(settings.codec);
   const result = await renderMediaOnWeb({
     composition: {
       id: 'project',
@@ -69,14 +77,14 @@ const renderProjectToBlob = async (
       defaultProps: project,
     },
     inputProps: project,
-    container: getDefaultContainerForCodec(settings.codec),
+    container,
     videoCodec: settings.codec,
     videoBitrate: settings.quality,
     scale: settings.scale,
     allowHtmlInCanvas: true,
     onProgress: ({ progress }) => onProgress(progress),
   });
-  return result.getBlob();
+  return { blob: await result.getBlob(), extension: container };
 };
 
 export interface ProjectExport {
@@ -111,10 +119,9 @@ export const useProjectExport = (): ProjectExport => {
       setDownload(null);
       setError(null);
       renderProjectToBlob(project, settings, setProgress)
-        .then((blob) => {
+        .then(({ blob, extension }) => {
           const url = URL.createObjectURL(blob);
           replaceUrl(url);
-          const extension = getDefaultContainerForCodec(settings.codec);
           setDownload({ url, fileName: `${name}.${extension}` });
           setProgress(1);
           setState('done');

@@ -2,7 +2,8 @@ import { describe, expect, it } from 'bun:test';
 import { fireEvent, render, screen } from '@testing-library/react';
 import { useState } from 'react';
 import { ClipGallery, type GalleryItem } from '@/components/gallery/clip-gallery';
-import { DEFAULT_FILTERS, type GalleryFilters, videoMeta } from '@/lib/gallery-filters';
+import { DEFAULT_FILTERS, type GalleryFilters } from '@/lib/gallery-filters';
+import { videoMeta } from '@/lib/video-meta';
 import { CLIP_REGISTRY } from '@/schemas';
 
 const items: GalleryItem[] = CLIP_REGISTRY.map((meta) => ({

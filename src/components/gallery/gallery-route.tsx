@@ -1,33 +1,34 @@
 'use client';
 
-import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { type GalleryFilters, parseFilters, serializeFilters } from '@/lib/gallery-filters';
+import { replaceLocationSearch, useLocationSearch } from '@/lib/use-location-search';
 import { ClipGallery, type GalleryItem } from './clip-gallery';
 import { GalleryTile } from './gallery-tile';
 
 const QUERY_DEBOUNCE_MS = 200;
 
 export const ClipGalleryRoute = ({ items }: { items: GalleryItem[] }) => {
-  const router = useRouter();
-  const pathname = usePathname();
-  const params = useSearchParams();
-  const filters = useMemo(() => parseFilters(new URLSearchParams(params.toString())), [params]);
-  const [query, setQuery] = useState(filters.query);
+  const search = useLocationSearch();
+  const filters = useMemo(() => parseFilters(new URLSearchParams(search)), [search]);
+  const [draft, setDraft] = useState<string | null>(null);
+  const query = draft ?? filters.query;
 
-  const navigate = useCallback(
-    (next: GalleryFilters) =>
-      router.replace(`${pathname}${serializeFilters(next)}`, { scroll: false }),
-    [router, pathname],
-  );
+  const navigate = useCallback((next: GalleryFilters) => {
+    replaceLocationSearch(serializeFilters(next));
+    setDraft(null);
+  }, []);
 
   useEffect(() => {
-    if (query === filters.query) {
+    if (draft === null || draft === filters.query) {
       return;
     }
-    const timer = window.setTimeout(() => navigate({ ...filters, query }), QUERY_DEBOUNCE_MS);
+    const timer = window.setTimeout(
+      () => navigate({ ...filters, query: draft }),
+      QUERY_DEBOUNCE_MS,
+    );
     return () => window.clearTimeout(timer);
-  }, [query, filters, navigate]);
+  }, [draft, filters, navigate]);
 
   return (
     <ClipGallery
@@ -35,7 +36,7 @@ export const ClipGalleryRoute = ({ items }: { items: GalleryItem[] }) => {
       Tile={GalleryTile}
       filters={filters}
       query={query}
-      onQueryChange={setQuery}
+      onQueryChange={setDraft}
       onChange={(next) => navigate({ ...next, query })}
     />
   );

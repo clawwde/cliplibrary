@@ -36,7 +36,7 @@ import {
   GALLERY_TAGS,
   type GalleryCategory,
   type GalleryTag,
-} from '@/schemas';
+} from '@/schemas/taxonomy';
 
 interface FacetCounts {
   kinds: Map<GalleryKind, number>;

@@ -1,4 +1,3 @@
-import { Suspense } from 'react';
 import { ClipGalleryRoute } from '@/components/gallery/gallery-route';
 import { listClips } from '@/lib/clips';
 import { listPosters } from '@/lib/posters';
@@ -12,9 +11,7 @@ const HomePage = async () => {
       <p className="mt-1 mb-6 text-muted-foreground text-sm">
         Search, filter and open any animation or poster in its editor.
       </p>
-      <Suspense fallback={null}>
-        <ClipGalleryRoute items={[...clips, ...listPosters()]} />
-      </Suspense>
+      <ClipGalleryRoute items={[...clips, ...listPosters()]} />
     </div>
   );
 };

@@ -4,7 +4,7 @@ import { Player, type PlayerRef } from '@remotion/player';
 import { Maximize, Monitor, Smartphone, Square } from 'lucide-react';
 import { type ComponentType, type RefObject, useEffect } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { ProjectComposition } from '@/compositions';
+import { ProjectComposition } from '@/compositions/project/project-composition';
 import { usePersistedState } from '@/lib/use-persisted-state';
 import { cn } from '@/lib/utils';
 import type { Project } from '@/project';

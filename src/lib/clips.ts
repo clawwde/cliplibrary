@@ -3,7 +3,7 @@ import { existsSync } from 'node:fs';
 import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import type { VideoGalleryItem } from '@/components/gallery/clip-gallery';
-import { videoMeta } from '@/lib/gallery-filters';
+import { videoMeta } from '@/lib/video-meta';
 import { CLIP_REGISTRY, type ClipId, type ClipMeta } from '@/schemas';
 import { repoRoot } from './repo-root';
 
