@@ -19,6 +19,27 @@ export const offset = (dx: number, dy: number, nodes: readonly Nodes[]): DesignE
 export const estimateTextWidth = (label: string, fontSize: number, letterSpacing = 0): number =>
   label.length * (fontSize * 0.56 + letterSpacing);
 
+export const rotateNodes = (
+  degrees: number,
+  pivotX: number,
+  pivotY: number,
+  nodes: readonly Nodes[],
+): DesignElement[] => {
+  const radians = (degrees * Math.PI) / 180;
+  const cos = Math.cos(radians);
+  const sin = Math.sin(radians);
+  return flatten(nodes).map((element) => {
+    const dx = element.x - pivotX;
+    const dy = element.y - pivotY;
+    return {
+      ...element,
+      x: pivotX + dx * cos - dy * sin,
+      y: pivotY + dx * sin + dy * cos,
+      rotation: element.rotation + degrees,
+    };
+  });
+};
+
 export const place = (
   x: number,
   y: number,

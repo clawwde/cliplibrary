@@ -1,6 +1,6 @@
 import { existsSync } from 'node:fs';
 import { mkdir, rm, writeFile } from 'node:fs/promises';
-import { join } from 'node:path';
+import { dirname, join, relative, resolve } from 'node:path';
 import { chromium } from '@playwright/test';
 import { POSTER_PACKS } from '@/posters';
 import { posterPreviewEntry, posterPreviewsDir, publicDir } from './paths';
@@ -9,6 +9,7 @@ import { posterPreviewFileName } from './posters/preview-file-names';
 const PREVIEW_WIDTH = 480;
 
 interface Options {
+  packFile: string | undefined;
   ids: string[];
   newOnly: boolean;
   outDir: string;
@@ -20,8 +21,10 @@ const parseOptions = (args: readonly string[]): Options => {
     const index = args.indexOf(flag);
     return index === -1 ? undefined : args[index + 1];
   };
-  const flagValues = new Set([value('--out'), value('--width')]);
+  const packFile = value('--pack-file');
+  const flagValues = new Set([value('--out'), value('--width'), packFile]);
   return {
+    packFile: packFile === undefined ? undefined : resolve(packFile),
     ids: args.filter((arg) => !(arg.startsWith('-') || flagValues.has(arg))),
     newOnly: args.includes('--new') || args.includes('-new'),
     outDir: value('--out') ?? posterPreviewsDir,
@@ -29,13 +32,27 @@ const parseOptions = (args: readonly string[]): Options => {
   };
 };
 
-const bundle = async (): Promise<string> => {
+const qaEntry = async (packFile: string): Promise<string> => {
+  const entry = join(dirname(posterPreviewEntry), `qa-${process.pid}.tsx`);
+  const source = (await Bun.file(posterPreviewEntry).text()).replace(
+    "import { POSTER_PACKS } from '@/posters';",
+    `import * as candidates from './${relative(dirname(posterPreviewEntry), packFile).replace(/\.ts$/, '')}';\nconst POSTER_PACKS = Object.values(candidates).filter((value) => typeof value === 'object' && value !== null && 'meta' in value && 'build' in value) as import('@/posters').PosterPack[];`,
+  );
+  await writeFile(entry, source);
+  return entry;
+};
+
+const bundle = async (packFile: string | undefined): Promise<string> => {
+  const entry = packFile === undefined ? posterPreviewEntry : await qaEntry(packFile);
   const result = await Bun.build({
-    entrypoints: [posterPreviewEntry],
+    entrypoints: [entry],
     target: 'browser',
     format: 'esm',
     define: { 'process.env.NODE_ENV': '"production"' },
   });
+  if (entry !== posterPreviewEntry) {
+    await rm(entry, { force: true });
+  }
   const [output] = result.outputs;
   if (!result.success || output === undefined) {
     throw new Error(result.logs.map(String).join('\n'));
@@ -61,25 +78,35 @@ const serve = (script: string) =>
     },
   });
 
-const pendingPages = (options: Options) =>
-  POSTER_PACKS.filter(
-    (pack) => options.ids.length === 0 || options.ids.includes(pack.meta.id),
-  ).flatMap((pack) =>
-    Array.from({ length: pack.meta.pageCount }, (_, pageIndex) => ({
-      packId: pack.meta.id,
-      pageIndex,
-      file: join(options.outDir, pack.meta.id, posterPreviewFileName(pageIndex)),
-    })).filter((job) => !(options.newOnly && existsSync(job.file))),
-  );
+const pendingPages = (
+  options: Options,
+  packs: readonly { meta: { id: string; pageCount: number } }[],
+) =>
+  packs
+    .filter((pack) => options.ids.length === 0 || options.ids.includes(pack.meta.id))
+    .flatMap((pack) =>
+      Array.from({ length: pack.meta.pageCount }, (_, pageIndex) => ({
+        packId: pack.meta.id,
+        pageIndex,
+        file: join(options.outDir, pack.meta.id, posterPreviewFileName(pageIndex)),
+      })).filter((job) => !(options.newOnly && existsSync(job.file))),
+    );
 
 const main = async (): Promise<void> => {
   const options = parseOptions(process.argv.slice(2));
-  const jobs = pendingPages(options);
+  const packs =
+    options.packFile === undefined
+      ? POSTER_PACKS
+      : Object.values(await import(options.packFile)).filter(
+          (value): value is (typeof POSTER_PACKS)[number] =>
+            typeof value === 'object' && value !== null && 'meta' in value && 'build' in value,
+        );
+  const jobs = pendingPages(options, packs);
   if (jobs.length === 0) {
     console.info('No poster previews to render.');
     return;
   }
-  const server = serve(await bundle());
+  const server = serve(await bundle(options.packFile));
   const browser = await chromium.launch();
   try {
     const page = await browser.newPage();

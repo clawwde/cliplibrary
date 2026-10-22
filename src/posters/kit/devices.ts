@@ -1,6 +1,6 @@
 import type { Fill } from '@/design';
 import type { PosterPhotoName } from '../photos';
-import { group, offset } from './blocks';
+import { group, offset, rotateNodes } from './blocks';
 import { circle, type Nodes, photo, rect, shadow } from './elements';
 
 interface PhoneStyle {
@@ -27,7 +27,7 @@ export const phone = (x: number, y: number, width: number, style: PhoneStyle = {
       : photo(style.photo, x + inset, y + inset, screenWidth, screenHeight, {
           cornerRadius: width * 0.12,
         });
-  return group(
+  const parts = [
     rect(x, y, width, height, style.body ?? '#0b0b0f', {
       name: 'Phone body',
       cornerRadius: width * 0.16,
@@ -46,6 +46,11 @@ export const phone = (x: number, y: number, width: number, style: PhoneStyle = {
         cornerRadius: width * 0.05,
       },
     ),
+  ];
+  return group(
+    style.rotation === undefined
+      ? parts
+      : rotateNodes(style.rotation, x + width / 2, y + height / 2, parts),
   );
 };
 
