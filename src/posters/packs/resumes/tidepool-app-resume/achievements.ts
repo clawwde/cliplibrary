@@ -11,7 +11,7 @@ const wins: readonly { label: string; icon: DesignIconName }[] = [
   { label: 'Grew trial\nsign-ups by 28%', icon: 'chart-line' },
 ];
 
-export const landscape = (x: number, y: number, width: number, height: number) => [
+const landscape = (x: number, y: number, width: number, height: number) => [
   rect(x, y, width, height, linear(180, '#bfe9f2', '#eaf8f4'), { name: 'Sky' }),
   ellipse(x + width * 0.08, y + height * 0.16, width * 0.18, height * 0.14, '#ffffff', {
     name: 'Cloud',

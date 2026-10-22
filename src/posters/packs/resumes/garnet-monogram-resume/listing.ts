@@ -110,7 +110,7 @@ export const cardsPage = (front: Template, back: Template) => () =>
 const editorScreen = (item: Template, width: number, height: number) => {
   const bar = height * 0.08;
   return [
-    rect(0, 0, width, height, '#ece8ea', { name: 'Canvas' }),
+    rect(0, 0, width, height, '#ece8ea', { name: 'Artboard' }),
     rect(0, 0, width, bar, linear(90, GARNET.wine, '#7a2148'), { name: 'Editor bar' }),
     (
       [

@@ -71,7 +71,7 @@ export const monoPhoto = (
   height: number,
 ) => photo(name, x, y, width, height, { filters: IMAGE_FILTER_PRESETS.mono });
 
-export const verticalLabel = (label: string, x: number, bottom: number, size: number) =>
+const verticalLabel = (label: string, x: number, bottom: number, size: number) =>
   text(label, x, bottom, 900, {
     fontFamily: HEAD,
     fontSize: size,

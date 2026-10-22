@@ -110,7 +110,7 @@ export const cardsPage = (front: Template, back: Template) => () =>
 const editorScreen = (item: Template, width: number, height: number) => {
   const bar = height * 0.08;
   return [
-    rect(0, 0, width, height, '#e6e9f0', { name: 'Canvas' }),
+    rect(0, 0, width, height, '#e6e9f0', { name: 'Artboard' }),
     rect(0, 0, width, bar, linear(90, '#3730a3', '#6366f1'), { name: 'Editor bar' }),
     (
       [

@@ -27,7 +27,7 @@ export const TILE_FILLS: readonly Fill[] = [
   linear(135, '#0ea5e9', '#2563eb'),
 ];
 
-export const appTile = (x: number, y: number, size: number, fill: Fill, name: DesignIconName) => [
+const appTile = (x: number, y: number, size: number, fill: Fill, name: DesignIconName) => [
   rect(x, y, size, size, fill, { cornerRadius: size * 0.26, name: 'App tile' }),
   iconNode(name, x + size * 0.22, y + size * 0.22, size * 0.56, '#ffffff', { strokeWidth: 2.2 }),
 ];
