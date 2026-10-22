@@ -3,7 +3,8 @@
 import { useState } from 'react';
 import { Input } from '@/components/ui/input';
 import { POSTER_PHOTOS, type PosterPhotoName } from '@/posters/photos';
-import { loadImage } from '../image-cache';
+import { writeDraggedImage } from '../drag-image';
+import { cachedImageSize, loadImage } from '../image-cache';
 import type { LoadedImage } from '../read-image-file';
 
 const PHOTO_NAMES = Object.keys(POSTER_PHOTOS).filter(
@@ -37,6 +38,19 @@ export const PhotosPanel = ({ onPlace }: { onPlace: (image: LoadedImage) => void
               key={name}
               title={photo.description}
               aria-label={`Add photo: ${photo.description}`}
+              draggable
+              onDragStart={(event) => {
+                const loaded = cachedImageSize(photo.src);
+                writeDraggedImage(event.dataTransfer, {
+                  src: photo.src,
+                  name: photo.description,
+                  width: loaded?.width ?? 1080,
+                  height: loaded?.height ?? 1080,
+                });
+              }}
+              onMouseEnter={() => {
+                loadImage(photo.src).catch(() => undefined);
+              }}
               onClick={() => {
                 loadImage(photo.src)
                   .then((image) => {

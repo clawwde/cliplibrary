@@ -309,6 +309,7 @@ export const DesignEditor = ({
             onZoomChange={setUserZoom}
             onViewportChange={setViewport}
             onDropFiles={(files, point) => addImageFiles(files, point)}
+            onDropImage={(image, point) => editor.addMany([imageElement(image, point)])}
             onContextMenu={setContextPoint}
             snapEnabled={view.snap}
             showGrid={view.grid}

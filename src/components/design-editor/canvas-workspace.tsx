@@ -5,8 +5,10 @@ import type { KonvaEventObject } from 'konva/lib/Node';
 import { type DragEvent as ReactDragEvent, useCallback, useEffect, useRef, useState } from 'react';
 import { Group, Layer, Rect, Stage } from 'react-konva';
 import { type Box, boxesIntersect, type Point, unionBox } from '@/design';
+import { DRAG_IMAGE_TYPE, readDraggedImage } from './drag-image';
 import { ELEMENT_NODE_NAME } from './element-node';
 import { PAGE_BACKGROUND_NAME, PageContent } from './page-content';
+import type { LoadedImage } from './read-image-file';
 import { SelectionToolbar } from './selection-toolbar';
 import { SelectionTransformer } from './selection-transformer';
 import { TextEditOverlay } from './text-edit-overlay';
@@ -22,6 +24,7 @@ interface CanvasWorkspaceProps {
   onZoomChange: (zoom: number) => void;
   onViewportChange: (viewport: Viewport) => void;
   onDropFiles: (files: File[], point: Point) => void;
+  onDropImage: (image: LoadedImage, point: Point) => void;
   onContextMenu: (point: Point) => void;
   snapEnabled: boolean;
   showGrid: boolean;
@@ -34,6 +37,7 @@ export const CanvasWorkspace = ({
   onZoomChange,
   onViewportChange,
   onDropFiles,
+  onDropImage,
   onContextMenu,
   snapEnabled,
   showGrid,
@@ -220,14 +224,18 @@ export const CanvasWorkspace = ({
   };
 
   const onDragOver = (event: ReactDragEvent<HTMLDivElement>) => {
-    if (event.dataTransfer.types.includes('Files')) {
+    if (
+      event.dataTransfer.types.includes('Files') ||
+      event.dataTransfer.types.includes(DRAG_IMAGE_TYPE)
+    ) {
       event.preventDefault();
     }
   };
 
   const onDrop = (event: ReactDragEvent<HTMLDivElement>) => {
     const files = [...event.dataTransfer.files].filter((file) => file.type.startsWith('image/'));
-    if (files.length === 0) {
+    const dragged = readDraggedImage(event.dataTransfer);
+    if (files.length === 0 && dragged === null) {
       return;
     }
     event.preventDefault();
@@ -239,7 +247,11 @@ export const CanvasWorkspace = ({
             x: (event.clientX - rect.left - offset.x) / zoom,
             y: (event.clientY - rect.top - offset.y) / zoom,
           };
-    onDropFiles(files, point);
+    if (dragged === null) {
+      onDropFiles(files, point);
+    } else {
+      onDropImage(dragged, point);
+    }
   };
 
   const editingElement = page.elements.find((element) => element.id === editingId);

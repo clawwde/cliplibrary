@@ -3,6 +3,7 @@
 import { Upload } from 'lucide-react';
 import { useRef } from 'react';
 import { Button } from '@/components/ui/button';
+import { writeDraggedImage } from '../drag-image';
 import type { LoadedImage } from '../read-image-file';
 
 interface UploadsPanelProps {
@@ -42,6 +43,8 @@ export const UploadsPanel = ({ uploads, onFiles, onPlace }: UploadsPanelProps) =
             key={image.src.slice(-64)}
             title={image.name}
             onClick={() => onPlace(image)}
+            draggable
+            onDragStart={(event) => writeDraggedImage(event.dataTransfer, image)}
             className="overflow-hidden rounded-lg bg-muted transition-transform hover:scale-[1.02]"
           >
             <span
