@@ -1,10 +1,7 @@
-import { afterAll, describe, expect, it } from 'bun:test';
-import { mkdtemp, rm } from 'node:fs/promises';
-import { tmpdir } from 'node:os';
-import { join } from 'node:path';
+import { describe, expect, it } from 'bun:test';
 import { z } from 'zod';
-import { type ControlDescriptor, describeSchema, readHistory, readProps, writeProps } from '@/core';
-import { CLIP_DEFAULTS, CLIP_SCHEMAS, zColor, zMultiline, zSlider } from '@/schemas';
+import { type ControlDescriptor, describeSchema } from '@/core';
+import { CLIP_SCHEMAS, zColor, zMultiline, zSlider } from '@/schemas';
 
 const byPath = (controls: ControlDescriptor[], key: string): ControlDescriptor => {
   const found = controls.find((control) => control.path[0] === key);
@@ -55,47 +52,5 @@ describe('describeSchema', () => {
       const described = describeSchema(schemaForClip);
       expect(described.length).toBeGreaterThan(0);
     }
-  });
-});
-
-describe('props store', () => {
-  const roots: string[] = [];
-  const makeRoot = async (): Promise<string> => {
-    const root = await mkdtemp(join(tmpdir(), 'cliplib-'));
-    roots.push(root);
-    return root;
-  };
-
-  afterAll(async () => {
-    await Promise.all(roots.map((root) => rm(root, { recursive: true, force: true })));
-  });
-
-  it('round-trips props and records a version', async () => {
-    const root = await makeRoot();
-    const written = await writeProps(
-      root,
-      'phone-spin-in',
-      CLIP_DEFAULTS['phone-spin-in'],
-      'first',
-    );
-    expect(written.values).toEqual(CLIP_DEFAULTS['phone-spin-in']);
-    const read = await readProps(root, 'phone-spin-in');
-    expect(read.currentVersionId).toBe(written.currentVersionId);
-    const history = await readHistory(root, 'phone-spin-in');
-    expect(history).toHaveLength(1);
-    expect(history[0]?.label).toBe('first');
-  });
-
-  it('seeds defaults when no file exists', async () => {
-    const root = await makeRoot();
-    const read = await readProps(root, 'brand-reveal');
-    expect(read.currentVersionId).toBe('defaults');
-    expect(read.values).toEqual(CLIP_DEFAULTS['brand-reveal']);
-  });
-
-  it('rejects invalid props', async () => {
-    const root = await makeRoot();
-    const bad = { ...CLIP_DEFAULTS['brand-reveal'], markColor: 'nope' };
-    await expect(writeProps(root, 'brand-reveal', bad)).rejects.toThrow();
   });
 });

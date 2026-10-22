@@ -1,8 +1,8 @@
 import { existsSync } from 'node:fs';
 import { join } from 'node:path';
-import { readProject } from '@/core';
+import { seedProjectForClip } from '@/core';
 import { CLIP_REGISTRY, isClipId } from '@/schemas';
-import { publicExportsDir, repoRoot } from './paths';
+import { publicExportsDir } from './paths';
 import { galleryPreviewFileNames, renderGalleryPreview } from './render-gallery-preview';
 
 const NEW_ONLY_FLAGS = new Set(['--new', '-new']);
@@ -24,8 +24,7 @@ const main = async (): Promise<void> => {
 
   for (const meta of clips) {
     console.info(`Rendering ${meta.id}...`);
-    const { project } = await readProject(repoRoot, meta.id);
-    await renderGalleryPreview(project, publicExportsDir, meta.id);
+    await renderGalleryPreview(seedProjectForClip(meta.id), publicExportsDir, meta.id);
     console.info(`  done ${meta.id}`);
   }
 

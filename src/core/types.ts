@@ -25,20 +25,6 @@ export type ControlDescriptor =
     }
   | { kind: 'object'; path: string[]; label: string; fields: ControlDescriptor[] };
 
-export interface PropsFile {
-  clipId: ClipId;
-  currentVersionId: string;
-  values: unknown;
-  updatedAt: string;
-}
-
-export interface VersionSnapshot {
-  versionId: string;
-  createdAt: string;
-  label: string | null;
-  values: unknown;
-}
-
 export type ExportStatus = 'rendering' | 'done' | 'error';
 
 export interface ExportRecord {
