@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { zColor, zSlider } from '../../control';
+import { zColor, zImage, zSlider } from '../../control';
 import { defaultMotion, motionSchema, promoMeta } from '../../promo-common';
 import type { ClipMeta } from '../../registry';
 
@@ -127,8 +127,12 @@ export const scrollerWallSchema = z.object({
     centerY: zSlider({ min: 300, max: 1400 }),
     logoInk: zColor(),
     logoAccent: zColor(),
+    logoImage: zImage(),
+    logoSize: zSlider({ min: 60, max: 360 }),
     brandTop: z.string(),
+    brandTopSize: zSlider({ min: 20, max: 140 }),
     brandBottom: z.string(),
+    brandBottomSize: zSlider({ min: 12, max: 90 }),
     phone: z.string(),
     email: z.string(),
     rowsY: zSlider({ min: 600, max: 1800 }),
@@ -259,8 +263,12 @@ export const scrollerWallDefaults: ScrollerWallProps = {
     centerY: 760,
     logoInk: '#16123a',
     logoAccent: '#6c4dfa',
+    logoImage: '',
+    logoSize: 170,
     brandTop: 'NORTHWAVE',
+    brandTopSize: 58,
     brandBottom: 'MEDIA',
+    brandBottomSize: 28,
     phone: '+1 555 017 4410 / +1 555 019 2286',
     email: 'studio@northwave.example',
     rowsY: 1440,

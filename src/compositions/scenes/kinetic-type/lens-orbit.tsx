@@ -108,7 +108,7 @@ const useFaces = (props: LensOrbitProps) => {
         return {
           text: word,
           turn: turn.clone().multiply(local),
-          color: moon === 0 ? props.look.ink : props.look.accent,
+          color: moon === 0 ? props.satelliteColor : props.satelliteAccent,
         };
       }),
     };
@@ -126,7 +126,7 @@ const Globe = ({ props }: { props: LensOrbitProps }) => {
     }
     const intro = tween(time, [props.delay, props.delay + props.introFrames], [0, 1], settle);
     const orientation = new THREE.Quaternion()
-      .setFromAxisAngle(spinAxis, (1 - intro) * 2.4)
+      .setFromAxisAngle(spinAxis, (1 - intro) * props.introSpin)
       .multiply(first.front);
     const firstHold = props.delay + props.introFrames;
     faces.forEach((face, index) => {
@@ -154,7 +154,9 @@ const Globe = ({ props }: { props: LensOrbitProps }) => {
     }
     target.quaternion.copy(orientationAt(time));
     target.scale.setScalar(
-      0.35 + 0.65 * tween(time, [props.delay, props.delay + props.introFrames], [0, 1], settle),
+      props.introScale +
+        (1 - props.introScale) *
+          tween(time, [props.delay, props.delay + props.introFrames], [0, 1], settle),
     );
   });
   return (

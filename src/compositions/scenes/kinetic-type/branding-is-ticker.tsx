@@ -5,7 +5,7 @@ import {
   brandingIsTickerMeta,
   brandingIsTickerSchema,
 } from '@/schemas';
-import { BrandLabel, BrandMark, TILE_RADIUS } from '../../branding-ticker/brand-mark';
+import { BrandLabel, BrandMark } from '../../branding-ticker/brand-mark';
 import { ContactCard } from '../../branding-ticker/contact-card';
 import { tickerFont } from '../../branding-ticker/fonts';
 import { tickerWords, WordTicker } from '../../branding-ticker/word-ticker';
@@ -27,7 +27,7 @@ const tileOpening = (
   const left = (brand.x - half) * closed;
   const right = (width - brand.x - half) * closed;
   const bottom = (height - brand.y - half) * closed;
-  const round = Math.max(0, brand.size * TILE_RADIUS * closed);
+  const round = Math.max(0, brand.size * brand.roundness * closed);
   return `inset(${top.toFixed(2)}px ${right.toFixed(2)}px ${bottom.toFixed(2)}px ${left.toFixed(2)}px round ${round.toFixed(2)}px)`;
 };
 
@@ -65,7 +65,13 @@ const BrandingIsTicker = ({
               width: brand.size,
             }}
           >
-            <BrandMark size={brand.size} disc={brand.mark} wave={brand.cutout} draw={markDraw} />
+            <BrandMark
+              size={brand.size}
+              roundness={brand.roundness}
+              disc={brand.mark}
+              wave={brand.cutout}
+              draw={markDraw}
+            />
             <div style={{ marginTop: brand.size * 0.16 }}>
               <BrandLabel
                 kicker={brand.kicker}
@@ -91,7 +97,13 @@ const BrandingIsTicker = ({
         <AbsoluteFill
           style={opened ? undefined : { clipPath: tileOpening(opening, brand, width, height) }}
         >
-          <ContactCard card={card} kicker={brand.kicker} name={brand.name} frame={cardFrame} />
+          <ContactCard
+            card={card}
+            kicker={brand.kicker}
+            name={brand.name}
+            roundness={brand.roundness}
+            frame={cardFrame}
+          />
         </AbsoluteFill>
       ) : null}
     </PromoLayer>
