@@ -69,7 +69,7 @@ export const ClipPreview = ({
       }}
       className="h-full gap-0"
     >
-      <div className="flex flex-wrap items-center justify-center gap-3 p-3">
+      <div className="flex flex-wrap items-center justify-center gap-2 p-2 sm:gap-3 sm:p-3">
         <TabsList>
           <TabsTrigger value="editor">Editor</TabsTrigger>
           <TabsTrigger value="demo" disabled={demoSrc === null}>
@@ -84,20 +84,21 @@ export const ClipPreview = ({
                 key={entry.key}
                 type="button"
                 onClick={() => setDevice(entry.key)}
+                aria-label={entry.label}
                 className={cn(
                   'inline-flex items-center gap-1.5 rounded-md px-2.5 py-1.5 text-muted-foreground text-xs transition-colors',
                   entry.key === device && 'bg-background text-foreground shadow-sm',
                 )}
               >
                 <Icon className="size-3.5" />
-                {entry.label}
+                <span className="hidden sm:inline">{entry.label}</span>
               </button>
             );
           })}
         </div>
       </div>
       <div
-        className="flex min-h-0 flex-1 items-center justify-center overflow-hidden p-6"
+        className="flex min-h-0 flex-1 items-center justify-center overflow-hidden p-3 sm:p-6"
         style={{ containerType: 'size' }}
       >
         <div

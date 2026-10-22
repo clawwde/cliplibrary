@@ -8,6 +8,7 @@ import {
   LayoutGrid,
   Maximize2,
   Minus,
+  MoreHorizontal,
   Plus,
   Redo2,
   RotateCcw,
@@ -23,6 +24,7 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { DESIGN_FORMATS, type Design } from '@/design';
@@ -47,6 +49,43 @@ interface EditorView {
   grid: boolean;
   snap: boolean;
 }
+
+const ResizeItems = ({ onResize }: { onResize: (width: number, height: number) => void }) => (
+  <>
+    <DropdownMenuLabel>Resize all pages</DropdownMenuLabel>
+    {DESIGN_FORMATS.map((format) => (
+      <DropdownMenuItem key={format.id} onSelect={() => onResize(format.width, format.height)}>
+        <span className="flex-1">{format.label}</span>
+        <span className="text-muted-foreground text-xs tabular-nums">
+          {format.width}×{format.height}
+        </span>
+      </DropdownMenuItem>
+    ))}
+  </>
+);
+
+const ViewItems = ({
+  view,
+  onViewChange,
+}: {
+  view: EditorView;
+  onViewChange: (view: EditorView) => void;
+}) => (
+  <>
+    <DropdownMenuCheckboxItem
+      checked={view.grid}
+      onCheckedChange={(checked) => onViewChange({ ...view, grid: checked === true })}
+    >
+      Show grid
+    </DropdownMenuCheckboxItem>
+    <DropdownMenuCheckboxItem
+      checked={view.snap}
+      onCheckedChange={(checked) => onViewChange({ ...view, snap: checked === true })}
+    >
+      Snap to smart guides
+    </DropdownMenuCheckboxItem>
+  </>
+);
 
 export const EditorHeader = ({
   editor,
@@ -82,7 +121,7 @@ export const EditorHeader = ({
   };
 
   return (
-    <header className="flex h-14 shrink-0 items-center gap-2 border-b bg-background px-3">
+    <header className="relative flex h-14 shrink-0 items-center gap-1 border-b bg-background px-2 sm:gap-2 sm:px-3">
       <Button variant="ghost" size="icon-sm" asChild>
         <Link href={backHref} aria-label="Back to designs">
           <ChevronLeft />
@@ -103,7 +142,7 @@ export const EditorHeader = ({
             event.currentTarget.blur();
           }
         }}
-        className="h-8 w-56 min-w-0 truncate rounded-md bg-transparent px-2 font-medium text-sm outline-none hover:bg-muted focus:bg-muted"
+        className="h-8 w-28 min-w-0 truncate rounded-md sm:w-56 bg-transparent px-2 font-medium text-sm outline-none hover:bg-muted focus:bg-muted"
       />
       <div className="flex items-center gap-0.5">
         <Button
@@ -127,23 +166,12 @@ export const EditorHeader = ({
       </div>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button variant="ghost" size="sm">
+          <Button variant="ghost" size="sm" className="hidden md:inline-flex">
             <Scaling /> Resize
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="start">
-          <DropdownMenuLabel>Resize all pages</DropdownMenuLabel>
-          {DESIGN_FORMATS.map((format) => (
-            <DropdownMenuItem
-              key={format.id}
-              onSelect={() => editor.resize(format.width, format.height)}
-            >
-              <span className="flex-1">{format.label}</span>
-              <span className="text-muted-foreground text-xs tabular-nums">
-                {format.width}×{format.height}
-              </span>
-            </DropdownMenuItem>
-          ))}
+          <ResizeItems onResize={editor.resize} />
         </DropdownMenuContent>
       </DropdownMenu>
       <span
@@ -155,27 +183,22 @@ export const EditorHeader = ({
       </span>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button variant="ghost" size="sm">
+          <Button variant="ghost" size="sm" className="hidden md:inline-flex">
             <LayoutGrid /> View
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="start">
-          <DropdownMenuCheckboxItem
-            checked={view.grid}
-            onCheckedChange={(checked) => onViewChange({ ...view, grid: checked === true })}
-          >
-            Show grid
-          </DropdownMenuCheckboxItem>
-          <DropdownMenuCheckboxItem
-            checked={view.snap}
-            onCheckedChange={(checked) => onViewChange({ ...view, snap: checked === true })}
-          >
-            Snap to smart guides
-          </DropdownMenuCheckboxItem>
+          <ViewItems view={view} onViewChange={onViewChange} />
         </DropdownMenuContent>
       </DropdownMenu>
       <div className="ml-auto flex items-center gap-1">
-        <Button variant="ghost" size="icon-sm" aria-label="Keyboard shortcuts" onClick={onHelp}>
+        <Button
+          variant="ghost"
+          size="icon-sm"
+          aria-label="Keyboard shortcuts"
+          onClick={onHelp}
+          className="hidden md:inline-flex"
+        >
           <Keyboard />
         </Button>
         <div className="hidden items-center gap-0.5 rounded-md bg-muted px-1 sm:flex">
@@ -232,12 +255,37 @@ export const EditorHeader = ({
           size="sm"
           onClick={onReset}
           title="Discard your edits and restore the original poster"
+          className="hidden md:inline-flex"
         >
           <RotateCcw /> Reset
         </Button>
-        <Button variant="ghost" size="sm" onClick={() => openRef.current?.click()}>
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={() => openRef.current?.click()}
+          className="hidden md:inline-flex"
+        >
           <FolderOpen /> Open
         </Button>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost" size="icon-sm" aria-label="More options" className="md:hidden">
+              <MoreHorizontal />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="w-64">
+            <ResizeItems onResize={editor.resize} />
+            <DropdownMenuSeparator />
+            <ViewItems view={view} onViewChange={onViewChange} />
+            <DropdownMenuSeparator />
+            <DropdownMenuItem onSelect={onReset}>
+              <RotateCcw /> Reset to original
+            </DropdownMenuItem>
+            <DropdownMenuItem onSelect={() => openRef.current?.click()}>
+              <FolderOpen /> Open design file
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
         <DownloadMenu design={design} pageId={editor.pageId} busy={busy} run={run} />
       </div>
       {error === null ? null : (

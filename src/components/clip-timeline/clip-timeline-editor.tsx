@@ -3,13 +3,14 @@
 import type { PlayerRef } from '@remotion/player';
 import dynamic from 'next/dynamic';
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { ClipPreviewSkeleton } from '@/components/skeletons';
 import { Timeline } from '@/components/timeline/timeline';
 import { TimelineToolbar } from '@/components/timeline/timeline-toolbar';
-import { Skeleton } from '@/components/ui/skeleton';
 import { preloadProjectScenes } from '@/compositions/scene-loader';
 import { clampPxPerFrame, DEFAULT_PX_PER_FRAME, fitPxPerFrame } from '@/lib/timeline-geometry';
 import { DEFAULT_EXPORT_SETTINGS, useProjectExport } from '@/lib/use-project-export';
 import { useUndoable, useUndoRedoKeys } from '@/lib/use-undoable';
+import { cn } from '@/lib/utils';
 import {
   addElement,
   addTrack,
@@ -35,10 +36,11 @@ import {
 import { CLIP_DEFAULTS, CLIP_REGISTRY, type ClipId, getClipMeta } from '@/schemas';
 import { ClipPropertySidebar } from './clip-property-sidebar';
 import { ClipTimelineHeader } from './clip-timeline-header';
+import { type MobilePanel, MobilePanelSwitch } from './mobile-panel-switch';
 
 const ClipPreview = dynamic(() => import('./clip-preview').then((mod) => mod.ClipPreview), {
   ssr: false,
-  loading: () => <Skeleton className="m-6 aspect-video flex-1 rounded-xl" />,
+  loading: () => <ClipPreviewSkeleton />,
 });
 
 const makeElement = (type: ElementType, from: number): Element => {
@@ -109,6 +111,7 @@ export const ClipTimelineEditor = ({ title, initialProject, demoSrc }: ClipTimel
   );
   const [activeTrackId, setActiveTrackId] = useState<string | null>(null);
   const [pxPerFrame, setPxPerFrame] = useState(DEFAULT_PX_PER_FRAME);
+  const [mobilePanel, setMobilePanel] = useState<MobilePanel>('properties');
 
   const activeTrack = activeTrackId ?? project.tracks[0]?.id ?? null;
   const selectedElement =
@@ -205,9 +208,14 @@ export const ClipTimelineEditor = ({ title, initialProject, demoSrc }: ClipTimel
   }, [selectedId, handleDelete]);
 
   return (
-    <div className="flex min-h-0 flex-1 flex-col">
-      <div className="flex min-h-0 flex-1">
-        <section className="flex min-h-0 flex-1 flex-col bg-muted/30">
+    <div className="flex h-[calc(100dvh-3.5rem)] min-h-0 flex-col">
+      <div
+        className={cn(
+          'flex min-h-0 flex-col lg:flex-1 lg:flex-row',
+          mobilePanel === 'properties' ? 'flex-1' : 'flex-none',
+        )}
+      >
+        <section className="flex h-[min(46dvh,26rem)] shrink-0 flex-col bg-muted/30 lg:h-auto lg:min-h-0 lg:flex-1">
           <ClipPreview
             project={project}
             demoSrc={demoSrc}
@@ -216,7 +224,13 @@ export const ClipTimelineEditor = ({ title, initialProject, demoSrc }: ClipTimel
             onPlayingChange={setPlaying}
           />
         </section>
-        <aside className="flex w-[360px] shrink-0 flex-col overflow-y-auto border-border border-l bg-sidebar">
+        <MobilePanelSwitch active={mobilePanel} onChange={setMobilePanel} />
+        <aside
+          className={cn(
+            'min-h-0 flex-col overflow-y-auto border-border bg-sidebar lg:flex lg:w-[360px] lg:flex-none lg:shrink-0 lg:border-l',
+            mobilePanel === 'properties' ? 'flex flex-1' : 'hidden',
+          )}
+        >
           <ClipTimelineHeader title={title} />
           <ClipPropertySidebar
             element={selectedElement}
@@ -225,7 +239,12 @@ export const ClipTimelineEditor = ({ title, initialProject, demoSrc }: ClipTimel
           />
         </aside>
       </div>
-      <div className="flex h-72 shrink-0 flex-col border-border border-t bg-sidebar">
+      <div
+        className={cn(
+          'min-h-0 flex-col border-border border-t bg-sidebar lg:flex lg:h-72 lg:flex-none lg:shrink-0',
+          mobilePanel === 'timeline' ? 'flex flex-1' : 'hidden',
+        )}
+      >
         <TimelineToolbar
           pxPerFrame={pxPerFrame}
           playing={playing}

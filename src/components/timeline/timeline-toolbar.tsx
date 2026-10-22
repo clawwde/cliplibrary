@@ -55,7 +55,7 @@ export const TimelineToolbar = ({
   onRedo,
   onExport,
 }: TimelineToolbarProps) => (
-  <div className="flex flex-wrap items-center gap-2 px-3 py-2">
+  <div className="flex shrink-0 items-center gap-2 overflow-x-auto px-3 py-2 lg:flex-wrap lg:overflow-visible">
     <Button
       type="button"
       variant="ghost"
@@ -65,8 +65,8 @@ export const TimelineToolbar = ({
     >
       {playing ? <Pause className="size-4" /> : <Play className="size-4" />}
     </Button>
-    <span className="mx-1 h-5 w-px bg-border" />
-    <span className="text-muted-foreground text-xs">Add</span>
+    <span className="mx-1 h-5 w-px shrink-0 bg-border" />
+    <span className="shrink-0 text-muted-foreground text-xs">Add</span>
     {ADD_TYPES.map((type) => (
       <Button
         key={type}
@@ -90,7 +90,7 @@ export const TimelineToolbar = ({
           onAddAnimation(event.target.value);
         }
       }}
-      className="h-8 rounded-md bg-muted px-2 text-sm"
+      className="h-8 shrink-0 rounded-md bg-muted px-2 text-sm"
     >
       <option value="">Animation</option>
       {animations.map((animation) => (
@@ -99,7 +99,7 @@ export const TimelineToolbar = ({
         </option>
       ))}
     </select>
-    <span className="mx-1 h-5 w-px bg-border" />
+    <span className="mx-1 h-5 w-px shrink-0 bg-border" />
     <Button
       type="button"
       variant="ghost"
@@ -123,7 +123,7 @@ export const TimelineToolbar = ({
     <Button type="button" variant="ghost" size="icon" aria-label="Fit timeline" onClick={onFit}>
       <Maximize2 className="size-4" />
     </Button>
-    <div className="ml-auto flex items-center gap-1">
+    <div className="ml-auto flex shrink-0 items-center gap-1">
       <Button
         type="button"
         variant="ghost"

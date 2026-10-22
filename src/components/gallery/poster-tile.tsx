@@ -53,7 +53,7 @@ export const PosterTile = ({ meta, previews, width, height }: PosterGalleryItem)
               type="button"
               aria-label="Previous poster"
               onClick={() => step(-1)}
-              className="absolute top-1/2 left-2 grid size-8 -translate-y-1/2 place-items-center rounded-full bg-black/55 text-white opacity-0 backdrop-blur transition-opacity hover:bg-black/75 focus-visible:opacity-100 group-hover:opacity-100"
+              className="absolute top-1/2 left-2 grid size-8 -translate-y-1/2 place-items-center rounded-full bg-black/55 text-white opacity-0 backdrop-blur transition-opacity hover:bg-black/75 focus-visible:opacity-100 group-hover:opacity-100 [@media(hover:none)]:opacity-100"
             >
               <ChevronLeft className="size-4" />
             </button>
@@ -61,7 +61,7 @@ export const PosterTile = ({ meta, previews, width, height }: PosterGalleryItem)
               type="button"
               aria-label="Next poster"
               onClick={() => step(1)}
-              className="absolute top-1/2 right-2 grid size-8 -translate-y-1/2 place-items-center rounded-full bg-black/55 text-white opacity-0 backdrop-blur transition-opacity hover:bg-black/75 focus-visible:opacity-100 group-hover:opacity-100"
+              className="absolute top-1/2 right-2 grid size-8 -translate-y-1/2 place-items-center rounded-full bg-black/55 text-white opacity-0 backdrop-blur transition-opacity hover:bg-black/75 focus-visible:opacity-100 group-hover:opacity-100 [@media(hover:none)]:opacity-100"
             >
               <ChevronRight className="size-4" />
             </button>
