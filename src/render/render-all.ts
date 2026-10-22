@@ -2,13 +2,13 @@ import { existsSync } from 'node:fs';
 import { join } from 'node:path';
 import { seedProjectForClip } from '@/core';
 import { CLIP_REGISTRY, isClipId } from '@/schemas';
-import { publicExportsDir } from './paths';
+import { galleryPreviewsDir } from './paths';
 import { galleryPreviewFileNames, renderGalleryPreview } from './render-gallery-preview';
 
 const NEW_ONLY_FLAGS = new Set(['--new', '-new']);
 
 const isRendered = (name: string): boolean =>
-  galleryPreviewFileNames(name).every((file) => existsSync(join(publicExportsDir, file)));
+  galleryPreviewFileNames(name).every((file) => existsSync(join(galleryPreviewsDir, file)));
 
 const main = async (): Promise<void> => {
   const args = process.argv.slice(2);
@@ -24,11 +24,11 @@ const main = async (): Promise<void> => {
 
   for (const meta of clips) {
     console.info(`Rendering ${meta.id}...`);
-    await renderGalleryPreview(seedProjectForClip(meta.id), publicExportsDir, meta.id);
+    await renderGalleryPreview(seedProjectForClip(meta.id), galleryPreviewsDir, meta.id);
     console.info(`  done ${meta.id}`);
   }
 
-  console.info('Gallery previews rendered to public/exports.');
+  console.info('Gallery previews rendered to public/previews.');
 };
 
 await main();

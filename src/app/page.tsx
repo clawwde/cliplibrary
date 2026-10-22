@@ -2,8 +2,6 @@ import { Suspense } from 'react';
 import { ClipGalleryRoute } from '@/components/gallery/gallery-route';
 import { listClips } from '@/lib/clips';
 
-export const dynamic = 'force-dynamic';
-
 const HomePage = async () => {
   const clips = await listClips();
 

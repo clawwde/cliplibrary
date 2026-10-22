@@ -5,11 +5,11 @@ import { join } from 'node:path';
 import { CLIP_REGISTRY, type ClipMeta } from '@/schemas';
 import { repoRoot } from './repo-root';
 
-const publicExports = (root: string): string => join(root, 'public', 'exports');
+const galleryPreviews = (root: string): string => join(root, 'public', 'previews');
 
 const readFirstFrame = async (root: string, meta: ClipMeta): Promise<string | null> => {
   try {
-    const bytes = await readFile(join(publicExports(root), `${meta.id}.first-frame.jpg`));
+    const bytes = await readFile(join(galleryPreviews(root), `${meta.id}.first-frame.jpg`));
     return `data:image/jpeg;base64,${bytes.toString('base64')}`;
   } catch {
     return null;
@@ -27,8 +27,8 @@ export const listClips = (): Promise<ClipListItem[]> => {
   return Promise.all(
     CLIP_REGISTRY.map(async (meta) => ({
       meta,
-      video: existsSync(join(publicExports(root), `${meta.id}.mp4`))
-        ? `/exports/${meta.id}.mp4`
+      video: existsSync(join(galleryPreviews(root), `${meta.id}.mp4`))
+        ? `/previews/${meta.id}.mp4`
         : null,
       firstFrame: await readFirstFrame(root, meta),
     })),

@@ -31,7 +31,9 @@ bun run dev
 ```
 
 Open the printed URL, pick a clip and start editing. Gallery previews are
-rendered on demand with `bun run render`.
+committed under `public/previews`, so the gallery works without rendering
+anything. After adding or changing a clip, re-render its preview with
+`bun run render <clipId>` and commit it.
 
 ## Layout
 
@@ -50,7 +52,7 @@ rendered on demand with `bun run render`.
 
 - `bun run dev`: run the Next.js dev server.
 - `bun run build`: production Next.js build.
-- `bun run render [clipId...]`: render gallery previews to `public/exports`.
+- `bun run render [clipId...]`: render gallery previews to `public/previews`.
 - `bun run render --new`: render only clips whose previews are missing.
 - `bun run test`: unit and component tests.
 - `bun run test:e2e`: Playwright end-to-end suite.
