@@ -1,6 +1,6 @@
 import { linear, radial } from '@/design';
 import { circle, path, rect, SLIDE_SIZE } from '../../../kit';
-import { typeset } from '../coral-b2b-agency-deck/deck-listing';
+import { typeset } from '../coral-b2b-agency-deck/deck-kit';
 
 export const CV = {
   wine: '#1f0a12',

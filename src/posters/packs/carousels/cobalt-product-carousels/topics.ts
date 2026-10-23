@@ -1,6 +1,6 @@
 import { circle, icon, photo, rect, type Template, template, text } from '../../../kit';
 import type { PosterPhotoName } from '../../../photos';
-import { trail } from '../coral-tide-carousels/showcase';
+import { trail } from '../coral-tide-carousels/slide-kit';
 import { brandLine, COBALT, H, HEAD, inkBackground, W } from './palette';
 
 const tag = (label: string, x: number, y: number) => {

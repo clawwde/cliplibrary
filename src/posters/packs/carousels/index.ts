@@ -1,4 +1,4 @@
-import type { PosterPack } from '../../pack';
+import type { Poster } from '../../pack';
 import { aiPlaybookCarouselsPack } from './ai-playbook-carousels';
 import { cobaltProductCarouselsPack } from './cobalt-product-carousels';
 import { coralTideCarouselsPack } from './coral-tide-carousels';
@@ -14,19 +14,19 @@ import { sunflowerBrandCarouselsPack } from './sunflower-brand-carousels';
 import { tangerineTeamCarouselsPack } from './tangerine-team-carousels';
 import { tomatoSketchCarouselsPack } from './tomato-sketch-carousels';
 
-export const CAROUSEL_PACKS: PosterPack[] = [
-  aiPlaybookCarouselsPack,
-  cobaltProductCarouselsPack,
-  coralTideCarouselsPack,
-  emberBrandGrowthCarouselsPack,
-  emeraldAuthorityCarouselsPack,
-  momentumCarouselKitPack,
-  mulberryGrowthCarouselsPack,
-  neonAiCarouselsPack,
-  raspberryAiCarouselsPack,
-  repeatRevenueCarouselsPack,
-  studioSystemsCarouselsPack,
-  sunflowerBrandCarouselsPack,
-  tangerineTeamCarouselsPack,
-  tomatoSketchCarouselsPack,
+export const CAROUSEL_PACKS: Poster[] = [
+  ...aiPlaybookCarouselsPack,
+  ...cobaltProductCarouselsPack,
+  ...coralTideCarouselsPack,
+  ...emberBrandGrowthCarouselsPack,
+  ...emeraldAuthorityCarouselsPack,
+  ...momentumCarouselKitPack,
+  ...mulberryGrowthCarouselsPack,
+  ...neonAiCarouselsPack,
+  ...raspberryAiCarouselsPack,
+  ...repeatRevenueCarouselsPack,
+  ...studioSystemsCarouselsPack,
+  ...sunflowerBrandCarouselsPack,
+  ...tangerineTeamCarouselsPack,
+  ...tomatoSketchCarouselsPack,
 ];

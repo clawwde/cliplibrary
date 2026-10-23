@@ -1,14 +1,11 @@
 import { linear } from '@/design';
-import { definePack, LANDSCAPE } from '../../../pack';
+import { definePack } from '../../../pack';
 import { dosDonts, type ShiftTheme } from '../cobalt-before-after/posts';
 import { transformHook } from '../cobalt-before-after/posts-more';
-import { editablePage } from '../lagoon-saas-stats/listing';
-import { brandPage, howItWorksPage } from '../lagoon-saas-stats/listing-more';
 import { type StatsCopy, statTemplates } from '../lagoon-saas-stats/posts';
-import type { ListingCopy, ListingTheme, PostTheme } from '../lagoon-saas-stats/theme';
+import type { PostTheme } from '../lagoon-saas-stats/theme';
 import { type EventTheme, monthCalendar } from '../violet-key-dates/posts';
 import { type AgendaCopy, agenda } from '../violet-key-dates/posts-more';
-import { bundleCover, whatYouGet } from './pages';
 import { benefitsDonut, clearProcess, employeeBadge, expertsFolder, hiringVertical } from './posts';
 
 const FUCHSIA: PostTheme = {
@@ -167,43 +164,6 @@ const HOOK = transformHook(SHIFT, {
   body: 'Check the first comment for the three\nmistakes we see every week.',
 });
 
-const LISTING: ListingTheme = {
-  page: '#07020a',
-  text: '#ffffff',
-  muted: '#d9b8e0',
-  brand: '#c026d3',
-  brandDeep: '#3b0a45',
-  highlight: '#a21caf',
-  accent: '#22d3ee',
-  folder: linear(135, '#67e8f9', '#c026d3'),
-  ink: '#1a0420',
-  headFont: 'Plus Jakarta Sans',
-  bodyFont: 'DM Sans',
-};
-
-const LISTING_COPY: ListingCopy = {
-  kicker: 'Ready-to-Use',
-  title: 'Startup Bundle',
-  line: 'SaaS & Tech Marketing',
-  count: '50 Premium Templates',
-  bonus: '',
-  showcase: ['Premium', 'Startup Posts'],
-  showcaseNote: '',
-  editable: 'Editable\nSocial Post\nTemplates\nOnline',
-  steps: [
-    'Download right after checkout',
-    'Edit text, colours and branding in the editor',
-    'Export and post on your social media',
-  ],
-  stepsNote: 'No design skills needed: everything runs in your browser.',
-  offers: ['', '', ''],
-  offerNote: '',
-  studio: ['Orbitly', 'Studio'],
-  folder: 'Launch Kit',
-  folderSize: '48.20 MB',
-  handle: 'orbitly.studio',
-};
-
 export const fuchsiaStartupBundlePack = definePack({
   id: 'fuchsia-startup-bundle',
   title: 'Fuchsia Startup Bundle',
@@ -212,44 +172,21 @@ export const fuchsiaStartupBundlePack = definePack({
   category: 'social-posts',
   tags: ['saas', 'instagram', 'linkedin', 'hiring', 'stats'],
   theme: 'dark',
-  ...LANDSCAPE,
-  pages: [
-    bundleCover(
-      LISTING,
-      { lines: ['Posts For', 'SaaS', '& Tech', 'Startups'], count: '50 Premium Templates' },
-      [
-        STAT.leaders,
-        BENEFITS,
-        HIRING,
-        CALENDAR,
-        PROCESS,
-        STAT.profit,
-        DOS,
-        EXPERTS,
-        HOOK,
-        BADGE,
-        AGENDA_POST,
-        STAT.useCases,
-        BENEFITS,
-      ],
-    ),
-    whatYouGet(LISTING, [
-      'Client Reviews',
-      'Key Numbers',
-      'Dates & Launches',
-      'Holiday Promos',
-      'Polls & Games',
-      'Team Spotlight',
-      'Product Data',
-      'Tips & Lessons',
-      'Comment Hooks',
-      'Before & After',
-    ]),
-    editablePage(LISTING, LISTING_COPY, [
-      [AGENDA_POST, agenda(EVENT_OCEAN, AGENDA)],
-      [BADGE, employeeBadge(OCEAN)],
-    ]),
-    howItWorksPage(LISTING, LISTING_COPY, { perfectFor: true }),
-    brandPage(LISTING, LISTING_COPY),
+
+  designs: [
+    STAT.leaders,
+    BENEFITS,
+    HIRING,
+    CALENDAR,
+    PROCESS,
+    STAT.profit,
+    DOS,
+    EXPERTS,
+    HOOK,
+    BADGE,
+    AGENDA_POST,
+    STAT.useCases,
+    agenda(EVENT_OCEAN, AGENDA),
+    employeeBadge(OCEAN),
   ],
 });

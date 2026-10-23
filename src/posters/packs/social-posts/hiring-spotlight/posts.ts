@@ -38,7 +38,7 @@ export const POST = { width: 1080, height: 1350 } as const;
 
 const HEAD = 'Outfit';
 
-export const weAreHiring = (theme: HiringTheme): Nodes[] => [
+const weAreHiring = (theme: HiringTheme): Nodes[] => [
   rect(0, 0, POST.width, POST.height, theme.brand, { name: 'Background' }),
   poly(
     [
@@ -167,7 +167,7 @@ export const verticalHiring = (theme: HiringTheme): Nodes[] => [
   }),
 ];
 
-export const takeTheSeat = (theme: HiringTheme): Nodes[] => [
+const takeTheSeat = (theme: HiringTheme): Nodes[] => [
   rect(0, 0, POST.width, POST.height, theme.ink, { name: 'Background' }),
   polygon(3, 160, 120, 640, 1150, linear(180, 'rgba(255,255,255,0.05)', 'rgba(255,255,255,0.32)'), {
     rotation: -14,
@@ -211,7 +211,7 @@ export const takeTheSeat = (theme: HiringTheme): Nodes[] => [
   pill('Apply today', 560, 1150, { fill: theme.brand, color: theme.paper, fontSize: 32 }),
 ];
 
-export const welcomePost = (theme: HiringTheme): Nodes[] => [
+const welcomePost = (theme: HiringTheme): Nodes[] => [
   rect(0, 0, POST.width, POST.height, theme.brand, { name: 'Background' }),
   text('WELCOME', 0, 90, POST.width, {
     fontFamily: HEAD,

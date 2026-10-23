@@ -1,13 +1,4 @@
-import { definePack, LANDSCAPE } from '../../../pack';
-import {
-  type DeckListing,
-  deckCover,
-  deckEditor,
-  deckGrid,
-  deckHowTo,
-  deckShowcase,
-  iconSlides,
-} from '../coral-b2b-agency-deck/deck-listing';
+import { definePack } from '../../../pack';
 import {
   figuresSlide,
   gaugeSlide,
@@ -29,18 +20,6 @@ import {
   numbersSlide,
   velocitySlide,
 } from './slides-metrics';
-
-const LISTING: DeckListing = {
-  background: '#eceee6',
-  ink: '#141711',
-  muted: '#62685b',
-  brand: '#3d5a0c',
-  accent: '#b8f531',
-  glow: '#c6f75a',
-  font: 'Space Grotesk',
-  total: 30,
-  style: 'Enterprise Style',
-};
 
 const INTRO = [
   coverSlide,
@@ -67,34 +46,22 @@ export const chartreuseAiEnterpriseDeckPack = definePack({
   category: 'pitch-decks',
   tags: ['pitch-deck', 'ai', 'saas', 'stats'],
   theme: 'dark',
-  ...LANDSCAPE,
-  pages: [
-    deckCover(LISTING, coverSlide, [
-      numbersSlide,
-      pricingSlide,
-      gaugeSlide,
-      conversionsSlide,
-      figuresSlide,
-      velocitySlide,
-      revenueSlide,
-      empoweringSlide,
-    ]),
-    deckShowcase(
-      LISTING,
-      [pricingSlide, revenueSlide, gaugeSlide],
-      [velocitySlide, quoteSlide, auditSlide, assistSlide, numbersSlide],
-    ),
-    deckGrid(LISTING, INTRO),
-    deckGrid(LISTING, METRICS),
-    iconSlides(LISTING),
-    deckEditor(LISTING, [
-      ...INTRO,
-      ...METRICS,
-      pricingSlide,
-      revenueSlide,
-      gaugeSlide,
-      legacySlide,
-    ]),
-    deckHowTo(LISTING),
+
+  designs: [
+    coverSlide,
+    numbersSlide,
+    pricingSlide,
+    gaugeSlide,
+    conversionsSlide,
+    figuresSlide,
+    velocitySlide,
+    revenueSlide,
+    empoweringSlide,
+    quoteSlide,
+    auditSlide,
+    assistSlide,
+    ...INTRO,
+    ...METRICS,
+    legacySlide,
   ],
 });

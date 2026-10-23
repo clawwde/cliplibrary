@@ -1,13 +1,4 @@
-import { definePack, LANDSCAPE } from '../../../pack';
-import {
-  type DeckListing,
-  deckCover,
-  deckEditor,
-  deckGrid,
-  deckHowTo,
-  deckShowcase,
-  iconSlides,
-} from '../coral-b2b-agency-deck/deck-listing';
+import { definePack } from '../../../pack';
 import {
   accelerationSlide,
   growthSlide,
@@ -26,19 +17,6 @@ import {
   roadmapSlide,
   teamSlide,
 } from './slides-story';
-import { HX } from './theme';
-
-const LISTING: DeckListing = {
-  background: '#e4ecec',
-  ink: '#11181b',
-  muted: '#5f6b70',
-  brand: HX.deep,
-  accent: HX.teal,
-  glow: HX.teal,
-  font: 'Sora',
-  total: 30,
-  style: 'Enterprise Style',
-};
 
 const INTRO = [
   coverSlide,
@@ -65,27 +43,23 @@ export const tealGlowSaasDeckPack = definePack({
   category: 'pitch-decks',
   tags: ['pitch-deck', 'saas', 'ai', 'stats'],
   theme: 'dark',
-  ...LANDSCAPE,
-  pages: [
-    deckCover(LISTING, coverSlide, [
-      servicesSlide,
-      growthSlide,
-      roadmapSlide,
-      teamSlide,
-      empoweringSlide,
-      pricingSlide,
-      adoptionSlide,
-      standardSlide,
-    ]),
-    deckShowcase(
-      LISTING,
-      [roadmapSlide, adoptionSlide, pricingSlide],
-      [worldwideSlide, accelerationSlide, timelineSlide, potentialSlide, contentsSlide],
-    ),
-    deckGrid(LISTING, INTRO),
-    deckGrid(LISTING, DATA),
-    iconSlides(LISTING),
-    deckEditor(LISTING, [...INTRO, roadmapSlide, ...DATA, pricingSlide]),
-    deckHowTo(LISTING),
+
+  designs: [
+    coverSlide,
+    servicesSlide,
+    growthSlide,
+    roadmapSlide,
+    teamSlide,
+    empoweringSlide,
+    pricingSlide,
+    adoptionSlide,
+    standardSlide,
+    worldwideSlide,
+    accelerationSlide,
+    timelineSlide,
+    potentialSlide,
+    contentsSlide,
+    ...INTRO,
+    ...DATA,
   ],
 });

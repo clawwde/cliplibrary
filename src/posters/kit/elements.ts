@@ -3,7 +3,6 @@ import {
   createIcon,
   createImage,
   createLine,
-  createPage,
   createPath,
   createPolygon,
   createRect,
@@ -16,7 +15,6 @@ import {
   type IconElement,
   type ImageElement,
   type LineElement,
-  type Page,
   type PathElement,
   type PolygonElement,
   pathFromPoints,
@@ -34,9 +32,6 @@ const isNodeList = (node: Nodes): node is readonly Nodes[] => Array.isArray(node
 
 export const flatten = (nodes: readonly Nodes[]): DesignElement[] =>
   nodes.flatMap((node) => (isNodeList(node) ? flatten(node) : [node]));
-
-export const page = (background: Fill, ...nodes: Nodes[]): Page =>
-  createPage(background, flatten(nodes));
 
 export const text = (
   content: string,

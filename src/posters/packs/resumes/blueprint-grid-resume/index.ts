@@ -1,7 +1,5 @@
-import { linear } from '@/design';
-import { definePack, SQUARE } from '../../../pack';
+import { definePack } from '../../../pack';
 import { cardBack, cardFront, coverLetter } from './letter';
-import { cardsPage, editablePage, howToPage, paperPage, sheetPage } from './listing';
 import { resume } from './resume';
 
 export const blueprintGridResumePack = definePack({
@@ -12,12 +10,6 @@ export const blueprintGridResumePack = definePack({
   category: 'resumes',
   tags: ['resume', 'business-card', 'freelance', 'photo'],
   theme: 'light',
-  ...SQUARE,
-  pages: [
-    paperPage(resume),
-    cardsPage(cardFront, cardBack),
-    sheetPage(coverLetter),
-    editablePage(resume),
-    howToPage(linear(135, '#ff9a72', '#e5531f')),
-  ],
+
+  designs: [resume, cardFront, cardBack, coverLetter],
 });

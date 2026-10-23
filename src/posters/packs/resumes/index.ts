@@ -1,4 +1,4 @@
-import type { PosterPack } from '../../pack';
+import type { Poster } from '../../pack';
 import { blueprintGridResumePack } from './blueprint-grid-resume';
 import { focalPointPhotographerPack } from './focal-point-photographer';
 import { garnetMonogramResumePack } from './garnet-monogram-resume';
@@ -8,13 +8,13 @@ import { roseMarbleRealtorPack } from './rose-marble-realtor';
 import { skylineWebDeveloperPack } from './skyline-web-developer';
 import { tidepoolAppResumePack } from './tidepool-app-resume';
 
-export const RESUME_PACKS: PosterPack[] = [
-  blueprintGridResumePack,
-  focalPointPhotographerPack,
-  garnetMonogramResumePack,
-  graphiteStackEngineerPack,
-  loopLineDesignerPack,
-  roseMarbleRealtorPack,
-  skylineWebDeveloperPack,
-  tidepoolAppResumePack,
+export const RESUME_PACKS: Poster[] = [
+  ...blueprintGridResumePack,
+  ...focalPointPhotographerPack,
+  ...garnetMonogramResumePack,
+  ...graphiteStackEngineerPack,
+  ...loopLineDesignerPack,
+  ...roseMarbleRealtorPack,
+  ...skylineWebDeveloperPack,
+  ...tidepoolAppResumePack,
 ];

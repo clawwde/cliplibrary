@@ -1,5 +1,5 @@
 import { icon, photo, poly, rect, type Template, template, text } from '../../../kit';
-import { trail } from '../coral-tide-carousels/showcase';
+import { trail } from '../coral-tide-carousels/slide-kit';
 import { BERRY, berryBackground, brandMark, FONT, H, W } from './palette';
 
 const skillsCover = template(W, H, () => [

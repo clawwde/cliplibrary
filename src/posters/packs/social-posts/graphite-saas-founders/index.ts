@@ -1,5 +1,6 @@
-import { definePack, LANDSCAPE } from '../../../pack';
-import { PAGES } from './pages';
+import { definePack } from '../../../pack';
+import { globalCoverage, LILAC, quoteCard } from './posts';
+import { POSTS } from './posts-more';
 
 export const graphiteSaasFoundersPack = definePack({
   id: 'graphite-saas-founders',
@@ -9,6 +10,6 @@ export const graphiteSaasFoundersPack = definePack({
   category: 'social-posts',
   tags: ['saas', 'ai', 'instagram', 'linkedin', 'review'],
   theme: 'dark',
-  ...LANDSCAPE,
-  pages: PAGES,
+
+  designs: [...POSTS, globalCoverage(LILAC), quoteCard(LILAC)],
 });

@@ -1,13 +1,4 @@
-import { definePack, LANDSCAPE } from '../../../pack';
-import {
-  type DeckListing,
-  deckCover,
-  deckEditor,
-  deckGrid,
-  deckHowTo,
-  deckShowcase,
-  iconSlides,
-} from '../coral-b2b-agency-deck/deck-listing';
+import { definePack } from '../../../pack';
 import {
   contentsSlide,
   coreFocusSlide,
@@ -23,18 +14,6 @@ import {
   quoteSlide,
   spotlightSlide,
 } from './slides-proof';
-
-const LISTING: DeckListing = {
-  background: '#f1e8ea',
-  ink: '#1d1216',
-  muted: '#6d5a61',
-  brand: '#5c1a2e',
-  accent: '#f19bb0',
-  glow: '#f6a9bb',
-  font: 'Lexend',
-  total: 30,
-  style: 'Enterprise Style',
-};
 
 const INTRO = [
   coverSlide,
@@ -61,27 +40,21 @@ export const burgundyEnterpriseDeckPack = definePack({
   category: 'pitch-decks',
   tags: ['pitch-deck', 'saas', 'corporate', 'stats'],
   theme: 'dark',
-  ...LANDSCAPE,
-  pages: [
-    deckCover(LISTING, coverSlide, [
-      empoweringSlide,
-      spotlightSlide,
-      welcomeSlide,
-      performanceSlide,
-      quarterlySlide,
-      ecosystemSlide,
-      worldMarketSlide,
-      benchmarksSlide,
-    ]),
-    deckShowcase(
-      LISTING,
-      [performanceSlide, worldMarketSlide, quarterlySlide],
-      [welcomeSlide, contentsSlide, spotlightSlide, coreFocusSlide, growthSlide],
-    ),
-    deckGrid(LISTING, INTRO),
-    deckGrid(LISTING, PROOF),
-    iconSlides(LISTING),
-    deckEditor(LISTING, [...INTRO, ...PROOF, worldMarketSlide, quarterlySlide]),
-    deckHowTo(LISTING),
+
+  designs: [
+    coverSlide,
+    empoweringSlide,
+    spotlightSlide,
+    welcomeSlide,
+    performanceSlide,
+    quarterlySlide,
+    ecosystemSlide,
+    worldMarketSlide,
+    benchmarksSlide,
+    contentsSlide,
+    coreFocusSlide,
+    growthSlide,
+    ...INTRO,
+    ...PROOF,
   ],
 });

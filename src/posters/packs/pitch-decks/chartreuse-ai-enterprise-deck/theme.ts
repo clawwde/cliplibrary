@@ -1,7 +1,7 @@
 import { linear, NO_FILTERS, radial } from '@/design';
 import { circle, photo, rect, SLIDE_SIZE } from '../../../kit';
 import type { PosterPhotoName } from '../../../photos';
-import { typeset } from '../coral-b2b-agency-deck/deck-listing';
+import { typeset } from '../coral-b2b-agency-deck/deck-kit';
 
 export const K = {
   black: '#060805',

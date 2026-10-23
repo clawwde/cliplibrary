@@ -1,5 +1,15 @@
 import { linear } from '@/design';
-import { icon, photo, poly, polygon, rect, template, text } from '../../../kit';
+import {
+  fitWidth,
+  icon,
+  photo,
+  poly,
+  polygon,
+  rect,
+  STORY_SIZE,
+  template,
+  text,
+} from '../../../kit';
 import { bold, CORAL, type CoralPalette, HEAD, S, site } from './posts';
 
 export const creativity = template(S, S, () => [
@@ -164,4 +174,16 @@ export const didYouKnow = template(S, S, () => [
     lineHeight: 1.35,
   }),
   site(80, 980, CORAL.primary),
+]);
+
+export const nextLevelStory = template(STORY_SIZE.width, STORY_SIZE.height, () => [
+  rect(0, 0, STORY_SIZE.width, STORY_SIZE.height, CORAL.primary, { name: 'Background' }),
+  fitWidth(nextLevel, 0, 420, STORY_SIZE.width),
+  text('Swipe up to start', 0, 1640, STORY_SIZE.width, {
+    fontFamily: HEAD,
+    fontSize: 48,
+    fontWeight: 700,
+    fill: CORAL.ink,
+    align: 'center',
+  }),
 ]);

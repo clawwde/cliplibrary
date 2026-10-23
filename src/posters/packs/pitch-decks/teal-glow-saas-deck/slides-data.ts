@@ -1,6 +1,6 @@
 import { linear, radial } from '@/design';
 import { circle, ellipse, icon, pill, rect, template } from '../../../kit';
-import { arcBand } from '../coral-b2b-agency-deck/deck-listing';
+import { arcBand } from '../coral-b2b-agency-deck/deck-kit';
 import { backdrop, body, glow, HX, head, SH, SW } from './theme';
 
 const WIRE = { stroke: 'rgba(25,227,196,0.55)', strokeWidth: 2 };

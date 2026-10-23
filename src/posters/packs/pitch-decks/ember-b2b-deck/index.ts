@@ -1,6 +1,4 @@
-import { linear } from '@/design';
-import { definePack, LANDSCAPE } from '../../../pack';
-import { editablePage, gridPage, heroPage, howToPage, iconsPage, mosaicPage } from './listing';
+import { definePack } from '../../../pack';
 import {
   accountsSlide,
   contentsSlide,
@@ -20,6 +18,7 @@ import {
 import {
   caseStudySlide,
   customerSlide,
+  iconSheet,
   marketSizeSlide,
   roadmapSlide,
   wordsSlide,
@@ -53,31 +52,28 @@ export const emberB2bDeckPack = definePack({
   category: 'pitch-decks',
   tags: ['pitch-deck', 'b2b', 'corporate', 'stats'],
   theme: 'dark',
-  ...LANDSCAPE,
-  pages: [
-    mosaicPage(SLIDES),
-    heroPage(
-      [metricsSlide, matrixSlide, realWorldSlide],
-      [marketSizeSlide, networkSlide, pricingSlide, wordsSlide, teamSlide],
-    ),
-    gridPage([
-      coverSlide,
-      contentsSlide,
-      offeringsSlide,
-      marketSlide,
-      realWorldSlide,
-      accountsSlide,
-    ]),
-    gridPage([
-      customerSlide,
-      clientsSlide,
-      caseStudySlide,
-      roadmapSlide,
-      marketSizeSlide,
-      metricsSlide,
-    ]),
-    iconsPage,
-    editablePage(SLIDES),
-    howToPage(linear(135, '#ff8a5c', '#e2401a')),
+
+  designs: [
+    ...SLIDES,
+    iconSheet(0),
+    iconSheet(10),
+    iconSheet(40),
+    metricsSlide,
+    matrixSlide,
+    realWorldSlide,
+    marketSizeSlide,
+    networkSlide,
+    pricingSlide,
+    wordsSlide,
+    teamSlide,
+    coverSlide,
+    contentsSlide,
+    offeringsSlide,
+    marketSlide,
+    accountsSlide,
+    customerSlide,
+    clientsSlide,
+    caseStudySlide,
+    roadmapSlide,
   ],
 });

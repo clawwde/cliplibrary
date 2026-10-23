@@ -2,10 +2,9 @@ import { existsSync } from 'node:fs';
 import { mkdir, rm, writeFile } from 'node:fs/promises';
 import { dirname, join, relative, resolve } from 'node:path';
 import { chromium } from '@playwright/test';
-import { POSTER_PACKS, POSTER_UPDATED_AT } from '@/posters';
+import { POSTER_UPDATED_AT, POSTERS, type Poster, posterPreviewPath } from '@/posters';
 import { posterPreviewEntry, posterPreviewsDir, publicDir } from './paths';
 import { stampPosterUpdatedAt } from './posters/poster-updated-at';
-import { posterPreviewFileName } from './posters/preview-file-names';
 
 const PREVIEW_WIDTH = 480;
 
@@ -36,8 +35,8 @@ const parseOptions = (args: readonly string[]): Options => {
 const qaEntry = async (packFile: string): Promise<string> => {
   const entry = join(dirname(posterPreviewEntry), `qa-${process.pid}.tsx`);
   const source = (await Bun.file(posterPreviewEntry).text()).replace(
-    "import { POSTER_PACKS } from '@/posters';",
-    `import * as candidates from './${relative(dirname(posterPreviewEntry), packFile).replace(/\.ts$/, '')}';\nconst POSTER_PACKS = Object.values(candidates).filter((value) => typeof value === 'object' && value !== null && 'meta' in value && 'build' in value) as import('@/posters').PosterPack[];`,
+    "import { POSTERS } from '@/posters';",
+    `import * as candidates from './${relative(dirname(posterPreviewEntry), packFile).replace(/\.ts$/, '')}';\nconst POSTERS = Object.values(candidates).filter(Array.isArray).flat() as import('@/posters').Poster[];`,
   );
   await writeFile(entry, source);
   return entry;
@@ -79,30 +78,34 @@ const serve = (script: string) =>
     },
   });
 
-const pendingPages = (
-  options: Options,
-  packs: readonly { meta: { id: string; pageCount: number } }[],
-) =>
-  packs
-    .filter((pack) => options.ids.length === 0 || options.ids.includes(pack.meta.id))
-    .flatMap((pack) =>
-      Array.from({ length: pack.meta.pageCount }, (_, pageIndex) => ({
-        packId: pack.meta.id,
-        pageIndex,
-        file: join(options.outDir, pack.meta.id, posterPreviewFileName(pageIndex)),
-      })).filter((job) => !(options.newOnly && existsSync(job.file))),
-    );
+const pendingPosters = (options: Options, posters: readonly Poster[]) =>
+  posters
+    .filter(
+      ({ meta }) =>
+        options.ids.length === 0 ||
+        options.ids.includes(meta.id) ||
+        options.ids.includes(meta.packId),
+    )
+    .map(({ meta }) => ({
+      posterId: meta.id,
+      packId: meta.packId,
+      file: join(options.outDir, posterPreviewPath(meta).replace(/^\/poster-previews\//, '')),
+    }))
+    .filter((job) => !(options.newOnly && existsSync(job.file)));
 
 const main = async (): Promise<void> => {
   const options = parseOptions(process.argv.slice(2));
-  const packs =
+  const posters: readonly Poster[] =
     options.packFile === undefined
-      ? POSTER_PACKS
-      : Object.values(await import(options.packFile)).filter(
-          (value): value is (typeof POSTER_PACKS)[number] =>
-            typeof value === 'object' && value !== null && 'meta' in value && 'build' in value,
-        );
-  const jobs = pendingPages(options, packs);
+      ? POSTERS
+      : Object.values(await import(options.packFile))
+          .filter(Array.isArray)
+          .flat()
+          .filter(
+            (value): value is Poster =>
+              typeof value === 'object' && value !== null && 'meta' in value && 'build' in value,
+          );
+  const jobs = pendingPosters(options, posters);
   if (jobs.length === 0) {
     console.info('No poster previews to render.');
     return;
@@ -114,7 +117,11 @@ const main = async (): Promise<void> => {
     page.on('pageerror', (error) => console.error(error.message));
     await page.goto(`http://localhost:${server.port}/`);
     await page.waitForFunction(() => 'posterPreview' in window);
-    const packIds = new Set(jobs.map((job) => job.packId));
+    const packIds = new Set(
+      jobs
+        .filter((job) => options.ids.length === 0 || options.ids.includes(job.packId))
+        .map((job) => job.packId),
+    );
     if (options.outDir === posterPreviewsDir && !options.newOnly) {
       await Promise.all(
         [...packIds].map((id) => rm(join(options.outDir, id), { recursive: true, force: true })),
@@ -122,30 +129,30 @@ const main = async (): Promise<void> => {
     }
     for (const job of jobs) {
       const dataUrl = await page.evaluate(
-        ({ packId, pageIndex, width }) =>
+        ({ posterId, width }) =>
           (
             window as unknown as {
-              posterPreview: {
-                render: (id: string, index: number, width: number) => Promise<string>;
-              };
+              posterPreview: { render: (id: string, width: number) => Promise<string> };
             }
-          ).posterPreview.render(packId, pageIndex, width),
-        { packId: job.packId, pageIndex: job.pageIndex, width: options.width },
+          ).posterPreview.render(posterId, width),
+        { posterId: job.posterId, width: options.width },
       );
-      await mkdir(join(options.outDir, job.packId), { recursive: true });
+      await mkdir(dirname(job.file), { recursive: true });
       await writeFile(job.file, Buffer.from(dataUrl.split(',')[1] ?? '', 'base64'));
-      console.info(`  ${job.packId} ${job.pageIndex + 1}`);
+      console.info(`  ${job.posterId}`);
     }
   } finally {
     await browser.close();
     await server.stop(true);
   }
   if (options.outDir === posterPreviewsDir && options.packFile === undefined) {
-    const rendered = [...new Set(jobs.map((job) => job.packId))];
-    await stampPosterUpdatedAt(
-      rendered.filter((id) => options.ids.includes(id) || POSTER_UPDATED_AT[id] === undefined),
-      new Date(),
+    const requested = jobs.filter(
+      (job) =>
+        options.ids.includes(job.posterId) ||
+        options.ids.includes(job.packId) ||
+        POSTER_UPDATED_AT[job.packId] === undefined,
     );
+    await stampPosterUpdatedAt([...new Set(requested.map((job) => job.packId))], new Date());
   }
   console.info(`Rendered ${jobs.length} poster previews to ${options.outDir}`);
 };

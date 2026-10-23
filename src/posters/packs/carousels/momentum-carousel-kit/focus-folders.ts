@@ -12,7 +12,7 @@ import {
   template,
   text,
 } from '../../../kit';
-import { textWidth } from './listing';
+import { textWidth } from './text-width';
 
 const { width: W, height: H } = POST_SIZE;
 const FONT = 'Inter';

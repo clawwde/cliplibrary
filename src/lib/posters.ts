@@ -1,8 +1,8 @@
 import type { PosterGalleryItem } from '@/components/gallery/clip-gallery';
-import { POSTER_PACK_META, posterPreviewPath, posterUpdatedAt } from '@/posters';
+import { POSTER_META, posterPreviewPath, posterUpdatedAt } from '@/posters';
 
 export const listPosters = (): PosterGalleryItem[] =>
-  POSTER_PACK_META.map((meta) => ({
+  POSTER_META.map((meta) => ({
     kind: 'poster',
     meta: {
       id: meta.id,
@@ -14,11 +14,9 @@ export const listPosters = (): PosterGalleryItem[] =>
       theme: meta.theme,
       durationInFrames: 0,
       fps: 30,
-      updatedAt: posterUpdatedAt(meta.id),
+      updatedAt: posterUpdatedAt(meta.packId),
     },
-    previews: Array.from({ length: meta.pageCount }, (_, index) =>
-      posterPreviewPath(meta.id, index),
-    ),
+    preview: posterPreviewPath(meta),
     width: meta.width,
     height: meta.height,
   }));

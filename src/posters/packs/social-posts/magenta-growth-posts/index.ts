@@ -1,6 +1,4 @@
-import { definePack, LANDSCAPE } from '../../../pack';
-import { coverMosaic, customizePage, ideasGrid } from './listing';
-import { brandPage, howItWorksPage, readyPage } from './listing-more';
+import { definePack } from '../../../pack';
 import { brandTrust, closeTo, EMERALD, gotMail, MAGENTA, moreEyes, tearOffNote } from './posts';
 import { dontCheck, reviewWall, stopCreating, toggleBoost, unscramble } from './posts-more';
 
@@ -23,53 +21,19 @@ export const magentaGrowthPostsPack = definePack({
   category: 'social-posts',
   tags: ['small-business', 'instagram', 'linkedin', 'story'],
   theme: 'dark',
-  ...LANDSCAPE,
-  pages: [
-    coverMosaic([
-      MAIL,
-      TRUST,
-      EYES,
-      NOTE,
-      COMMENTS,
-      STOP,
-      SCRAMBLE,
-      TOGGLES,
-      CLOSE,
-      REVIEW,
-      EYES,
-      REVIEW,
-      TRUST,
-      MAIL,
-      NOTE,
-    ]),
-    ideasGrid(
-      {
-        title: '10 Engaging Social Media\nContent Post Ideas',
-        subtitle: 'Made for feed posts on every major network',
-      },
-      [NOTE, MAIL, CLOSE, SCRAMBLE, TOGGLES, EYES, COMMENTS, REVIEW, STOP, TRUST],
-    ),
-    customizePage([TOGGLES, toggleBoost(EMERALD)], [REVIEW, reviewWall(EMERALD)]),
-    readyPage(COMMENTS, NOTE),
-    howItWorksPage(
-      [
-        'Instant access right after checkout',
-        'Edit text, colours and branding in your browser',
-        'Download and post on every channel',
-      ],
-      'No design skills needed: works in the free built-in editor.',
-    ),
-    brandPage({ folder: 'Growth Kit', size: '24.6 MB', brandA: 'Brightwave', brandB: 'Studio' }, [
-      TOGGLES,
-      STOP,
-      NOTE,
-      REVIEW,
-      EYES,
-      MAIL,
-      TRUST,
-      COMMENTS,
-      SCRAMBLE,
-      CLOSE,
-    ]),
+
+  designs: [
+    MAIL,
+    TRUST,
+    EYES,
+    NOTE,
+    COMMENTS,
+    STOP,
+    SCRAMBLE,
+    TOGGLES,
+    CLOSE,
+    REVIEW,
+    toggleBoost(EMERALD),
+    reviewWall(EMERALD),
   ],
 });

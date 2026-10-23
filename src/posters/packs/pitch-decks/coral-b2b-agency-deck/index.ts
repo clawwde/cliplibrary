@@ -1,13 +1,4 @@
-import { definePack, LANDSCAPE } from '../../../pack';
-import {
-  type DeckListing,
-  deckCover,
-  deckEditor,
-  deckGrid,
-  deckHowTo,
-  deckShowcase,
-  iconSlides,
-} from './deck-listing';
+import { definePack } from '../../../pack';
 import {
   campaignSlide,
   impactSlide,
@@ -25,19 +16,6 @@ import {
   teamSlide,
   workSlide,
 } from './slides-story';
-import { NV } from './theme';
-
-const LISTING: DeckListing = {
-  background: '#f3ebe6',
-  ink: '#1f1424',
-  muted: '#6b5d70',
-  brand: NV.plum,
-  accent: NV.coral,
-  glow: '#ff9a7a',
-  font: 'Bricolage Grotesque',
-  total: 36,
-  style: 'B2B Marketing',
-};
 
 const INTRO = [coverSlide, contentsSlide, aboutSlide, keywordSlide, workSlide, teamSlide];
 const DATA = [
@@ -57,27 +35,21 @@ export const coralB2bAgencyDeckPack = definePack({
   category: 'pitch-decks',
   tags: ['pitch-deck', 'b2b', 'stats', 'corporate'],
   theme: 'light',
-  ...LANDSCAPE,
-  pages: [
-    deckCover(LISTING, keywordSlide, [
-      poweringSlide,
-      aboutSlide,
-      contentsSlide,
-      campaignSlide,
-      matrixSlide,
-      impactSlide,
-      revenueSlide,
-      processSlide,
-    ]),
-    deckShowcase(
-      LISTING,
-      [revenueSlide, teamSlide, workSlide],
-      [processSlide, aboutSlide, poweringSlide, onboardingSlide, contentsSlide],
-    ),
-    deckGrid(LISTING, INTRO),
-    deckGrid(LISTING, DATA),
-    iconSlides(LISTING),
-    deckEditor(LISTING, [...INTRO, revenueSlide, ...DATA]),
-    deckHowTo(LISTING),
+
+  designs: [
+    keywordSlide,
+    poweringSlide,
+    aboutSlide,
+    contentsSlide,
+    campaignSlide,
+    matrixSlide,
+    impactSlide,
+    revenueSlide,
+    processSlide,
+    teamSlide,
+    workSlide,
+    onboardingSlide,
+    ...INTRO,
+    ...DATA,
   ],
 });

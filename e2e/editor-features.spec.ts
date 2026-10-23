@@ -1,7 +1,7 @@
 import { expect, type Page, test } from '@playwright/test';
 
 const openPoster = async (page: Page) => {
-  await page.goto('/posters/court-kings?page=4');
+  await page.goto('/posters/court-kings-04');
   await page.evaluate(() => localStorage.clear());
   await page.reload();
   await expect(page.getByTestId('design-canvas').locator('canvas').first()).toBeVisible();
@@ -62,12 +62,13 @@ test('right-click menu, shortcut sheet and floating toolbar', async ({ page }) =
   await expect(page.getByRole('dialog', { name: 'Keyboard shortcuts' })).toBeVisible();
 });
 
-test('templates panel inserts a page from another pack', async ({ page }) => {
+test('templates panel replaces the canvas with another design', async ({ page }) => {
   await openPoster(page);
-  const pages = page.getByRole('button', { name: /^Page \d+$/ });
-  const before = await pages.count();
   await page.getByRole('button', { name: 'Templates', exact: true }).click();
   await page.getByLabel('Search templates').fill('hiring');
-  await page.getByRole('button', { name: /Insert Hiring Spotlight page 2/ }).click();
-  await expect(pages).toHaveCount(before + 1);
+  await page.getByRole('button', { name: 'Use Hiring Spotlight 2', exact: true }).click();
+  await page.getByRole('button', { name: 'Layers', exact: true }).click();
+  const layers = page.getByRole('list', { name: 'Layers' });
+  await expect(layers.getByText('Meet Priya Nair')).toBeVisible();
+  await expect(layers.getByText('2027 SCHEDULE')).toHaveCount(0);
 });
