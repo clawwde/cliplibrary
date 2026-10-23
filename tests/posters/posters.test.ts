@@ -3,28 +3,29 @@ import { existsSync } from 'node:fs';
 import { join } from 'node:path';
 import { designSchema, isDesignIcon, isKnownFont } from '@/design';
 import {
-  findPosterPack,
-  POSTER_PACK_META,
-  POSTER_PACKS,
+  findPoster,
+  POSTER_META,
   POSTER_PHOTOS,
   POSTER_UPDATED_AT,
+  POSTERS,
   posterPreviewPath,
 } from '@/posters';
 import { publicDir } from '@/render/paths';
 import { CLIP_TAGS, POSTER_CATEGORIES, POSTER_TAGS } from '@/schemas';
 
-const designs = POSTER_PACKS.map((pack) => ({ meta: pack.meta, design: pack.build() }));
+const designs = POSTERS.map((poster) => ({ meta: poster.meta, design: poster.build() }));
 const elements = designs.flatMap(({ meta, design }) =>
-  design.pages.flatMap((page) => page.elements.map((element) => ({ pack: meta.id, element }))),
+  design.elements.map((element) => ({ pack: meta.id, element })),
 );
+const packIds = [...new Set(POSTER_META.map((meta) => meta.packId))];
 
-describe('poster packs', () => {
+describe('posters', () => {
   it('have unique ids and known categories and tags', () => {
-    const ids = POSTER_PACK_META.map((meta) => meta.id);
+    const ids = POSTER_META.map((meta) => meta.id);
     expect(new Set(ids).size).toBe(ids.length);
     const categories: readonly string[] = POSTER_CATEGORIES.map((category) => category.id);
     const tags: readonly string[] = [...POSTER_TAGS, ...CLIP_TAGS];
-    for (const meta of POSTER_PACK_META) {
+    for (const meta of POSTER_META) {
       expect(categories).toContain(meta.category);
       expect(meta.tags.length).toBeGreaterThan(0);
       for (const tag of meta.tags) {
@@ -33,16 +34,26 @@ describe('poster packs', () => {
     }
   });
 
-  it('build valid multi-page designs that match their metadata', () => {
+  it('build valid single designs that match their metadata', () => {
     for (const { meta, design } of designs) {
       expect(designSchema.safeParse(design).success).toBe(true);
-      expect(design.pages).toHaveLength(meta.pageCount);
-      expect({ width: design.width, height: design.height }).toEqual({
-        width: meta.width,
-        height: meta.height,
-      });
-      expect(findPosterPack(meta.id)?.meta).toBe(meta);
+      expect(design.elements.length).toBeGreaterThan(0);
+      expect(design).toMatchObject({ id: meta.id, width: meta.width, height: meta.height });
+      expect(meta.id.startsWith(`${meta.packId}-`)).toBe(true);
+      expect(findPoster(meta.id)?.meta).toBe(meta);
     }
+  });
+
+  it('never repeat the same design within a pack', () => {
+    const signature = ({ design }: (typeof designs)[number]) =>
+      JSON.stringify([
+        design.width,
+        design.height,
+        design.background,
+        design.elements.map(({ id: _id, groupId: _groupId, ...rest }) => rest),
+      ]);
+    const keys = designs.map((entry) => `${entry.meta.packId}:${signature(entry)}`);
+    expect(new Set(keys).size).toBe(keys.length);
   });
 
   it('only use bundled fonts, icons and photos', () => {
@@ -63,17 +74,13 @@ describe('poster packs', () => {
   });
 
   it('records exactly one updated-at timestamp per pack', () => {
-    expect(Object.keys(POSTER_UPDATED_AT).sort()).toEqual(
-      POSTER_PACK_META.map((meta) => meta.id).sort(),
-    );
+    expect(Object.keys(POSTER_UPDATED_AT).sort()).toEqual([...packIds].sort());
   });
 
-  it('ships every bundled photo and a preview for every page', () => {
+  it('ships every bundled photo and a preview for every design', () => {
     const missing = [
       ...Object.values(POSTER_PHOTOS).map((photo) => photo.src),
-      ...POSTER_PACK_META.flatMap((meta) =>
-        Array.from({ length: meta.pageCount }, (_, index) => posterPreviewPath(meta.id, index)),
-      ),
+      ...POSTER_META.map(posterPreviewPath),
     ].filter((path) => !existsSync(join(publicDir, path)));
     expect(missing).toEqual([]);
   });

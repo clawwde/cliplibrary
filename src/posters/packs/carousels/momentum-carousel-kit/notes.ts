@@ -11,7 +11,7 @@ import {
   text,
 } from '../../../kit';
 import type { PosterPhotoName } from '../../../photos';
-import { textWidth } from './listing';
+import { textWidth } from './text-width';
 
 export interface NotesTheme {
   paper: string;

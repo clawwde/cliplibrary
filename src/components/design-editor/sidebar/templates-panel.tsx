@@ -1,60 +1,14 @@
 'use client';
 
 import { Loader2 } from 'lucide-react';
+import Image from 'next/image';
 import { useEffect, useMemo, useState } from 'react';
-import { useInView } from '@/components/gallery/use-in-view';
 import { Input } from '@/components/ui/input';
-import type { PosterPack } from '@/posters/pack';
+import type { Poster } from '@/posters/pack';
+import { posterPreviewPath } from '@/posters/preview-path';
 
-const previewPath = (packId: string, index: number): string =>
-  `/poster-previews/${packId}/${String(index + 1).padStart(2, '0')}.jpg`;
-
-const PackRow = ({
-  pack,
-  onInsert,
-}: {
-  pack: PosterPack;
-  onInsert: (pack: PosterPack, index: number) => void;
-}) => {
-  const { ref, inView } = useInView<HTMLDivElement>();
-  const [shown, setShown] = useState(false);
-  if (inView && !shown) {
-    setShown(true);
-  }
-  const ratio = pack.meta.height / pack.meta.width;
-  return (
-    <div ref={ref} className="flex flex-col gap-1.5">
-      <div className="flex items-baseline justify-between gap-2">
-        <span className="truncate font-medium text-xs">{pack.meta.title}</span>
-        <span className="shrink-0 text-[11px] text-muted-foreground">
-          {pack.meta.pageCount} pages
-        </span>
-      </div>
-      <div className="flex gap-1.5 overflow-x-auto pb-1">
-        {Array.from({ length: pack.meta.pageCount }, (_, index) => (
-          <button
-            type="button"
-            key={previewPath(pack.meta.id, index)}
-            aria-label={`Insert ${pack.meta.title} page ${index + 1}`}
-            onClick={() => onInsert(pack, index)}
-            className="h-20 shrink-0 rounded-md bg-muted bg-center bg-cover ring-violet-500 transition hover:ring-2"
-            style={{
-              width: 80 / ratio,
-              backgroundImage: shown ? `url("${previewPath(pack.meta.id, index)}")` : undefined,
-            }}
-          />
-        ))}
-      </div>
-    </div>
-  );
-};
-
-export const TemplatesPanel = ({
-  onInsert,
-}: {
-  onInsert: (pack: PosterPack, index: number) => void;
-}) => {
-  const [packs, setPacks] = useState<readonly PosterPack[] | null>(null);
+export const TemplatesPanel = ({ onApply }: { onApply: (poster: Poster) => void }) => {
+  const [posters, setPosters] = useState<readonly Poster[] | null>(null);
   const [query, setQuery] = useState('');
 
   useEffect(() => {
@@ -62,7 +16,7 @@ export const TemplatesPanel = ({
     import('@/posters')
       .then((module) => {
         if (active) {
-          setPacks(module.POSTER_PACKS);
+          setPosters(module.POSTERS);
         }
       })
       .catch(() => undefined);
@@ -73,14 +27,14 @@ export const TemplatesPanel = ({
 
   const visible = useMemo(() => {
     const needle = query.trim().toLowerCase();
-    return (packs ?? []).filter(
-      (pack) =>
+    return (posters ?? []).filter(
+      ({ meta }) =>
         needle === '' ||
-        `${pack.meta.title} ${pack.meta.description} ${pack.meta.tags.join(' ')} ${pack.meta.category}`
+        `${meta.title} ${meta.description} ${meta.tags.join(' ')} ${meta.category}`
           .toLowerCase()
           .includes(needle),
     );
-  }, [packs, query]);
+  }, [posters, query]);
 
   return (
     <div className="flex flex-col gap-4">
@@ -92,12 +46,33 @@ export const TemplatesPanel = ({
         className="h-8"
       />
       <p className="text-[11px] text-muted-foreground">
-        Click a page to add it after the current page, resized to this design.
+        Click a template to replace the canvas with it, resized to this design.
       </p>
-      {packs === null ? (
+      {posters === null ? (
         <Loader2 className="mx-auto size-5 animate-spin text-muted-foreground" />
       ) : (
-        visible.map((pack) => <PackRow key={pack.meta.id} pack={pack} onInsert={onInsert} />)
+        <div className="grid grid-cols-2 gap-2">
+          {visible.map((poster) => (
+            <button
+              type="button"
+              key={poster.meta.id}
+              aria-label={`Use ${poster.meta.title}`}
+              title={poster.meta.title}
+              onClick={() => onApply(poster)}
+              className="relative w-full overflow-hidden rounded-md bg-muted ring-violet-500 transition hover:ring-2"
+              style={{ aspectRatio: `${poster.meta.width} / ${poster.meta.height}` }}
+            >
+              <Image
+                src={posterPreviewPath(poster.meta)}
+                alt=""
+                fill
+                unoptimized
+                sizes="140px"
+                className="object-cover"
+              />
+            </button>
+          ))}
+        </div>
       )}
     </div>
   );

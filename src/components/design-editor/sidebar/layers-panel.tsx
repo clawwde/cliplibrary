@@ -41,16 +41,16 @@ const layerLabel = (element: DesignElement): string =>
     : element.name;
 
 export const LayersPanel = ({ editor }: { editor: DesignEditorState }) => {
-  const { page, selectedIds } = editor;
+  const { design, selectedIds } = editor;
   const [dragId, setDragId] = useState<string | null>(null);
   const [renamingId, setRenamingId] = useState<string | null>(null);
-  const layers = [...page.elements].reverse();
+  const layers = [...design.elements].reverse();
 
   if (layers.length === 0) {
     return (
       <div className="flex flex-col items-center gap-2 py-10 text-center text-muted-foreground text-sm">
         <Shapes className="size-6" />
-        Nothing on this page yet.
+        Nothing on the canvas yet.
       </div>
     );
   }
@@ -78,7 +78,7 @@ export const LayersPanel = ({ editor }: { editor: DesignEditorState }) => {
                 if (dragId !== null && dragId !== element.id) {
                   editor.moveLayer(
                     dragId,
-                    page.elements.findIndex((item) => item.id === element.id),
+                    design.elements.findIndex((item) => item.id === element.id),
                   );
                 }
                 setDragId(null);

@@ -14,7 +14,6 @@ const TOOLS = [
   'background',
   'layers',
 ];
-const PAGES = ['first', 'second', 'third', 'fourth'] as const;
 
 const GalleryGridSkeleton = () => (
   <div className="flex flex-col gap-6" role="status" aria-busy aria-label="Loading the library">
@@ -126,11 +125,6 @@ export const DesignEditorSkeleton = () => (
       <div className="flex min-h-0 min-w-0 flex-1 flex-col">
         <div className="flex min-h-0 flex-1 items-center justify-center bg-muted/40 p-6">
           <Skeleton className="aspect-square max-h-full w-full max-w-md bg-background shadow-sm" />
-        </div>
-        <div className="flex h-20 shrink-0 items-center gap-2 border-t px-3 md:h-24">
-          {PAGES.map((page) => (
-            <Skeleton key={page} className="h-16 w-16 shrink-0" />
-          ))}
         </div>
       </div>
       <aside className="hidden w-[280px] shrink-0 border-l lg:block">

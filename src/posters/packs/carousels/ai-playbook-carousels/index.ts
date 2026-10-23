@@ -1,7 +1,4 @@
-import { linear } from '@/design';
-import { editableLaptop, howToStart, type SlideTheme, SQUARE_SIZE } from '../../../kit';
-import { definePack, SQUARE } from '../../../pack';
-import { carouselCover, carouselPage, type ListingStyle } from '../momentum-carousel-kit/listing';
+import { definePack } from '../../../pack';
 import {
   type NotesTheme,
   notesBody,
@@ -11,28 +8,6 @@ import {
 } from '../momentum-carousel-kit/notes';
 import { COMMENT_STEPS, commentsCover, STRATEGY_STEPS, searchCover } from './comment-cards';
 import { NUMBER_STEPS, numbersCover, PILL_STEPS, pillsCover } from './pills-numbers';
-
-const STYLE: ListingStyle = {
-  background: '#e6ecea',
-  text: '#0b2b26',
-  muted: '#3d524d',
-  badge: linear(135, '#14b8a6', '#065f46'),
-  avatar: linear(135, '#0f766e', '#0b2b26'),
-  handle: 'northpeak',
-  feed: 'business',
-};
-
-const DARK: SlideTheme = {
-  background: '#061512',
-  text: '#ffffff',
-  muted: '#cbd5d1',
-  surface: '#ffffff',
-  ink: '#0b2b26',
-  brand: '#0f766e',
-  accent: '#5eead4',
-  headFont: 'Figtree',
-  bodyFont: 'Figtree',
-};
 
 const NIGHT: NotesTheme = {
   paper: '#0c1211',
@@ -80,7 +55,6 @@ const commentsDeck = [commentsCover, ...COMMENT_STEPS] as const;
 const pillsDeck = [pillsCover, ...PILL_STEPS] as const;
 const strategyDeck = [searchCover, ...STRATEGY_STEPS] as const;
 const numbersDeck = [numbersCover, ...NUMBER_STEPS] as const;
-const subtitle = 'Business Feed Post';
 
 export const aiPlaybookCarouselsPack = definePack({
   id: 'ai-playbook-carousels',
@@ -90,48 +64,27 @@ export const aiPlaybookCarouselsPack = definePack({
   category: 'carousels',
   tags: ['carousel', 'linkedin', 'ai', 'b2b'],
   theme: 'light',
-  ...SQUARE,
-  pages: [
-    carouselCover(STYLE, { count: '5', lines: 'Business\nCarousel\nTemplates', pages: '30' }, [
-      commentsDeck,
-      notesDeck,
-      pillsDeck,
-      strategyDeck,
-      numbersDeck,
-    ]),
-    carouselPage(STYLE, 'Carousel Set 01', subtitle, [
-      commentsDeck[0],
-      commentsDeck[1],
-      commentsDeck[2],
-    ]),
-    carouselPage(STYLE, 'Carousel Set 02', subtitle, [notesDeck[0], notesDeck[1], notesDeck[2]]),
-    carouselPage(STYLE, 'Carousel Set 03', subtitle, [pillsDeck[0], pillsDeck[1], pillsDeck[2]]),
-    carouselPage(STYLE, 'Carousel Set 04', subtitle, [
-      strategyDeck[0],
-      strategyDeck[1],
-      strategyDeck[2],
-    ]),
-    carouselPage(STYLE, 'Carousel Set 05', subtitle, [
-      numbersDeck[0],
-      numbersDeck[1],
-      numbersDeck[2],
-    ]),
-    editableLaptop(
-      SQUARE_SIZE,
-      DARK,
-      {
-        title: 'Edit everything in your browser',
-        body: 'Rewrite any slide, swap photos and icons, and recolour the whole set in a few clicks.',
-      },
-      [...commentsDeck, ...notesDeck, ...strategyDeck],
-    ),
-    howToStart(SQUARE_SIZE, DARK, {
-      title: 'Three Easy Steps',
-      steps: [
-        { icon: 'shopping-bag', title: '01 Place order', body: 'Finish a quick checkout' },
-        { icon: 'download', title: '02 Grab the link', body: 'Download the guide' },
-        { icon: 'wand-sparkles', title: '03 Customise', body: 'Open the set and edit' },
-      ],
-    }),
+
+  designs: [
+    ...commentsDeck,
+    ...notesDeck,
+    ...pillsDeck,
+    ...strategyDeck,
+    ...numbersDeck,
+    commentsDeck[0],
+    commentsDeck[1],
+    commentsDeck[2],
+    notesDeck[0],
+    notesDeck[1],
+    notesDeck[2],
+    pillsDeck[0],
+    pillsDeck[1],
+    pillsDeck[2],
+    strategyDeck[0],
+    strategyDeck[1],
+    strategyDeck[2],
+    numbersDeck[0],
+    numbersDeck[1],
+    numbersDeck[2],
   ],
 });

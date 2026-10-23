@@ -1,15 +1,13 @@
-import type { PosterPack, PosterPackMeta } from './pack';
-import { POSTER_PACKS } from './packs';
+import type { Poster, PosterMeta } from './pack';
+import { POSTERS } from './packs';
 
 export * from './pack';
 export * from './photos';
+export * from './preview-path';
 export * from './updated-at';
-export { POSTER_PACKS };
+export { POSTERS };
 
-export const POSTER_PACK_META: readonly PosterPackMeta[] = POSTER_PACKS.map((pack) => pack.meta);
+export const POSTER_META: readonly PosterMeta[] = POSTERS.map((poster) => poster.meta);
 
-export const findPosterPack = (id: string): PosterPack | undefined =>
-  POSTER_PACKS.find((pack) => pack.meta.id === id);
-
-export const posterPreviewPath = (packId: string, pageIndex: number): string =>
-  `/poster-previews/${packId}/${String(pageIndex + 1).padStart(2, '0')}.jpg`;
+export const findPoster = (id: string): Poster | undefined =>
+  POSTERS.find((poster) => poster.meta.id === id);

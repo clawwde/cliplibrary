@@ -1,6 +1,6 @@
 import { linear, NO_FILTERS } from '@/design';
 import { dots, rect, SLIDE_SIZE } from '../../../kit';
-import { typeset } from '../coral-b2b-agency-deck/deck-listing';
+import { typeset } from '../coral-b2b-agency-deck/deck-kit';
 
 export const EV = {
   ink: '#0f2a25',

@@ -1,9 +1,7 @@
 import { linear } from '@/design';
-import { definePack, LANDSCAPE } from '../../../pack';
-import { coverPage, deliverablesPage, editablePage, showcasePage } from './listing';
-import { bonusPage, brandPage, howItWorksPage } from './listing-more';
+import { definePack } from '../../../pack';
 import { type StatsCopy, statTemplates } from './posts';
-import type { ListingCopy, ListingTheme, PostTheme } from './theme';
+import type { PostTheme } from './theme';
 
 const LAGOON: PostTheme = {
   background: linear(200, '#0f7f77', '#04201f'),
@@ -68,47 +66,6 @@ const COPY: StatsCopy = {
   },
 };
 
-const LISTING: ListingTheme = {
-  page: '#020d0c',
-  text: '#ffffff',
-  muted: '#9fb8b5',
-  brand: '#0f8f86',
-  brandDeep: '#042f2c',
-  highlight: '#0d9488',
-  accent: '#c6f432',
-  folder: linear(135, '#b9ef3a', '#0d9488'),
-  ink: '#0b1f1e',
-  headFont: 'Urbanist',
-  bodyFont: 'DM Sans',
-};
-
-const LISTING_COPY: ListingCopy = {
-  kicker: 'Ready-to-Use',
-  title: 'Key Statistics',
-  line: 'SaaS & Tech Marketing Templates',
-  count: '5 Premium Social Media Posts + Story',
-  bonus: 'YOUR BONUS IS INSIDE  →  SWIPE TO SEE IT',
-  showcase: ['Premium', 'SaaS Growth Insights'],
-  showcaseNote: 'Polished layouts, tuned for sharing your numbers',
-  editable: 'Editable\nSocial Post\nTemplates\nOnline',
-  steps: [
-    'Download right after checkout',
-    'Change text, colours and branding in the editor',
-    'Export and share on every channel',
-  ],
-  stepsNote: 'No design skills needed: the editor runs right in your browser.',
-  offers: [
-    'Buy one pack, get another one free.*',
-    'Message us after your order.',
-    'LIMITED TIME: grab it before the offer ends',
-  ],
-  offerNote: '*The free pack must carry the same price or lower.',
-  studio: ['Tidewater', 'Studio'],
-  folder: 'Stat Kit',
-  folderSize: '22.40 MB',
-  handle: 'tidewater.studio',
-};
-
 const MAIN = statTemplates(LAGOON, COPY);
 const ALT = statTemplates(PEACH, COPY);
 
@@ -120,41 +77,15 @@ export const lagoonSaasStatsPack = definePack({
   category: 'social-posts',
   tags: ['stats', 'saas', 'instagram', 'story'],
   theme: 'dark',
-  ...LANDSCAPE,
-  pages: [
-    coverPage(
-      LISTING,
-      LISTING_COPY,
-      [
-        MAIN.results,
-        MAIN.bars,
-        MAIN.leaders,
-        MAIN.useCases,
-        MAIN.profit,
-        MAIN.leaders,
-        MAIN.results,
-      ],
-      MAIN.useCases,
-    ),
-    showcasePage(
-      LISTING,
-      LISTING_COPY,
-      [MAIN.useCases, MAIN.leaders],
-      [MAIN.profit, MAIN.bars, MAIN.results],
-    ),
-    deliverablesPage(LISTING, LISTING_COPY, MAIN.results, MAIN.story),
-    editablePage(LISTING, LISTING_COPY, [
-      [MAIN.useCases, ALT.useCases],
-      [MAIN.results, ALT.results],
-    ]),
-    howItWorksPage(LISTING, LISTING_COPY),
-    bonusPage(LISTING, LISTING_COPY, 'man-portrait-3'),
-    brandPage(LISTING, LISTING_COPY, [
-      MAIN.bars,
-      MAIN.profit,
-      MAIN.useCases,
-      MAIN.leaders,
-      MAIN.results,
-    ]),
+
+  designs: [
+    MAIN.results,
+    MAIN.bars,
+    MAIN.leaders,
+    MAIN.useCases,
+    MAIN.profit,
+    MAIN.story,
+    ALT.useCases,
+    ALT.results,
   ],
 });

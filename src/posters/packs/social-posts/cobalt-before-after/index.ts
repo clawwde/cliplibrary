@@ -1,11 +1,6 @@
-import { linear } from '@/design';
-import { definePack, LANDSCAPE } from '../../../pack';
-import { coverPage, deliverablesPage, editablePage } from '../lagoon-saas-stats/listing';
-import { bonusPage, brandPage, howItWorksPage } from '../lagoon-saas-stats/listing-more';
-import type { ListingCopy, ListingTheme } from '../lagoon-saas-stats/theme';
+import { definePack } from '../../../pack';
 import type { ShiftTheme } from './posts';
 import { type ShiftCopy, shiftTemplates } from './posts-more';
-import { transformationShowcase } from './showcase';
 
 const COBALT: ShiftTheme = {
   brand: '#2f5bff',
@@ -71,47 +66,6 @@ const COPY: ShiftCopy = {
   },
 };
 
-const LISTING: ListingTheme = {
-  page: '#05070f',
-  text: '#ffffff',
-  muted: '#a3acc7',
-  brand: '#2f5bff',
-  brandDeep: '#0d1a66',
-  highlight: '#2f5bff',
-  accent: '#ffd23f',
-  folder: linear(135, '#9db5ff', '#2f5bff'),
-  ink: '#0b0d14',
-  headFont: 'Manrope',
-  bodyFont: 'Inter',
-};
-
-const LISTING_COPY: ListingCopy = {
-  kicker: 'Ready-to-Use',
-  title: 'Before vs After',
-  line: 'Small Business Marketing',
-  count: '5 Premium Social Media Posts + Story',
-  bonus: 'A BONUS IS WAITING  →  SWIPE TO UNLOCK IT',
-  showcase: ['Premium', 'Transformation Posts'],
-  showcaseNote: '',
-  editable: 'Editable\nSocial Post\nTemplates\nOnline',
-  steps: [
-    'Download instantly after checkout',
-    'Swap text, colours and photos in the editor',
-    'Export and share on your channels',
-  ],
-  stepsNote: 'No design skills needed: it all works in your browser.',
-  offers: [
-    'Order one pack, get a second free.*',
-    'Message us once you have ordered.',
-    'LIMITED TIME: claim it before it ends',
-  ],
-  offerNote: '*The free pack must be the same price or lower.',
-  studio: ['Northpier', 'Studio'],
-  folder: 'Shift Kit',
-  folderSize: '21.65 MB',
-  handle: 'northpier.studio',
-};
-
 const MAIN = shiftTemplates(COBALT, COPY);
 const ALT = shiftTemplates(SAGE, COPY);
 
@@ -123,37 +77,15 @@ export const cobaltBeforeAfterPack = definePack({
   category: 'social-posts',
   tags: ['comparison', 'small-business', 'instagram', 'story', 'tips'],
   theme: 'dark',
-  ...LANDSCAPE,
-  pages: [
-    coverPage(
-      LISTING,
-      LISTING_COPY,
-      [MAIN.problem, MAIN.dos, MAIN.direction, MAIN.hook, MAIN.problem, MAIN.myth, MAIN.direction],
-      MAIN.myth,
-    ),
-    transformationShowcase(
-      LISTING,
-      {
-        title: 'Social Media Posts\nTransformation',
-        note: 'Finished layouts, built to spark conversations',
-        stamp: 'Premium',
-      },
-      [MAIN.direction, MAIN.hook],
-      [MAIN.myth, MAIN.problem, MAIN.dos],
-    ),
-    deliverablesPage(LISTING, LISTING_COPY, MAIN.hook, MAIN.story),
-    editablePage(LISTING, LISTING_COPY, [
-      [MAIN.myth, ALT.myth],
-      [MAIN.dos, ALT.dos],
-    ]),
-    howItWorksPage(LISTING, LISTING_COPY),
-    bonusPage(LISTING, LISTING_COPY, 'woman-portrait-5'),
-    brandPage(LISTING, LISTING_COPY, [
-      MAIN.myth,
-      MAIN.dos,
-      MAIN.problem,
-      MAIN.direction,
-      MAIN.hook,
-    ]),
+
+  designs: [
+    MAIN.problem,
+    MAIN.dos,
+    MAIN.direction,
+    MAIN.hook,
+    MAIN.myth,
+    MAIN.story,
+    ALT.myth,
+    ALT.dos,
   ],
 });

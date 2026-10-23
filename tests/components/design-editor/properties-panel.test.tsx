@@ -6,7 +6,6 @@ import {
   createDesign,
   createIcon,
   createImage,
-  createPage,
   createRect,
   createText,
   type DesignElement,
@@ -14,7 +13,7 @@ import {
 
 const setup = (element: DesignElement) => {
   const hook = renderHook(() =>
-    useDesignEditor(createDesign({ pages: [createPage('#fff', [element])] })),
+    useDesignEditor(createDesign({ background: '#fff', elements: [element] })),
   );
   act(() => hook.result.current.select([element.id]));
   const view = render(<PropertiesPanel editor={hook.result.current} />);
@@ -37,7 +36,7 @@ describe('PropertiesPanel', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Italic' }));
     rerender();
     fireEvent.click(screen.getByRole('button', { name: 'Uppercase' }));
-    const text = hook.result.current.page.elements[0];
+    const text = hook.result.current.design.elements[0];
     expect(text).toMatchObject({ text: 'Hiring now', italic: true, uppercase: true });
   });
 
@@ -48,7 +47,7 @@ describe('PropertiesPanel', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Fit contain' }));
     rerender();
     fireEvent.click(screen.getByRole('button', { name: 'Flip horizontal' }));
-    const image = hook.result.current.page.elements[0];
+    const image = hook.result.current.design.elements[0];
     expect(image).toMatchObject({ fit: 'contain', flipX: true, filters: { grayscale: 1 } });
   });
 
@@ -57,7 +56,7 @@ describe('PropertiesPanel', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Icon rocket' }));
     rerender();
     fireEvent.click(screen.getByRole('switch', { name: 'Toggle shadow' }));
-    const icon = hook.result.current.page.elements[0];
+    const icon = hook.result.current.design.elements[0];
     expect(icon).toMatchObject({ icon: 'rocket', shadow: { blur: 24 } });
   });
 
@@ -65,8 +64,8 @@ describe('PropertiesPanel', () => {
     const { hook, rerender } = setup(createRect({ id: 'r' }));
     fireEvent.click(screen.getByRole('button', { name: 'Fill linear' }));
     rerender();
-    expect(hook.result.current.page.elements[0]).toMatchObject({ fill: { type: 'linear' } });
+    expect(hook.result.current.design.elements[0]).toMatchObject({ fill: { type: 'linear' } });
     fireEvent.click(screen.getByRole('button', { name: 'Duplicate' }));
-    expect(hook.result.current.page.elements).toHaveLength(2);
+    expect(hook.result.current.design.elements).toHaveLength(2);
   });
 });

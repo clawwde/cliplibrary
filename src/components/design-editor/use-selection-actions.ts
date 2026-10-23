@@ -33,7 +33,7 @@ const isToggled = (element: DesignElement, toggle: TextToggle): boolean => {
 
 export const useSelectionActions = (editor: DesignEditorState) => {
   const styleClipboard = useRef<DesignElement | null>(null);
-  const { selectedElements, page, design } = editor;
+  const { selectedElements, design } = editor;
 
   const copyStyle = useCallback(() => {
     styleClipboard.current = selectedElements[0] ?? null;
@@ -48,7 +48,7 @@ export const useSelectionActions = (editor: DesignEditorState) => {
 
   const selectNext = useCallback(
     (direction: 1 | -1) => {
-      const candidates = page.elements.filter((element) => !(element.locked || element.hidden));
+      const candidates = design.elements.filter((element) => !(element.locked || element.hidden));
       if (candidates.length === 0) {
         return;
       }
@@ -64,7 +64,7 @@ export const useSelectionActions = (editor: DesignEditorState) => {
         editor.select([target.id]);
       }
     },
-    [editor, page.elements],
+    [editor, design.elements],
   );
 
   const toggleHidden = useCallback(() => {
@@ -110,7 +110,7 @@ export const useSelectionActions = (editor: DesignEditorState) => {
       cornerRadius: 0,
       locked: true,
     };
-    editor.transformPage((current) =>
+    editor.transform((current) =>
       reorderElements(
         updateElements(current, [image.id], () => background),
         [image.id],

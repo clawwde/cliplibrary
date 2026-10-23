@@ -23,7 +23,7 @@ interface SalePalette {
   onMain: string;
 }
 
-export const GOLD: SalePalette = {
+const GOLD: SalePalette = {
   main: '#ffc400',
   ink: '#0a0a0a',
   paper: '#ffffff',

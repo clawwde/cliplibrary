@@ -1,5 +1,5 @@
 import { type Template, template, text } from '../../../kit';
-import { trail } from '../coral-tide-carousels/showcase';
+import { trail } from '../coral-tide-carousels/slide-kit';
 import {
   BODY,
   bodyText,

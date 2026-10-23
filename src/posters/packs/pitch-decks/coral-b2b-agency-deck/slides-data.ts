@@ -1,5 +1,5 @@
 import { circle, icon, pill, poly, rect, template } from '../../../kit';
-import { donut } from './deck-listing';
+import { donut } from './deck-kit';
 import { backdrop, body, head, marker, NV, SH, SW } from './theme';
 
 const BOLT = [

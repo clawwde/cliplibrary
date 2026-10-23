@@ -1,6 +1,6 @@
 import { linear } from '@/design';
 import { POST_SIZE, rect, text } from '../../../kit';
-import { trail } from '../coral-tide-carousels/showcase';
+import { trail } from '../coral-tide-carousels/slide-kit';
 
 export const LEAF = {
   deep: '#04231b',

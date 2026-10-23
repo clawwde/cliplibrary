@@ -26,7 +26,7 @@ interface StatPalette {
   soft: string;
 }
 
-export const RUBY: StatPalette = {
+const RUBY: StatPalette = {
   top: '#e11d48',
   deep: '#22040c',
   accent: '#fbbf24',
@@ -318,7 +318,7 @@ const growAt = (p: StatPalette, height: number): Template => {
   ]);
 };
 
-export const growProfit = (p: StatPalette) => growAt(p, H);
+const growProfit = (p: StatPalette) => growAt(p, H);
 
 export const growStory = growAt(RUBY, STORY_SIZE.height);
 

@@ -1,13 +1,4 @@
-import { linear } from '@/design';
-import { definePack, LANDSCAPE } from '../../../pack';
-import {
-  coverPage,
-  deliverablesPage,
-  editablePage,
-  showcasePage,
-} from '../lagoon-saas-stats/listing';
-import { bonusPage, brandPage, howItWorksPage } from '../lagoon-saas-stats/listing-more';
-import type { ListingCopy, ListingTheme } from '../lagoon-saas-stats/theme';
+import { definePack } from '../../../pack';
 import type { EventTheme } from './posts';
 import { type EventsCopy, eventTemplates } from './posts-more';
 
@@ -95,47 +86,6 @@ const COPY: EventsCopy = {
   },
 };
 
-const LISTING: ListingTheme = {
-  page: '#0d0618',
-  text: '#ffffff',
-  muted: '#b9a8d9',
-  brand: '#7c3aed',
-  brandDeep: '#2e1065',
-  highlight: '#6d28d9',
-  accent: '#ffd166',
-  folder: linear(135, '#c4b5fd', '#6d28d9'),
-  ink: '#160a2e',
-  headFont: 'Figtree',
-  bodyFont: 'Inter',
-};
-
-const LISTING_COPY: ListingCopy = {
-  kicker: 'Ready-to-Use',
-  title: 'Dates & Events',
-  line: 'Small Business Marketing',
-  count: '5 Premium Social Media Posts + Story',
-  bonus: 'YOUR BONUS IS INSIDE  →  SWIPE TO SEE IT',
-  showcase: ['Premium', 'Event Announcements'],
-  showcaseNote: 'Finished layouts, ready to fill your calendar',
-  editable: 'Editable\nSocial Post\nTemplates\nOnline',
-  steps: [
-    'Download your files after checkout',
-    'Change dates, colours and branding in the editor',
-    'Export and post on your social media',
-  ],
-  stepsNote: 'No design skills needed: the editor runs right in your browser.',
-  offers: [
-    'Buy one pack, get a second one free.*',
-    'Message us after your purchase.',
-    'LIMITED TIME: buy before the offer ends',
-  ],
-  offerNote: '*The free pack must carry the same price or lower.',
-  studio: ['Lilacline', 'Studio'],
-  folder: 'Event Kit',
-  folderSize: '24.10 MB',
-  handle: 'lilacline.studio',
-};
-
 const MAIN = eventTemplates(VIOLET, COPY);
 const ALT = eventTemplates(MINT, COPY);
 
@@ -147,27 +97,15 @@ export const violetKeyDatesPack = definePack({
   category: 'social-posts',
   tags: ['event', 'small-business', 'instagram', 'story'],
   theme: 'dark',
-  ...LANDSCAPE,
-  pages: [
-    coverPage(
-      LISTING,
-      LISTING_COPY,
-      [MAIN.day, MAIN.month, MAIN.save, MAIN.planner, MAIN.month, MAIN.agenda, MAIN.save],
-      MAIN.month,
-    ),
-    showcasePage(
-      LISTING,
-      LISTING_COPY,
-      [MAIN.day, MAIN.planner],
-      [MAIN.month, MAIN.save, MAIN.agenda],
-    ),
-    deliverablesPage(LISTING, LISTING_COPY, MAIN.day, MAIN.story),
-    editablePage(LISTING, LISTING_COPY, [
-      [MAIN.month, ALT.month],
-      [MAIN.agenda, ALT.agenda],
-    ]),
-    howItWorksPage(LISTING, LISTING_COPY),
-    bonusPage(LISTING, LISTING_COPY, 'man-portrait-2'),
-    brandPage(LISTING, LISTING_COPY, [MAIN.month, MAIN.agenda, MAIN.save, MAIN.day, MAIN.planner]),
+
+  designs: [
+    MAIN.day,
+    MAIN.month,
+    MAIN.save,
+    MAIN.planner,
+    MAIN.agenda,
+    MAIN.story,
+    ALT.month,
+    ALT.agenda,
   ],
 });

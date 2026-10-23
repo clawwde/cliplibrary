@@ -1,7 +1,5 @@
-import { linear } from '@/design';
-import { definePack, SQUARE } from '../../../pack';
+import { definePack } from '../../../pack';
 import { cardBack, cardFront, coverLetter } from './letter';
-import { cardsPage, editablePage, howToPage, paperPage, sheetPage } from './listing';
 import { resume } from './resume';
 
 export const garnetMonogramResumePack = definePack({
@@ -12,12 +10,6 @@ export const garnetMonogramResumePack = definePack({
   category: 'resumes',
   tags: ['resume', 'business-card', 'corporate', 'freelance'],
   theme: 'light',
-  ...SQUARE,
-  pages: [
-    paperPage(resume),
-    cardsPage(cardFront, cardBack),
-    sheetPage(coverLetter),
-    editablePage(resume),
-    howToPage(linear(135, '#f9a8c6', '#c2185b')),
-  ],
+
+  designs: [resume, cardFront, cardBack, coverLetter],
 });

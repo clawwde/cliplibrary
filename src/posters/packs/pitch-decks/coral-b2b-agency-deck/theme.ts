@@ -1,5 +1,5 @@
 import { rect, SLIDE_SIZE } from '../../../kit';
-import { typeset } from './deck-listing';
+import { typeset } from './deck-kit';
 
 export const NV = {
   plum: '#2b1236',

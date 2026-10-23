@@ -1,14 +1,7 @@
 import { linear } from '@/design';
-import { definePack, LANDSCAPE } from '../../../pack';
-import {
-  coverPage,
-  deliverablesPage,
-  editablePage,
-  showcasePage,
-} from '../lagoon-saas-stats/listing';
-import { bonusPage, brandPage, howItWorksPage } from '../lagoon-saas-stats/listing-more';
+import { definePack } from '../../../pack';
 import { type StatsCopy, statTemplates } from '../lagoon-saas-stats/posts';
-import type { ListingCopy, ListingTheme, PostTheme } from '../lagoon-saas-stats/theme';
+import type { PostTheme } from '../lagoon-saas-stats/theme';
 
 const SUN: PostTheme = {
   background: '#ffc83d',
@@ -83,47 +76,6 @@ const COPY: StatsCopy = {
   },
 };
 
-const LISTING: ListingTheme = {
-  page: '#070b1d',
-  text: '#ffffff',
-  muted: '#a9b1d6',
-  brand: '#e8a200',
-  brandDeep: '#1a2350',
-  highlight: '#e39b00',
-  accent: '#ffc83d',
-  folder: linear(135, '#ffd95e', '#f08c00'),
-  ink: '#101a3a',
-  headFont: 'Outfit',
-  bodyFont: 'Inter',
-};
-
-const LISTING_COPY: ListingCopy = {
-  kicker: 'Ready-to-Use',
-  title: 'Shop Statistics',
-  line: 'Small Business Marketing',
-  count: '5 Premium Social Media Posts + Story',
-  bonus: 'A FREE BONUS IS WAITING  →  SWIPE TO FIND IT',
-  showcase: ['Premium', 'Small Business Numbers'],
-  showcaseNote: 'Finished designs, made to make your figures pop',
-  editable: 'Editable\nSocial Post\nTemplates\nOnline',
-  steps: [
-    'Grab your files right after checkout',
-    'Edit numbers, colours and logo in the editor',
-    'Download and post on your social pages',
-  ],
-  stepsNote: 'No design skills needed: everything works in your browser.',
-  offers: [
-    'Buy one pack, pick a second one free.*',
-    'Send us a note after you order.',
-    'LIMITED TIME: the offer closes soon',
-  ],
-  offerNote: '*The second pack must be the same price or lower.',
-  studio: ['Brightside', 'Studio'],
-  folder: 'Shop Stats',
-  folderSize: '19.85 MB',
-  handle: 'brightside.studio',
-};
-
 const MAIN = statTemplates(SUN, COPY);
 const DARK = statTemplates(NAVY, COPY);
 const ALT = statTemplates(BERRY, COPY);
@@ -136,41 +88,15 @@ export const sunbeamShopStatsPack = definePack({
   category: 'social-posts',
   tags: ['stats', 'small-business', 'instagram', 'story'],
   theme: 'dark',
-  ...LANDSCAPE,
-  pages: [
-    coverPage(
-      LISTING,
-      LISTING_COPY,
-      [
-        MAIN.results,
-        DARK.profit,
-        MAIN.useCases,
-        DARK.leaders,
-        MAIN.results,
-        DARK.leaders,
-        MAIN.bars,
-      ],
-      DARK.profit,
-    ),
-    showcasePage(
-      LISTING,
-      LISTING_COPY,
-      [DARK.leaders, MAIN.results],
-      [MAIN.bars, DARK.profit, MAIN.useCases],
-    ),
-    deliverablesPage(LISTING, LISTING_COPY, DARK.leaders, MAIN.story),
-    editablePage(LISTING, LISTING_COPY, [
-      [MAIN.results, ALT.results],
-      [DARK.leaders, ALT.leaders],
-    ]),
-    howItWorksPage(LISTING, LISTING_COPY),
-    bonusPage(LISTING, LISTING_COPY, 'man-portrait-1'),
-    brandPage(LISTING, LISTING_COPY, [
-      MAIN.bars,
-      DARK.profit,
-      MAIN.useCases,
-      DARK.leaders,
-      MAIN.results,
-    ]),
+
+  designs: [
+    MAIN.results,
+    DARK.profit,
+    MAIN.useCases,
+    DARK.leaders,
+    MAIN.bars,
+    MAIN.story,
+    ALT.results,
+    ALT.leaders,
   ],
 });

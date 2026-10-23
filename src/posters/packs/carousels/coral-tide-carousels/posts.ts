@@ -1,6 +1,6 @@
 import { circle, icon, pill, rect, type Template, template, text } from '../../../kit';
 import { BODY, brandFooter, darkBackground, H, HEAD, TIDE, W } from './palette';
-import { trail } from './showcase';
+import { trail } from './slide-kit';
 
 const highlight = (label: string, x: number, y: number, size: number) => {
   const width = label.length * size * 0.7 + size * 0.9;

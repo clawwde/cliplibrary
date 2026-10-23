@@ -41,7 +41,7 @@ export const useElementInteractions = ({
   onContextMenu,
   onDragging,
 }: InteractionOptions) => {
-  const { design, page, selectedIds } = editor;
+  const { design, selectedIds } = editor;
   const snapTargets = useRef<{ x: number[]; y: number[] }>({ x: [], y: [] });
   const dragOrigin = useRef<Point | null>(null);
 
@@ -49,7 +49,7 @@ export const useElementInteractions = ({
     (movingIds: readonly string[]) => {
       const xs = [0, design.width / 2, design.width];
       const ys = [0, design.height / 2, design.height];
-      for (const element of page.elements) {
+      for (const element of design.elements) {
         if (movingIds.includes(element.id) || element.hidden) {
           continue;
         }
@@ -62,7 +62,7 @@ export const useElementInteractions = ({
       }
       snapTargets.current = { x: xs, y: ys };
     },
-    [design.height, design.width, findNode, localBox, page.elements],
+    [design.height, design.width, findNode, localBox, design.elements],
   );
 
   const snapNode = useCallback(
@@ -133,8 +133,8 @@ export const useElementInteractions = ({
           const ids = moving();
           collectSnapTargets(ids);
           if (event.evt.altKey) {
-            const copies = page.elements.filter((item) => ids.includes(item.id));
-            editor.transformPage((current) => pasteElements(current, copies, 0).page);
+            const copies = design.elements.filter((item) => ids.includes(item.id));
+            editor.transform((current) => pasteElements(current, copies, 0).design);
           }
         },
         onDragMove: (event) => {
@@ -160,7 +160,7 @@ export const useElementInteractions = ({
           const updates = new Map<string, DesignElement>();
           for (const id of moving()) {
             const node = findNode(id);
-            const current = page.elements.find((item) => item.id === id);
+            const current = design.elements.find((item) => item.id === id);
             if (node !== undefined && current !== undefined) {
               updates.set(id, { ...current, x: node.x(), y: node.y() });
             }
@@ -177,7 +177,7 @@ export const useElementInteractions = ({
       onDragging,
       onGuides,
       onHover,
-      page.elements,
+      design.elements,
       selectedIds,
       snapEnabled,
       snapNode,

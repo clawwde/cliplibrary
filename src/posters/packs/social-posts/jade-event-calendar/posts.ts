@@ -23,7 +23,7 @@ export interface EventPalette {
   soft: string;
 }
 
-export const JADE: EventPalette = {
+const JADE: EventPalette = {
   top: '#0f9f8a',
   deep: '#032520',
   accent: '#c6f25e',
@@ -73,7 +73,7 @@ const CALENDAR = [
   { day: '30', weekday: 'Monday' },
 ];
 
-export const monthEvents = (p: EventPalette) =>
+const monthEvents = (p: EventPalette) =>
   template(W, H, () => [
     rect(0, 0, W, H, linear(160, p.deep, p.top), { name: 'Background' }),
     text('Upcoming', 80, 80, 600, {

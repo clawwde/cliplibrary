@@ -25,7 +25,7 @@ export interface VideoGalleryItem {
 export interface PosterGalleryItem {
   kind: 'poster';
   meta: GalleryMeta;
-  previews: readonly string[];
+  preview: string;
   width: number;
   height: number;
 }

@@ -15,22 +15,20 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import type { Design } from '@/design';
-import { exportJson, exportPages, exportPdf } from './export-design';
+import { exportImage, exportJson, exportPdf } from './export-design';
 
 interface DownloadMenuProps {
   design: Design;
-  pageId: string;
   busy: boolean;
   run: (task: () => Promise<void> | void) => void;
 }
 
 const SCALES = ['1', '2', '3'] as const;
 
-export const DownloadMenu = ({ design, pageId, busy, run }: DownloadMenuProps) => {
+export const DownloadMenu = ({ design, busy, run }: DownloadMenuProps) => {
   const [scale, setScale] = useState<(typeof SCALES)[number]>('1');
   const [transparent, setTransparent] = useState(false);
   const factor = Number(scale);
-  const allPages = design.pages.map((page) => page.id);
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -68,24 +66,13 @@ export const DownloadMenu = ({ design, pageId, busy, run }: DownloadMenuProps) =
           Transparent background (PNG)
         </DropdownMenuCheckboxItem>
         <DropdownMenuSeparator />
-        <DropdownMenuLabel>This page</DropdownMenuLabel>
         <DropdownMenuItem
-          onSelect={() => run(() => exportPages(design, [pageId], 'png', factor, transparent))}
+          onSelect={() => run(() => exportImage(design, 'png', factor, transparent))}
         >
           PNG
         </DropdownMenuItem>
-        <DropdownMenuItem onSelect={() => run(() => exportPages(design, [pageId], 'jpg', factor))}>
+        <DropdownMenuItem onSelect={() => run(() => exportImage(design, 'jpg', factor))}>
           JPG
-        </DropdownMenuItem>
-        <DropdownMenuSeparator />
-        <DropdownMenuLabel>All {design.pages.length} pages</DropdownMenuLabel>
-        <DropdownMenuItem
-          onSelect={() => run(() => exportPages(design, allPages, 'png', factor, transparent))}
-        >
-          PNG files
-        </DropdownMenuItem>
-        <DropdownMenuItem onSelect={() => run(() => exportPages(design, allPages, 'jpg', factor))}>
-          JPG files
         </DropdownMenuItem>
         <DropdownMenuItem onSelect={() => run(() => exportPdf(design, factor))}>
           PDF

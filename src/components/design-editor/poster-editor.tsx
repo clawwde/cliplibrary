@@ -4,27 +4,18 @@ import dynamic from 'next/dynamic';
 import { DesignEditorSkeleton } from '@/components/skeletons';
 import type { Design } from '@/design';
 
-const pageIndexFrom = (value: string | null, pageCount: number): number => {
-  const parsed = Number(value);
-  return Number.isInteger(parsed) && parsed >= 1 && parsed <= pageCount ? parsed - 1 : 0;
-};
-
 interface PosterEditorProps {
-  packId: string;
+  posterId: string;
   design: Design;
 }
 
 export const PosterEditor = dynamic(
   () =>
     import('./design-editor').then(({ DesignEditor }) => {
-      const PosterDesignEditor = ({ packId, design }: PosterEditorProps) => (
+      const PosterDesignEditor = ({ posterId, design }: PosterEditorProps) => (
         <DesignEditor
           initialDesign={design}
-          initialPageIndex={pageIndexFrom(
-            new URLSearchParams(window.location.search).get('page'),
-            design.pages.length,
-          )}
-          storageKey={`cliplibrary-poster:${packId}`}
+          storageKey={`cliplibrary-poster:${posterId}`}
           backHref="/?type=poster"
           initialPanel="elements"
         />

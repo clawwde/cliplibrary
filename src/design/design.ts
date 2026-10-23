@@ -2,21 +2,15 @@ import { z } from 'zod';
 import { designElementSchema } from './element';
 import { fillSchema } from './fill';
 
-export const pageSchema = z.object({
-  id: z.string().min(1),
-  background: fillSchema,
-  elements: z.array(designElementSchema),
-});
-
 export const designSchema = z.object({
   id: z.string().min(1),
   title: z.string(),
   width: z.number().int().positive(),
   height: z.number().int().positive(),
-  pages: z.array(pageSchema).min(1),
+  background: fillSchema,
+  elements: z.array(designElementSchema),
 });
 
-export type Page = z.infer<typeof pageSchema>;
 export type Design = z.infer<typeof designSchema>;
 
 export interface DesignFormat {

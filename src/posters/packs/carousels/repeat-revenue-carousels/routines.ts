@@ -11,7 +11,7 @@ import {
   template,
   text,
 } from '../../../kit';
-import { textWidth } from '../momentum-carousel-kit/listing';
+import { textWidth } from '../momentum-carousel-kit/text-width';
 import { BLUSH, DEEP, FONT, LEAF, MINT, SITE, WINE } from './levers';
 
 const { width: W, height: H } = POST_SIZE;

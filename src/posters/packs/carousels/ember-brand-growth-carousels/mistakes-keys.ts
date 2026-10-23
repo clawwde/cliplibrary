@@ -1,6 +1,6 @@
 import { type DesignIconName, linear } from '@/design';
 import { circle, icon, POST_SIZE, poly, rect, template, text } from '../../../kit';
-import { textWidth } from '../momentum-carousel-kit/listing';
+import { textWidth } from '../momentum-carousel-kit/text-width';
 
 const { width: W, height: H } = POST_SIZE;
 const FONT = 'Manrope';

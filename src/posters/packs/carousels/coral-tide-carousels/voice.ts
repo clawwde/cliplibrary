@@ -1,6 +1,6 @@
 import { circle, icon, type Template, template, text } from '../../../kit';
 import { BODY, BRAND, darkBackground, H, HEAD, TIDE, W } from './palette';
-import { trail } from './showcase';
+import { trail } from './slide-kit';
 
 const LOW = 1180;
 const TITLE_Y = 300;

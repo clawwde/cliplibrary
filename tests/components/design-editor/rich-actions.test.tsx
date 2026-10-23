@@ -7,7 +7,6 @@ import {
   applyStyle,
   createDesign,
   createImage,
-  createPage,
   createRect,
   createText,
   stepFontSize,
@@ -113,7 +112,7 @@ describe('selection actions', () => {
     ];
     return renderHook(() => {
       const editor = useDesignEditor(
-        createDesign({ width: 1000, height: 800, pages: [createPage('#fff', elements)] }),
+        createDesign({ width: 1000, height: 800, background: '#fff', elements: elements }),
       );
       return { editor, actions: useSelectionActions(editor) };
     });
@@ -125,7 +124,7 @@ describe('selection actions', () => {
     act(() => result.current.actions.toggleTextStyle('italic'));
     act(() => result.current.actions.stepTextSize(1));
     act(() => result.current.actions.toggleHidden());
-    expect(result.current.editor.page.elements[0]).toMatchObject({
+    expect(result.current.editor.design.elements[0]).toMatchObject({
       italic: true,
       fontSize: 48,
       hidden: true,
@@ -141,14 +140,14 @@ describe('selection actions', () => {
     act(() => result.current.actions.selectNext(1));
     expect(result.current.editor.selectedIds).toEqual(['t']);
     act(() => result.current.actions.pasteStyle());
-    expect(result.current.editor.page.elements[0]).toMatchObject({ fill: '#00ff00' });
+    expect(result.current.editor.design.elements[0]).toMatchObject({ fill: '#00ff00' });
   });
 
   it('turns an image into a locked page background at the back', () => {
     const { result } = setup();
     act(() => result.current.editor.select(['i']));
     act(() => result.current.actions.setAsBackground());
-    expect(result.current.editor.page.elements[0]).toMatchObject({
+    expect(result.current.editor.design.elements[0]).toMatchObject({
       id: 'i',
       x: 0,
       y: 0,

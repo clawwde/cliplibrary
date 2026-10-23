@@ -27,7 +27,7 @@ test('the clip editor switches between properties and timeline on a phone', asyn
 });
 
 test('the poster editor opens tools in a bottom sheet on a phone', async ({ page }) => {
-  await page.goto('/posters/court-kings');
+  await page.goto('/posters/court-kings-01');
   await expect(page.getByTestId('design-canvas').locator('canvas').first()).toBeVisible();
   expect(await pageWidth(page)).toBe(0);
   await page.getByRole('button', { name: 'Text', exact: true }).click();
