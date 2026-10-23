@@ -52,7 +52,7 @@ interface EditorView {
 
 const ResizeItems = ({ onResize }: { onResize: (width: number, height: number) => void }) => (
   <>
-    <DropdownMenuLabel>Resize all pages</DropdownMenuLabel>
+    <DropdownMenuLabel>Resize design</DropdownMenuLabel>
     {DESIGN_FORMATS.map((format) => (
       <DropdownMenuItem key={format.id} onSelect={() => onResize(format.width, format.height)}>
         <span className="flex-1">{format.label}</span>
@@ -286,7 +286,7 @@ export const EditorHeader = ({
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
-        <DownloadMenu design={design} pageId={editor.pageId} busy={busy} run={run} />
+        <DownloadMenu design={design} busy={busy} run={run} />
       </div>
       {error === null ? null : (
         <p

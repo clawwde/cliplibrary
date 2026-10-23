@@ -1,7 +1,7 @@
 'use client';
 
 import { type Design, designSchema } from '@/design';
-import { renderPageBlob, renderPageDataUrl } from './render-page';
+import { renderDesignBlob, renderDesignDataUrl } from './render-design';
 
 export const designFileName = (title: string): string =>
   title
@@ -18,59 +18,38 @@ const downloadBlob = (blob: Blob, fileName: string): void => {
   setTimeout(() => URL.revokeObjectURL(url), 1000);
 };
 
-export const exportPages = async (
+export const exportImage = async (
   design: Design,
-  pageIds: readonly string[],
   format: 'png' | 'jpg',
   scale: number,
   transparent = false,
 ): Promise<void> => {
-  const base = designFileName(design.title);
-  const pages = design.pages
-    .filter((page) => pageIds.includes(page.id))
-    .map((page) =>
-      transparent && format === 'png' ? { ...page, background: 'rgba(0,0,0,0)' } : page,
-    );
-  await pages.reduce<Promise<void>>(
-    (previous, page, index) =>
-      previous.then(async () => {
-        const blob = await renderPageBlob(design, page, {
-          pixelRatio: scale,
-          mimeType: format === 'png' ? 'image/png' : 'image/jpeg',
-          quality: 0.95,
-        });
-        const suffix = pages.length > 1 ? `-${index + 1}` : '';
-        downloadBlob(blob, `${base}${suffix}.${format}`);
-      }),
-    Promise.resolve(),
+  const blob = await renderDesignBlob(
+    transparent && format === 'png' ? { ...design, background: 'rgba(0,0,0,0)' } : design,
+    {
+      pixelRatio: scale,
+      mimeType: format === 'png' ? 'image/png' : 'image/jpeg',
+      quality: 0.95,
+    },
   );
+  downloadBlob(blob, `${designFileName(design.title)}.${format}`);
 };
 
 export const exportPdf = async (design: Design, scale: number): Promise<void> => {
   const { jsPDF } = await import('jspdf');
-  const orientation = design.width >= design.height ? 'landscape' : 'portrait';
   const pdf = new jsPDF({
-    orientation,
+    orientation: design.width >= design.height ? 'landscape' : 'portrait',
     unit: 'px',
     format: [design.width, design.height],
     hotfixes: ['px_scaling'],
     compress: true,
   });
-  await design.pages.reduce<Promise<void>>(
-    (previous, page, index) =>
-      previous.then(async () => {
-        const dataUrl = await renderPageDataUrl(design, page, {
-          pixelRatio: scale,
-          mimeType: 'image/jpeg',
-          quality: 0.92,
-        });
-        if (index > 0) {
-          pdf.addPage([design.width, design.height], orientation);
-        }
-        pdf.addImage(dataUrl, 'JPEG', 0, 0, design.width, design.height);
-      }),
-    Promise.resolve(),
-  );
+  const dataUrl = await renderDesignDataUrl(design, {
+    pixelRatio: scale,
+    mimeType: 'image/jpeg',
+    quality: 0.92,
+  });
+  pdf.addImage(dataUrl, 'JPEG', 0, 0, design.width, design.height);
   pdf.save(`${designFileName(design.title)}.pdf`);
 };
 

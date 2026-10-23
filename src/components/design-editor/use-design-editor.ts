@@ -5,27 +5,20 @@ import {
   type Alignment,
   type Axis,
   addElements,
-  addPage,
   alignOffsets,
   type Box,
-  createPage,
   type Design,
   type DesignElement,
   distributeOffsets,
   duplicateElements,
-  duplicatePage,
   elementBounds,
   expandToGroups,
   type Fill,
-  findPage,
   groupElements,
   type LayerMove,
   moveElementTo,
-  movePage,
-  type Page,
   pasteElements,
   removeElements,
-  removePage,
   reorderElements,
   resizeDesign,
   setBackground,
@@ -33,7 +26,6 @@ import {
   ungroupElements,
   unionBox,
   updateElements,
-  updatePage,
 } from '@/design';
 import { useUndoable } from '@/lib/use-undoable';
 
@@ -50,23 +42,17 @@ const centred = (element: DesignElement, design: Design, measure: HeightMeasure)
   };
 };
 
-export const useDesignEditor = (initial: Design, initialPageIndex = 0) => {
+export const useDesignEditor = (initial: Design) => {
   const history = useUndoable<Design>(initial);
   const design = history.value;
-  const [currentPageId, setCurrentPageId] = useState(
-    initial.pages[initialPageIndex]?.id ?? initial.pages[0]?.id ?? '',
-  );
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [editingId, setEditingId] = useState<string | null>(null);
   const clipboard = useRef<DesignElement[]>([]);
   const measureRef = useRef<HeightMeasure>(() => undefined);
 
-  const page: Page = findPage(design, currentPageId) ?? design.pages[0] ?? createPage();
-  const pageId = page.id;
-
   const selectedElements = useMemo(
-    () => page.elements.filter((element) => selectedIds.includes(element.id)),
-    [page, selectedIds],
+    () => design.elements.filter((element) => selectedIds.includes(element.id)),
+    [design, selectedIds],
   );
 
   const commit = useCallback(
@@ -74,15 +60,14 @@ export const useDesignEditor = (initial: Design, initialPageIndex = 0) => {
     [history.set, history.setLive],
   );
 
-  const editPage = useCallback(
-    (update: (current: Page) => Page, live = false) =>
-      commit(updatePage(design, pageId, update), live),
-    [commit, design, pageId],
+  const edit = useCallback(
+    (update: (current: Design) => Design, live = false) => commit(update(design), live),
+    [commit, design],
   );
 
   const select = useCallback(
     (ids: readonly string[], additive = false) => {
-      const expanded = expandToGroups(page, ids);
+      const expanded = expandToGroups(design, ids);
       setSelectedIds((current) =>
         additive
           ? expanded.every((id) => current.includes(id))
@@ -92,7 +77,7 @@ export const useDesignEditor = (initial: Design, initialPageIndex = 0) => {
       );
       setEditingId(null);
     },
-    [page],
+    [design],
   );
 
   const focusElement = useCallback((id: string) => setSelectedIds([id]), []);
@@ -103,17 +88,19 @@ export const useDesignEditor = (initial: Design, initialPageIndex = 0) => {
   }, []);
 
   const selectAll = useCallback(() => {
-    setSelectedIds(page.elements.filter((element) => !element.locked).map((element) => element.id));
-  }, [page]);
+    setSelectedIds(
+      design.elements.filter((element) => !element.locked).map((element) => element.id),
+    );
+  }, [design]);
 
   const addElement = useCallback(
     (element: DesignElement, options: { centre?: boolean } = {}) => {
       const placed =
         options.centre === false ? element : centred(element, design, measureRef.current);
-      editPage((current) => addElements(current, [placed]));
+      edit((current) => addElements(current, [placed]));
       setSelectedIds([placed.id]);
     },
-    [design, editPage],
+    [design, edit],
   );
 
   const addMany = useCallback(
@@ -121,29 +108,29 @@ export const useDesignEditor = (initial: Design, initialPageIndex = 0) => {
       if (elements.length === 0) {
         return;
       }
-      editPage((current) => addElements(current, elements));
+      edit((current) => addElements(current, elements));
       setSelectedIds(elements.map((element) => element.id));
     },
-    [editPage],
+    [edit],
   );
 
   const replaceElement = useCallback(
     (next: DesignElement, live = false) => {
-      editPage((current) => updateElements(current, [next.id], () => next), live);
+      edit((current) => updateElements(current, [next.id], () => next), live);
     },
-    [editPage],
+    [edit],
   );
 
   const updateSelected = useCallback(
     (update: (element: DesignElement) => DesignElement, live = false) => {
-      editPage((current) => updateElements(current, selectedIds, update), live);
+      edit((current) => updateElements(current, selectedIds, update), live);
     },
-    [editPage, selectedIds],
+    [edit, selectedIds],
   );
 
   const updateMany = useCallback(
     (updates: ReadonlyMap<string, DesignElement>, live = false) => {
-      editPage(
+      edit(
         (current) => ({
           ...current,
           elements: current.elements.map((element) => updates.get(element.id) ?? element),
@@ -151,7 +138,7 @@ export const useDesignEditor = (initial: Design, initialPageIndex = 0) => {
         live,
       );
     },
-    [editPage],
+    [edit],
   );
 
   const removeSelected = useCallback(() => {
@@ -159,26 +146,26 @@ export const useDesignEditor = (initial: Design, initialPageIndex = 0) => {
     if (removable.length === 0) {
       return;
     }
-    editPage((current) => removeElements(current, removable));
+    edit((current) => removeElements(current, removable));
     setSelectedIds([]);
-  }, [editPage, selectedElements]);
+  }, [edit, selectedElements]);
 
   const removeElement = useCallback(
     (id: string) => {
-      editPage((current) => removeElements(current, [id]));
+      edit((current) => removeElements(current, [id]));
       setSelectedIds((current) => current.filter((item) => item !== id));
     },
-    [editPage],
+    [edit],
   );
 
   const duplicateSelected = useCallback(() => {
     if (selectedIds.length === 0) {
       return;
     }
-    const result = duplicateElements(page, selectedIds);
-    commit(updatePage(design, pageId, () => result.page));
+    const result = duplicateElements(design, selectedIds);
+    commit(result.design);
     setSelectedIds(result.ids);
-  }, [commit, design, page, pageId, selectedIds]);
+  }, [commit, design, selectedIds]);
 
   const copySelected = useCallback(() => {
     clipboard.current = selectedElements;
@@ -193,19 +180,19 @@ export const useDesignEditor = (initial: Design, initialPageIndex = 0) => {
     if (clipboard.current.length === 0) {
       return;
     }
-    const result = pasteElements(page, clipboard.current);
-    commit(updatePage(design, pageId, () => result.page));
+    const result = pasteElements(design, clipboard.current);
+    commit(result.design);
     setSelectedIds(result.ids);
-  }, [commit, design, page, pageId]);
+  }, [commit, design]);
 
   const reorderSelected = useCallback(
-    (move: LayerMove) => editPage((current) => reorderElements(current, selectedIds, move)),
-    [editPage, selectedIds],
+    (move: LayerMove) => edit((current) => reorderElements(current, selectedIds, move)),
+    [edit, selectedIds],
   );
 
   const moveLayer = useCallback(
-    (id: string, index: number) => editPage((current) => moveElementTo(current, id, index)),
-    [editPage],
+    (id: string, index: number) => edit((current) => moveElementTo(current, id, index)),
+    [edit],
   );
 
   const nudgeSelected = useCallback(
@@ -213,9 +200,9 @@ export const useDesignEditor = (initial: Design, initialPageIndex = 0) => {
       const offsets = Object.fromEntries(
         selectedElements.filter((el) => !el.locked).map((el) => [el.id, { x: dx, y: dy }]),
       );
-      editPage((current) => translateElements(current, offsets));
+      edit((current) => translateElements(current, offsets));
     },
-    [editPage, selectedElements],
+    [edit, selectedElements],
   );
 
   const selectionBoxes = useCallback(
@@ -234,26 +221,26 @@ export const useDesignEditor = (initial: Design, initialPageIndex = 0) => {
       const boxes = selectionBoxes();
       const pageBox = { x: 0, y: 0, width: design.width, height: design.height };
       const targetBox = target === 'page' ? pageBox : (unionBox(Object.values(boxes)) ?? pageBox);
-      editPage((current) => translateElements(current, alignOffsets(boxes, targetBox, alignment)));
+      edit((current) => translateElements(current, alignOffsets(boxes, targetBox, alignment)));
     },
-    [design.height, design.width, editPage, selectedIds.length, selectionBoxes],
+    [design.height, design.width, edit, selectedIds.length, selectionBoxes],
   );
 
   const distributeSelected = useCallback(
     (axis: Axis) => {
-      editPage((current) => translateElements(current, distributeOffsets(selectionBoxes(), axis)));
+      edit((current) => translateElements(current, distributeOffsets(selectionBoxes(), axis)));
     },
-    [editPage, selectionBoxes],
+    [edit, selectionBoxes],
   );
 
   const groupSelected = useCallback(
-    () => editPage((current) => groupElements(current, selectedIds)),
-    [editPage, selectedIds],
+    () => edit((current) => groupElements(current, selectedIds)),
+    [edit, selectedIds],
   );
 
   const ungroupSelected = useCallback(
-    () => editPage((current) => ungroupElements(current, selectedIds)),
-    [editPage, selectedIds],
+    () => edit((current) => ungroupElements(current, selectedIds)),
+    [edit, selectedIds],
   );
 
   const toggleLockSelected = useCallback(() => {
@@ -261,64 +248,18 @@ export const useDesignEditor = (initial: Design, initialPageIndex = 0) => {
     updateSelected((element) => ({ ...element, locked: lock }));
   }, [selectedElements, updateSelected]);
 
-  const setPageBackground = useCallback(
-    (fill: Fill, live = false) => editPage((current) => setBackground(current, fill), live),
-    [editPage],
+  const setBackgroundFill = useCallback(
+    (fill: Fill, live = false) => edit((current) => setBackground(current, fill), live),
+    [edit],
   );
 
-  const selectPage = useCallback((id: string) => {
-    setCurrentPageId(id);
-    setSelectedIds([]);
-    setEditingId(null);
-  }, []);
-
-  const insertPage = useCallback(
-    (next: Page = createPage(page.background)) => {
-      const index = design.pages.findIndex((item) => item.id === pageId);
-      commit(addPage(design, next, index));
-      selectPage(next.id);
-    },
-    [commit, design, page.background, pageId, selectPage],
-  );
-
-  const insertPages = useCallback(
+  const applyTemplate = useCallback(
     (source: Design) => {
       const scaled = resizeDesign(source, design.width, design.height);
-      const index = design.pages.findIndex((item) => item.id === pageId);
-      const replaceBlank = page.elements.length === 0 && design.pages.length === 1;
-      const pages = replaceBlank
-        ? scaled.pages
-        : [...design.pages.slice(0, index + 1), ...scaled.pages, ...design.pages.slice(index + 1)];
-      commit({ ...design, pages });
-      const first = scaled.pages[0];
-      if (first !== undefined) {
-        selectPage(first.id);
-      }
+      commit({ ...design, background: scaled.background, elements: scaled.elements });
+      setSelectedIds([]);
+      setEditingId(null);
     },
-    [commit, design, page.elements.length, pageId, selectPage],
-  );
-
-  const duplicateCurrentPage = useCallback(() => {
-    const result = duplicatePage(design, pageId);
-    commit(result.design);
-    selectPage(result.id);
-  }, [commit, design, pageId, selectPage]);
-
-  const removeCurrentPage = useCallback(() => {
-    if (design.pages.length <= 1) {
-      return;
-    }
-    const index = design.pages.findIndex((item) => item.id === pageId);
-    const next = removePage(design, pageId);
-    commit(next);
-    const fallback = next.pages[Math.max(0, index - 1)];
-    if (fallback !== undefined) {
-      selectPage(fallback.id);
-    }
-  }, [commit, design, pageId, selectPage]);
-
-  const movePageTo = useCallback(
-    (id: string, index: number) => commit(movePage(design, id, index)),
     [commit, design],
   );
 
@@ -330,9 +271,8 @@ export const useDesignEditor = (initial: Design, initialPageIndex = 0) => {
   const rename = useCallback((title: string) => commit({ ...design, title }), [commit, design]);
 
   const load = useCallback(
-    (next: Design, pageIndex = 0) => {
+    (next: Design) => {
       history.reset(next);
-      setCurrentPageId(next.pages[pageIndex]?.id ?? next.pages[0]?.id ?? '');
       setSelectedIds([]);
       setEditingId(null);
     },
@@ -341,8 +281,6 @@ export const useDesignEditor = (initial: Design, initialPageIndex = 0) => {
 
   return {
     design,
-    page,
-    pageId,
     selectedIds,
     selectedElements,
     editingId,
@@ -357,7 +295,7 @@ export const useDesignEditor = (initial: Design, initialPageIndex = 0) => {
     clearSelection,
     selectAll,
     setEditingId,
-    transformPage: editPage,
+    transform: edit,
     addElement,
     addMany,
     replaceElement,
@@ -377,13 +315,8 @@ export const useDesignEditor = (initial: Design, initialPageIndex = 0) => {
     groupSelected,
     ungroupSelected,
     toggleLockSelected,
-    setPageBackground,
-    selectPage,
-    insertPage,
-    insertPages,
-    duplicateCurrentPage,
-    removeCurrentPage,
-    movePageTo,
+    setBackgroundFill,
+    applyTemplate,
     resize,
     rename,
     load,

@@ -2,15 +2,15 @@
 
 import type Konva from 'konva';
 import { createRoot } from 'react-dom/client';
-import { type Design, iconDataUrl, type Page } from '@/design';
+import { type Design, iconDataUrl } from '@/design';
+import { DesignStage } from './design-content';
 import { loadFontFamilies } from './font-loader';
 import { loadImage } from './image-cache';
-import { PageStage } from './page-content';
 
 const PLACEHOLDER_ICON = iconDataUrl('image', '#94a3b8', 1.5, 256);
 
-const pageImageSources = (page: Page): string[] =>
-  page.elements.flatMap((element) => {
+const imageSources = (design: Design): string[] =>
+  design.elements.flatMap((element) => {
     if (element.type === 'image') {
       return [element.src === '' ? PLACEHOLDER_ICON : element.src];
     }
@@ -20,13 +20,13 @@ const pageImageSources = (page: Page): string[] =>
     return [];
   });
 
-const pageFontFamilies = (page: Page): string[] =>
-  page.elements.flatMap((element) => (element.type === 'text' ? [element.fontFamily] : []));
+const fontFamilies = (design: Design): string[] =>
+  design.elements.flatMap((element) => (element.type === 'text' ? [element.fontFamily] : []));
 
-const preloadPage = async (page: Page): Promise<void> => {
+const preloadDesign = async (design: Design): Promise<void> => {
   await Promise.all([
-    loadFontFamilies(pageFontFamilies(page)),
-    ...pageImageSources(page).map(loadImage),
+    loadFontFamilies(fontFamilies(design)),
+    ...imageSources(design).map(loadImage),
   ]);
 };
 
@@ -43,18 +43,17 @@ const waitForStage = async (
   return waitForStage(mounted, attempts - 1);
 };
 
-export interface RenderPageOptions {
+export interface RenderDesignOptions {
   pixelRatio: number;
   mimeType?: 'image/png' | 'image/jpeg';
   quality?: number;
 }
 
-const renderPageCanvas = async (
-  design: Pick<Design, 'width' | 'height'>,
-  page: Page,
-  { pixelRatio }: Pick<RenderPageOptions, 'pixelRatio'>,
+const renderDesignCanvas = async (
+  design: Design,
+  { pixelRatio }: Pick<RenderDesignOptions, 'pixelRatio'>,
 ): Promise<HTMLCanvasElement> => {
-  await preloadPage(page);
+  await preloadDesign(design);
   const host = document.createElement('div');
   host.style.position = 'fixed';
   host.style.left = '-100000px';
@@ -64,10 +63,8 @@ const renderPageCanvas = async (
   const mounted: { stage: Konva.Stage | null } = { stage: null };
   try {
     root.render(
-      <PageStage
-        page={page}
-        width={design.width}
-        height={design.height}
+      <DesignStage
+        design={design}
         scale={1}
         fontsVersion={1}
         stageRef={(node) => {
@@ -77,7 +74,7 @@ const renderPageCanvas = async (
     );
     const stage = await waitForStage(mounted, 30);
     if (stage === null) {
-      throw new Error('Page stage did not mount');
+      throw new Error('Design stage did not mount');
     }
     await nextFrame();
     await nextFrame();
@@ -88,21 +85,19 @@ const renderPageCanvas = async (
   }
 };
 
-export const renderPageDataUrl = async (
-  design: Pick<Design, 'width' | 'height'>,
-  page: Page,
-  { pixelRatio, mimeType = 'image/png', quality = 0.92 }: RenderPageOptions,
+export const renderDesignDataUrl = async (
+  design: Design,
+  { pixelRatio, mimeType = 'image/png', quality = 0.92 }: RenderDesignOptions,
 ): Promise<string> => {
-  const canvas = await renderPageCanvas(design, page, { pixelRatio });
+  const canvas = await renderDesignCanvas(design, { pixelRatio });
   return canvas.toDataURL(mimeType, quality);
 };
 
-export const renderPageBlob = async (
-  design: Pick<Design, 'width' | 'height'>,
-  page: Page,
-  { pixelRatio, mimeType = 'image/png', quality = 0.92 }: RenderPageOptions,
+export const renderDesignBlob = async (
+  design: Design,
+  { pixelRatio, mimeType = 'image/png', quality = 0.92 }: RenderDesignOptions,
 ): Promise<Blob> => {
-  const canvas = await renderPageCanvas(design, page, { pixelRatio });
+  const canvas = await renderDesignCanvas(design, { pixelRatio });
   return new Promise((resolve, reject) => {
     canvas.toBlob(
       (blob) => (blob === null ? reject(new Error('Export failed')) : resolve(blob)),

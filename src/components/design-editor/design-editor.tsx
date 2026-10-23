@@ -26,9 +26,8 @@ import { EditorContextMenu } from './context-menu';
 import { DocumentColorsProvider } from './document-colors';
 import { EditorHeader } from './editor-header';
 import { EditorSidebar, type SidebarPanel } from './editor-sidebar';
-import { exportPages } from './export-design';
+import { exportImage } from './export-design';
 import { useFontsVersion } from './font-loader';
-import { PagesStrip } from './pages-strip';
 import { PropertiesPanel } from './panels/properties-panel';
 import { type LoadedImage, readImageFile } from './read-image-file';
 import { ShortcutsDialog } from './shortcuts-dialog';
@@ -55,7 +54,6 @@ interface DesignEditorProps {
   initialDesign: Design;
   backHref: string;
   storageKey: string;
-  initialPageIndex?: number;
   initialPanel?: string;
 }
 
@@ -84,10 +82,9 @@ export const DesignEditor = ({
   initialDesign,
   backHref,
   storageKey,
-  initialPageIndex = 0,
   initialPanel,
 }: DesignEditorProps) => {
-  const editor = useDesignEditor(initialDesign, initialPageIndex);
+  const editor = useDesignEditor(initialDesign);
   const { design } = editor;
   const [viewport, setViewport] = useState<Viewport>({ width: 0, height: 0 });
   const [userZoom, setUserZoom] = useState<number | null>(null);
@@ -109,10 +106,8 @@ export const DesignEditor = ({
 
   const fonts = useMemo(
     () =>
-      design.pages.flatMap((page) =>
-        page.elements.flatMap((element) => (element.type === 'text' ? [element.fontFamily] : [])),
-      ),
-    [design.pages],
+      design.elements.flatMap((element) => (element.type === 'text' ? [element.fontFamily] : [])),
+    [design.elements],
   );
   const fontsVersion = useFontsVersion(fonts);
 
@@ -123,9 +118,9 @@ export const DesignEditor = ({
     restored.current = true;
     const saved = readSaved(storageKey);
     if (saved !== null) {
-      editor.load(saved, initialPageIndex);
+      editor.load(saved);
     }
-  }, [editor.load, initialPageIndex, storageKey]);
+  }, [editor.load, storageKey]);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -201,7 +196,7 @@ export const DesignEditor = ({
     onHelp: () => setHelpOpen(true),
     onSave: () => setSavedAt(Date.now()),
     onExport: () => {
-      exportPages(design, [editor.pageId], 'png', 1).catch(() => undefined);
+      exportImage(design, 'png', 1).catch(() => undefined);
     },
     onPasteFiles: (files) => addImageFiles(files),
   });
@@ -211,17 +206,7 @@ export const DesignEditor = ({
       id: 'templates',
       label: 'Templates',
       Icon: LayoutTemplate,
-      render: () => (
-        <TemplatesPanel
-          onInsert={(pack, index) => {
-            const source = pack.build();
-            const chosen = source.pages[index];
-            if (chosen !== undefined) {
-              editor.insertPages({ ...source, pages: [chosen] });
-            }
-          }}
-        />
-      ),
+      render: () => <TemplatesPanel onApply={(poster) => editor.applyTemplate(poster.build())} />,
     },
     {
       id: 'elements',
@@ -268,8 +253,8 @@ export const DesignEditor = ({
       Icon: PaintBucket,
       render: () => (
         <BackgroundPanel
-          fill={editor.page.background}
-          onChange={editor.setPageBackground}
+          fill={editor.design.background}
+          onChange={editor.setBackgroundFill}
           onCommit={editor.seal}
         />
       ),
@@ -291,13 +276,7 @@ export const DesignEditor = ({
         onHelp={() => setHelpOpen(true)}
         onReset={() => {
           forgetSaved(storageKey);
-          editor.load(
-            initialDesign,
-            Math.max(
-              0,
-              design.pages.findIndex((page) => page.id === editor.pageId),
-            ),
-          );
+          editor.load(initialDesign);
         }}
       />
       <div className="flex min-h-0 flex-1 flex-col md:flex-row">
@@ -318,13 +297,12 @@ export const DesignEditor = ({
             snapEnabled={view.snap}
             showGrid={view.grid}
           />
-          <PagesStrip editor={editor} zoom={zoom} onZoomChange={setUserZoom} />
         </div>
         <button
           type="button"
           onClick={() => setPropertiesOpen((open) => !open)}
           aria-expanded={propertiesOpen}
-          className="fixed right-4 bottom-40 z-50 inline-flex items-center gap-2 rounded-full bg-violet-600 px-4 py-2 font-medium text-sm text-white shadow-lg md:bottom-28 lg:hidden"
+          className="fixed right-4 bottom-20 z-50 inline-flex items-center gap-2 rounded-full bg-violet-600 px-4 py-2 font-medium text-sm text-white shadow-lg md:bottom-6 lg:hidden"
         >
           <SlidersHorizontal className="size-4" /> {propertiesOpen ? 'Close' : 'Properties'}
         </button>

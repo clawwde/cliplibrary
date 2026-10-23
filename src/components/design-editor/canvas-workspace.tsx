@@ -5,9 +5,9 @@ import type { KonvaEventObject } from 'konva/lib/Node';
 import { type DragEvent as ReactDragEvent, useCallback, useEffect, useRef, useState } from 'react';
 import { Group, Layer, Rect, Stage } from 'react-konva';
 import { type Box, boxesIntersect, type Point, unionBox } from '@/design';
+import { CANVAS_BACKGROUND_NAME, DesignContent } from './design-content';
 import { DRAG_IMAGE_TYPE, readDraggedImage } from './drag-image';
 import { ELEMENT_NODE_NAME } from './element-node';
-import { PAGE_BACKGROUND_NAME, PageContent } from './page-content';
 import type { LoadedImage } from './read-image-file';
 import { SelectionToolbar } from './selection-toolbar';
 import { SelectionTransformer } from './selection-transformer';
@@ -42,15 +42,13 @@ export const CanvasWorkspace = ({
   snapEnabled,
   showGrid,
 }: CanvasWorkspaceProps) => {
-  const { design, page, selectedIds, selectedElements, editingId } = editor;
+  const { design, selectedIds, selectedElements, editingId } = editor;
   const containerRef = useRef<HTMLDivElement>(null);
   const stageRef = useRef<Konva.Stage>(null);
-  const pageGroupRef = useRef<Konva.Group>(null);
+  const designGroupRef = useRef<Konva.Group>(null);
   const transformerRef = useRef<Konva.Transformer>(null);
   const viewport = useViewportSize(containerRef, onViewportChange);
-  const [panState, setPanState] = useState({ pageId: editor.pageId, x: 0, y: 0 });
-  const pan: Point = panState.pageId === editor.pageId ? panState : { x: 0, y: 0 };
-  const setPan = (next: Point) => setPanState({ pageId: editor.pageId, ...next });
+  const [pan, setPan] = useState<Point>({ x: 0, y: 0 });
   const [guides, setGuides] = useState<Guides>(NO_GUIDES);
   const [marquee, setMarquee] = useState<Box | null>(null);
   const [hoverBox, setHoverBox] = useState<Box | null>(null);
@@ -73,7 +71,7 @@ export const CanvasWorkspace = ({
   );
 
   const localBox = useCallback((node: Konva.Node): Box | null => {
-    const group = pageGroupRef.current;
+    const group = designGroupRef.current;
     return group === null ? null : node.getClientRect({ relativeTo: group, skipShadow: true });
   }, []);
 
@@ -140,7 +138,7 @@ export const CanvasWorkspace = ({
   const onStageDown = (event: KonvaEventObject<MouseEvent | TouchEvent>) => {
     blurActiveElement();
     const target = event.target;
-    const onEmpty = target === target.getStage() || target.hasName(PAGE_BACKGROUND_NAME);
+    const onEmpty = target === target.getStage() || target.hasName(CANVAS_BACKGROUND_NAME);
     const pointer = stageRef.current?.getPointerPosition() ?? null;
     const middle = 'button' in event.evt && event.evt.button === 1;
     if ((spaceHeld || middle) && pointer !== null) {
@@ -190,7 +188,7 @@ export const CanvasWorkspace = ({
       editor.clearSelection();
       return;
     }
-    const hits = page.elements
+    const hits = design.elements
       .filter((element) => !(element.locked || element.hidden))
       .filter((element) => {
         const node = findNode(element.id);
@@ -254,7 +252,7 @@ export const CanvasWorkspace = ({
     }
   };
 
-  const editingElement = page.elements.find((element) => element.id === editingId);
+  const editingElement = design.elements.find((element) => element.id === editingId);
 
   return (
     // biome-ignore lint/a11y/noStaticElementInteractions: the canvas is a file drop target
@@ -297,7 +295,7 @@ export const CanvasWorkspace = ({
               shadowOffsetY={6}
               listening={false}
             />
-            <Group ref={pageGroupRef} x={offset.x} y={offset.y} scaleX={zoom} scaleY={zoom}>
+            <Group ref={designGroupRef} x={offset.x} y={offset.y} scaleX={zoom} scaleY={zoom}>
               <Group
                 onMouseOver={(event) => {
                   const group = event.target.findAncestor(`.${ELEMENT_NODE_NAME}`, true);
@@ -307,10 +305,8 @@ export const CanvasWorkspace = ({
                 }}
                 onMouseOut={() => setHoverBox(null)}
               >
-                <PageContent
-                  page={page}
-                  width={design.width}
-                  height={design.height}
+                <DesignContent
+                  design={design}
                   fontsVersion={fontsVersion}
                   editingId={editingId}
                   interactionFor={interactionFor}
@@ -327,7 +323,7 @@ export const CanvasWorkspace = ({
             <SelectionTransformer
               transformerRef={transformerRef}
               selected={selectedElements}
-              elements={page.elements}
+              elements={design.elements}
               onCommit={editor.updateMany}
               onTransforming={setMoving}
             />

@@ -3,16 +3,14 @@
 import type Konva from 'konva';
 import type { Ref } from 'react';
 import { Group, Layer, Rect, Stage } from 'react-konva';
-import type { DesignElement, Page } from '@/design';
+import type { Design, DesignElement } from '@/design';
 import { type ElementInteraction, ElementNode } from './element-node';
 import { konvaFill } from './konva-fill';
 
-export const PAGE_BACKGROUND_NAME = 'page-background';
+export const CANVAS_BACKGROUND_NAME = 'canvas-background';
 
-interface PageContentProps {
-  page: Page;
-  width: number;
-  height: number;
+interface DesignContentProps {
+  design: Design;
   fontsVersion: number;
   editingId?: string | null;
   interactionFor?: (element: DesignElement) => ElementInteraction;
@@ -21,23 +19,21 @@ interface PageContentProps {
 const elementKey = (element: DesignElement, fontsVersion: number): string =>
   element.type === 'text' ? `${element.id}-${fontsVersion}` : element.id;
 
-export const PageContent = ({
-  page,
-  width,
-  height,
+export const DesignContent = ({
+  design,
   fontsVersion,
   editingId = null,
   interactionFor,
-}: PageContentProps) => (
-  <Group clipX={0} clipY={0} clipWidth={width} clipHeight={height}>
+}: DesignContentProps) => (
+  <Group clipX={0} clipY={0} clipWidth={design.width} clipHeight={design.height}>
     <Rect
-      name={PAGE_BACKGROUND_NAME}
-      width={width}
-      height={height}
+      name={CANVAS_BACKGROUND_NAME}
+      width={design.width}
+      height={design.height}
       listening={interactionFor !== undefined}
-      {...konvaFill(page.background, width, height)}
+      {...konvaFill(design.background, design.width, design.height)}
     />
-    {page.elements.map((element) => (
+    {design.elements.map((element) => (
       <ElementNode
         key={elementKey(element, fontsVersion)}
         element={element}
@@ -48,33 +44,24 @@ export const PageContent = ({
   </Group>
 );
 
-interface PageStageProps {
-  page: Page;
-  width: number;
-  height: number;
+interface DesignStageProps {
+  design: Design;
   scale: number;
   fontsVersion: number;
   stageRef?: Ref<Konva.Stage>;
 }
 
-export const PageStage = ({
-  page,
-  width,
-  height,
-  scale,
-  fontsVersion,
-  stageRef,
-}: PageStageProps) => (
+export const DesignStage = ({ design, scale, fontsVersion, stageRef }: DesignStageProps) => (
   <Stage
     {...(stageRef === undefined ? {} : { ref: stageRef })}
-    width={width * scale}
-    height={height * scale}
+    width={design.width * scale}
+    height={design.height * scale}
     scaleX={scale}
     scaleY={scale}
     listening={false}
   >
     <Layer listening={false}>
-      <PageContent page={page} width={width} height={height} fontsVersion={fontsVersion} />
+      <DesignContent design={design} fontsVersion={fontsVersion} />
     </Layer>
   </Stage>
 );

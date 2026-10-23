@@ -1,33 +1,23 @@
-import type { Design, Page } from './design';
+import type { Design } from './design';
 import type { DesignElement } from './element';
 import { createDesignId } from './factories';
 import type { Fill } from './fill';
 import type { Offsets } from './geometry';
 
-export const findPage = (design: Design, pageId: string): Page | undefined =>
-  design.pages.find((page) => page.id === pageId);
-
-export const updatePage = (
-  design: Design,
-  pageId: string,
-  update: (page: Page) => Page,
-): Design => ({
+export const addElements = (design: Design, elements: readonly DesignElement[]): Design => ({
   ...design,
-  pages: design.pages.map((page) => (page.id === pageId ? update(page) : page)),
-});
-
-export const addElements = (page: Page, elements: readonly DesignElement[]): Page => ({
-  ...page,
-  elements: [...page.elements, ...elements],
+  elements: [...design.elements, ...elements],
 });
 
 export const updateElements = (
-  page: Page,
+  design: Design,
   ids: readonly string[],
   update: (element: DesignElement) => DesignElement,
-): Page => ({
-  ...page,
-  elements: page.elements.map((element) => (ids.includes(element.id) ? update(element) : element)),
+): Design => ({
+  ...design,
+  elements: design.elements.map((element) =>
+    ids.includes(element.id) ? update(element) : element,
+  ),
 });
 
 export const patchElement = <T extends DesignElement>(element: T, patch: Partial<T>): T => ({
@@ -35,9 +25,9 @@ export const patchElement = <T extends DesignElement>(element: T, patch: Partial
   ...patch,
 });
 
-export const removeElements = (page: Page, ids: readonly string[]): Page => ({
-  ...page,
-  elements: page.elements.filter((element) => !ids.includes(element.id)),
+export const removeElements = (design: Design, ids: readonly string[]): Design => ({
+  ...design,
+  elements: design.elements.filter((element) => !ids.includes(element.id)),
 });
 
 const remapGroup = (groupIds: Map<string, string>, groupId: string): string => {
@@ -67,43 +57,47 @@ const withoutGroup = (element: DesignElement): DesignElement => {
 };
 
 export const duplicateElements = (
-  page: Page,
+  design: Design,
   ids: readonly string[],
   offset = 24,
-): { page: Page; ids: string[] } => {
+): { design: Design; ids: string[] } => {
   const copies = cloneWithNewIds(
-    page.elements.filter((element) => ids.includes(element.id)),
+    design.elements.filter((element) => ids.includes(element.id)),
     offset,
   );
-  return { page: addElements(page, copies), ids: copies.map((element) => element.id) };
+  return { design: addElements(design, copies), ids: copies.map((element) => element.id) };
 };
 
 export const pasteElements = (
-  page: Page,
+  design: Design,
   elements: readonly DesignElement[],
   offset = 24,
-): { page: Page; ids: string[] } => {
+): { design: Design; ids: string[] } => {
   const copies = cloneWithNewIds(elements, offset);
-  return { page: addElements(page, copies), ids: copies.map((element) => element.id) };
+  return { design: addElements(design, copies), ids: copies.map((element) => element.id) };
 };
 
 export const LAYER_MOVES = ['forward', 'backward', 'front', 'back'] as const;
 
 export type LayerMove = (typeof LAYER_MOVES)[number];
 
-export const reorderElements = (page: Page, ids: readonly string[], move: LayerMove): Page => {
-  const selected = page.elements.filter((element) => ids.includes(element.id));
-  const rest = page.elements.filter((element) => !ids.includes(element.id));
+export const reorderElements = (
+  design: Design,
+  ids: readonly string[],
+  move: LayerMove,
+): Design => {
+  const selected = design.elements.filter((element) => ids.includes(element.id));
+  const rest = design.elements.filter((element) => !ids.includes(element.id));
   if (selected.length === 0) {
-    return page;
+    return design;
   }
   if (move === 'front') {
-    return { ...page, elements: [...rest, ...selected] };
+    return { ...design, elements: [...rest, ...selected] };
   }
   if (move === 'back') {
-    return { ...page, elements: [...selected, ...rest] };
+    return { ...design, elements: [...selected, ...rest] };
   }
-  const elements = [...page.elements];
+  const elements = [...design.elements];
   const indexes = elements
     .map((element, index) => (ids.includes(element.id) ? index : -1))
     .filter((index) => index >= 0);
@@ -119,22 +113,22 @@ export const reorderElements = (page: Page, ids: readonly string[], move: LayerM
     elements[target] = current;
     elements[index] = neighbour;
   }
-  return { ...page, elements };
+  return { ...design, elements };
 };
 
-export const moveElementTo = (page: Page, id: string, index: number): Page => {
-  const element = page.elements.find((item) => item.id === id);
+export const moveElementTo = (design: Design, id: string, index: number): Design => {
+  const element = design.elements.find((item) => item.id === id);
   if (element === undefined) {
-    return page;
+    return design;
   }
-  const rest = page.elements.filter((item) => item.id !== id);
+  const rest = design.elements.filter((item) => item.id !== id);
   const clamped = Math.max(0, Math.min(rest.length, index));
-  return { ...page, elements: [...rest.slice(0, clamped), element, ...rest.slice(clamped)] };
+  return { ...design, elements: [...rest.slice(0, clamped), element, ...rest.slice(clamped)] };
 };
 
-export const translateElements = (page: Page, offsets: Offsets): Page => ({
-  ...page,
-  elements: page.elements.map((element) => {
+export const translateElements = (design: Design, offsets: Offsets): Design => ({
+  ...design,
+  elements: design.elements.map((element) => {
     const offset = offsets[element.id];
     return offset === undefined
       ? element
@@ -142,24 +136,24 @@ export const translateElements = (page: Page, offsets: Offsets): Page => ({
   }),
 });
 
-export const groupElements = (page: Page, ids: readonly string[]): Page => {
+export const groupElements = (design: Design, ids: readonly string[]): Design => {
   if (ids.length < 2) {
-    return page;
+    return design;
   }
   const groupId = createDesignId('group');
-  return updateElements(page, ids, (element) => ({ ...element, groupId }));
+  return updateElements(design, ids, (element) => ({ ...element, groupId }));
 };
 
-export const ungroupElements = (page: Page, ids: readonly string[]): Page =>
-  updateElements(page, ids, withoutGroup);
+export const ungroupElements = (design: Design, ids: readonly string[]): Design =>
+  updateElements(design, ids, withoutGroup);
 
-export const expandToGroups = (page: Page, ids: readonly string[]): string[] => {
+export const expandToGroups = (design: Design, ids: readonly string[]): string[] => {
   const groups = new Set(
-    page.elements
+    design.elements
       .filter((element) => ids.includes(element.id) && element.groupId !== undefined)
       .map((element) => element.groupId),
   );
-  return page.elements
+  return design.elements
     .filter(
       (element) =>
         ids.includes(element.id) || (element.groupId !== undefined && groups.has(element.groupId)),
@@ -167,43 +161,10 @@ export const expandToGroups = (page: Page, ids: readonly string[]): string[] => 
     .map((element) => element.id);
 };
 
-export const setBackground = (page: Page, background: Fill): Page => ({ ...page, background });
-
-const clonePage = (page: Page): Page => ({
-  id: createDesignId('page'),
-  background: page.background,
-  elements: cloneWithNewIds(page.elements, 0),
-});
-
-export const addPage = (design: Design, page: Page, afterIndex: number): Design => ({
+export const setBackground = (design: Design, background: Fill): Design => ({
   ...design,
-  pages: [...design.pages.slice(0, afterIndex + 1), page, ...design.pages.slice(afterIndex + 1)],
+  background,
 });
-
-export const duplicatePage = (design: Design, pageId: string): { design: Design; id: string } => {
-  const index = design.pages.findIndex((page) => page.id === pageId);
-  const source = design.pages[index];
-  if (source === undefined) {
-    return { design, id: pageId };
-  }
-  const copy = clonePage(source);
-  return { design: addPage(design, copy, index), id: copy.id };
-};
-
-export const removePage = (design: Design, pageId: string): Design =>
-  design.pages.length <= 1
-    ? design
-    : { ...design, pages: design.pages.filter((page) => page.id !== pageId) };
-
-export const movePage = (design: Design, pageId: string, toIndex: number): Design => {
-  const page = findPage(design, pageId);
-  if (page === undefined) {
-    return design;
-  }
-  const rest = design.pages.filter((item) => item.id !== pageId);
-  const clamped = Math.max(0, Math.min(rest.length, toIndex));
-  return { ...design, pages: [...rest.slice(0, clamped), page, ...rest.slice(clamped)] };
-};
 
 export const scaleElement = (
   element: DesignElement,
@@ -268,9 +229,6 @@ export const resizeDesign = (design: Design, width: number, height: number): Des
     ...design,
     width,
     height,
-    pages: design.pages.map((page) => ({
-      ...page,
-      elements: page.elements.map((element) => scaleElement(element, factor, shiftX, shiftY)),
-    })),
+    elements: design.elements.map((element) => scaleElement(element, factor, shiftX, shiftY)),
   };
 };

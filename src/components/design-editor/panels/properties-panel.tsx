@@ -53,25 +53,24 @@ const TypeSection = ({
 };
 
 export const PropertiesPanel = ({ editor }: { editor: DesignEditorState }) => {
-  const { selectedElements, design, page } = editor;
+  const { selectedElements, design } = editor;
   const single = selectedElements.length === 1 ? (selectedElements[0] ?? null) : null;
 
   if (selectedElements.length === 0) {
     return (
       <div className="flex flex-col">
-        <div className="border-b px-4 py-3 font-medium text-sm">Page</div>
+        <div className="border-b px-4 py-3 font-medium text-sm">Design</div>
         <Section title="Background">
           <FillEditor
             label="Background"
-            fill={page.background}
-            onChange={editor.setPageBackground}
+            fill={design.background}
+            onChange={editor.setBackgroundFill}
             onCommit={editor.seal}
           />
         </Section>
         <Section title="Size">
           <p className="text-muted-foreground text-xs">
-            {design.width} × {design.height} px · {design.pages.length}{' '}
-            {design.pages.length === 1 ? 'page' : 'pages'}
+            {design.width} × {design.height} px
           </p>
         </Section>
       </div>

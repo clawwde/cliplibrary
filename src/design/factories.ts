@@ -1,5 +1,5 @@
 import { randomHex } from '@/lib/random-hex';
-import type { Design, Page } from './design';
+import type { Design } from './design';
 import type {
   EllipseElement,
   IconElement,
@@ -12,7 +12,6 @@ import type {
   StarElement,
   TextElement,
 } from './element';
-import type { Fill } from './fill';
 
 export const createDesignId = (prefix: string): string => `${prefix}-${randomHex(8)}`;
 
@@ -174,22 +173,12 @@ export const createIcon = (overrides: Overrides<IconElement> = {}): IconElement 
   ...overrides,
 });
 
-export const createPage = (
-  background: Fill = '#ffffff',
-  elements: Page['elements'] = [],
-): Page => ({
-  id: createDesignId('page'),
-  background,
-  elements,
-});
-
-export const createDesign = (
-  overrides: Partial<Omit<Design, 'pages'>> & { pages?: Page[] } = {},
-): Design => ({
+export const createDesign = (overrides: Partial<Design> = {}): Design => ({
   id: createDesignId('design'),
   title: 'Untitled design',
   width: 1080,
   height: 1080,
-  pages: [createPage()],
+  background: '#ffffff',
+  elements: [],
   ...overrides,
 });
